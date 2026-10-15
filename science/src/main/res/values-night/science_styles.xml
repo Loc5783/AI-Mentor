@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.ScienceFeature" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/science_primary</item>
+        <item name="colorOnPrimary">@color/science_on_primary</item>
+        <item name="colorPrimaryContainer">@color/science_primary_container</item>
+        <item name="colorSurface">@color/science_surface</item>
+        <item name="colorOnSurface">@color/science_text_primary</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/science_surface</item>
+        <item name="android:statusBarColor">@color/science_surface</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+</resources>

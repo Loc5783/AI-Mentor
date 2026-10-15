@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Màu nền (Light Mode Default) -->
+    <color name="bg_primary">#F8F9FA</color>
+    <color name="bg_secondary">#FFFFFF</color>
+    <color name="surface_light">#E9ECEF</color>
+
+    <!-- Màu chữ -->
+    <color name="text_primary">#212529</color>
+    <color name="text_secondary">#495057</color>
+    <color name="text_tertiary">#6C757D</color>
+
+    <!-- Accent -->
+    <color name="primary">#6C63FF</color>
+    <color name="primary_dark">#4A42CC</color>
+    <color name="accent">#4ECDC4</color>
+    <color name="accent_light">#6EDFD6</color>
+    <color name="gold">#FFD700</color>
+
+    <!-- Màu cơ bản -->
+    <color name="programming_white">#FFFFFF</color>
+    <color name="programming_black">#000000</color>
+    <color name="error">#FF6B6B</color>
+    <color name="success">#4CAF50</color>
+
+    <!-- Màu ngôn ngữ -->
+    <color name="lang_python">#FFD43B</color>
+    <color name="lang_java">#F89820</color>
+    <color name="lang_kotlin">#7F52FF</color>
+    <color name="lang_js">#F7DF1E</color>
+    <color name="lang_cpp">#00599C</color>
+    <color name="lang_csharp">#239120</color>
+    <color name="lang_php">#777BB4</color>
+    <color name="lang_swift">#F05138</color>
+    <color name="lang_go">#00ADD8</color>
+    <color name="lang_rust">#B7410E</color>
+    <color name="lang_typescript">#3178C6</color>
+    <color name="lang_ruby">#CC342D</color>
+
+    <color name="card_bg">#FFFFFF</color>
+    <color name="card_border">#E9ECEF</color>
+
+    <!-- Header Custom Colors -->
+    <color name="bg_header_custom">#1A1A2E</color>
+    <color name="text_header_light">#FFFFFF</color>
+</resources>
