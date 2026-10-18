@@ -558,4 +558,18 @@ public class ResearchUxTest {
       waitFor(a -> a.findViewById(R.id.cardMath)!=null);
     } finally {main(() -> com.example.asm_final.utils.LocaleHelper.setLocale(context,language));}
   }
+
+  @Test public void maximumDashboardLevelDoesNotPromiseAnotherLevel() {
+    try(com.example.mathmodule.databases.SqliteDbHelper helper = new com.example.mathmodule.databases.SqliteDbHelper(context)) {
+      helper.getUserExp(userId);
+      helper.getWritableDatabase().execSQL("UPDATE math_user_profile SET exp=? WHERE user_id=?",new Object[]{Integer.MAX_VALUE,userId});
+    }
+    start(HomeActivity.class);
+    waitFor(a -> ((android.widget.ProgressBar)a.findViewById(R.id.pb_total_exp)).getProgress()==100);
+    main(() -> {
+      assertEquals(resumed().getString(R.string.home_level_number,20),((TextView)resumed().findViewById(R.id.tv_total_level_value)).getText().toString());
+      assertEquals(resumed().getString(R.string.home_max_level_reached),((TextView)resumed().findViewById(R.id.tv_exp_detail)).getText().toString());
+    });
+    capture("ux-dashboard-maximum-level");
+  }
 }

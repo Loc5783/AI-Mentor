@@ -180,15 +180,19 @@ public class HomeFragment extends Fragment {
     int scienceExp = snapshot.progress(RecentActivity.Subject.SCIENCE).experience;
     int historyExp = snapshot.progress(RecentActivity.Subject.HISTORY).experience;
     int programmingExp = snapshot.progress(RecentActivity.Subject.PROGRAMMING).experience;
-    int totalExp = mathExp + historyExp + programmingExp + scienceExp;
+    int totalExp =
+        ExpLevelCalculator.totalExperience(mathExp, historyExp, programmingExp, scienceExp);
 
     // --- UPDATE UI TOTAL ---
     int level = ExpLevelCalculator.getLevel(totalExp);
-    tvTotalLevel.setText(getString(R.string.home_level_prefix) + level);
+    tvTotalLevel.setText(getString(R.string.home_level_number, level));
     tvLevelTitle.setText(ExpLevelCalculator.getLevelTitleResId(level));
     pbTotal.setProgress(ExpLevelCalculator.getProgressPercentage(totalExp));
     tvExpDetail.setText(
-        getString(R.string.home_exp_remaining, ExpLevelCalculator.getExpToNextLevel(totalExp)));
+        level >= com.example.mentor.data.QuizPolicy.MAX_LEVEL
+            ? getString(R.string.home_max_level_reached)
+            : getString(
+                R.string.home_exp_remaining, ExpLevelCalculator.getExpToNextLevel(totalExp)));
 
     // --- UPDATE MINI CARDS ---
     updateMiniStat(miniMath, getString(R.string.cat_math), R.drawable.ic_cat_math, mathExp);
@@ -272,6 +276,7 @@ public class HomeFragment extends Fragment {
     ((TextView) root.findViewById(R.id.tv_mini_name)).setText(name);
     root.setContentDescription(getString(R.string.ux_reopen_subject, name));
     ((TextView) root.findViewById(R.id.tv_mini_exp)).setText(getString(R.string.exp_unit, exp));
-    ((ProgressBar) root.findViewById(R.id.pb_mini_stat)).setProgress(com.example.mentor.data.QuizPolicy.progress(exp));
+    ((ProgressBar) root.findViewById(R.id.pb_mini_stat))
+        .setProgress(com.example.mentor.data.QuizPolicy.progress(exp));
   }
 }

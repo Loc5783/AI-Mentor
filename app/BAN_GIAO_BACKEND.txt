@@ -1,6 +1,6 @@
 ﻿BÀN GIAO BACKEND — ỨNG DỤNG AIMENTOR
 Cập nhật: 18/10/2026
-Mã nguồn tham chiếu: https://github.com/Velus-T/AImentor
+Mã nguồn tham chiếu: https://github.com/Loc5783/AI-Mentor
 Mốc chức năng trước khi viết tài liệu: commit 2fd1e13.
 Vị trí tài liệu: app/BAN_GIAO_BACKEND.txt
 

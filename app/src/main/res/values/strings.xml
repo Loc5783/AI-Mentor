@@ -104,7 +104,7 @@ BTEC FPT Student</string>
     <string name="nav_user_name">Tên người dùng</string>
     <string name="nav_affiliation">Đồng hành cùng FPT Education</string>
     <string name="home_default_level">Cấp 1</string>
-    <string name="home_default_exp_remaining">Còn 140 EXP để lên cấp</string>
+    <string name="home_default_exp_remaining">Còn 120 EXP để lên cấp</string>
     <string name="zero_exp">0 EXP</string>
     <string name="recent_activity_title_placeholder">Tiêu đề hoạt động</string>
     <string name="recent_activity_description_placeholder">Mô tả chi tiết hoạt động</string>
@@ -113,4 +113,5 @@ BTEC FPT Student</string>
     <string name="auth_login_intro">Học rõ hơn, tiến bộ mỗi ngày</string>
     <string name="auth_register_intro">Một khởi đầu cho những khám phá mới.</string>
     <string name="auth_password_help">Ít nhất 8 ký tự, gồm chữ hoa và chữ số.</string>
+    <string name="home_max_level_reached">Đã đạt cấp độ tối đa</string>
 </resources>

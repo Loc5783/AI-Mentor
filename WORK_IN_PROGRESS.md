@@ -69,3 +69,13 @@ Người dùng cho phép thử lại API cũ. Chi tiết LIVE_API_TEST_2026-10-1
 - API: 10 trường key trong file cấu hình và BuildConfig các môn đều trống; không gọi Gemini trong lượt này. APK bàn giao được cập nhật ở `../AIMentor_QA/AImentor-debug.apk`.
 
 Quy tắc, nghiên cứu, giới hạn và hợp đồng dữ liệu giải đấu đề xuất: [STREAK_AND_LEAGUES_2026-10-17.md](STREAK_AND_LEAGUES_2026-10-17.md). Giải đấu, đồng bộ streak nhiều máy và chống chỉnh đồng hồ/XP vẫn thuộc backend.
+
+
+## Kiểm tra bản phát hành tại repo mới — 18/10/2026
+
+- Repo nhận cập nhật: https://github.com/Loc5783/AI-Mentor ; nhánh main. Bản b5c9b75 có cây code tương đương bản làm xong tại máy, không mang lịch sử commit cũ chứa API key sang repo mới.
+- Giao diện được gom nhóm: dashboard vẫn giữ biểu đồ/bốn môn/hoạt động; streak và XP tuần nằm trong Hồ sơ > Tiến độ học tập. Chỉ quiz được tính streak.
+- Đã sửa thông báo cấp tối đa vẫn hứa lên cấp; mốc EXP mặc định 140 thành 120; nhãn cấp bị dính số do khoảng trắng cuối resource bị Android bỏ; tổng EXP dùng long và chặn tràn số trước khi tính level.
+- Thêm 3 unit tests cho tổng EXP và 1 kiểm thử thiết bị cho nhãn cấp tối đa.
+- published-audit-final-build-verification.log: debug, release, APK test, unit và lint PASS. 119 unit tests, 0 thất bại; lint 0 lỗi và 495 cảnh báo trên toàn bộ module.
+- Lượt thiết bị đầu có 10 lỗi tại bước chụp ảnh (bitmap null), chưa được coi là PASS. Máy giả lập tiếp tục bị ngắt trong lượt toàn bộ. Sau khi khởi động lại, 6/6 ca tập trung PASS (37,011 giây), đã xem ảnh cấp 20 và streak tiếng Anh/tối. Chưa xác nhận trọn bộ 67 ca thiết bị trên bản cuối. API key 10 trường vẫn trống; không gọi AI thật. Báo cáo: ERROR_CHECK_2026-10-18.md.

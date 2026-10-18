@@ -104,7 +104,7 @@ BTEC FPT Student</string>
     <string name="nav_user_name">User name</string>
     <string name="nav_affiliation">In partnership with FPT Education</string>
     <string name="home_default_level">Level 1</string>
-    <string name="home_default_exp_remaining">140 EXP remaining to level up</string>
+    <string name="home_default_exp_remaining">120 EXP remaining to level up</string>
     <string name="zero_exp">0 EXP</string>
     <string name="recent_activity_title_placeholder">Activity title</string>
     <string name="recent_activity_description_placeholder">Activity details</string>
@@ -113,4 +113,5 @@ BTEC FPT Student</string>
     <string name="auth_login_intro">Learn clearly, grow every day</string>
     <string name="auth_register_intro">A fresh start for your next discovery.</string>
     <string name="auth_password_help">At least 8 characters, including an uppercase letter and a number.</string>
+    <string name="home_max_level_reached">Maximum level reached</string>
 </resources>
