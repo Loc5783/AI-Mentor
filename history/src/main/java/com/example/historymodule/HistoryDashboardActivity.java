@@ -13,6 +13,10 @@ import com.example.historymodule.fragments.HistoryQuizFragment;
 import com.example.historymodule.fragments.HistorySolveFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/*
+ * Role: Activity for History, responsible for the screen lifecycle, view binding, and primary user interactions.
+ * Purpose: The Activity connects the UI with supporting classes while keeping responsibilities separated instead of concentrating all logic in one place.
+ */
 public final class HistoryDashboardActivity extends AppCompatActivity {
     private BottomNavigationView navigation;
     private TextView titleView;
@@ -49,13 +53,25 @@ public final class HistoryDashboardActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Responsibility: Displays or binds data from `show page` to the appropriate UI or navigation destination.
+     * Purpose: Separating presentation logic prevents data processing from being mixed with UI rendering.
+     */
+    public void selectTab(int id) { navigation.setSelectedItemId(id); }
+
     private void showPage(Fragment fragment, String title) {
         titleView.setText(title);
+        Fragment existing = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (existing != null && existing.getClass() == fragment.getClass()) return;
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
     }
 
+    /*
+     * Responsibility: Updates or synchronizes `update title` with the latest data or state.
+     * Purpose: Keeps the UI and data synchronized after user actions.
+     */
     private void updateTitle(int selectedId) {
         if (selectedId == R.id.nav_history) titleView.setText(R.string.history_tab_history);
         else if (selectedId == R.id.nav_events) titleView.setText(R.string.history_tab_notes);

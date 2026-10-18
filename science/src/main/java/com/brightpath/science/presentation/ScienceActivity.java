@@ -65,7 +65,27 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/** AI-style Science chat with separate Physics, Chemistry and Biology sessions. */
+/**
+ * Main Science AI chat screen with separate Physics, Chemistry and Biology conversations.
+ *
+ * <p>review MAP — when the lecturer asks "where does the Send button go?":</p>
+ * <pre>
+ * btnAskScience / IME Send
+ *   -> setupQuestionActions()
+ *   -> askQuestion()
+ *   -> create ScienceQuestion
+ *   -> executeQuestion()
+ *   -> AskScienceQuestionUseCase.execute()
+ *   -> validation -> cache -> ScienceAnswerService
+ *   -> GeminiScienceService / Local fallback
+ *   -> ScienceHistoryRepository.save()
+ *   -> callback -> chat UI
+ * </pre>
+ *
+ * <p>Subject separation is controlled by {@link ScienceSubject}. Each subject owns an
+ * independent in-memory conversation, while the prompt factory applies a separate tutor
+ * strategy and instructs Gemini to reject questions outside the selected subject.</p>
+ */
 public final class ScienceActivity extends AppCompatActivity {
     public static final String EXTRA_SUBJECT = "com.brightpath.science.extra.SUBJECT";
     public static final String EXTRA_OPEN_CAMERA = "com.brightpath.science.extra.OPEN_CAMERA";
@@ -127,6 +147,8 @@ public final class ScienceActivity extends AppCompatActivity {
     private boolean suppressSubjectCallback;
     private volatile boolean destroyed;
 
+    // region Camera / gallery result launchers
+
     private final ActivityResultLauncher<String[]> openDocumentLauncher =
             registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
                 if (uri == null) return;
@@ -157,7 +179,15 @@ public final class ScienceActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG).show();
             });
 
-    @Override
+    // endregion
+
+    // region Lifecycle and dependency wiring
+
+        /*
+ * Responsibility: Initializes the Android component, inflates/binds its layout, and prepares dependencies/listeners/state.
+ * Purpose: Establishes the screen's initial state before the learner starts interacting with it.
+ */
+@Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_science);
@@ -184,7 +214,13 @@ public final class ScienceActivity extends AppCompatActivity {
         handleLaunchIntent(savedInstanceState == null);
     }
 
-    public static Intent createHistoryIntent(Context context, ScienceHistory item) {
+    // endregion
+
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `createHistoryIntent`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+public static Intent createHistoryIntent(Context context, ScienceHistory item) {
         Intent intent = new Intent(context, ScienceActivity.class);
         if (item != null) {
             intent.putExtra(EXTRA_HISTORY_ID, item.getId());
@@ -193,7 +229,11 @@ public final class ScienceActivity extends AppCompatActivity {
         return intent;
     }
 
-    private void handleLaunchIntent(boolean freshLaunch) {
+        /*
+ * Responsibility: Handles the `handleLaunchIntent` UI interaction/state operation for ScienceActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private void handleLaunchIntent(boolean freshLaunch) {
         if (freshLaunch) restoreHistoryFromIntent();
         if (getIntent().getBooleanExtra(EXTRA_OPEN_CAMERA, false)) {
             getIntent().removeExtra(EXTRA_OPEN_CAMERA);
@@ -211,7 +251,11 @@ public final class ScienceActivity extends AppCompatActivity {
         }
     }
 
-    private void restoreHistoryFromIntent() {
+        /*
+ * Responsibility: Restores the previously saved state handled by `restoreHistoryFromIntent`.
+ * Purpose: Allows the learner to continue the same Science flow after navigation, rotation, or reopening saved content.
+ */
+private void restoreHistoryFromIntent() {
         long historyId = getIntent().getLongExtra(EXTRA_HISTORY_ID, 0L);
         getIntent().removeExtra(EXTRA_HISTORY_ID);
         if (historyId <= 0L || historyRepository == null) return;
@@ -271,7 +315,11 @@ public final class ScienceActivity extends AppCompatActivity {
         scrollToBottom(false);
     }
 
-    private void selectStoredPreferences(ScienceHistory item) {
+        /*
+ * Responsibility: Changes the active selection/state handled by `selectStoredPreferences`.
+ * Purpose: Keeps the UI and subject-specific Science context synchronized.
+ */
+private void selectStoredPreferences(ScienceHistory item) {
         try {
             EducationLevel level = EducationLevel.valueOf(item.getEducationLevel());
             educationSpinner.setSelection(level.ordinal(), false);
@@ -286,7 +334,11 @@ public final class ScienceActivity extends AppCompatActivity {
         }
     }
 
-    private void initializeConversations() {
+        /*
+ * Responsibility: Configures the dependencies, UI elements, listeners, or initial state required by `initializeConversations`.
+ * Purpose: Keeps setup logic grouped and makes the main lifecycle/business method easier to read.
+ */
+private void initializeConversations() {
         for (ScienceSubject subject : ScienceSubject.values()) {
             conversations.put(subject, new ArrayList<>());
             conversationIds.put(subject, newConversationId());
@@ -298,7 +350,11 @@ public final class ScienceActivity extends AppCompatActivity {
         messages = conversations.get(activeSubject);
     }
 
-    private void bindViews() {
+        /*
+ * Responsibility: Binds the relevant data, view, or listener in `bindViews`.
+ * Purpose: Keeps UI binding code focused and separate from higher-level lifecycle/business logic.
+ */
+private void bindViews() {
         subjectGroup = findViewById(R.id.rgScienceSubject);
         educationSpinner = findViewById(R.id.spEducationLevel);
         styleSpinner = findViewById(R.id.spExplanationStyle);
@@ -320,14 +376,26 @@ public final class ScienceActivity extends AppCompatActivity {
         animatedBackground = findViewById(R.id.scienceAnimatedBackground);
     }
 
-    private void setupConversation() {
+        /*
+ * Responsibility: Updates the state or value handled by `setupConversation` for ScienceActivity.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void setupConversation() {
         chatAdapter = new ScienceChatAdapter(messages, new ScienceChatAdapter.MessageActionListener() {
-            @Override
+                        /*
+ * Responsibility: Performs the `onBookmarkClicked` operation for  within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
             public void onBookmarkClicked(ScienceChatMessage message, int position) {
                 toggleBookmark(message, position);
             }
 
-            @Override
+                        /*
+ * Responsibility: Performs the `onCopyClicked` operation for  within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
             public void onCopyClicked(ScienceChatMessage message) {
                 copyAnswer(message.getText());
             }
@@ -338,7 +406,11 @@ public final class ScienceActivity extends AppCompatActivity {
         chatRecyclerView.setAdapter(chatAdapter);
     }
 
-    private void setupSpinners() {
+        /*
+ * Responsibility: Updates the state or value handled by `setupSpinners` for ScienceActivity.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void setupSpinners() {
         String[] levels = new String[EducationLevel.values().length];
         for (int i = 0; i < levels.length; i++) levels[i] = getString(EducationLevel.values()[i].getDisplayNameResId());
         educationSpinner.setAdapter(scienceSpinnerAdapter(levels));
@@ -360,13 +432,21 @@ public final class ScienceActivity extends AppCompatActivity {
         });
 
         AdapterView.OnItemSelectedListener selectionListener = new AdapterView.OnItemSelectedListener() {
-            @Override
+                        /*
+ * Responsibility: Performs the `onItemSelected` operation for  within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 persistCurrentPreferences();
                 updatePreferenceStatus();
             }
 
-            @Override
+                        /*
+ * Responsibility: Performs the `onNothingSelected` operation for  within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
             public void onNothingSelected(AdapterView<?> parent) {
                 updatePreferenceStatus();
             }
@@ -375,11 +455,21 @@ public final class ScienceActivity extends AppCompatActivity {
         styleSpinner.setOnItemSelectedListener(selectionListener);
     }
 
-    private android.widget.ArrayAdapter<String> scienceSpinnerAdapter(String[] values) {
+        /*
+ * Responsibility: Handles the `scienceSpinnerAdapter` UI interaction/state operation for ScienceActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private android.widget.ArrayAdapter<String> scienceSpinnerAdapter(String[] values) {
         return ScienceUiFactory.spinnerAdapter(this, values);
     }
 
-    private void setupNavigation() {
+    // region Navigation and user actions
+
+        /*
+ * Responsibility: Updates the state or value handled by `setupNavigation` for ScienceActivity.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void setupNavigation() {
         findViewById(R.id.btnScienceBack).setOnClickListener(view -> finish());
         newChatButton.setOnClickListener(view -> startNewChat());
         findViewById(R.id.btnChatTools).setOnClickListener(view ->
@@ -403,7 +493,11 @@ public final class ScienceActivity extends AppCompatActivity {
         displaySettingsButton.setOnClickListener(view -> safeStartActivity(ScienceSettingsActivity.class));
     }
 
-    private void safeStartActivity(Class<?> activityClass) {
+        /*
+ * Responsibility: Creates the required navigation/action and opens the Science destination handled by `safeStartActivity`.
+ * Purpose: Keeps navigation code separate from the business logic executed by the destination screen.
+ */
+private void safeStartActivity(Class<?> activityClass) {
         try {
             startActivity(new Intent(this, activityClass));
         } catch (Exception error) {
@@ -411,7 +505,11 @@ public final class ScienceActivity extends AppCompatActivity {
         }
     }
 
-    private void setupQuestionActions() {
+        /*
+ * Responsibility: Updates the state or value handled by `setupQuestionActions` for ScienceActivity.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void setupQuestionActions() {
         modelInfoLayout.setOnClickListener(view -> showModelSelectionMenu());
         pickImageButton.setOnClickListener(view -> {
             if (!loading) openDocumentLauncher.launch(new String[]{"image/*"});
@@ -428,7 +526,11 @@ public final class ScienceActivity extends AppCompatActivity {
         });
     }
 
-    private void setupSuggestions() {
+        /*
+ * Responsibility: Updates the state or value handled by `setupSuggestions` for ScienceActivity.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void setupSuggestions() {
         findViewById(R.id.btnSuggestionPhenomenon).setOnClickListener(view ->
                 useSuggestion(getString(R.string.science_suggestion_step_by_step) + ": "));
         findViewById(R.id.btnSuggestionChemistry).setOnClickListener(view -> {
@@ -441,13 +543,21 @@ public final class ScienceActivity extends AppCompatActivity {
         });
     }
 
-    private void useSuggestion(String suggestion) {
+        /*
+ * Responsibility: Handles the `useSuggestion` UI interaction/state operation for ScienceActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private void useSuggestion(String suggestion) {
         questionInput.setText(suggestion);
         questionInput.setSelection(suggestion.length());
         questionInput.requestFocus();
     }
 
-    private void selectSubject(ScienceSubject subject) {
+        /*
+ * Responsibility: Changes the active selection/state handled by `selectSubject`.
+ * Purpose: Keeps the UI and subject-specific Science context synchronized.
+ */
+private void selectSubject(ScienceSubject subject) {
         if (loading || subject == null || subject == activeSubject) return;
         suppressSubjectCallback = true;
         subjectGroup.check(subjectButtonId(subject));
@@ -455,7 +565,11 @@ public final class ScienceActivity extends AppCompatActivity {
         switchConversation(subject, true);
     }
 
-    private void switchConversation(ScienceSubject subject, boolean announce) {
+        /*
+ * Responsibility: Switches the visible chat to the selected Physics, Chemistry, or Biology conversation and restores its state.
+ * Purpose: Keeps subject conversations separate so messages and prompts are not mixed between Science subjects.
+ */
+private void switchConversation(ScienceSubject subject, boolean announce) {
         activeSubject = subject == null ? ScienceSubject.PHYSICS : subject;
         List<ScienceChatMessage> selectedMessages = conversations.get(activeSubject);
         if (selectedMessages == null) {
@@ -479,14 +593,26 @@ public final class ScienceActivity extends AppCompatActivity {
         }
     }
 
-    private void persistCurrentPreferences() {
+        /*
+ * Responsibility: Persists the data supplied to `persistCurrentPreferences` through the appropriate Science storage/repository.
+ * Purpose: Keeps important learner state available after navigation or application restart.
+ */
+private void persistCurrentPreferences() {
         if (preferenceStore == null || educationSpinner == null || styleSpinner == null) return;
         preferenceStore.save(activeSubject,
                 educationSpinner.getSelectedItemPosition(),
                 styleSpinner.getSelectedItemPosition());
     }
 
-    private void requestOrLaunchCamera() {
+    // endregion
+
+    // region Image input
+
+        /*
+ * Responsibility: Checks camera permission/state and then starts the Science camera flow when it is safe to do so.
+ * Purpose: Prevents invalid camera access and keeps image-question handling controlled by Android permissions.
+ */
+private void requestOrLaunchCamera() {
         if (loading) return;
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             Toast.makeText(this, "This device does not report an available camera.",
@@ -501,7 +627,11 @@ public final class ScienceActivity extends AppCompatActivity {
         }
     }
 
-    private void launchCamera() {
+        /*
+ * Responsibility: Creates a safe temporary image target/URI and launches the camera capture contract.
+ * Purpose: Provides an image for the Science AI flow without exposing an unsafe raw file path.
+ */
+private void launchCamera() {
         try {
             File directory = new File(getCacheDir(), "science_camera");
             if (!directory.exists() && !directory.mkdirs()) {
@@ -519,7 +649,11 @@ public final class ScienceActivity extends AppCompatActivity {
         }
     }
 
-    private void deletePendingCameraFile() {
+        /*
+ * Responsibility: Removes or resets the data/state handled by `deletePendingCameraFile`.
+ * Purpose: Prevents obsolete state from affecting the next Science operation and supports controlled CRUD behavior.
+ */
+private void deletePendingCameraFile() {
         if (pendingCameraFile != null && pendingCameraFile.exists()) {
             //noinspection ResultOfMethodCallIgnored
             pendingCameraFile.delete();
@@ -527,7 +661,11 @@ public final class ScienceActivity extends AppCompatActivity {
         pendingCameraFile = null;
     }
 
-    private void showSelectedImage(Uri uri) {
+        /*
+ * Responsibility: Accepts the selected/captured image URI, updates the preview, and stores the current image-input state.
+ * Purpose: Ensures the same image that the learner sees is the image prepared for the AI request.
+ */
+private void showSelectedImage(Uri uri) {
         if (uri == null) return;
         selectedImageUri = uri;
         selectedImageLayout.setVisibility(View.VISIBLE);
@@ -553,11 +691,19 @@ public final class ScienceActivity extends AppCompatActivity {
         });
     }
 
-    private void clearImage() {
+        /*
+ * Responsibility: Removes or resets the data/state handled by `clearImage`.
+ * Purpose: Prevents obsolete state from affecting the next Science operation and supports controlled CRUD behavior.
+ */
+private void clearImage() {
         clearImage(true);
     }
 
-    private void clearImage(boolean deleteUnusedCameraFile) {
+        /*
+ * Responsibility: Removes or resets the data/state handled by `clearImage`.
+ * Purpose: Prevents obsolete state from affecting the next Science operation and supports controlled CRUD behavior.
+ */
+private void clearImage(boolean deleteUnusedCameraFile) {
         if (deleteUnusedCameraFile && pendingCameraUri != null
                 && pendingCameraUri.equals(selectedImageUri)) {
             deletePendingCameraFile();
@@ -571,7 +717,15 @@ public final class ScienceActivity extends AppCompatActivity {
         selectedImageLayout.setVisibility(View.GONE);
     }
 
-    private void askQuestion() {
+    // endregion
+
+    // region Send question -> use case -> AI -> UI
+
+        /*
+ * Responsibility: Reads the current text/image input and Science selections from the UI, builds a ScienceQuestion, and prepares it for the use-case.
+ * Purpose: This is the entry point of the Send/Ask flow; the Activity collects UI state but does not call Gemini or SQLite directly.
+ */
+private void askQuestion() {
         if (loading) return;
 
         String typedText = questionInput.getText().toString().trim();
@@ -589,6 +743,7 @@ public final class ScienceActivity extends AppCompatActivity {
                 : typedText;
         String conversationContext = buildConversationContext();
         String activeConversationId = currentConversationId();
+        final int requestUserId = userSession.getUserId();
         String visibleImageUri = imageUri == null ? null : imageUri.toString();
 
         persistCurrentPreferences();
@@ -609,7 +764,7 @@ public final class ScienceActivity extends AppCompatActivity {
                 String privateImageUri = imageData == null
                         ? null : privateImageStore.saveJpeg(imageData.getBytes());
                 ScienceQuestion question = new ScienceQuestion(
-                        userSession.getUserId(),
+                        requestUserId,
                         selectedSubject,
                         level,
                         style,
@@ -636,11 +791,19 @@ public final class ScienceActivity extends AppCompatActivity {
         });
     }
 
-    private void executeQuestion(ScienceQuestion question,
+        /*
+ * Responsibility: Passes the prepared ScienceQuestion to AskScienceQuestionUseCase and handles the asynchronous success/error callbacks.
+ * Purpose: Connects the chat UI to the domain flow while keeping validation, caching, AI access, and persistence outside the Activity.
+ */
+private void executeQuestion(ScienceQuestion question,
                                  int loadingIndex,
                                  List<ScienceChatMessage> targetConversation) {
         askUseCase.execute(question, new ResultCallback<ScienceAnswer>() {
-            @Override
+                        /*
+ * Responsibility: Performs the `onSuccess` operation for  within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
             public void onSuccess(ScienceAnswer result) {
                 if (destroyed) return;
                 boolean bookmarked = false;
@@ -664,7 +827,11 @@ public final class ScienceActivity extends AppCompatActivity {
                 scrollToBottom(true);
             }
 
-            @Override
+                        /*
+ * Responsibility: Performs the `onError` operation for  within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
             public void onError(String message, Throwable error) {
                 if (destroyed) return;
                 showRequestError(
@@ -679,7 +846,11 @@ public final class ScienceActivity extends AppCompatActivity {
         });
     }
 
-    private void showRequestError(int index,
+        /*
+ * Responsibility: Prepares and presents the data/state handled by `showRequestError` on the UI.
+ * Purpose: Transforms application state into information the learner can see and interact with.
+ */
+private void showRequestError(int index,
                                   String message,
                                   ScienceSubject subject,
                                   String sourceQuestion,
@@ -690,7 +861,11 @@ public final class ScienceActivity extends AppCompatActivity {
         scrollToBottom(true);
     }
 
-    private void replaceMessage(List<ScienceChatMessage> targetConversation,
+        /*
+ * Responsibility: Handles the `replaceMessage` UI interaction/state operation for ScienceActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private void replaceMessage(List<ScienceChatMessage> targetConversation,
                                 int index,
                                 ScienceChatMessage replacement) {
         if (targetConversation == null || index < 0 || index >= targetConversation.size()) return;
@@ -698,12 +873,20 @@ public final class ScienceActivity extends AppCompatActivity {
         if (targetConversation == messages && chatAdapter != null) chatAdapter.notifyItemChanged(index);
     }
 
+    // endregion
+
+    // region Conversation context and saved-chat continuity
+
     /**
      * Builds context from newest to oldest so the immediately preceding exchange is never
      * dropped by an older long answer. The returned transcript is reordered chronologically
      * before it is sent to Gemini.
      */
-    private String buildConversationContext() {
+        /*
+ * Responsibility: Builds compact context from the active Science conversation for a follow-up question.
+ * Purpose: Allows Gemini to understand follow-up messages without mixing Physics, Chemistry, and Biology conversations.
+ */
+private String buildConversationContext() {
         if (messages == null || messages.isEmpty()) return "";
 
         java.util.LinkedList<String> blocks = new java.util.LinkedList<>();
@@ -756,7 +939,11 @@ public final class ScienceActivity extends AppCompatActivity {
 
     /** Keeps both the beginning and the ending of a long answer because a follow-up may
      * refer either to an early definition or to the latest calculation/conclusion. */
-    private String compactContextText(String text, int maximumCharacters) {
+        /*
+ * Responsibility: Normalizes or formats the value handled by `compactContextText` into a stable representation.
+ * Purpose: Improves consistency for display, comparison, caching, storage, or AI prompt construction.
+ */
+private String compactContextText(String text, int maximumCharacters) {
         if (text == null) return "";
         String normalized = text.trim();
         if (maximumCharacters <= 0 || normalized.length() <= maximumCharacters) {
@@ -773,7 +960,11 @@ public final class ScienceActivity extends AppCompatActivity {
                 + normalized.substring(normalized.length() - tailLength).trim();
     }
 
-    private void toggleBookmark(ScienceChatMessage message, int position) {
+        /*
+ * Responsibility: Adds or removes the selected AI answer from Science bookmarks through the bookmark use-case/repository.
+ * Purpose: Lets the learner keep important explanations for later revision while preserving user ownership.
+ */
+private void toggleBookmark(ScienceChatMessage message, int position) {
         if (message == null || message.getHistoryId() <= 0) return;
         try {
             boolean bookmarked = bookmarkUseCase.toggle(
@@ -794,7 +985,11 @@ public final class ScienceActivity extends AppCompatActivity {
         }
     }
 
-    private void copyAnswer(String answer) {
+        /*
+ * Responsibility: Copies the value/content handled by `copyAnswer` to the intended destination.
+ * Purpose: Provides the learner action without changing the underlying Science record.
+ */
+private void copyAnswer(String answer) {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipboard == null) {
             Toast.makeText(this, "Clipboard is unavailable.", Toast.LENGTH_SHORT).show();
@@ -804,7 +999,11 @@ public final class ScienceActivity extends AppCompatActivity {
         Toast.makeText(this, "Đã sao chép câu trả lời.", Toast.LENGTH_SHORT).show();
     }
 
-    private void startNewChat() {
+        /*
+ * Responsibility: Creates the required navigation/action and opens the Science destination handled by `startNewChat`.
+ * Purpose: Keeps navigation code separate from the business logic executed by the destination screen.
+ */
+private void startNewChat() {
         if (loading) {
             Toast.makeText(this, "Wait for the current answer before starting a new chat.",
                     Toast.LENGTH_SHORT).show();
@@ -823,7 +1022,11 @@ public final class ScienceActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
-    private String currentConversationId() {
+        /*
+ * Responsibility: Handles the `currentConversationId` UI interaction/state operation for ScienceActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private String currentConversationId() {
         String id = conversationIds.get(activeSubject);
         if (id == null || id.trim().isEmpty()) {
             id = newConversationId();
@@ -832,11 +1035,19 @@ public final class ScienceActivity extends AppCompatActivity {
         return id;
     }
 
-    private String newConversationId() {
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `newConversationId`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+private String newConversationId() {
         return UUID.randomUUID().toString();
     }
 
-    private void updatePreferenceStatus() {
+        /*
+ * Responsibility: Updates the state or value handled by `updatePreferenceStatus` for ScienceActivity.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void updatePreferenceStatus() {
         if (subjectStatus == null || educationSpinner.getAdapter() == null
                 || styleSpinner.getAdapter() == null) return;
         EducationLevel level = EducationLevel.fromPosition(educationSpinner.getSelectedItemPosition());
@@ -846,7 +1057,15 @@ public final class ScienceActivity extends AppCompatActivity {
     }
 
 
-    private void setLoading(boolean isLoading) {
+    // endregion
+
+    // region UI state and rendering
+
+        /*
+ * Responsibility: Updates the state or value handled by `setLoading` for ScienceActivity.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void setLoading(boolean isLoading) {
         loading = isLoading;
         askButton.setEnabled(!isLoading);
         pickImageButton.setEnabled(!isLoading);
@@ -860,11 +1079,19 @@ public final class ScienceActivity extends AppCompatActivity {
         askButton.setAlpha(isLoading ? 0.55f : 1f);
     }
 
-    private void updateEmptyState() {
+        /*
+ * Responsibility: Updates the state or value handled by `updateEmptyState` for ScienceActivity.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void updateEmptyState() {
         emptyState.setVisibility(messages == null || messages.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
-    private void scrollToBottom(boolean smooth) {
+        /*
+ * Responsibility: Handles the `scrollToBottom` UI interaction/state operation for ScienceActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private void scrollToBottom(boolean smooth) {
         if (messages == null || messages.isEmpty()) return;
         int last = messages.size() - 1;
         chatRecyclerView.post(() -> {
@@ -874,28 +1101,48 @@ public final class ScienceActivity extends AppCompatActivity {
         });
     }
 
-    private String subjectLabel(ScienceSubject subject) {
+        /*
+ * Responsibility: Handles the `subjectLabel` UI interaction/state operation for ScienceActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private String subjectLabel(ScienceSubject subject) {
         return getString(subject.getDisplayNameResId());
     }
 
-    private int subjectButtonId(ScienceSubject subject) {
+        /*
+ * Responsibility: Handles the `subjectButtonId` UI interaction/state operation for ScienceActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private int subjectButtonId(ScienceSubject subject) {
         if (subject == ScienceSubject.CHEMISTRY) return R.id.rbChemistry;
         if (subject == ScienceSubject.BIOLOGY) return R.id.rbBiology;
         return R.id.rbPhysics;
     }
 
-    private ScienceSubject subjectFromButtonId(int checkedId) {
+        /*
+ * Responsibility: Handles the `subjectFromButtonId` UI interaction/state operation for ScienceActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private ScienceSubject subjectFromButtonId(int checkedId) {
         if (checkedId == R.id.rbChemistry) return ScienceSubject.CHEMISTRY;
         if (checkedId == R.id.rbBiology) return ScienceSubject.BIOLOGY;
         return ScienceSubject.PHYSICS;
     }
 
-    private String safeMessage(Exception error, String fallback) {
+        /*
+ * Responsibility: Handles the `safeMessage` UI interaction/state operation for ScienceActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private String safeMessage(Exception error, String fallback) {
         String message = error == null ? null : error.getMessage();
         return message == null || message.trim().isEmpty() ? fallback : message;
     }
 
-    private void restoreConversationState(@Nullable Bundle state) {
+        /*
+ * Responsibility: Restores the previously saved state handled by `restoreConversationState`.
+ * Purpose: Allows the learner to continue the same Science flow after navigation, rotation, or reopening saved content.
+ */
+private void restoreConversationState(@Nullable Bundle state) {
         if (state == null) return;
         try {
             activeSubject = ScienceSubject.valueOf(
@@ -937,7 +1184,11 @@ public final class ScienceActivity extends AppCompatActivity {
         messages = conversations.get(activeSubject);
     }
 
-    private void restoreViewState(@Nullable Bundle state) {
+        /*
+ * Responsibility: Restores the previously saved state handled by `restoreViewState`.
+ * Purpose: Allows the learner to continue the same Science flow after navigation, rotation, or reopening saved content.
+ */
+private void restoreViewState(@Nullable Bundle state) {
         if (state == null) return;
         questionInput.setText(state.getString(STATE_INPUT, ""));
         toolsPanel.setVisibility(state.getBoolean(STATE_TOOLS_VISIBLE, false)
@@ -946,7 +1197,11 @@ public final class ScienceActivity extends AppCompatActivity {
         if (!image.isEmpty()) showSelectedImage(Uri.parse(image));
     }
 
-    @Override
+        /*
+ * Responsibility: Writes the required UI/conversation state into the Bundle before Android may recreate the component.
+ * Purpose: Allows rotation/process recreation without losing the learner's current Science flow.
+ */
+@Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_SUBJECT, activeSubject.name());
@@ -983,27 +1238,28 @@ public final class ScienceActivity extends AppCompatActivity {
         outState.putString(STATE_CONVERSATION_IDS, ids.toString());
     }
 
-    private void updateModelInfo(ScienceAnswer latestAnswer) {
-        String model = aiClient.getModelName();
-        String status = aiClient.getStatus();
-        int total = latestAnswer != null ? latestAnswer.getTotalTokens() : 0;
-        
-        String info = String.format(java.util.Locale.US, "Model: %s • Status: %s • Tokens: %d", model, status, total);
-        modelInfoText.setText(info);
-        
-        // Visual indicator for status
-        int color = 0xFF4CAF50; // Green (GOOD)
-        if ("MEDIUM".equals(status)) color = 0xFFFF9800; // Orange
-        if ("BUSY".equals(status)) color = 0xFFF44336; // Red
-        modelInfoText.setTextColor(color);
+        /*
+ * Responsibility: Updates the state or value handled by `updateModelInfo` for ScienceActivity.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void updateModelInfo(ScienceAnswer latestAnswer) {
+        int label = latestAnswer != null && latestAnswer.isFromCache() ? R.string.science_source_saved
+                : (latestAnswer != null && latestAnswer.isLocal()) || !aiClient.isConfigured() ? R.string.science_source_local : R.string.science_source_remote;
+        modelInfoText.setText(label);
+        modelInfoText.setTextColor(androidx.core.content.ContextCompat.getColor(this,R.color.science_text_secondary));
+
     }
 
-    private void showModelSelectionMenu() {
+        /*
+ * Responsibility: Prepares and presents the data/state handled by `showModelSelectionMenu` on the UI.
+ * Purpose: Transforms application state into information the learner can see and interact with.
+ */
+private void showModelSelectionMenu() {
         android.widget.PopupMenu popup = new android.widget.PopupMenu(this, modelInfoLayout);
         popup.getMenu().add("gemini-flash-latest (Auto)");
         popup.getMenu().add("gemini-3.5-flash (Frontier)");
         popup.getMenu().add("gemini-3.1-flash-lite (Stable)");
-        
+
         popup.setOnMenuItemClickListener(item -> {
             CharSequence title = item.getTitle();
             if (title == null) return false;
@@ -1015,8 +1271,12 @@ public final class ScienceActivity extends AppCompatActivity {
         });
         popup.show();
     }
-    
-    @Override
+
+        /*
+ * Responsibility: Refreshes the current state/data when the component returns to the foreground.
+ * Purpose: Ensures the UI reflects changes made on other Science screens.
+ */
+@Override
     protected void onResume() {
         super.onResume();
         if (animatedBackground != null) {
@@ -1025,14 +1285,24 @@ public final class ScienceActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Persists or pauses temporary state when the screen leaves the foreground.
+ * Purpose: Prevents transient UI/session state from being lost or continuing unnecessarily in the background.
+ */
+@Override
     protected void onPause() {
         if (animatedBackground != null) animatedBackground.stop();
         persistCurrentPreferences();
         super.onPause();
     }
 
-    @Override
+    // endregion
+
+        /*
+ * Responsibility: Releases temporary resources, listeners, or component state during destruction.
+ * Purpose: Reduces leaks and prevents stale callbacks from affecting a destroyed Science screen.
+ */
+@Override
     protected void onDestroy() {
         destroyed = true;
         imageExecutor.shutdownNow();

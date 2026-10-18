@@ -8,12 +8,23 @@ import com.example.asm_final.utils.ThemeHelper;
 /**
  * Applies the saved visual and language preferences before any Activity is created.
  */
+/*
+ * Role: The `AiMentorApplication` class in App Shell encapsulates a focused responsibility based on its role in the project.
+ * Purpose: The class can be explained through three parts: input data, main processing, and the resulting output.
+ */
 public class AiMentorApplication extends Application {
+    private AppServices services;
+    public AppServices services() { return services; }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        services = new AppServices(this);
         ThemeHelper.applySavedTheme(this);
         LocaleHelper.applySavedLocale(this);
+        com.example.asm_final.utils.SystemSafeArea.install(this);
+        com.example.asm_final.utils.AppMotion.install(this);
+        com.example.mathmodule.calculator.MathCalculator.install(this);
+        com.example.asm_final.utils.DebugAccounts.initialize(this);
     }
 }

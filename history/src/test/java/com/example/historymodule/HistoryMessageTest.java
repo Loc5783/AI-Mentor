@@ -6,6 +6,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/*
+ * Role: Test class for History, used to verify key rules and behaviors after code changes.
+ * Purpose: These tests verify key behaviors automatically instead of relying only on manual UI testing.
+ */
 public class HistoryMessageTest {
     @Test
     public void pendingMessageRepresentsHistoryAiAnalysisState() {
@@ -17,6 +21,10 @@ public class HistoryMessageTest {
         assertFalse(message.hasImageAttached());
     }
 
+    /*
+     * Responsibility: Performs the `null fields are safe and state can be updated` responsibility of `HistoryMessageTest` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     @Test
     public void nullFieldsAreSafeAndStateCanBeUpdated() {
         HistoryMessage message = new HistoryMessage(null, null, false, true);

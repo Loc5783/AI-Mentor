@@ -26,22 +26,39 @@ public final class GeminiScienceService implements ScienceAnswerService, Science
     private static final int ANSWER_OUTPUT_TOKENS = 6000;
     private static final int CONTINUATION_OUTPUT_TOKENS = 3000;
     private static final int MAX_CONTINUATIONS = 2;
+    private android.content.Context bankContext;
     private final SciencePromptFactory promptFactory;
     private final GeminiApiClient aiClient;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    public GeminiScienceService(SciencePromptFactory promptFactory,
+        /*
+ * Responsibility: Initializes GeminiScienceService and receives or prepares the dependencies/state required by this AI/network or fallback service.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public GeminiScienceService(android.content.Context context, SciencePromptFactory promptFactory, GeminiApiClient aiClient) {
+        this(promptFactory, aiClient); bankContext = context.getApplicationContext();
+    }
+
+public GeminiScienceService(SciencePromptFactory promptFactory,
                                 GeminiApiClient aiClient) {
         this.promptFactory = promptFactory;
         this.aiClient = aiClient;
     }
 
-    public boolean isConfigured() {
+        /*
+ * Responsibility: Checks the condition represented by `isConfigured` and returns the corresponding boolean result.
+ * Purpose: Centralizes the decision rule so the same condition is evaluated consistently.
+ */
+public boolean isConfigured() {
         return aiClient.isConfigured();
     }
 
-    @Override
+        /*
+ * Responsibility: Builds the Science prompt and sends the text/image request to the Gemini client, then converts the remote result into ScienceAnswer.
+ * Purpose: Provides the remote AI implementation behind the ScienceAnswerService abstraction.
+ */
+@Override
     public void answer(ScienceQuestion question, ResultCallback<ScienceAnswer> callback) {
         executor.execute(() -> {
             try {
@@ -70,7 +87,11 @@ public final class GeminiScienceService implements ScienceAnswerService, Science
      * while still returning HTTP 200. In that case, request a continuation and
      * merge it into the visible answer instead of showing a cut-off response.
      */
-    private GeminiApiClient.Result generateCompleteAnswer(ScienceQuestion question) throws Exception {
+        /*
+ * Responsibility: Runs the Gemini request and continuation logic needed to obtain a complete Science explanation.
+ * Purpose: Improves reliability when one model response is incomplete while keeping networking details inside the service layer.
+ */
+private GeminiApiClient.Result generateCompleteAnswer(ScienceQuestion question) throws Exception {
         GeminiApiClient.Result current = aiClient.generateText(
                 promptFactory.buildAnswerPrompt(question),
                 question.hasImage() ? question.getImageBytes() : null,
@@ -122,7 +143,11 @@ public final class GeminiScienceService implements ScienceAnswerService, Science
         );
     }
 
-    private String buildContinuationPrompt(ScienceQuestion question,
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `buildContinuationPrompt`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+private String buildContinuationPrompt(ScienceQuestion question,
                                            String partialAnswer,
                                            int continuationNumber) {
         String tail = partialAnswer == null ? "" : partialAnswer.trim();
@@ -152,7 +177,11 @@ public final class GeminiScienceService implements ScienceAnswerService, Science
      * Removes an exact repeated boundary between the existing response and the
      * continuation. Gemini sometimes repeats the final sentence before continuing.
      */
-    private void appendWithoutRepeating(StringBuilder destination, String continuation) {
+        /*
+ * Responsibility: Performs the AI/service operation `appendWithoutRepeating` using the configured Science request/context.
+ * Purpose: Keeps networking/fallback concerns inside the service layer instead of the UI.
+ */
+private void appendWithoutRepeating(StringBuilder destination, String continuation) {
         if (continuation == null || continuation.trim().isEmpty()) return;
 
         String next = continuation.trim();
@@ -179,16 +208,24 @@ public final class GeminiScienceService implements ScienceAnswerService, Science
         destination.append(uniquePart);
     }
 
-    @Override
+        /*
+ * Responsibility: Sends a Science quiz prompt to Gemini and parses the raw model output into QuizQuestion objects.
+ * Purpose: Converts unstructured AI output into domain data that the quiz UI and scoring logic can safely use.
+ */
+@Override
     public void generateQuiz(QuizRequest request, ResultCallback<List<QuizQuestion>> callback) {
         executor.execute(() -> {
             try {
                 GeminiApiClient.Result result = aiClient.generateText(
                         promptFactory.buildQuizPrompt(request), null, null,
-                        0.9, 3500);
+                        0.9, 8192);
                 
                 List<QuizQuestion> questions = parseQuiz(result.text, request.getNumberOfQuestions());
                 if (questions.size() < request.getNumberOfQuestions()) throw new IllegalStateException("AI returned too few quiz questions.");
+                if (bankContext != null) try (com.example.mentor.data.QuizBank bank = new com.example.mentor.data.QuizBank(bankContext)) {
+                    bank.save(request.getUserId(), "science", request.getSubject().getCode(), request.getLevel().name(),
+                            request.getTopic(), "GEMINI", com.brightpath.science.util.QuizCards.from(questions));
+                } catch (RuntimeException storageError) { throw new com.example.mentor.data.QuizBank.SaveException(storageError); }
                 mainHandler.post(() -> callback.onSuccess(questions));
             } catch (Exception error) {
                 mainHandler.post(() -> callback.onError(userMessage(error, "Unable to generate an AI quiz."), error));
@@ -197,7 +234,11 @@ public final class GeminiScienceService implements ScienceAnswerService, Science
     }
 
 
-    public static String userMessage(Throwable error, String fallback) {
+        /*
+ * Responsibility: Performs the AI/service operation `userMessage` using the configured Science request/context.
+ * Purpose: Keeps networking/fallback concerns inside the service layer instead of the UI.
+ */
+public static String userMessage(Throwable error, String fallback) {
         if (error instanceof GeminiApiException) {
             GeminiApiException apiError = (GeminiApiException) error;
             int status = apiError.getHttpStatus();
@@ -232,7 +273,11 @@ public final class GeminiScienceService implements ScienceAnswerService, Science
         return fallback + (detail.isEmpty() ? "" : " " + detail);
     }
 
-    private static String safeDetail(Throwable error) {
+        /*
+ * Responsibility: Performs the AI/service operation `safeDetail` using the configured Science request/context.
+ * Purpose: Keeps networking/fallback concerns inside the service layer instead of the UI.
+ */
+private static String safeDetail(Throwable error) {
         if (error == null) return "";
         String message = error.getMessage();
         String type = error.getClass().getSimpleName();
@@ -241,36 +286,55 @@ public final class GeminiScienceService implements ScienceAnswerService, Science
     }
 
 
-    private List<QuizQuestion> parseQuiz(String rawText, int maximumQuestions) throws Exception {
+        /*
+ * Responsibility: Converts input data in `parseQuiz` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+private List<QuizQuestion> parseQuiz(String rawText, int maximumQuestions) throws Exception {
         String cleaned = rawText.replace("```json", "").replace("```", "").trim();
         int start = cleaned.indexOf('[');
         int end = cleaned.lastIndexOf(']');
         if (start < 0 || end <= start) throw new IllegalArgumentException("Quiz JSON array was not found.");
         JSONArray array = new JSONArray(cleaned.substring(start, end + 1));
         List<QuizQuestion> result = new ArrayList<>();
-        for (int i = 0; i < array.length() && result.size() < maximumQuestions; i++) {
+        if (array.length() != maximumQuestions) throw new IllegalArgumentException("AI returned an unexpected question count.");
+        for (int i = 0; i < array.length(); i++) {
             JSONObject item = array.getJSONObject(i);
             QuizQuestion.Type type;
             try {
                 type = QuizQuestion.Type.valueOf(item.optString("type", "MULTIPLE_CHOICE")
                         .toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException error) {
-                type = QuizQuestion.Type.MULTIPLE_CHOICE;
+                throw new IllegalArgumentException("AI returned an unknown question type.", error);
             }
             List<String> options = new ArrayList<>();
             JSONArray optionsArray = item.optJSONArray("options");
             if (optionsArray != null) {
                 for (int j = 0; j < optionsArray.length(); j++) options.add(optionsArray.optString(j));
             }
+            // The player maps the first true/false row to TRUE, independently of AI ordering.
+            if (type == QuizQuestion.Type.TRUE_FALSE) options = java.util.Arrays.asList("True", "False");
+            String correctAnswer = item.optString("correctAnswer").trim();
+            if (type == QuizQuestion.Type.MULTIPLE_CHOICE) {
+                for (int j = 0; j < options.size(); j++) {
+                    String body = options.get(j).replaceFirst("(?i)^[A-D][.)]\\s*", "").trim();
+                    String given = correctAnswer.replaceFirst("(?i)^[A-D][.)]\\s*", "").trim();
+                    if (body.equalsIgnoreCase(given)) {
+                        correctAnswer = String.valueOf((char) ('A' + j));
+                        break;
+                    }
+                }
+            }
             result.add(new QuizQuestion(
                     type,
                     item.optString("prompt"),
                     options,
-                    item.optString("correctAnswer"),
+                    correctAnswer,
                     item.optString("explanation"),
                     QuizDifficulty.fromApiValue(item.optString("difficulty", "MEDIUM"))
             ));
         }
+        com.brightpath.science.domain.model.ScienceQuizValidator.validate(result, maximumQuestions);
         return result;
     }
 }

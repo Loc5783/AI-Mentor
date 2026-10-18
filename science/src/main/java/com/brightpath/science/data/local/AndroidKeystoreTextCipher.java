@@ -18,7 +18,11 @@ public final class AndroidKeystoreTextCipher implements TextCipher {
     private static final String KEY_ALIAS = "ai_mentor_science_history_key";
     private static final String PREFIX = "enc:v1:";
 
-    @Override
+        /*
+ * Responsibility: Performs the `encrypt` operation for AndroidKeystoreTextCipher within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
     public String encrypt(String plainText) {
         if (plainText == null || plainText.isEmpty()) return plainText == null ? "" : plainText;
         try {
@@ -36,7 +40,11 @@ public final class AndroidKeystoreTextCipher implements TextCipher {
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the `decrypt` operation for AndroidKeystoreTextCipher within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
     public String decrypt(String storedText) {
         if (storedText == null || storedText.isEmpty() || !storedText.startsWith(PREFIX)) {
             // Supports rows created before encryption was introduced.
@@ -61,7 +69,11 @@ public final class AndroidKeystoreTextCipher implements TextCipher {
         }
     }
 
-    private SecretKey getOrCreateKey() throws Exception {
+        /*
+ * Responsibility: Retrieves the data/state required by `getOrCreateKey` from the appropriate Science Module component.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+private SecretKey getOrCreateKey() throws Exception {
         KeyStore keyStore = KeyStore.getInstance(KEYSTORE);
         keyStore.load(null);
         if (keyStore.containsAlias(KEY_ALIAS)) {

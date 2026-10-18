@@ -14,11 +14,19 @@ import com.brightpath.science.domain.repository.QuizAttemptRepository;
 public final class SQLiteQuizAttemptRepository implements QuizAttemptRepository {
     private final ScienceDbHelper dbHelper;
 
-    public SQLiteQuizAttemptRepository(ScienceDbHelper dbHelper) {
+        /*
+ * Responsibility: Initializes SQLiteQuizAttemptRepository and receives or prepares the dependencies/state required by this data repository.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public SQLiteQuizAttemptRepository(ScienceDbHelper dbHelper) {
         this.dbHelper = dbHelper;
     }
 
-    @Override
+        /*
+ * Responsibility: Persists the data supplied to `saveAttempt` through the appropriate Science storage/repository.
+ * Purpose: Keeps important learner state available after navigation or application restart.
+ */
+@Override
     public long saveAttempt(int userId, ScienceSubject subject, EducationLevel level,
                             String topic, QuizChallenge challenge,
                             int totalQuestions, int correctAnswers, int expEarned) {
@@ -32,11 +40,19 @@ public final class SQLiteQuizAttemptRepository implements QuizAttemptRepository 
         values.put(ScienceDbContract.QuizAttempt.CORRECT, Math.max(0, correctAnswers));
         values.put(ScienceDbContract.QuizAttempt.EXP_EARNED, Math.max(0, expEarned));
         values.put(ScienceDbContract.QuizAttempt.CREATED_AT, System.currentTimeMillis());
-        return dbHelper.getWritableDatabase().insert(
-                ScienceDbContract.QuizAttempt.TABLE, null, values);
+        return totalQuestions > 0
+                ? com.example.mentor.data.LearningDays.insert(dbHelper.getWritableDatabase(),
+                    ScienceDbContract.QuizAttempt.TABLE, values, userId,
+                    values.getAsLong(ScienceDbContract.QuizAttempt.CREATED_AT))
+                : dbHelper.getWritableDatabase().insert(
+                    ScienceDbContract.QuizAttempt.TABLE, null, values);
     }
 
-    @Override
+        /*
+ * Responsibility: Retrieves the data/state required by `getRecentPerformance` from the appropriate data repository.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+@Override
     public QuizPerformance getRecentPerformance(int userId, ScienceSubject subject,
                                                 EducationLevel level, int attemptLimit) {
         String sql = "SELECT " + ScienceDbContract.QuizAttempt.TOTAL + ", "
@@ -66,7 +82,11 @@ public final class SQLiteQuizAttemptRepository implements QuizAttemptRepository 
         return new QuizPerformance(attempts, total, correct);
     }
 
-    @Override
+        /*
+ * Responsibility: Retrieves the data/state required by `getSubjectPerformance` from the appropriate data repository.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+@Override
     public QuizPerformance getSubjectPerformance(int userId, ScienceSubject subject) {
         if (subject == null) {
             return QuizPerformance.empty();
@@ -93,7 +113,11 @@ public final class SQLiteQuizAttemptRepository implements QuizAttemptRepository 
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the repository operation `countAttempts` against the Science data source.
+ * Purpose: Keeps persistence/query details behind the repository abstraction and away from presentation/business code.
+ */
+@Override
     public int countAttempts(int userId) {
         try (Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
                 "SELECT COUNT(*) FROM " + ScienceDbContract.QuizAttempt.TABLE + " WHERE "
@@ -103,7 +127,11 @@ public final class SQLiteQuizAttemptRepository implements QuizAttemptRepository 
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Calculates the value represented by `calculateAccuracy` from the supplied Science learning data.
+ * Purpose: Keeps the calculation rule deterministic and reusable outside the UI.
+ */
+@Override
     public double calculateAccuracy(int userId) {
         String sql = "SELECT COALESCE(SUM(" + ScienceDbContract.QuizAttempt.CORRECT + "),0), "
                 + "COALESCE(SUM(" + ScienceDbContract.QuizAttempt.TOTAL + "),0) FROM "
@@ -118,7 +146,11 @@ public final class SQLiteQuizAttemptRepository implements QuizAttemptRepository 
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Retrieves the data/state required by `getTotalExp` from the appropriate data repository.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+@Override
     public int getTotalExp(int userId) {
         String sql = "SELECT COALESCE(SUM(" + ScienceDbContract.QuizAttempt.EXP_EARNED
                 + "),0) FROM " + ScienceDbContract.QuizAttempt.TABLE + " WHERE "

@@ -27,11 +27,19 @@ public final class GeminiScienceStudyPlanGenerator implements ScienceStudyPlanGe
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    public GeminiScienceStudyPlanGenerator(GeminiApiClient aiClient) {
+        /*
+ * Responsibility: Initializes GeminiScienceStudyPlanGenerator and receives or prepares the dependencies/state required by this AI/network or fallback service.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public GeminiScienceStudyPlanGenerator(GeminiApiClient aiClient) {
         this.aiClient = aiClient;
     }
 
-    @Override
+        /*
+ * Responsibility: Generates the Science result handled by `generate` using the configured generator/service and request context.
+ * Purpose: Keeps content generation behind a focused method so the presentation layer stays independent from AI/fallback details.
+ */
+@Override
     public void generate(StudyPlanRequest request, ResultCallback<StudyPlan> callback) {
         executor.execute(() -> {
             try {
@@ -50,7 +58,11 @@ public final class GeminiScienceStudyPlanGenerator implements ScienceStudyPlanGe
         });
     }
 
-    private String diagnose(Exception error, String fallback) {
+        /*
+ * Responsibility: Performs the AI/service operation `diagnose` using the configured Science request/context.
+ * Purpose: Keeps networking/fallback concerns inside the service layer instead of the UI.
+ */
+private String diagnose(Exception error, String fallback) {
         if (error instanceof GeminiApiException) {
             int status = ((GeminiApiException) error).getHttpStatus();
             if (status == 401 || status == 403) return "AI planning failed: Gemini API key is invalid or restricted.";
@@ -66,7 +78,11 @@ public final class GeminiScienceStudyPlanGenerator implements ScienceStudyPlanGe
     }
 
 
-    private String buildPrompt(StudyPlanRequest request) {
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `buildPrompt`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+private String buildPrompt(StudyPlanRequest request) {
         String start = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.getDefault())
                 .format(new Date(request.getCreatedAtMillis()));
         return "You are an adaptive " + request.getSubject().getDisplayName()
@@ -86,7 +102,11 @@ public final class GeminiScienceStudyPlanGenerator implements ScienceStudyPlanGe
     }
 
 
-    private StudyPlan parsePlan(String raw, StudyPlanRequest request) throws Exception {
+        /*
+ * Responsibility: Converts input data in `parsePlan` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+private StudyPlan parsePlan(String raw, StudyPlanRequest request) throws Exception {
         String cleaned = raw.replace("```json", "").replace("```", "").trim();
         int start = cleaned.indexOf('[');
         int end = cleaned.lastIndexOf(']');

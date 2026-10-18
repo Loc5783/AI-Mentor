@@ -21,9 +21,17 @@ import com.brightpath.science.util.ScienceLevelCalculator;
 import com.brightpath.science.util.SciencePreferenceStore;
 
 public final class ScienceHomeFragment extends Fragment {
-    public ScienceHomeFragment() { super(R.layout.fragment_science_home); }
+        /*
+ * Responsibility: Initializes ScienceHomeFragment and receives or prepares the dependencies/state required by this Science UI tab/fragment.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ScienceHomeFragment() { super(R.layout.fragment_science_home); }
 
-    @Override
+        /*
+ * Responsibility: Binds the Fragment views after layout creation and configures adapters, listeners, and initial data.
+ * Purpose: Connects the XML layout to Fragment behavior while keeping setup in the correct lifecycle stage.
+ */
+@Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.findViewById(R.id.buttonHomeBack).setOnClickListener(v -> requireActivity().finish());
@@ -37,14 +45,22 @@ public final class ScienceHomeFragment extends Fragment {
         updateExp(view);
     }
 
-    @Override
+        /*
+ * Responsibility: Refreshes the current state/data when the component returns to the foreground.
+ * Purpose: Ensures the UI reflects changes made on other Science screens.
+ */
+@Override
     public void onResume() {
         super.onResume();
         View view = getView();
         if (view != null) updateExp(view);
     }
 
-    private void updateExp(@NonNull View view) {
+        /*
+ * Responsibility: Updates the state or value handled by `updateExp` for ScienceHomeFragment.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void updateExp(@NonNull View view) {
         int userId = new com.brightpath.science.util.ScienceUserSession(requireContext()).getUserId();
         int totalExp;
         try {
@@ -61,7 +77,11 @@ public final class ScienceHomeFragment extends Fragment {
                         + "\n" + getString(R.string.science_total_exp_format, totalExp));
     }
 
-    private void openChat(ScienceSubject subject) {
+        /*
+ * Responsibility: Creates the required navigation/action and opens the Science destination handled by `openChat`.
+ * Purpose: Keeps navigation code separate from the business logic executed by the destination screen.
+ */
+private void openChat(ScienceSubject subject) {
         SciencePreferenceStore store = new SciencePreferenceStore(requireContext());
         store.save(subject, store.getLevelPosition(), store.getStylePosition());
         Intent intent = new Intent(requireContext(), ScienceActivity.class);
@@ -69,5 +89,9 @@ public final class ScienceHomeFragment extends Fragment {
         startActivity(intent);
     }
 
-    private ScienceMainActivity main() { return (ScienceMainActivity) requireActivity(); }
+        /*
+ * Responsibility: Provides the helper/reference operation named `main` for ScienceHomeFragment.
+ * Purpose: Keeps this small responsibility isolated so the surrounding class remains easier to read and navigate during review.
+ */
+private ScienceMainActivity main() { return (ScienceMainActivity) requireActivity(); }
 }

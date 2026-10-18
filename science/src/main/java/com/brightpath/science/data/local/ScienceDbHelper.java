@@ -3,21 +3,39 @@ package com.brightpath.science.data.local;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import com.example.mentor.data.ModuleDatabaseHelper;
 
 /**
- * Database owned only by the Science module.
- * Keeping it separate prevents Science schema changes from affecting the existing app database.
+ * SQLiteOpenHelper for the Science-owned database {@code science_ai.db}.
+ *
+ * <p>review NOTE:</p>
+ * <ul>
+ *   <li>{@code onCreate()} creates History, Bookmark, Note and QuizAttempt tables.</li>
+ *   <li>{@code onUpgrade()} performs non-destructive schema migration by version.</li>
+ *   <li>Indexes start with the active {@code user_id} where ownership filtering matters.</li>
+ * </ul>
+ *
+ * <p>Keeping this database separate prevents Science schema changes from affecting other modules.</p>
  */
-public final class ScienceDbHelper extends SQLiteOpenHelper {
+public final class ScienceDbHelper extends ModuleDatabaseHelper {
     private static final String DATABASE_NAME = "science_ai.db";
     private static final int DATABASE_VERSION = 5;
 
-    public ScienceDbHelper(Context context) {
+        /*
+ * Responsibility: Initializes ScienceDbHelper and receives or prepares the dependencies/state required by this SQLite database infrastructure.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ScienceDbHelper(Context context) {
         super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    @Override
+    // region Database lifecycle
+
+        /*
+ * Responsibility: Creates the Science SQLite tables and indexes when science_ai.db is created for the first time.
+ * Purpose: Defines the persistent structure used by Science history, bookmarks, notes, quiz attempts, progress, and planning data.
+ */
+@Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(ScienceDbContract.createHistoryTable());
         db.execSQL(ScienceDbContract.createBookmarkTable());
@@ -26,7 +44,11 @@ public final class ScienceDbHelper extends SQLiteOpenHelper {
         createIndexes(db);
     }
 
-    @Override
+        /*
+ * Responsibility: Applies version-based, non-destructive database migrations from an older Science schema to the current schema.
+ * Purpose: Preserves existing learner data while allowing new columns/tables/indexes to be introduced safely.
+ */
+@Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
             db.execSQL("ALTER TABLE " + ScienceDbContract.QuizAttempt.TABLE
@@ -58,17 +80,25 @@ public final class ScienceDbHelper extends SQLiteOpenHelper {
         createIndexes(db);
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the `onDowngrade` operation for ScienceDbHelper within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the SQLite database infrastructure so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop all tables and recreate them if downgraded.
-        db.execSQL("DROP TABLE IF EXISTS " + ScienceDbContract.History.TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + ScienceDbContract.Bookmark.TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + ScienceDbContract.QuizAttempt.TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + ScienceDbContract.Note.TABLE);
-        onCreate(db);
+        // Refuse an unsupported downgrade rather than silently deleting a user's learning data.
+        throw new android.database.sqlite.SQLiteException("Unsupported Science database downgrade: " + oldVersion + " -> " + newVersion);
     }
 
-    private void createIndexes(SQLiteDatabase db) {
+    // endregion
+
+    // region Indexes and read helpers
+
+        /*
+ * Responsibility: Creates SQLite indexes used by frequent Science queries such as user-, subject-, conversation-, or history-based lookups.
+ * Purpose: Improves lookup performance and supports efficient user-scoped retrieval.
+ */
+private void createIndexes(SQLiteDatabase db) {
         db.execSQL("CREATE INDEX IF NOT EXISTS idx_science_history_user_subject_time ON "
                 + ScienceDbContract.History.TABLE + "("
                 + ScienceDbContract.History.USER_ID + ","
@@ -91,7 +121,11 @@ public final class ScienceDbHelper extends SQLiteOpenHelper {
                 + ScienceDbContract.QuizAttempt.CREATED_AT + ")");
     }
 
-    public int getTotalExp(int userId) {
+        /*
+ * Responsibility: Retrieves the data/state required by `getTotalExp` from the appropriate SQLite database infrastructure.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public int getTotalExp(int userId) {
         SQLiteDatabase db = getReadableDatabase();
         String query = "SELECT SUM(" + ScienceDbContract.QuizAttempt.EXP_EARNED + ") FROM "
                 + ScienceDbContract.QuizAttempt.TABLE + " WHERE "
@@ -103,4 +137,6 @@ public final class ScienceDbHelper extends SQLiteOpenHelper {
         }
         return 0;
     }
+
+    // endregion
 }

@@ -30,13 +30,17 @@ public final class ScienceMainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigation;
     private int selectedItemId = R.id.navScienceHome;
 
-    @Override
+        /*
+ * Responsibility: Initializes the Android component, inflates/binds its layout, and prepares dependencies/listeners/state.
+ * Purpose: Establishes the screen's initial state before the learner starts interacting with it.
+ */
+@Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_science_main);
 
         bottomNavigation = findViewById(R.id.scienceBottomNavigation);
-        applyBottomNavigationInsets();
+
 
         if (savedInstanceState != null) {
             selectedItemId = savedInstanceState.getInt(
@@ -59,7 +63,11 @@ public final class ScienceMainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Handles the `onNewIntent` UI interaction/state operation for ScienceMainActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+@Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
@@ -68,7 +76,11 @@ public final class ScienceMainActivity extends AppCompatActivity {
         bottomNavigation.setSelectedItemId(requestedTab);
     }
 
-    private void applyBottomNavigationInsets() {
+        /*
+ * Responsibility: Applies the transformation/style/rule represented by `applyBottomNavigationInsets` to the current Science data or UI state.
+ * Purpose: Encapsulates the change in one place so it can be reused consistently.
+ */
+private void applyBottomNavigationInsets() {
         final int baseHeight = getResources().getDimensionPixelSize(
                 R.dimen.science_bottom_navigation_height);
         final int baseBottomPadding = bottomNavigation.getPaddingBottom();
@@ -92,7 +104,11 @@ public final class ScienceMainActivity extends AppCompatActivity {
         ViewCompat.requestApplyInsets(bottomNavigation);
     }
 
-    private void setupBottomNavigation() {
+        /*
+ * Responsibility: Updates the state or value handled by `setupBottomNavigation` for ScienceMainActivity.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void setupBottomNavigation() {
         bottomNavigation.setOnItemSelectedListener(
                 item -> navigateTo(item.getItemId())
         );
@@ -102,7 +118,11 @@ public final class ScienceMainActivity extends AppCompatActivity {
         });
     }
 
-    private int readRequestedTab(@Nullable Intent intent) {
+        /*
+ * Responsibility: Handles the `readRequestedTab` UI interaction/state operation for ScienceMainActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private int readRequestedTab(@Nullable Intent intent) {
         if (intent == null) {
             return R.id.navScienceHome;
         }
@@ -117,7 +137,11 @@ public final class ScienceMainActivity extends AppCompatActivity {
                 : R.id.navScienceHome;
     }
 
-    private boolean isValidTab(@IdRes int itemId) {
+        /*
+ * Responsibility: Checks the condition represented by `isValidTab` and returns the corresponding boolean result.
+ * Purpose: Centralizes the decision rule so the same condition is evaluated consistently.
+ */
+private boolean isValidTab(@IdRes int itemId) {
         return itemId == R.id.navScienceHome
                 || itemId == R.id.navScienceSolve
                 || itemId == R.id.navScienceHistory
@@ -125,7 +149,11 @@ public final class ScienceMainActivity extends AppCompatActivity {
                 || itemId == R.id.navScienceQuiz;
     }
 
-    private boolean navigateTo(@IdRes int itemId) {
+        /*
+ * Responsibility: Handles the `navigateTo` UI interaction/state operation for ScienceMainActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private boolean navigateTo(@IdRes int itemId) {
         Fragment fragment = createFragment(itemId);
         if (fragment == null) {
             return false;
@@ -133,6 +161,8 @@ public final class ScienceMainActivity extends AppCompatActivity {
 
         selectedItemId = itemId;
         applyNavigationTint(itemId);
+        Fragment existing = getSupportFragmentManager().findFragmentById(R.id.scienceFragmentContainer);
+        if (existing != null && existing.getClass() == fragment.getClass()) return true;
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -149,7 +179,11 @@ public final class ScienceMainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Nullable
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `createFragment`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+@Nullable
     private Fragment createFragment(@IdRes int itemId) {
         if (itemId == R.id.navScienceHome) {
             return new ScienceHomeFragment();
@@ -169,7 +203,11 @@ public final class ScienceMainActivity extends AppCompatActivity {
         return null;
     }
 
-    private void applyNavigationTint(@IdRes int itemId) {
+        /*
+ * Responsibility: Applies the transformation/style/rule represented by `applyNavigationTint` to the current Science data or UI state.
+ * Purpose: Encapsulates the change in one place so it can be reused consistently.
+ */
+private void applyNavigationTint(@IdRes int itemId) {
         int colorSelector = R.color.science_bottom_nav_home_color;
 
         if (itemId == R.id.navScienceSolve) {
@@ -190,13 +228,21 @@ public final class ScienceMainActivity extends AppCompatActivity {
         );
     }
 
-    public void selectTab(@IdRes int itemId) {
+        /*
+ * Responsibility: Changes the active selection/state handled by `selectTab`.
+ * Purpose: Keeps the UI and subject-specific Science context synchronized.
+ */
+public void selectTab(@IdRes int itemId) {
         if (isValidTab(itemId)) {
             bottomNavigation.setSelectedItemId(itemId);
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Handles the `onBackPressed` UI interaction/state operation for ScienceMainActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+@Override
     public void onBackPressed() {
         if (selectedItemId != R.id.navScienceHome) {
             bottomNavigation.setSelectedItemId(R.id.navScienceHome);
@@ -205,7 +251,11 @@ public final class ScienceMainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Writes the required UI/conversation state into the Bundle before Android may recreate the component.
+ * Purpose: Allows rotation/process recreation without losing the learner's current Science flow.
+ */
+@Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(
                 STATE_SELECTED_ITEM,

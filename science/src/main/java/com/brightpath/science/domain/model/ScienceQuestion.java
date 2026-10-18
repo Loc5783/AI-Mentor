@@ -18,7 +18,11 @@ public final class ScienceQuestion {
     private final byte[] imageBytes;
     private final String imageMimeType;
 
-    public ScienceQuestion(int userId,
+        /*
+ * Responsibility: Initializes ScienceQuestion and receives or prepares the dependencies/state required by this domain model.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ScienceQuestion(int userId,
                            ScienceSubject subject,
                            EducationLevel educationLevel,
                            ExplanationStyle explanationStyle,
@@ -30,7 +34,11 @@ public final class ScienceQuestion {
                 imageUri, imageBytes, imageMimeType);
     }
 
-    public ScienceQuestion(int userId,
+        /*
+ * Responsibility: Initializes ScienceQuestion and receives or prepares the dependencies/state required by this domain model.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ScienceQuestion(int userId,
                            ScienceSubject subject,
                            EducationLevel educationLevel,
                            ExplanationStyle explanationStyle,
@@ -43,7 +51,11 @@ public final class ScienceQuestion {
                 conversationContext, "", imageUri, imageBytes, imageMimeType);
     }
 
-    public ScienceQuestion(int userId,
+        /*
+ * Responsibility: Initializes ScienceQuestion and receives or prepares the dependencies/state required by this domain model.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ScienceQuestion(int userId,
                            ScienceSubject subject,
                            EducationLevel educationLevel,
                            ExplanationStyle explanationStyle,
@@ -65,16 +77,64 @@ public final class ScienceQuestion {
         this.imageMimeType = imageMimeType;
     }
 
-    public int getUserId() { return userId; }
-    public ScienceSubject getSubject() { return subject; }
-    public EducationLevel getEducationLevel() { return educationLevel; }
-    public ExplanationStyle getExplanationStyle() { return explanationStyle; }
-    public String getQuestionText() { return questionText; }
-    public String getConversationContext() { return conversationContext; }
-    public String getConversationId() { return conversationId; }
-    public String getImageUri() { return imageUri; }
-    public byte[] getImageBytes() { return imageBytes; }
-    public String getImageMimeType() { return imageMimeType; }
-    public boolean hasImage() { return imageBytes != null && imageBytes.length > 0; }
-    public boolean hasConversationContext() { return !conversationContext.isEmpty(); }
+        /*
+ * Responsibility: Retrieves the data/state required by `getUserId` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public int getUserId() { return userId; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getSubject` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public ScienceSubject getSubject() { return subject; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getEducationLevel` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public EducationLevel getEducationLevel() { return educationLevel; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getExplanationStyle` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public ExplanationStyle getExplanationStyle() { return explanationStyle; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getQuestionText` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getQuestionText() { return questionText; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getConversationContext` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getConversationContext() { return conversationContext; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getConversationId` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getConversationId() { return conversationId; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getImageUri` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getImageUri() { return imageUri; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getImageBytes` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public byte[] getImageBytes() { return imageBytes; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getImageMimeType` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getImageMimeType() { return imageMimeType; }
+        /*
+ * Responsibility: Checks the condition represented by `hasImage` and returns the corresponding boolean result.
+ * Purpose: Centralizes the decision rule so the same condition is evaluated consistently.
+ */
+public boolean hasImage() { return imageBytes != null && imageBytes.length > 0; }
+        /*
+ * Responsibility: Checks the condition represented by `hasConversationContext` and returns the corresponding boolean result.
+ * Purpose: Centralizes the decision rule so the same condition is evaluated consistently.
+ */
+public boolean hasConversationContext() { return !conversationContext.isEmpty(); }
 }

@@ -30,39 +30,67 @@ public final class ScienceChatAdapter extends RecyclerView.Adapter<RecyclerView.
     private static final int TYPE_ASSISTANT = 2;
     private static final ExecutorService IMAGE_EXECUTOR = Executors.newFixedThreadPool(2);
     private static final LruCache<String, Bitmap> IMAGE_CACHE = new LruCache<String, Bitmap>(8 * 1024) {
-        @Override
+                /*
+ * Responsibility: Performs the `sizeOf` operation for  within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
         protected int sizeOf(@NonNull String key, @NonNull Bitmap value) {
             return Math.max(1, value.getByteCount() / 1024);
         }
     };
 
     public interface MessageActionListener {
-        void onBookmarkClicked(ScienceChatMessage message, int position);
-        void onCopyClicked(ScienceChatMessage message);
+                /*
+ * Responsibility: Performs the `onBookmarkClicked` operation for MessageActionListener within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+void onBookmarkClicked(ScienceChatMessage message, int position);
+                /*
+ * Responsibility: Performs the `onCopyClicked` operation for MessageActionListener within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+void onCopyClicked(ScienceChatMessage message);
     }
 
     private List<ScienceChatMessage> messages;
     private final MessageActionListener listener;
     private final ChemicalFormulaFormatter formulaFormatter = new ChemicalFormulaFormatter();
 
-    public ScienceChatAdapter(List<ScienceChatMessage> initialMessages,
+        /*
+ * Responsibility: Initializes ScienceChatAdapter and receives or prepares the dependencies/state required by this RecyclerView/list adapter.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ScienceChatAdapter(List<ScienceChatMessage> initialMessages,
                               MessageActionListener listener) {
         this.messages = initialMessages == null ? Collections.emptyList() : initialMessages;
         this.listener = listener;
     }
 
-    public void submitMessages(List<ScienceChatMessage> newMessages) {
+        /*
+ * Responsibility: Performs the adapter operation `submitMessages` for Science list items.
+ * Purpose: Transforms domain/list data into reusable UI rows without putting list-binding logic in the Activity/Fragment.
+ */
+public void submitMessages(List<ScienceChatMessage> newMessages) {
         this.messages = newMessages == null ? Collections.emptyList() : newMessages;
         notifyDataSetChanged();
     }
 
-    @Override
+        /*
+ * Responsibility: Retrieves the data/state required by `getItemViewType` from the appropriate RecyclerView/list adapter.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+@Override
     public int getItemViewType(int position) {
         return messages.get(position).getRole() == ScienceChatMessage.Role.USER
                 ? TYPE_USER : TYPE_ASSISTANT;
     }
 
-    @NonNull
+        /*
+ * Responsibility: Performs the adapter operation `onCreateViewHolder` for Science list items.
+ * Purpose: Transforms domain/list data into reusable UI rows without putting list-binding logic in the Activity/Fragment.
+ */
+@NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -72,7 +100,11 @@ public final class ScienceChatAdapter extends RecyclerView.Adapter<RecyclerView.
         return new AssistantViewHolder(inflater.inflate(R.layout.item_science_chat_assistant, parent, false));
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the adapter operation `onBindViewHolder` for Science list items.
+ * Purpose: Transforms domain/list data into reusable UI rows without putting list-binding logic in the Activity/Fragment.
+ */
+@Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ScienceChatMessage message = messages.get(position);
         if (holder instanceof UserViewHolder) {
@@ -82,7 +114,11 @@ public final class ScienceChatAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Retrieves the data/state required by `getItemCount` from the appropriate RecyclerView/list adapter.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+@Override
     public int getItemCount() {
         return messages.size();
     }
@@ -92,13 +128,21 @@ public final class ScienceChatAdapter extends RecyclerView.Adapter<RecyclerView.
         private final ImageView imageView;
         private final ScienceImageReader imageReader = new ScienceImageReader();
 
-        private UserViewHolder(@NonNull View itemView) {
+                /*
+ * Responsibility: Initializes UserViewHolder and receives or prepares the dependencies/state required by this RecyclerView item holder.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+private UserViewHolder(@NonNull View itemView) {
             super(itemView);
             messageView = itemView.findViewById(R.id.tvChatUserMessage);
             imageView = itemView.findViewById(R.id.ivChatUserImage);
         }
 
-        private void bind(ScienceChatMessage message) {
+                /*
+ * Responsibility: Binds the relevant data, view, or listener in `bind`.
+ * Purpose: Keeps UI binding code focused and separate from higher-level lifecycle/business logic.
+ */
+private void bind(ScienceChatMessage message) {
             String text = message.getText();
             messageView.setText(text.isEmpty() ? "Please analyse this image." : text);
             String uriText = message.getImageUri();
@@ -138,7 +182,11 @@ public final class ScienceChatAdapter extends RecyclerView.Adapter<RecyclerView.
             });
         }
 
-        private void clearImage() {
+                /*
+ * Responsibility: Removes or resets the data/state handled by `clearImage`.
+ * Purpose: Prevents obsolete state from affecting the next Science operation and supports controlled CRUD behavior.
+ */
+private void clearImage() {
             imageView.setTag(null);
             imageView.setVisibility(View.GONE);
             imageView.setImageDrawable(null);
@@ -153,7 +201,11 @@ public final class ScienceChatAdapter extends RecyclerView.Adapter<RecyclerView.
         private final Button copyButton;
         private final Button bookmarkButton;
 
-        private AssistantViewHolder(@NonNull View itemView) {
+                /*
+ * Responsibility: Initializes AssistantViewHolder and receives or prepares the dependencies/state required by this RecyclerView item holder.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+private AssistantViewHolder(@NonNull View itemView) {
             super(itemView);
             messageView = itemView.findViewById(R.id.tvChatAssistantMessage);
             cacheView = itemView.findViewById(R.id.tvChatCacheNotice);
@@ -163,7 +215,11 @@ public final class ScienceChatAdapter extends RecyclerView.Adapter<RecyclerView.
             bookmarkButton = itemView.findViewById(R.id.btnBookmarkChatAnswer);
         }
 
-        private void bind(ScienceChatMessage message) {
+                /*
+ * Responsibility: Binds the relevant data, view, or listener in `bind`.
+ * Purpose: Keeps UI binding code focused and separate from higher-level lifecycle/business logic.
+ */
+private void bind(ScienceChatMessage message) {
             progressBar.setVisibility(message.isLoading() ? View.VISIBLE : View.GONE);
             messageView.setText(message.isLoading()
                     ? "Science AI is thinking…"

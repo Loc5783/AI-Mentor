@@ -14,7 +14,11 @@ import com.brightpath.science.R;
  */
 public final class ScienceHistoryActivity extends AppCompatActivity {
 
-    @Override
+        /*
+ * Responsibility: Initializes the Android component, inflates/binds its layout, and prepares dependencies/listeners/state.
+ * Purpose: Establishes the screen's initial state before the learner starts interacting with it.
+ */
+@Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 

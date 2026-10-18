@@ -9,7 +9,11 @@ import java.io.FileOutputStream;
 public final class ScienceImageStore {
     private final File directory;
 
-    public ScienceImageStore(Context context) {
+        /*
+ * Responsibility: Initializes ScienceImageStore and receives or prepares the dependencies/state required by this Science Module component.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ScienceImageStore(Context context) {
         directory = new File(context.getFilesDir(), "science_images");
         if (!directory.exists()) {
             // Best effort here; saveJpeg reports a clear error if storage is unavailable.
@@ -18,7 +22,11 @@ public final class ScienceImageStore {
         }
     }
 
-    public String saveJpeg(byte[] bytes) throws Exception {
+        /*
+ * Responsibility: Persists the data supplied to `saveJpeg` through the appropriate Science storage/repository.
+ * Purpose: Keeps important learner state available after navigation or application restart.
+ */
+public String saveJpeg(byte[] bytes) throws Exception {
         if (bytes == null || bytes.length == 0) return null;
         if ((!directory.exists() && !directory.mkdirs()) || !directory.isDirectory()) {
             throw new IllegalStateException("Private Science image storage is unavailable.");

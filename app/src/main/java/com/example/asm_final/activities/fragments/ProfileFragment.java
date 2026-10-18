@@ -18,13 +18,20 @@ import androidx.fragment.app.Fragment;
 import com.example.asm_final.R;
 import com.example.asm_final.activities.database.DatabaseHelper;
 
+/*
+ * Role: Fragment for App Shell, responsible for a specific functional area of the screen and its user interactions.
+ * Purpose: Using Fragments gives each tab or feature a focused responsibility and makes the screen flow easier to explain.
+ */
 public class ProfileFragment extends Fragment {
 
     private EditText edtFullName, edtAddress, edtPhone, edtEmail, edtPassword;
     private Button btnUpdate, btnChooseAvatar;
     private ImageView imgAvatar;
-    private DatabaseHelper dbHelper;
+    private com.example.asm_final.accounts.UserProfileRepository profiles;
+    private com.example.asm_final.utils.AsyncActionRunner actions;
     private String username;
+    private boolean profileReady;
+    private boolean restoringDraft;
     private String avatarUri;
 
     public interface OnProfileUpdatedListener {
@@ -33,6 +40,10 @@ public class ProfileFragment extends Fragment {
 
     private ActivityResultLauncher<Intent> imagePickerLauncher;
 
+    /*
+     * Responsibility: Initializes the Android component, inflates and binds the layout, and prepares initial data and listeners.
+     * Purpose: This is the screen entry point, so the initial state must be prepared before user interaction begins.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,12 +67,19 @@ public class ProfileFragment extends Fragment {
         );
     }
 
+    /*
+     * Responsibility: Handles the Android callback or event `onCreateView` and updates the related state.
+     * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        restoringDraft = savedInstanceState != null;
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        dbHelper = new DatabaseHelper(getContext());
-        
+        com.example.asm_final.AppServices services = ((com.example.asm_final.AiMentorApplication) requireActivity().getApplication()).services();
+        profiles = services.profiles();
+        actions = new com.example.asm_final.utils.AsyncActionRunner(services.io(), task -> new android.os.Handler(android.os.Looper.getMainLooper()).post(task));
+
         if (getArguments() != null) {
             username = getArguments().getString("USERNAME");
         }
@@ -85,6 +103,7 @@ public class ProfileFragment extends Fragment {
         });
 
         btnUpdate.setOnClickListener(v -> {
+            if (!profileReady) { loadUserData(); return; }
             String fullName = edtFullName.getText().toString().trim();
             String address = edtAddress.getText().toString().trim();
             String phone = edtPhone.getText().toString().trim();
@@ -96,7 +115,11 @@ public class ProfileFragment extends Fragment {
                 return;
             }
 
-            if (dbHelper.updateUser(username, fullName, address, phone, email, password, avatarUri)) {
+            com.example.asm_final.accounts.UserProfile profile = new com.example.asm_final.accounts.UserProfile(fullName,address,phone,email,avatarUri);
+            btnUpdate.setEnabled(false);
+            actions.submit(() -> profiles.update(username,profile,password), updated -> {
+            btnUpdate.setEnabled(true);
+            if (updated) {
                 edtPassword.setText("");
                 Toast.makeText(getContext(), R.string.prof_update_success, Toast.LENGTH_SHORT).show();
                 if (getActivity() instanceof OnProfileUpdatedListener) {
@@ -105,49 +128,43 @@ public class ProfileFragment extends Fragment {
             } else {
                 Toast.makeText(getContext(), R.string.prof_update_fail, Toast.LENGTH_SHORT).show();
             }
+            }, error -> { btnUpdate.setEnabled(true); Toast.makeText(requireContext(),R.string.prof_update_fail,Toast.LENGTH_SHORT).show(); });
         });
 
         return view;
     }
 
+    /*
+     * Responsibility: Reads or loads data for `load user data` from the appropriate data source.
+     * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
+     */
     private void loadUserData() {
-        if (username == null) return;
-        
-        Cursor cursor = dbHelper.getUserData(username);
-        if (cursor != null && cursor.moveToFirst()) {
-            int fullNameIdx = cursor.getColumnIndex(DatabaseHelper.COL_FULLNAME);
-            int addressIdx = cursor.getColumnIndex(DatabaseHelper.COL_ADDRESS);
-            int phoneIdx = cursor.getColumnIndex(DatabaseHelper.COL_PHONE);
-            int emailIdx = cursor.getColumnIndex(DatabaseHelper.COL_EMAIL);
-            int avatarIdx = cursor.getColumnIndex(DatabaseHelper.COL_AVATAR);
-
-            if (fullNameIdx != -1) edtFullName.setText(cursor.getString(fullNameIdx));
-            if (addressIdx != -1) edtAddress.setText(cursor.getString(addressIdx));
-            if (phoneIdx != -1) edtPhone.setText(cursor.getString(phoneIdx));
-            if (emailIdx != -1) edtEmail.setText(cursor.getString(emailIdx));
-            if (avatarIdx != -1) {
-                avatarUri = cursor.getString(avatarIdx);
-                if (avatarUri != null && !avatarUri.isEmpty()) {
-                    try {
-                        imgAvatar.setImageURI(Uri.parse(avatarUri));
-                    } catch (Exception e) {
-                        imgAvatar.setImageResource(R.mipmap.ic_launcher_round);
-                    }
-                }
+        btnUpdate.setEnabled(false);btnChooseAvatar.setEnabled(false);
+        actions.submit(() -> profiles.load(username), profile -> {
+            btnUpdate.setEnabled(true);btnChooseAvatar.setEnabled(true);
+            if(profile==null) return;
+            profileReady=true;
+            if (!restoringDraft) { edtFullName.setText(profile.fullName);edtAddress.setText(profile.address);
+                edtPhone.setText(profile.phone);edtEmail.setText(profile.email); }
+            restoringDraft=false;
+            avatarUri=profile.avatar;
+            if(avatarUri!=null&&!avatarUri.isEmpty()) {
+                try { imgAvatar.setImageURI(Uri.parse(avatarUri)); }
+                catch(RuntimeException error) { imgAvatar.setImageResource(R.mipmap.ic_launcher_round); }
             }
-            
-            cursor.close();
-        }
+        }, error -> {
+            btnUpdate.setEnabled(true);btnChooseAvatar.setEnabled(true);
+            Toast.makeText(requireContext(),R.string.auth_storage_error,Toast.LENGTH_SHORT).show();
+        });
     }
-    private boolean isValidPassword(String password) {
-        if (password == null || password.length() < 8) return false;
-        boolean hasUppercase = false;
-        boolean hasDigit = false;
-        for (char ch : password.toCharArray()) {
-            if (Character.isUpperCase(ch)) hasUppercase = true;
-            if (Character.isDigit(ch)) hasDigit = true;
-        }
-        return hasUppercase && hasDigit;
+    @Override public void onDestroyView() {
+        if(actions!=null) actions.close();
+        super.onDestroyView();
     }
+    /*
+     * Responsibility: Validates the conditions or rules handled by `is valid password` and returns the result to the caller.
+     * Purpose: A dedicated validation method keeps rules consistent and easier to test.
+     */
+    private boolean isValidPassword(String password) { return com.example.asm_final.accounts.PasswordPolicy.isValid(password); }
 
 }

@@ -14,28 +14,12 @@
 .cxx
 local.properties
 
-# Local configuration, credentials and generated artifacts
-/gradle.properties
+# Generated local build and IDE files
 **/build/
-/.idea/
-/.artifacts/
-*.apk
-*.aab
-*.jks
-*.keystore
-.env
-.env.*
-!.env.example
+.idea/
+.kotlin/
+.gradle/
+/local.properties
 
-# Local configuration, credentials and generated artifacts
-/gradle.properties
-**/build/
-/.idea/
-/.artifacts/
-*.apk
-*.aab
-*.jks
-*.keystore
-.env
-.env.*
-!.env.example
+# Local validation output
+/*-verification.log

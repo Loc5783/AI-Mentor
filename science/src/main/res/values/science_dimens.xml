@@ -4,7 +4,7 @@
     <dimen name="science_icon_button_size">48dp</dimen>
     <dimen name="science_control_height">52dp</dimen>
     <dimen name="science_tool_button_width">136dp</dimen>
-    <dimen name="science_card_corner">16dp</dimen>
+    <dimen name="science_card_corner">20dp</dimen>
     <dimen name="science_content_padding">16dp</dimen>
 
     <!-- Modern five-tab interface -->
@@ -12,11 +12,11 @@
     <dimen name="science_bottom_navigation_height">88dp</dimen>
     <dimen name="science_app_bar_height">64dp</dimen>
     <dimen name="science_hero_corner">22dp</dimen>
-    <dimen name="science_card_radius">18dp</dimen>
-    <dimen name="science_small_card_radius">15dp</dimen>
+    <dimen name="science_card_radius">20dp</dimen>
+    <dimen name="science_small_card_radius">20dp</dimen>
     <dimen name="science_section_spacing">24dp</dimen>
     <dimen name="science_card_spacing">12dp</dimen>
-    <dimen name="science_hero_height">205dp</dimen>
+    <dimen name="science_hero_height">160dp</dimen>
     <dimen name="science_bottom_icon_size">23dp</dimen>
     <dimen name="science_list_item_height">78dp</dimen>
 </resources>

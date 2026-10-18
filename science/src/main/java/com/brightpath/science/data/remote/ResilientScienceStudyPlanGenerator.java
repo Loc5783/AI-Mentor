@@ -10,21 +10,37 @@ public final class ResilientScienceStudyPlanGenerator implements ScienceStudyPla
     private final ScienceStudyPlanGenerator primary;
     private final ScienceStudyPlanGenerator fallback;
 
-    public ResilientScienceStudyPlanGenerator(ScienceStudyPlanGenerator primary,
+        /*
+ * Responsibility: Initializes ResilientScienceStudyPlanGenerator and receives or prepares the dependencies/state required by this Science Module component.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ResilientScienceStudyPlanGenerator(ScienceStudyPlanGenerator primary,
                                               ScienceStudyPlanGenerator fallback) {
         this.primary = primary;
         this.fallback = fallback;
     }
 
-    @Override
+        /*
+ * Responsibility: Generates the Science result handled by `generate` using the configured generator/service and request context.
+ * Purpose: Keeps content generation behind a focused method so the presentation layer stays independent from AI/fallback details.
+ */
+@Override
     public void generate(StudyPlanRequest request, ResultCallback<StudyPlan> callback) {
         primary.generate(request, new ResultCallback<StudyPlan>() {
-            @Override
+                        /*
+ * Responsibility: Performs the `onSuccess` operation for  within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
             public void onSuccess(StudyPlan result) {
                 callback.onSuccess(result);
             }
 
-            @Override
+                        /*
+ * Responsibility: Performs the `onError` operation for  within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
             public void onError(String message, Throwable error) {
                 fallback.generate(request, callback);
             }

@@ -27,6 +27,10 @@ import javax.net.ssl.SSLException;
  * The API-key handling follows the same approach as Science Module:
  * one central location, backup-key rotation, retry and structured errors.
  */
+/*
+ * Role: AI/API class for Math, responsible for preparing requests or prompts, calling the service, and converting response data.
+ * Purpose: Separating AI communication from the UI makes error handling, model or endpoint changes, and logic testing easier.
+ */
 public final class MathGeminiApiClient {
     // Keep Math and Science on the same configured Gemini account/key pool.
     // Optional backup keys can be pasted into key 2 and key 3.
@@ -53,6 +57,10 @@ public final class MathGeminiApiClient {
         public final String status;
         public final String finishReason;
 
+        /*
+         * Responsibility: Performs the `result` responsibility of `MathGeminiApiClient` and returns or updates the result for the caller.
+         * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+         */
         public Result(String text, int promptTokens, int candidateTokens, int totalTokens,
                       String status, String finishReason) {
             this.text = text;
@@ -63,6 +71,10 @@ public final class MathGeminiApiClient {
             this.finishReason = finishReason == null ? "" : finishReason.trim();
         }
 
+        /*
+         * Responsibility: Performs the `was truncated` responsibility of `MathGeminiApiClient` and returns or updates the result for the caller.
+         * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+         */
         public boolean wasTruncated() {
             return "MAX_TOKENS".equalsIgnoreCase(finishReason);
         }
@@ -73,6 +85,10 @@ public final class MathGeminiApiClient {
         }
     }
 
+    /*
+     * Responsibility: Reads or loads data for `get model name` from the appropriate data source.
+     * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
+     */
     public String getModelName() {
         return currentModel;
     }
@@ -83,6 +99,10 @@ public final class MathGeminiApiClient {
         }
     }
 
+    /*
+     * Responsibility: Reads or loads data for `get status` from the appropriate data source.
+     * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
+     */
     public String getStatus() {
         return currentStatus;
     }
@@ -93,6 +113,10 @@ public final class MathGeminiApiClient {
                 : "key " + (currentKeyIndex + 1) + "/" + CONFIGURED_KEYS.length;
     }
 
+    /*
+     * Responsibility: Validates the conditions or rules handled by `is configured` and returns the result to the caller.
+     * Purpose: A dedicated validation method keeps rules consistent and easier to test.
+     */
     public boolean isConfigured() {
         return CONFIGURED_KEYS.length > 0;
     }
@@ -101,6 +125,10 @@ public final class MathGeminiApiClient {
         return generateText("Reply with exactly: OK", null, null, 0.0, 32);
     }
 
+    /*
+     * Responsibility: Generates data or content for `generate text` based on the input and module rules.
+     * Purpose: Keeping content generation separate makes the strategy easier to change without affecting presentation logic.
+     */
     public Result generateText(String prompt, byte[] imageBytes, String imageMimeType,
                                double temperature, int maxOutputTokens) throws Exception {
         if (!isConfigured()) {
@@ -195,6 +223,10 @@ public final class MathGeminiApiClient {
                 "Gemini request failed after multiple attempts.", lastError);
     }
 
+    /*
+     * Responsibility: Performs the `to user message` responsibility of `MathGeminiApiClient` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     public static String toUserMessage(Throwable error, String fallback) {
         Throwable cause = findImportantCause(error);
         if (cause instanceof MathGeminiApiException) {
@@ -228,6 +260,10 @@ public final class MathGeminiApiClient {
         return detail.isEmpty() ? fallback : fallback + "\nChi tiết: " + detail;
     }
 
+    /*
+     * Responsibility: Reads or loads data for `find important cause` from the appropriate data source.
+     * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
+     */
     private static Throwable findImportantCause(Throwable error) {
         Throwable current = error;
         Throwable last = error;
@@ -244,6 +280,10 @@ public final class MathGeminiApiClient {
         return last;
     }
 
+    /*
+     * Responsibility: Performs the `safe message` responsibility of `MathGeminiApiClient` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private static String safeMessage(Throwable error) {
         if (error == null || error.getMessage() == null) {
             return "";
@@ -251,6 +291,10 @@ public final class MathGeminiApiClient {
         return error.getMessage().trim();
     }
 
+    /*
+     * Responsibility: Creates the object or data structure for `build key list` using the class's consistent creation rules.
+     * Purpose: Encapsulating creation rules prevents callers from repeating the same initialization steps.
+     */
     private static String[] buildKeyList() {
         List<String> values = new ArrayList<>();
         addUniqueKey(values, API_KEY_1);
@@ -259,6 +303,10 @@ public final class MathGeminiApiClient {
         return values.toArray(new String[0]);
     }
 
+    /*
+     * Responsibility: Saves or adds data for `add unique key` to the appropriate storage or collection.
+     * Purpose: Centralizing write operations helps maintain data consistency and handle storage errors.
+     */
     private static void addUniqueKey(List<String> keys, String value) {
         if (value == null) {
             return;
@@ -269,6 +317,10 @@ public final class MathGeminiApiClient {
         }
     }
 
+    /*
+     * Responsibility: Performs the `next available key index` responsibility of `MathGeminiApiClient` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private static synchronized int nextAvailableKeyIndex() {
         if (CONFIGURED_KEYS.length == 0) {
             return -1;
@@ -284,6 +336,10 @@ public final class MathGeminiApiClient {
         return -1;
     }
 
+    /*
+     * Responsibility: Performs the `disable key` responsibility of `MathGeminiApiClient` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private static synchronized void disableKey(int index, long until) {
         if (index >= 0 && index < DISABLED_UNTIL.length) {
             DISABLED_UNTIL[index] = until;
@@ -293,6 +349,10 @@ public final class MathGeminiApiClient {
         }
     }
 
+    /*
+     * Responsibility: Performs the `shortest cooldown` responsibility of `MathGeminiApiClient` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private static synchronized long shortestCooldown() {
         long now = System.currentTimeMillis();
         long shortest = Long.MAX_VALUE;
@@ -304,6 +364,10 @@ public final class MathGeminiApiClient {
         return shortest == Long.MAX_VALUE ? -1L : shortest;
     }
 
+    /*
+     * Responsibility: Converts or normalizes data in `parse full response` into the required format.
+     * Purpose: A centralized conversion point keeps formatting consistent and makes invalid data easier to handle.
+     */
     private Result parseFullResponse(String responseBody) throws Exception {
         JSONObject root = new JSONObject(responseBody);
         StringBuilder answer = new StringBuilder();
@@ -338,6 +402,10 @@ public final class MathGeminiApiClient {
         return new Result(text, prompt, candidate, total, currentStatus, finishReason);
     }
 
+    /*
+     * Responsibility: Creates the object or data structure for `build request` using the class's consistent creation rules.
+     * Purpose: Encapsulating creation rules prevents callers from repeating the same initialization steps.
+     */
     private JSONObject buildRequest(String prompt, byte[] imageBytes, String imageMimeType,
                                     double temperature, int maxOutputTokens) throws Exception {
         JSONArray parts = new JSONArray();
@@ -363,6 +431,10 @@ public final class MathGeminiApiClient {
                 .put("generationConfig", generationConfig);
     }
 
+    /*
+     * Responsibility: Reads or loads data for `read response` from the appropriate data source.
+     * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
+     */
     private String readResponse(HttpURLConnection connection, int statusCode) throws Exception {
         InputStream stream = statusCode >= 200 && statusCode < 300
                 ? connection.getInputStream()
@@ -381,6 +453,10 @@ public final class MathGeminiApiClient {
         }
     }
 
+    /*
+     * Responsibility: Creates the object or data structure for `create api exception` using the class's consistent creation rules.
+     * Purpose: Encapsulating creation rules prevents callers from repeating the same initialization steps.
+     */
     private MathGeminiApiException createApiException(int statusCode, String responseBody) {
         String message = responseBody == null ? "" : responseBody.trim();
         String apiStatus = "";

@@ -1,11 +1,13 @@
+// Role: Module build configuration defining Android plugins, SDK settings, dependencies, and compiler options.
+// Purpose: Controls the module build environment and dependencies; it does not contain screen business logic.
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.library)
 }
 
-val localProperties = Properties().apply {
-    val file = rootProject.file("local.properties")
+val apiProperties = Properties().apply {
+    val file = rootProject.file("api.properties")
     if (file.exists()) file.inputStream().use { load(it) }
 }
 
@@ -14,11 +16,9 @@ fun escapeBuildConfigValue(value: String): String = value
     .replace("\"", "\\\"")
 
 // History owns a separate Gemini configuration. It is not shared with the other modules.
-val historyGeminiApiKey = localProperties.getProperty("HISTORY_GEMINI_API_KEY")
-    ?: providers.gradleProperty("HISTORY_GEMINI_API_KEY").orNull
+val historyGeminiApiKey = apiProperties.getProperty("HISTORY_GEMINI_API_KEY")
     ?: ""
-val historyGeminiModel = localProperties.getProperty("HISTORY_GEMINI_MODEL")
-    ?: providers.gradleProperty("HISTORY_GEMINI_MODEL").orNull
+val historyGeminiModel = apiProperties.getProperty("HISTORY_GEMINI_MODEL")
     ?: "gemini-flash-latest"
 
 android {
@@ -62,6 +62,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":data-core"))
+    implementation(project(":ui-core"))
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)

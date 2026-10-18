@@ -4,7 +4,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
 public final class QuestionFingerprint {
-    public String create(String normalizedQuestion) {
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `create`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+public String create(String normalizedQuestion) {
         if (normalizedQuestion == null || normalizedQuestion.isEmpty()) return "";
         try {
             byte[] digest = MessageDigest.getInstance("SHA-256")

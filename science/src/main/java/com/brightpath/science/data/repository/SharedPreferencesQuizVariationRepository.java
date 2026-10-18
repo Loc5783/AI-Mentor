@@ -20,12 +20,20 @@ public final class SharedPreferencesQuizVariationRepository implements QuizVaria
 
     private final SharedPreferences preferences;
 
-    public SharedPreferencesQuizVariationRepository(Context context) {
+        /*
+ * Responsibility: Initializes SharedPreferencesQuizVariationRepository and receives or prepares the dependencies/state required by this data repository.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public SharedPreferencesQuizVariationRepository(Context context) {
         preferences = context.getApplicationContext()
                 .getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }
 
-    @Override
+        /*
+ * Responsibility: Retrieves the data/state required by `getRecentPrompts` from the appropriate data repository.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+@Override
     public List<String> getRecentPrompts(int userId, ScienceSubject subject,
                                          EducationLevel level, int limit) {
         String stored = preferences.getString(key(userId, subject, level), "");
@@ -41,7 +49,11 @@ public final class SharedPreferencesQuizVariationRepository implements QuizVaria
         return result;
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the repository operation `rememberPrompts` against the Science data source.
+ * Purpose: Keeps persistence/query details behind the repository abstraction and away from presentation/business code.
+ */
+@Override
     public void rememberPrompts(int userId, ScienceSubject subject,
                                 EducationLevel level, List<String> prompts) {
         Set<String> merged = new LinkedHashSet<>();
@@ -63,11 +75,19 @@ public final class SharedPreferencesQuizVariationRepository implements QuizVaria
         preferences.edit().putString(key(userId, subject, level), encoded.toString()).apply();
     }
 
-    private String key(int userId, ScienceSubject subject, EducationLevel level) {
+        /*
+ * Responsibility: Performs the repository operation `key` against the Science data source.
+ * Purpose: Keeps persistence/query details behind the repository abstraction and away from presentation/business code.
+ */
+private String key(int userId, ScienceSubject subject, EducationLevel level) {
         return "recent_" + Math.max(0, userId) + "_" + subject.name() + "_" + level.name();
     }
 
-    private String sanitize(String value) {
+        /*
+ * Responsibility: Performs the repository operation `sanitize` against the Science data source.
+ * Purpose: Keeps persistence/query details behind the repository abstraction and away from presentation/business code.
+ */
+private String sanitize(String value) {
         return value == null ? "" : value.replace(SEPARATOR, " ")
                 .replace('\n', ' ').replace('\r', ' ').trim();
     }

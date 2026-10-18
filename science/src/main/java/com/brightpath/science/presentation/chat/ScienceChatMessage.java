@@ -19,7 +19,11 @@ public final class ScienceChatMessage {
     private final String sourceQuestion;
     private boolean bookmarked;
 
-    private ScienceChatMessage(Role role,
+        /*
+ * Responsibility: Initializes ScienceChatMessage and receives or prepares the dependencies/state required by this Science Module component.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+private ScienceChatMessage(Role role,
                                String text,
                                String imageUri,
                                boolean loading,
@@ -41,17 +45,29 @@ public final class ScienceChatMessage {
         this.bookmarked = bookmarked;
     }
 
-    public static ScienceChatMessage user(String text, String imageUri, ScienceSubject subject) {
+        /*
+ * Responsibility: Performs the `user` operation for ScienceChatMessage within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+public static ScienceChatMessage user(String text, String imageUri, ScienceSubject subject) {
         return new ScienceChatMessage(Role.USER, text, imageUri, false, false,
                 false, 0, subject, text, false);
     }
 
-    public static ScienceChatMessage loading(ScienceSubject subject, String sourceQuestion) {
+        /*
+ * Responsibility: Retrieves the data/state required by `loading` from the appropriate Science Module component.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public static ScienceChatMessage loading(ScienceSubject subject, String sourceQuestion) {
         return new ScienceChatMessage(Role.ASSISTANT, "Thinking…", null, true, false,
                 false, 0, subject, sourceQuestion, false);
     }
 
-    public static ScienceChatMessage assistant(String text,
+        /*
+ * Responsibility: Performs the `assistant` operation for ScienceChatMessage within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+public static ScienceChatMessage assistant(String text,
                                                 long historyId,
                                                 ScienceSubject subject,
                                                 String sourceQuestion,
@@ -61,7 +77,11 @@ public final class ScienceChatMessage {
                 fromCache, historyId, subject, sourceQuestion, bookmarked);
     }
 
-    public static ScienceChatMessage error(String message,
+        /*
+ * Responsibility: Performs the `error` operation for ScienceChatMessage within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+public static ScienceChatMessage error(String message,
                                            ScienceSubject subject,
                                            String sourceQuestion) {
         return new ScienceChatMessage(Role.ASSISTANT, message, null, false, true,
@@ -69,7 +89,11 @@ public final class ScienceChatMessage {
     }
 
     /** Loading rows are intentionally not persisted across configuration changes. */
-    public JSONObject toJson() {
+        /*
+ * Responsibility: Converts input data in `toJson` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+public JSONObject toJson() {
         JSONObject json = new JSONObject();
         try {
             json.put("role", role.name());
@@ -87,7 +111,11 @@ public final class ScienceChatMessage {
         return json;
     }
 
-    public static ScienceChatMessage fromJson(JSONObject json) {
+        /*
+ * Responsibility: Converts input data in `fromJson` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+public static ScienceChatMessage fromJson(JSONObject json) {
         if (json == null) return null;
         try {
             Role role = Role.valueOf(json.optString("role", Role.ASSISTANT.name()));
@@ -111,15 +139,59 @@ public final class ScienceChatMessage {
         }
     }
 
-    public Role getRole() { return role; }
-    public String getText() { return text; }
-    public String getImageUri() { return imageUri; }
-    public boolean isLoading() { return loading; }
-    public boolean isError() { return error; }
-    public boolean isFromCache() { return fromCache; }
-    public long getHistoryId() { return historyId; }
-    public ScienceSubject getSubject() { return subject; }
-    public String getSourceQuestion() { return sourceQuestion; }
-    public boolean isBookmarked() { return bookmarked; }
-    public void setBookmarked(boolean bookmarked) { this.bookmarked = bookmarked; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getRole` from the appropriate Science Module component.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public Role getRole() { return role; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getText` from the appropriate Science Module component.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getText() { return text; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getImageUri` from the appropriate Science Module component.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getImageUri() { return imageUri; }
+        /*
+ * Responsibility: Checks the condition represented by `isLoading` and returns the corresponding boolean result.
+ * Purpose: Centralizes the decision rule so the same condition is evaluated consistently.
+ */
+public boolean isLoading() { return loading; }
+        /*
+ * Responsibility: Checks the condition represented by `isError` and returns the corresponding boolean result.
+ * Purpose: Centralizes the decision rule so the same condition is evaluated consistently.
+ */
+public boolean isError() { return error; }
+        /*
+ * Responsibility: Checks the condition represented by `isFromCache` and returns the corresponding boolean result.
+ * Purpose: Centralizes the decision rule so the same condition is evaluated consistently.
+ */
+public boolean isFromCache() { return fromCache; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getHistoryId` from the appropriate Science Module component.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public long getHistoryId() { return historyId; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getSubject` from the appropriate Science Module component.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public ScienceSubject getSubject() { return subject; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getSourceQuestion` from the appropriate Science Module component.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getSourceQuestion() { return sourceQuestion; }
+        /*
+ * Responsibility: Checks the condition represented by `isBookmarked` and returns the corresponding boolean result.
+ * Purpose: Centralizes the decision rule so the same condition is evaluated consistently.
+ */
+public boolean isBookmarked() { return bookmarked; }
+        /*
+ * Responsibility: Updates the state or value handled by `setBookmarked` for ScienceChatMessage.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+public void setBookmarked(boolean bookmarked) { this.bookmarked = bookmarked; }
 }

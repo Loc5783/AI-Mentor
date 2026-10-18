@@ -19,18 +19,31 @@ import java.util.concurrent.Executors;
 import javax.net.ssl.SSLException;
 
 /** AI-backed History tutor and quiz generator. */
+/*
+ * Role: AI/API class for History, responsible for preparing requests or prompts, calling the service, and converting response data.
+ * Purpose: Separating AI communication from the UI makes error handling, model or endpoint changes, and logic testing easier.
+ */
 public final class HistoryAiService {
     private static final int ANSWER_OUTPUT_TOKENS = 6000;
     private static final int CONTINUATION_OUTPUT_TOKENS = 3000;
     private static final int MAX_CONTINUATIONS = 2;
 
+    private android.content.Context bankContext;
     private final HistoryGeminiApiClient client;
     private final HistoryPromptFactory promptFactory;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
+    /*
+     * Responsibility: Initializes the `HistoryAiService` object and sets up the required dependencies and initial data.
+     * Purpose: The constructor ensures the object starts in a valid state immediately after creation.
+     */
     public HistoryAiService() {
         this(new HistoryGeminiApiClient(), new HistoryPromptFactory());
+    }
+
+    public HistoryAiService(android.content.Context context) {
+        this(); bankContext = context.getApplicationContext();
     }
 
     public HistoryAiService(HistoryGeminiApiClient client,
@@ -39,6 +52,10 @@ public final class HistoryAiService {
         this.promptFactory = promptFactory;
     }
 
+    /*
+     * Responsibility: Validates the conditions or rules handled by `is configured` and returns the result to the caller.
+     * Purpose: A dedicated validation method keeps rules consistent and easier to test.
+     */
     public boolean isConfigured() {
         return client.isConfigured();
     }
@@ -47,6 +64,10 @@ public final class HistoryAiService {
         return client.getModelName();
     }
 
+    /*
+     * Responsibility: Performs the `answer` responsibility of `HistoryAiService` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     public void answer(String latestMessage,
                        String conversationContext,
                        byte[] imageBytes,
@@ -67,13 +88,23 @@ public final class HistoryAiService {
         });
     }
 
+    /*
+     * Responsibility: Generates data or content for `generate quiz` based on the input and module rules.
+     * Purpose: Keeping content generation separate makes the strategy easier to change without affecting presentation logic.
+     */
     public void generateQuiz(String topic,
                              String educationLevel,
                              int questionCount,
                              Callback<List<HistoryQuizQuestion>> callback) {
+        generateQuiz(topic, topic, educationLevel, questionCount, callback);
+    }
+
+    public void generateQuiz(String scope, String topic, String educationLevel, int questionCount,
+                             Callback<List<HistoryQuizQuestion>> callback) {
+        final int owner = bankContext == null ? 0 : com.example.historymodule.util.HistoryUserSession.getUserId(bankContext);
         executor.execute(() -> {
             try {
-                String prompt = promptFactory.buildQuizPrompt(topic, educationLevel, questionCount);
+                String prompt = promptFactory.buildQuizPrompt(scope, educationLevel, questionCount) + "\nChủ đề tập trung: " + topic;
                 HistoryGeminiApiClient.Result current = client.generateText(
                         prompt,
                         null,
@@ -103,6 +134,10 @@ public final class HistoryAiService {
                 if (questions.size() < Math.max(5, questionCount)) {
                     throw new IllegalStateException("AI trả về chưa đủ số câu Quiz.");
                 }
+                if (bankContext != null) try (com.example.mentor.data.QuizBank bank = new com.example.mentor.data.QuizBank(bankContext)) {
+                    bank.save(owner, "history", scope, educationLevel, topic, "GEMINI",
+                            com.example.historymodule.util.QuizCards.from(questions));
+                }
                 mainHandler.post(() -> callback.onSuccess(questions));
             } catch (Exception error) {
                 mainHandler.post(() -> callback.onError(userMessage(error), error));
@@ -110,6 +145,10 @@ public final class HistoryAiService {
         });
     }
 
+    /*
+     * Responsibility: Performs the `shutdown` responsibility of `HistoryAiService` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     public void shutdown() {
         executor.shutdownNow();
     }
@@ -168,6 +207,10 @@ public final class HistoryAiService {
         );
     }
 
+    /*
+     * Responsibility: Performs the `append without repeating` responsibility of `HistoryAiService` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private void appendWithoutRepeating(StringBuilder destination,
                                         String continuation) {
         if (continuation == null || continuation.trim().isEmpty()) return;
@@ -190,12 +233,16 @@ public final class HistoryAiService {
         destination.append(unique);
     }
 
+    /*
+     * Responsibility: Converts or normalizes data in `parse quiz` into the required format.
+     * Purpose: A centralized conversion point keeps formatting consistent and makes invalid data easier to handle.
+     */
     private List<HistoryQuizQuestion> parseQuiz(String rawText,
                                                  int expectedCount) throws Exception {
         String json = extractJsonArray(rawText);
         JSONArray array = new JSONArray(json);
         List<HistoryQuizQuestion> result = new ArrayList<>();
-        int limit = Math.min(array.length(), Math.max(5, Math.min(10, expectedCount)));
+        int limit = Math.min(array.length(), Math.max(5, Math.min(15, expectedCount)));
 
         for (int i = 0; i < limit; i++) {
             JSONObject item = array.optJSONObject(i);
@@ -236,6 +283,10 @@ public final class HistoryAiService {
         return result;
     }
 
+    /*
+     * Responsibility: Performs the `extract json array` responsibility of `HistoryAiService` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private String extractJsonArray(String rawText) {
         if (rawText == null) return "[]";
         String text = rawText.trim();
@@ -259,6 +310,10 @@ public final class HistoryAiService {
         return text;
     }
 
+    /*
+     * Responsibility: Performs the `strip option prefix` responsibility of `HistoryAiService` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private String stripOptionPrefix(String value) {
         return value.replaceFirst("^[A-Da-d][\\.\\)\\:\\-]\\s*", "").trim();
     }
@@ -266,9 +321,8 @@ public final class HistoryAiService {
     private int resolveCorrectIndex(String value, List<String> options) {
         if (value == null) return -1;
         String normalized = value.trim();
-        if (normalized.matches("[0-3]")) {
-            return Integer.parseInt(normalized);
-        }
+        // correctIndex is zero-based; a numeric correctAnswer is the displayed 1-4 choice.
+        if (normalized.equals("0")) return 0;
         if (normalized.matches("[1-4]")) {
             return Integer.parseInt(normalized) - 1;
         }
@@ -283,11 +337,19 @@ public final class HistoryAiService {
         return -1;
     }
 
+    /*
+     * Responsibility: Performs the `first non blank` responsibility of `HistoryAiService` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private String firstNonBlank(String first, String second) {
         if (first != null && !first.trim().isEmpty()) return first.trim();
         return second == null ? "" : second.trim();
     }
 
+    /*
+     * Responsibility: Performs the `user message` responsibility of `HistoryAiService` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private String userMessage(Throwable error) {
         if (error instanceof HistoryGeminiApiException) {
             HistoryGeminiApiException apiError = (HistoryGeminiApiException) error;

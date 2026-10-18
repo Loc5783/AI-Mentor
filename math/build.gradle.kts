@@ -1,6 +1,18 @@
+import java.util.Properties
+
+// Role: Module build configuration defining Android plugins, SDK settings, dependencies, and compiler options.
+// Purpose: Controls the module build environment and dependencies; it does not contain screen business logic.
 plugins {
     alias(libs.plugins.android.library)
 }
+
+val mathApiProperties = Properties().apply {
+    val file = rootProject.file("api.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+fun mathSetting(name: String, fallback: String = ""): String =
+    mathApiProperties.getProperty(name) ?: fallback
+fun mathQuoted(value: String): String = "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
 
 android {
     namespace = "com.example.mathmodule"
@@ -8,10 +20,10 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        buildConfigField("String", "MATH_GEMINI_API_KEY_1", "\"${project.findProperty("MATH_GEMINI_API_KEY_1") ?: project.findProperty("MATH_GEMINI_API_KEY") ?: ""}\"")
-        buildConfigField("String", "MATH_GEMINI_API_KEY_2", "\"${project.findProperty("MATH_GEMINI_API_KEY_2") ?: ""}\"")
-        buildConfigField("String", "MATH_GEMINI_API_KEY_3", "\"${project.findProperty("MATH_GEMINI_API_KEY_3") ?: ""}\"")
-        buildConfigField("String", "MATH_GEMINI_MODEL", "\"${project.findProperty("MATH_GEMINI_MODEL") ?: "gemini-flash-latest"}\"")
+        buildConfigField("String", "MATH_GEMINI_API_KEY_1", mathQuoted(mathSetting("MATH_GEMINI_API_KEY_1")))
+        buildConfigField("String", "MATH_GEMINI_API_KEY_2", mathQuoted(mathSetting("MATH_GEMINI_API_KEY_2", "")))
+        buildConfigField("String", "MATH_GEMINI_API_KEY_3", mathQuoted(mathSetting("MATH_GEMINI_API_KEY_3", "")))
+        buildConfigField("String", "MATH_GEMINI_MODEL", mathQuoted(mathSetting("MATH_GEMINI_MODEL", "gemini-flash-latest")))
         minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -34,6 +46,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":data-core"))
+    implementation(project(":ui-core"))
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)

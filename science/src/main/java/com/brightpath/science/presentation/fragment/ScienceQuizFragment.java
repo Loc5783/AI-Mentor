@@ -30,11 +30,19 @@ import java.util.Collections;
 import java.util.List;
 
 public final class ScienceQuizFragment extends Fragment {
-    public ScienceQuizFragment() {
+        /*
+ * Responsibility: Initializes ScienceQuizFragment and receives or prepares the dependencies/state required by this Science UI tab/fragment.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ScienceQuizFragment() {
         super(R.layout.fragment_science_quiz);
     }
 
-    @Override
+        /*
+ * Responsibility: Binds the Fragment views after layout creation and configures adapters, listeners, and initial data.
+ * Purpose: Connects the XML layout to Fragment behavior while keeping setup in the correct lifecycle stage.
+ */
+@Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.findViewById(R.id.buttonScienceQuizBack)
@@ -52,7 +60,11 @@ public final class ScienceQuizFragment extends Fragment {
         refreshQuizSummary(view);
     }
 
-    @Override
+        /*
+ * Responsibility: Refreshes the current state/data when the component returns to the foreground.
+ * Purpose: Ensures the UI reflects changes made on other Science screens.
+ */
+@Override
     public void onResume() {
         super.onResume();
         View view = getView();
@@ -61,7 +73,11 @@ public final class ScienceQuizFragment extends Fragment {
         }
     }
 
-    private void refreshQuizSummary(@NonNull View view) {
+        /*
+ * Responsibility: Handles the `refreshQuizSummary` UI interaction/state operation for ScienceQuizFragment.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private void refreshQuizSummary(@NonNull View view) {
         int userId = new ScienceUserSession(requireContext()).getUserId();
         QuizAttemptRepository repository =
                 ScienceModule.get(requireContext()).quizAttemptRepository();
@@ -127,7 +143,11 @@ public final class ScienceQuizFragment extends Fragment {
                 Collections.singletonList(summary)));
     }
 
-    private ScienceModernAdapters.QuizTopic toTopic(
+        /*
+ * Responsibility: Converts input data in `toTopic` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+private ScienceModernAdapters.QuizTopic toTopic(
             @NonNull String title,
             @NonNull ScienceSubject subject,
             @NonNull QuizPerformance performance
@@ -141,7 +161,11 @@ public final class ScienceQuizFragment extends Fragment {
         );
     }
 
-    private void bindLevel(@NonNull View view, int totalExp) {
+        /*
+ * Responsibility: Binds the relevant data, view, or listener in `bindLevel`.
+ * Purpose: Keeps UI binding code focused and separate from higher-level lifecycle/business logic.
+ */
+private void bindLevel(@NonNull View view, int totalExp) {
         int level = ScienceLevelCalculator.getLevel(totalExp);
         TextView expView = view.findViewById(R.id.tvScienceQuizTotalExp);
         TextView levelView = view.findViewById(R.id.tvScienceQuizLevelTitle);
@@ -167,13 +191,21 @@ public final class ScienceQuizFragment extends Fragment {
         }
     }
 
-    private void openQuiz(@NonNull ScienceSubject subject) {
+        /*
+ * Responsibility: Creates the required navigation/action and opens the Science destination handled by `openQuiz`.
+ * Purpose: Keeps navigation code separate from the business logic executed by the destination screen.
+ */
+private void openQuiz(@NonNull ScienceSubject subject) {
         SciencePreferenceStore store = new SciencePreferenceStore(requireContext());
         store.save(subject, store.getLevelPosition(), store.getStylePosition());
         startActivity(new Intent(requireContext(), ScienceQuizActivity.class));
     }
 
-    private ScienceMainActivity main() {
+        /*
+ * Responsibility: Provides the helper/reference operation named `main` for ScienceQuizFragment.
+ * Purpose: Keeps this small responsibility isolated so the surrounding class remains easier to read and navigate during review.
+ */
+private ScienceMainActivity main() {
         return (ScienceMainActivity) requireActivity();
     }
 }

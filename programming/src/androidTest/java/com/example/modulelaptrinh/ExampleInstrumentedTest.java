@@ -18,9 +18,11 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
     @Test
+    // Hàm `useAppContext()`: Thực hiện chức năng `useAppContext` của class này.
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        // Gọi hàm `assertEquals()` để thực hiện bước xử lý tiếp theo trong luồng hiện tại.
         assertEquals("com.example.modulelaptrinh", appContext.getPackageName());
     }
 }

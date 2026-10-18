@@ -13,6 +13,10 @@ import com.example.asm_final.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * Role: Utility class for App Shell, grouping reusable logic such as user sessions, levels, formatting, or data conversion.
+ * Purpose: Moving shared logic into helpers reduces duplication and keeps Activities and Fragments focused on screen coordination.
+ */
 public class SimplePieChartView extends View {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RectF rectF = new RectF();
@@ -22,12 +26,20 @@ public class SimplePieChartView extends View {
     public static class Slice {
         float value;
         int color;
+        /*
+         * Responsibility: Performs the `slice` responsibility of `SimplePieChartView` and returns or updates the result for the caller.
+         * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+         */
         public Slice(float value, int color) {
             this.value = value;
             this.color = color;
         }
     }
 
+    /*
+     * Responsibility: Initializes the `SimplePieChartView` object and sets up the required dependencies and initial data.
+     * Purpose: The constructor ensures the object starts in a valid state immediately after creation.
+     */
     public SimplePieChartView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
@@ -46,6 +58,10 @@ public class SimplePieChartView extends View {
         invalidate();
     }
 
+    /*
+     * Responsibility: Handles the Android callback or event `onDraw` and updates the related state.
+     * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

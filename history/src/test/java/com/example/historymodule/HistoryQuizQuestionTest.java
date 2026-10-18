@@ -10,6 +10,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/*
+ * Role: Test class for History, used to verify key rules and behaviors after code changes.
+ * Purpose: These tests verify key behaviors automatically instead of relying only on manual UI testing.
+ */
 public class HistoryQuizQuestionTest {
     @Test
     public void normalizesHistoryDifficultyAndRewards() {
@@ -25,6 +29,10 @@ public class HistoryQuizQuestionTest {
         assertEquals(10, unknown.getExpReward());
     }
 
+    /*
+     * Responsibility: Performs the `clamps correct index and protects history options` responsibility of `HistoryQuizQuestionTest` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     @Test
     public void clampsCorrectIndexAndProtectsHistoryOptions() {
         List<String> source = new ArrayList<>(Arrays.asList("A", "B", "C", "D"));
@@ -38,6 +46,10 @@ public class HistoryQuizQuestionTest {
         assertEquals("Giải thích", question.getExplanation());
     }
 
+    /*
+     * Responsibility: Performs the `question` responsibility of `HistoryQuizQuestionTest` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private HistoryQuizQuestion question(String difficulty, int correctIndex) {
         return new HistoryQuizQuestion(
                 difficulty,

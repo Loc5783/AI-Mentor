@@ -10,7 +10,11 @@ public final class StudyPlanRequest {
     private final int minutesPerDay;
     private final long createdAtMillis;
 
-    public StudyPlanRequest(int userId,
+        /*
+ * Responsibility: Initializes StudyPlanRequest and receives or prepares the dependencies/state required by this domain model.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public StudyPlanRequest(int userId,
                             ScienceSubject subject,
                             EducationLevel level,
                             String goal,
@@ -27,11 +31,39 @@ public final class StudyPlanRequest {
         this.createdAtMillis = Math.max(0L, createdAtMillis);
     }
 
-    public int getUserId() { return userId; }
-    public ScienceSubject getSubject() { return subject; }
-    public EducationLevel getLevel() { return level; }
-    public String getGoal() { return goal; }
-    public int getNumberOfDays() { return numberOfDays; }
-    public int getMinutesPerDay() { return minutesPerDay; }
-    public long getCreatedAtMillis() { return createdAtMillis; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getUserId` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public int getUserId() { return userId; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getSubject` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public ScienceSubject getSubject() { return subject; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getLevel` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public EducationLevel getLevel() { return level; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getGoal` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getGoal() { return goal; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getNumberOfDays` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public int getNumberOfDays() { return numberOfDays; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getMinutesPerDay` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public int getMinutesPerDay() { return minutesPerDay; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getCreatedAtMillis` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public long getCreatedAtMillis() { return createdAtMillis; }
 }

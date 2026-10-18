@@ -1,3 +1,5 @@
+// Role: Module build configuration defining Android plugins, SDK settings, dependencies, and compiler options.
+// Purpose: Controls the module build environment and dependencies; it does not contain screen business logic.
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -32,6 +34,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":data-core"))
+    implementation(project(":ui-core"))
     implementation(project(":math"))
     implementation(project(":science"))
     implementation(project(":programming"))

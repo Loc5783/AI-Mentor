@@ -26,7 +26,11 @@ public final class QuizQuestionView extends LinearLayout {
     private EditText textAnswer;
     private final TextView feedbackView;
 
-    public QuizQuestionView(Context context, QuizQuestion question, int number) {
+        /*
+ * Responsibility: Initializes QuizQuestionView and receives or prepares the dependencies/state required by this custom Android View.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public QuizQuestionView(Context context, QuizQuestion question, int number) {
         super(context);
         this.question = question;
         setOrientation(VERTICAL);
@@ -72,7 +76,11 @@ public final class QuizQuestionView extends LinearLayout {
         addView(feedbackView);
     }
 
-    private void createRadioOptions(Context context) {
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `createRadioOptions`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+private void createRadioOptions(Context context) {
         radioGroup = new RadioGroup(context);
         radioGroup.setPadding(0, dp(8), 0, 0);
         List<String> options = question.getOptions();
@@ -88,14 +96,22 @@ public final class QuizQuestionView extends LinearLayout {
         addView(radioGroup);
     }
 
-    private String getOptionTag(int index) {
+        /*
+ * Responsibility: Retrieves the data/state required by `getOptionTag` from the appropriate custom Android View.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+private String getOptionTag(int index) {
         if (question.getType() == QuizQuestion.Type.TRUE_FALSE) {
             return index == 0 ? "TRUE" : "FALSE";
         }
         return String.valueOf((char) ('A' + index));
     }
 
-    private void createTextAnswer(Context context) {
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `createTextAnswer`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+private void createTextAnswer(Context context) {
         textAnswer = new EditText(context);
         textAnswer.setHint("Your answer");
         textAnswer.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -110,7 +126,11 @@ public final class QuizQuestionView extends LinearLayout {
         addView(textAnswer);
     }
 
-    public void restoreAnswer(String answer) {
+        /*
+ * Responsibility: Restores the previously saved state handled by `restoreAnswer`.
+ * Purpose: Allows the learner to continue the same Science flow after navigation, rotation, or reopening saved content.
+ */
+public void restoreAnswer(String answer) {
         if (answer == null || answer.isEmpty()) return;
         if (radioGroup != null) {
             for (int i = 0; i < radioGroup.getChildCount(); i++) {
@@ -125,17 +145,29 @@ public final class QuizQuestionView extends LinearLayout {
         }
     }
 
-    public boolean isCorrect() {
+        /*
+ * Responsibility: Checks the condition represented by `isCorrect` and returns the corresponding boolean result.
+ * Purpose: Centralizes the decision rule so the same condition is evaluated consistently.
+ */
+public boolean isCorrect() {
         String expected = normalize(question.getCorrectAnswer());
         String actual = normalize(getUserAnswer());
         return !actual.isEmpty() && expected.equals(actual);
     }
 
-    public boolean hasAnswer() {
+        /*
+ * Responsibility: Checks the condition represented by `hasAnswer` and returns the corresponding boolean result.
+ * Purpose: Centralizes the decision rule so the same condition is evaluated consistently.
+ */
+public boolean hasAnswer() {
         return !normalize(getUserAnswer()).isEmpty();
     }
 
-    public String getUserAnswer() {
+        /*
+ * Responsibility: Retrieves the data/state required by `getUserAnswer` from the appropriate custom Android View.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getUserAnswer() {
         if (radioGroup != null) {
             int checkedId = radioGroup.getCheckedRadioButtonId();
             if (checkedId == -1) return "";
@@ -146,11 +178,19 @@ public final class QuizQuestionView extends LinearLayout {
     }
 
 
-    public int getExpReward() {
+        /*
+ * Responsibility: Retrieves the data/state required by `getExpReward` from the appropriate custom Android View.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public int getExpReward() {
         return question.getExpReward();
     }
 
-    public void showFeedback() {
+        /*
+ * Responsibility: Prepares and presents the data/state handled by `showFeedback` on the UI.
+ * Purpose: Transforms application state into information the learner can see and interact with.
+ */
+public void showFeedback() {
         boolean correct = isCorrect();
         feedbackView.setVisibility(VISIBLE);
         String feedback = correct
@@ -169,7 +209,11 @@ public final class QuizQuestionView extends LinearLayout {
         if (textAnswer != null) textAnswer.setEnabled(false);
     }
 
-    private String normalize(String value) {
+        /*
+ * Responsibility: Normalizes or formats the value handled by `normalize` into a stable representation.
+ * Purpose: Improves consistency for display, comparison, caching, storage, or AI prompt construction.
+ */
+private String normalize(String value) {
         if (value == null) return "";
         return value.toLowerCase(Locale.ROOT)
                 .replace('₀', '0').replace('₁', '1').replace('₂', '2')
@@ -181,7 +225,11 @@ public final class QuizQuestionView extends LinearLayout {
                 .replaceAll("[^\\p{L}0-9]", "");
     }
 
-    private int dp(int value) {
+        /*
+ * Responsibility: Performs the `dp` operation for QuizQuestionView within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the custom Android View so the code is easier to read, test, maintain, and locate during the review.
+ */
+private int dp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
     }
 }

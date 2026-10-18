@@ -10,7 +10,11 @@ public final class StudySession {
     private final String activities;
     private boolean completed;
 
-    public StudySession(int dayNumber,
+        /*
+ * Responsibility: Initializes StudySession and receives or prepares the dependencies/state required by this domain model.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public StudySession(int dayNumber,
                         long startAtMillis,
                         int durationMinutes,
                         String title,
@@ -24,15 +28,47 @@ public final class StudySession {
         this.completed = completed;
     }
 
-    public int getDayNumber() { return dayNumber; }
-    public long getStartAtMillis() { return startAtMillis; }
-    public int getDurationMinutes() { return durationMinutes; }
-    public String getTitle() { return title; }
-    public String getActivities() { return activities; }
-    public boolean isCompleted() { return completed; }
-    public void setCompleted(boolean completed) { this.completed = completed; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getDayNumber` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public int getDayNumber() { return dayNumber; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getStartAtMillis` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public long getStartAtMillis() { return startAtMillis; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getDurationMinutes` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public int getDurationMinutes() { return durationMinutes; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getTitle` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getTitle() { return title; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getActivities` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getActivities() { return activities; }
+        /*
+ * Responsibility: Checks the condition represented by `isCompleted` and returns the corresponding boolean result.
+ * Purpose: Centralizes the decision rule so the same condition is evaluated consistently.
+ */
+public boolean isCompleted() { return completed; }
+        /*
+ * Responsibility: Updates the state or value handled by `setCompleted` for StudySession.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+public void setCompleted(boolean completed) { this.completed = completed; }
 
-    public JSONObject toJson() {
+        /*
+ * Responsibility: Converts input data in `toJson` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+public JSONObject toJson() {
         JSONObject json = new JSONObject();
         try {
             json.put("dayNumber", dayNumber);
@@ -45,7 +81,11 @@ public final class StudySession {
         return json;
     }
 
-    public static StudySession fromJson(JSONObject json) {
+        /*
+ * Responsibility: Converts input data in `fromJson` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+public static StudySession fromJson(JSONObject json) {
         if (json == null) return null;
         return new StudySession(
                 json.optInt("dayNumber", 1),

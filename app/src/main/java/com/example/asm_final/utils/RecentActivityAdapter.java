@@ -13,6 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.asm_final.R;
 import java.util.List;
 
+/*
+ * Role: Utility class for App Shell, grouping reusable logic such as user sessions, levels, formatting, or data conversion.
+ * Purpose: Moving shared logic into helpers reduces duplication and keeps Activities and Fragments focused on screen coordination.
+ */
 public class RecentActivityAdapter extends RecyclerView.Adapter<RecentActivityAdapter.ViewHolder> {
     private final List<RecentActivity> activities;
 
@@ -20,6 +24,10 @@ public class RecentActivityAdapter extends RecyclerView.Adapter<RecentActivityAd
         this.activities = activities;
     }
 
+    /*
+     * Responsibility: Handles the Android callback or event `onCreateViewHolder` and updates the related state.
+     * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -27,12 +35,16 @@ public class RecentActivityAdapter extends RecyclerView.Adapter<RecentActivityAd
         return new ViewHolder(view);
     }
 
+    /*
+     * Responsibility: Handles the Android callback or event `onBindViewHolder` and updates the related state.
+     * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         RecentActivity activity = activities.get(position);
         holder.tvTitle.setText(activity.getTitle());
         holder.tvDesc.setText(activity.getDescription());
-        holder.tvTime.setText(DateUtils.getRelativeTimeSpanString(activity.getTimestamp(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS));
+        holder.tvTime.setText(activity.getTimestamp() <= 0 ? holder.itemView.getContext().getString(R.string.activity_time_unknown) : DateUtils.getRelativeTimeSpanString(activity.getTimestamp(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS));
 
         // Set Icon and Background based on subject
         int iconRes = R.drawable.ic_cat_math;
@@ -62,6 +74,10 @@ public class RecentActivityAdapter extends RecyclerView.Adapter<RecentActivityAd
                 ContextCompat.getColor(holder.itemView.getContext(), bgColorRes));
     }
 
+    /*
+     * Responsibility: Reads or loads data for `get item count` from the appropriate data source.
+     * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
+     */
     @Override
     public int getItemCount() {
         return activities.size();

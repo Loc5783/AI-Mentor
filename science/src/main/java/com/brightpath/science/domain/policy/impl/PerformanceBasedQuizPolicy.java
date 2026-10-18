@@ -18,13 +18,21 @@ public final class PerformanceBasedQuizPolicy implements AdaptiveQuizPolicy {
     private final QuizVariationRepository variationRepository;
     private final AtomicLong sequence = new AtomicLong(System.nanoTime());
 
-    public PerformanceBasedQuizPolicy(QuizAttemptRepository attemptRepository,
+        /*
+ * Responsibility: Initializes PerformanceBasedQuizPolicy and receives or prepares the dependencies/state required by this learning/business-rule component.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public PerformanceBasedQuizPolicy(QuizAttemptRepository attemptRepository,
                                       QuizVariationRepository variationRepository) {
         this.attemptRepository = attemptRepository;
         this.variationRepository = variationRepository;
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the `adapt` operation for PerformanceBasedQuizPolicy within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the learning/business-rule component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
     public QuizRequest adapt(int userId, QuizRequest baseRequest) {
         QuizPerformance performance;
         try {
@@ -52,7 +60,11 @@ public final class PerformanceBasedQuizPolicy implements AdaptiveQuizPolicy {
                 userId, challenge, performance, seed, recentPrompts);
     }
 
-    public QuizChallenge chooseChallenge(QuizPerformance performance) {
+        /*
+ * Responsibility: Performs the `chooseChallenge` operation for PerformanceBasedQuizPolicy within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the learning/business-rule component so the code is easier to read, test, maintain, and locate during the review.
+ */
+public QuizChallenge chooseChallenge(QuizPerformance performance) {
         if (performance == null || !performance.hasEnoughEvidence()) {
             return QuizChallenge.ON_LEVEL;
         }

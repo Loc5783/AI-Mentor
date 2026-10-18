@@ -39,7 +39,12 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/*
+ * Role: Activity for History, responsible for the screen lifecycle, view binding, and primary user interactions.
+ * Purpose: The Activity connects the UI with supporting classes while keeping responsibilities separated instead of concentrating all logic in one place.
+ */
 public final class HistoryChatActivity extends AppCompatActivity {
+    public static final String EXTRA_DRAFT = "history_draft";
     public static final String EXTRA_OPEN_CAMERA = "history_open_camera";
     public static final String EXTRA_FOCUS_INPUT = "history_focus_input";
     public static final String EXTRA_CONVERSATION_ID = "history_conversation_id";
@@ -77,6 +82,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
     private boolean loading;
     private boolean destroyed;
 
+    /*
+     * Responsibility: Initializes the Android component, inflates and binds the layout, and prepares initial data and listeners.
+     * Purpose: This is the screen entry point, so the initial state must be prepared before user interaction begins.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,15 +95,26 @@ public final class HistoryChatActivity extends AppCompatActivity {
         dbHelper = new SqliteDbHelper(this);
         aiService = new HistoryAiService();
         imageReader = new HistoryImageReader();
-        conversationId = resolveConversationId();
+        conversationId = savedInstanceState == null ? resolveConversationId()
+                : savedInstanceState.getString("activeConversation");
+        if (conversationId == null) conversationId = resolveConversationId();
 
         bindViews();
+        com.example.mentor.ui.AiAvailabilityNotice.bind(findViewById(android.R.id.content), aiService.isConfigured());
         setupRecyclerView();
         setupActions();
         restoreConversation();
-        handleLaunchMode();
+        if (savedInstanceState == null) {
+            String draft = getIntent().getStringExtra(EXTRA_DRAFT);
+            if (draft != null) messageEditText.setText(draft);
+            handleLaunchMode();
+        }
     }
 
+    /*
+     * Responsibility: Displays or binds data from `bind views` to the appropriate UI or navigation destination.
+     * Purpose: Separating presentation logic prevents data processing from being mixed with UI rendering.
+     */
     private void bindViews() {
         recyclerView = findViewById(R.id.recycler_view);
         messageEditText = findViewById(R.id.message_edit_text);
@@ -104,6 +124,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         imagePreview = findViewById(R.id.image_preview);
     }
 
+    /*
+     * Responsibility: Configures `setup recycler view` with the required Views, listeners, or dependencies.
+     * Purpose: Separating configuration from the main flow keeps initialization concise and easier to verify.
+     */
     private void setupRecyclerView() {
         adapter = new HistoryChatAdapter(messages);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -112,6 +136,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    /*
+     * Responsibility: Configures `setup actions` with the required Views, listeners, or dependencies.
+     * Purpose: Separating configuration from the main flow keeps initialization concise and easier to verify.
+     */
     private void setupActions() {
         findViewById(R.id.btn_back).setOnClickListener(view -> finish());
         findViewById(R.id.btn_new_chat).setOnClickListener(view -> confirmNewChat());
@@ -121,6 +149,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         imagePreview.setOnClickListener(view -> clearSelectedImage());
     }
 
+    /*
+     * Responsibility: Performs the `restore conversation` responsibility of `HistoryChatActivity` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private void restoreConversation() {
         messages.clear();
         messages.addAll(dbHelper.loadChatMessages(userId, conversationId));
@@ -134,6 +166,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         scrollToBottom(false);
     }
 
+    /*
+     * Responsibility: Handles the `handle launch mode` workflow or event and coordinates its related steps.
+     * Purpose: A dedicated coordinator method makes the processing order clear and simplifies debugging and explanation.
+     */
     private void handleLaunchMode() {
         Intent intent = getIntent();
         if (intent == null) return;
@@ -142,6 +178,15 @@ public final class HistoryChatActivity extends AppCompatActivity {
         } else if (intent.getBooleanExtra(EXTRA_FOCUS_INPUT, false)) {
             recyclerView.postDelayed(this::focusInput, 250L);
         }
+    }
+
+    /*
+     * Responsibility: Performs the `resolve conversation id` responsibility of `HistoryChatActivity` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
+    @Override protected void onSaveInstanceState(Bundle out) {
+        super.onSaveInstanceState(out);
+        out.putString("activeConversation", conversationId);
     }
 
     private String resolveConversationId() {
@@ -155,6 +200,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         return id;
     }
 
+    /*
+     * Responsibility: Performs the `confirm new chat` responsibility of `HistoryChatActivity` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private void confirmNewChat() {
         if (loading) {
             Toast.makeText(this, R.string.history_chat_wait_ai, Toast.LENGTH_SHORT).show();
@@ -168,6 +217,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
                 .show();
     }
 
+    /*
+     * Responsibility: Navigates to or starts the `start new conversation` flow and passes the required data to the next step.
+     * Purpose: Centralizing navigation makes Intents, Fragments, and parameters between screens easier to control.
+     */
     private void startNewConversation() {
         conversationId = UUID.randomUUID().toString();
         getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
@@ -184,6 +237,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         focusInput();
     }
 
+    /*
+     * Responsibility: Prepares and executes the request for `send current message`, then returns the result or error to the caller.
+     * Purpose: Separating AI, API, or I/O work from the UI centralizes asynchronous processing and error handling.
+     */
     private void sendCurrentMessage() {
         if (loading) return;
 
@@ -194,12 +251,22 @@ public final class HistoryChatActivity extends AppCompatActivity {
             return;
         }
 
+        if (!com.example.mentor.ui.AiAvailabilityNotice.canSend(findViewById(android.R.id.content), aiService.isConfigured())) return;
         String question = typedText.isEmpty()
                 ? getString(R.string.history_chat_ai_prompt_photo)
                 : typedText;
         String visibleText = typedText.isEmpty() ? getString(R.string.history_chat_visible_text_photo) : typedText;
         if (hasImage) visibleText += getString(R.string.history_chat_attached_label);
         String context = buildConversationContext();
+
+        try {
+            long saved = dbHelper.saveChatMessage(userId, conversationId, HistoryMessage.SENT_BY_ME,
+                    visibleText, hasImage);
+            if (saved <= 0) throw new IllegalStateException("Question was not saved.");
+        } catch (RuntimeException error) {
+            Toast.makeText(this, com.example.mentor.ui.R.string.mentor_chat_input_save_error, Toast.LENGTH_LONG).show();
+            return;
+        }
 
         HistoryMessage userMessage = new HistoryMessage(
                 visibleText,
@@ -213,14 +280,6 @@ public final class HistoryChatActivity extends AppCompatActivity {
         int insertedAt = messages.size() - 2;
         adapter.notifyItemRangeInserted(insertedAt, 2);
         scrollToBottom(true);
-
-        dbHelper.saveChatMessage(
-                userId,
-                conversationId,
-                HistoryMessage.SENT_BY_ME,
-                visibleText,
-                hasImage
-        );
 
         messageEditText.setText("");
         setLoading(true);
@@ -250,6 +309,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         });
     }
 
+    /*
+     * Responsibility: Performs the `execute ai` responsibility of `HistoryChatActivity` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private void executeAi(String question,
                                String context,
                                @Nullable HistoryImageReader.ImageData imageData,
@@ -260,19 +323,27 @@ public final class HistoryChatActivity extends AppCompatActivity {
                 imageData == null ? null : imageData.getBytes(),
                 imageData == null ? null : imageData.getMimeType(),
                 new HistoryAiService.Callback<String>() {
+                    /*
+                     * Responsibility: Handles the Android callback or event `onSuccess` and updates the related state.
+                     * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
+                     */
                     @Override
                     public void onSuccess(String answer) {
                         if (destroyed) return;
                         replacePending(pendingMessage, answer, false);
-                        dbHelper.saveChatMessage(
-                                userId,
-                                conversationId,
-                                HistoryMessage.SENT_BY_BOT,
-                                answer,
-                                false
-                        );
+                        try {
+                            long saved = dbHelper.saveChatMessage(userId, conversationId,
+                                    HistoryMessage.SENT_BY_BOT, answer, false);
+                            if (saved <= 0) throw new IllegalStateException("Answer was not saved.");
+                        } catch (RuntimeException error) {
+                            Toast.makeText(HistoryChatActivity.this, com.example.mentor.ui.R.string.mentor_chat_save_error, Toast.LENGTH_LONG).show();
+                        }
                     }
 
+                    /*
+                     * Responsibility: Handles the Android callback or event `onError` and updates the related state.
+                     * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
+                     */
                     @Override
                     public void onError(String message, Throwable error) {
                         if (destroyed) return;
@@ -288,6 +359,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         );
     }
 
+    /*
+     * Responsibility: Performs the `replace pending` responsibility of `HistoryChatActivity` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private void replacePending(HistoryMessage pendingMessage,
                                 String text,
                                 boolean error) {
@@ -301,6 +376,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         scrollToBottom(true);
     }
 
+    /*
+     * Responsibility: Creates the object or data structure for `build conversation context` using the class's consistent creation rules.
+     * Purpose: Encapsulating creation rules prevents callers from repeating the same initialization steps.
+     */
     private String buildConversationContext() {
         if (messages.isEmpty()) return "";
 
@@ -344,6 +423,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         return context.toString().trim();
     }
 
+    /*
+     * Responsibility: Performs the `compact context text` responsibility of `HistoryChatActivity` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private String compactContextText(String text, int maximumCharacters) {
         if (text == null) return "";
         String normalized = text.trim();
@@ -358,6 +441,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
                 + normalized.substring(normalized.length() - tail).trim();
     }
 
+    /*
+     * Responsibility: Applies or updates `set loading` in the current state or UI.
+     * Purpose: A dedicated method ensures the same update behavior is used consistently by every caller.
+     */
     private void setLoading(boolean value) {
         loading = value;
         sendButton.setEnabled(!value);
@@ -367,6 +454,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         sendButton.setAlpha(value ? 0.45f : 1f);
     }
 
+    /*
+     * Responsibility: Prepares and executes the request for `request camera`, then returns the result or error to the caller.
+     * Purpose: Separating AI, API, or I/O work from the UI centralizes asynchronous processing and error handling.
+     */
     private void requestCamera() {
         if (loading) return;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -381,6 +472,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Responsibility: Displays or binds data from `open camera` to the appropriate UI or navigation destination.
+     * Purpose: Separating presentation logic prevents data processing from being mixed with UI rendering.
+     */
     private void openCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
@@ -390,6 +485,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Responsibility: Displays or binds data from `open gallery` to the appropriate UI or navigation destination.
+     * Purpose: Separating presentation logic prevents data processing from being mixed with UI rendering.
+     */
     private void openGallery() {
         if (loading) return;
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -397,6 +496,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_PICK_IMAGE);
     }
 
+    /*
+     * Responsibility: Handles the Android callback or event `onActivityResult` and updates the related state.
+     * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
+     */
     @Override
     protected void onActivityResult(int requestCode,
                                     int resultCode,
@@ -431,6 +534,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Responsibility: Handles the Android callback or event `onRequestPermissionsResult` and updates the related state.
+     * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -445,6 +552,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Responsibility: Clears or resets the data and state related to `clear selected image`.
+     * Purpose: Keeping deletion logic separate helps ensure related UI and data updates are not missed.
+     */
     private void clearSelectedImage() {
         selectedImageUri = null;
         cameraImageData = null;
@@ -452,6 +563,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         imagePreview.setVisibility(View.GONE);
     }
 
+    /*
+     * Responsibility: Performs the `focus input` responsibility of `HistoryChatActivity` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private void focusInput() {
         messageEditText.requestFocus();
         InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -460,6 +575,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Responsibility: Performs the `scroll to bottom` responsibility of `HistoryChatActivity` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private void scrollToBottom(boolean smooth) {
         if (messages.isEmpty()) return;
         int position = messages.size() - 1;
@@ -467,6 +586,10 @@ public final class HistoryChatActivity extends AppCompatActivity {
         else recyclerView.scrollToPosition(position);
     }
 
+    /*
+     * Responsibility: Performs the `safe message` responsibility of `HistoryChatActivity` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private String safeMessage(Throwable error, String fallback) {
         String detail = error == null ? "" : error.getMessage();
         return detail == null || detail.trim().isEmpty() ? fallback : detail.trim();

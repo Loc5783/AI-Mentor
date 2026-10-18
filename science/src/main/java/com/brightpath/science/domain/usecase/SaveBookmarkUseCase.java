@@ -7,21 +7,35 @@ import com.brightpath.science.domain.repository.ScienceBookmarkRepository;
 public final class SaveBookmarkUseCase {
     private final ScienceBookmarkRepository repository;
 
-    public SaveBookmarkUseCase(ScienceBookmarkRepository repository) {
+        /*
+ * Responsibility: Initializes SaveBookmarkUseCase and receives or prepares the dependencies/state required by this application/business use-case.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public SaveBookmarkUseCase(ScienceBookmarkRepository repository) {
         this.repository = repository;
     }
 
-    public boolean isBookmarked(int userId, long historyId) {
+        /*
+ * Responsibility: Checks the condition represented by `isBookmarked` and returns the corresponding boolean result.
+ * Purpose: Centralizes the decision rule so the same condition is evaluated consistently.
+ */
+public boolean isBookmarked(int userId, long historyId) {
         return historyId > 0 && repository.existsForHistory(userId, historyId);
     }
 
-    public boolean toggle(int userId, long historyId, ScienceSubject subject, String title, String content) {
+        /*
+ * Responsibility: Converts input data in `toggle` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+public boolean toggle(int userId, long historyId, ScienceSubject subject, String title, String content) {
         if (historyId <= 0 || content == null || content.trim().isEmpty()) return false;
         if (repository.existsForHistory(userId, historyId)) {
             repository.deleteForHistory(userId, historyId);
+            if (repository.existsForHistory(userId, historyId))
+                throw new IllegalStateException("Unable to remove bookmark.");
             return false;
         }
-        repository.save(new ScienceBookmark(
+        long saved = repository.save(new ScienceBookmark(
                 0,
                 userId,
                 historyId,
@@ -30,6 +44,7 @@ public final class SaveBookmarkUseCase {
                 content.trim(),
                 System.currentTimeMillis()
         ));
+        if (saved <= 0) throw new IllegalStateException("Unable to save bookmark.");
         return true;
     }
 }

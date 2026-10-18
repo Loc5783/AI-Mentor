@@ -10,6 +10,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 /** Safely resizes images before sending them to AI vision. */
+/*
+ * Role: Utility class for History, grouping reusable logic such as user sessions, levels, formatting, or data conversion.
+ * Purpose: Moving shared logic into helpers reduces duplication and keeps Activities and Fragments focused on screen coordination.
+ */
 public final class HistoryImageReader {
     private static final int MAX_SIDE = 1280;
     private static final int MAX_BYTES = 5 * 1024 * 1024;
@@ -51,11 +55,19 @@ public final class HistoryImageReader {
         return compressBitmap(bitmap);
     }
 
+    /*
+     * Responsibility: Performs the `from bitmap` responsibility of `HistoryImageReader` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     public ImageData fromBitmap(Bitmap bitmap) throws Exception {
         if (bitmap == null) throw new IllegalArgumentException("Không nhận được ảnh từ camera.");
         return compressBitmap(bitmap.copy(Bitmap.Config.ARGB_8888, false));
     }
 
+    /*
+     * Responsibility: Performs the `compress bitmap` responsibility of `HistoryImageReader` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     private ImageData compressBitmap(Bitmap decoded) throws Exception {
         Bitmap scaled = decoded;
         int maxSide = Math.max(decoded.getWidth(), decoded.getHeight());
@@ -87,6 +99,10 @@ public final class HistoryImageReader {
         }
     }
 
+    /*
+     * Responsibility: Calculates the value for `calculate sample size` from the available input data.
+     * Purpose: Separating calculations from the UI makes them easier to test and prevents duplicated formulas.
+     */
     private int calculateSampleSize(int width, int height, int target) {
         int sample = 1;
         int max = Math.max(width, height);
@@ -98,11 +114,19 @@ public final class HistoryImageReader {
         private final byte[] bytes;
         private final String mimeType;
 
+        /*
+         * Responsibility: Performs the `image data` responsibility of `HistoryImageReader` and returns or updates the result for the caller.
+         * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+         */
         public ImageData(byte[] bytes, String mimeType) {
             this.bytes = bytes == null ? new byte[0] : bytes;
             this.mimeType = mimeType == null ? "image/jpeg" : mimeType;
         }
 
+        /*
+         * Responsibility: Reads or loads data for `get bytes` from the appropriate data source.
+         * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
+         */
         public byte[] getBytes() {
             return bytes;
         }

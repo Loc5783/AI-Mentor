@@ -2,150 +2,146 @@ package com.example.modulelaptrinh.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.view.*;
+import androidx.annotation.*;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import androidx.recyclerview.widget.*;
+import com.example.mentor.data.*;
+import com.example.mentor.ui.HistoryControls;
+import com.example.modulelaptrinh.MainActivity;
 import com.example.modulelaptrinh.ProgrammingChatActivity;
 import com.example.modulelaptrinh.R;
 import com.example.modulelaptrinh.adapters.ProgrammingChatHistoryAdapter;
-import com.example.modulelaptrinh.database.ProgrammingDbHelper;
-import com.example.modulelaptrinh.database.SessionItem;
+import com.example.modulelaptrinh.database.*;
+import com.example.modulelaptrinh.util.ConfirmDeletion;
+import java.util.*;
 
-import java.util.List;
+/** Full-message search and shared conversation rows; existing single/all deletion is retained. */
+public final class ChatHistoryFragment extends Fragment {
+  private final List<SessionItem> all = new ArrayList<>();
+  private ProgrammingDbHelper database;
+  private ProgrammingChatHistoryAdapter adapter;
+  private HistoryControls controls;
+  private ConversationSearchIndex search = new ConversationSearchIndex();
+  private int userId;
 
-public class ChatHistoryFragment extends Fragment {
-    private RecyclerView rvChatHistory;
-    private TextView tvEmptyHistory;
-    private ImageView ivDeleteAll;
-    private ProgrammingChatHistoryAdapter adapter;
-    private ProgrammingDbHelper dbHelper;
-    private List<SessionItem> sessionList;
-    private int userId;
+  @Nullable
+  @Override
+  public View onCreateView(
+      @NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle state) {
+    return inflater.inflate(com.example.mentor.ui.R.layout.mentor_history_page, parent, false);
+  }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_chat_history, container, false);
-        userId = ((com.example.modulelaptrinh.MainActivity) requireActivity()).getCurrentUserId();
-
-        rvChatHistory = view.findViewById(R.id.rv_chat_history);
-        tvEmptyHistory = view.findViewById(R.id.tv_empty_history);
-        ivDeleteAll = view.findViewById(R.id.iv_delete_all);
-
-        try {
-            dbHelper = new ProgrammingDbHelper(getContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(getContext(), "Lỗi khởi tạo database", Toast.LENGTH_SHORT).show();
-        }
-
-        setupRecyclerView();
-        loadHistory();
-
-        ivDeleteAll.setOnClickListener(v -> {
-            if (dbHelper != null) {
-                dbHelper.deleteAllSessions(userId);
-                loadHistory();
-                Toast.makeText(getContext(), "Đã xóa tất cả lịch sử", Toast.LENGTH_SHORT).show();
-            }
+  @Override
+  public void onViewCreated(@NonNull View root, @Nullable Bundle state) {
+    super.onViewCreated(root, state);
+    userId = ((MainActivity) requireActivity()).getCurrentUserId();
+    database = new ProgrammingDbHelper(requireContext());
+    root.findViewById(com.example.mentor.ui.R.id.mentor_history_new)
+        .setOnClickListener(v -> open(null));
+    View delete = root.findViewById(com.example.mentor.ui.R.id.mentor_history_delete_all);
+    delete.setVisibility(View.VISIBLE);
+    delete.setOnClickListener(
+        v -> {
+          android.widget.PopupMenu menu = new android.widget.PopupMenu(requireContext(), v);
+          menu.getMenu()
+              .add(com.example.mentor.ui.R.string.mentor_history_delete_all)
+              .setEnabled(!all.isEmpty());
+          menu.setOnMenuItemClickListener(
+              item -> {
+                ConfirmDeletion.show(
+                    requireContext(),
+                    R.string.program_delete_all_chats,
+                    () -> database.deleteAllSessions(userId),
+                    this::reload);
+                return true;
+              });
+          menu.show();
         });
+    root.findViewById(com.example.mentor.ui.R.id.mentor_history_heading).setVisibility(View.GONE);
+    RecyclerView recycler = root.findViewById(com.example.mentor.ui.R.id.mentor_history_list);
+    recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+    adapter =
+        new ProgrammingChatHistoryAdapter(
+            new ArrayList<>(),
+            new ProgrammingChatHistoryAdapter.OnDeleteClickListener() {
+              @Override
+              public void onItemClick(int position, SessionItem item) {
+                open(item);
+              }
 
-        return view;
+              @Override
+              public void onDeleteClick(int position, SessionItem item) {
+                ConfirmDeletion.show(
+                    requireContext(),
+                    R.string.program_delete_chat,
+                    () -> database.deleteSession(item.getId(), userId),
+                    ChatHistoryFragment.this::reload);
+              }
+            });
+    recycler.setAdapter(adapter);
+    controls = new HistoryControls(root, state, this::filter);
+    reload();
+  }
+
+  private void open(SessionItem item) {
+    Intent intent =
+        new Intent(requireContext(), ProgrammingChatActivity.class)
+            .putExtra(MainActivity.EXTRA_USER_ID, userId);
+    if (item != null) intent.putExtra("SESSION_ID", item.getId());
+    startActivity(intent);
+  }
+
+  private void reload() {
+    all.clear();
+    all.addAll(database.getAllSessions(userId));
+    search = database.loadSessionSearchIndex(userId);
+    for (SessionItem item : all) {
+      String name = item.getName();
+      if (name == null
+          || name.trim().isEmpty()
+          || "Cuộc trò chuyện mới".equals(name)
+          || "New chat".equals(name)) {
+        String first = search.firstUser(String.valueOf(item.getId())).replace('\n', ' ');
+        if (!first.isEmpty())
+          item.setName(
+              first.codePointCount(0, first.length()) > 64
+                  ? first.substring(0, first.offsetByCodePoints(0, 64)) + "…"
+                  : first);
+      }
     }
+    filter();
+  }
 
-    private void setupRecyclerView() {
-        adapter = new ProgrammingChatHistoryAdapter(null, new ProgrammingChatHistoryAdapter.OnDeleteClickListener() {
-            @Override
-            public void onDeleteClick(int position, SessionItem session) {
-                if (dbHelper != null && session != null) {
-                    dbHelper.deleteSession(session.getId(), userId);
-                    loadHistory();
-                    Toast.makeText(getContext(), "Đã xóa cuộc hội thoại", Toast.LENGTH_SHORT).show();
-                }
-            }
+  private void filter() {
+    if (controls != null && adapter != null)
+      adapter.updateData(
+          controls.filter(
+              all,
+              item -> item.getName() + " " + search.text(String.valueOf(item.getId())),
+              item -> Timestamps.parse(item.getTimestamp())));
+  }
 
-            @Override
-            public void onItemClick(int position, SessionItem session) {
-                if (getActivity() == null || session == null) return;
+  @Override
+  public void onResume() {
+    super.onResume();
+    if (database != null) reload();
+  }
 
-                try {
-                    Intent intent = new Intent(getActivity(), ProgrammingChatActivity.class);
-                    intent.putExtra("SESSION_ID", session.getId());
-                    intent.putExtra(com.example.modulelaptrinh.MainActivity.EXTRA_USER_ID, userId);
-                    startActivity(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(getContext(), "Lỗi mở chat", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        rvChatHistory.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvChatHistory.setAdapter(adapter);
-    }
+  @Override
+  public void onSaveInstanceState(@NonNull Bundle out) {
+    super.onSaveInstanceState(out);
+    if (controls != null) controls.save(out);
+  }
 
-    private void loadHistory() {
-        if (dbHelper == null) {
-            try {
-                dbHelper = new ProgrammingDbHelper(getContext());
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-        }
-
-        try {
-            sessionList = dbHelper.getAllSessions(userId);
-
-            for (SessionItem session : sessionList) {
-                if (session.getName().equals("Cuộc trò chuyện mới")) {
-                    try {
-                        List<com.example.modulelaptrinh.ProgrammingMessage> messages = dbHelper.getMessagesBySession(session.getId());
-                        if (!messages.isEmpty()) {
-                            String firstMessage = messages.get(0).getContent();
-                            if (firstMessage != null && !firstMessage.isEmpty()) {
-                                if (firstMessage.length() > 30) {
-                                    firstMessage = firstMessage.substring(0, 30) + "...";
-                                }
-                                session.setName(firstMessage);
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            if (sessionList.isEmpty()) {
-                tvEmptyHistory.setVisibility(View.VISIBLE);
-                rvChatHistory.setVisibility(View.GONE);
-                ivDeleteAll.setVisibility(View.GONE);
-            } else {
-                tvEmptyHistory.setVisibility(View.GONE);
-                rvChatHistory.setVisibility(View.VISIBLE);
-                ivDeleteAll.setVisibility(View.VISIBLE);
-                adapter.updateData(sessionList);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(getContext(), "Lỗi tải lịch sử", Toast.LENGTH_SHORT).show();
-        }
-    }
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (dbHelper != null) {
-            loadHistory();
-        }
-    }
-
+  @Override
+  public void onDestroyView() {
+    if (database != null) database.close();
+    database = null;
+    adapter = null;
+    controls = null;
+    all.clear();
+    search = new ConversationSearchIndex();
+    super.onDestroyView();
+  }
 }

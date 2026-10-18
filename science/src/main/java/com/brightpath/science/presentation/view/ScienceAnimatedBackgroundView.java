@@ -38,11 +38,19 @@ public final class ScienceAnimatedBackgroundView extends View {
     private int widthPx = 1;
     private int heightPx = 1;
 
-    public ScienceAnimatedBackgroundView(Context context) {
+        /*
+ * Responsibility: Initializes ScienceAnimatedBackgroundView and receives or prepares the dependencies/state required by this custom Android View.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ScienceAnimatedBackgroundView(Context context) {
         this(context, null);
     }
 
-    public ScienceAnimatedBackgroundView(Context context, @Nullable AttributeSet attrs) {
+        /*
+ * Responsibility: Initializes ScienceAnimatedBackgroundView and receives or prepares the dependencies/state required by this custom Android View.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ScienceAnimatedBackgroundView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         setClickable(false);
@@ -51,28 +59,48 @@ public final class ScienceAnimatedBackgroundView extends View {
         for (int i = 0; i < particles.length; i++) particles[i] = new Particle();
     }
 
-    public void setSubject(ScienceSubject subject) {
+        /*
+ * Responsibility: Updates the state or value handled by `setSubject` for ScienceAnimatedBackgroundView.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+public void setSubject(ScienceSubject subject) {
         this.subject = subject == null ? ScienceSubject.PHYSICS : subject;
         rebuildGradient();
         invalidate();
     }
 
-    public void setAnimationEnabled(boolean enabled) {
+        /*
+ * Responsibility: Updates the state or value handled by `setAnimationEnabled` for ScienceAnimatedBackgroundView.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+public void setAnimationEnabled(boolean enabled) {
         userEnabled = enabled;
         updateRunningState();
         invalidate();
     }
 
-    public void start() {
+        /*
+ * Responsibility: Creates the required navigation/action and opens the Science destination handled by `start`.
+ * Purpose: Keeps navigation code separate from the business logic executed by the destination screen.
+ */
+public void start() {
         updateRunningState();
     }
 
-    public void stop() {
+        /*
+ * Responsibility: Performs the `stop` operation for ScienceAnimatedBackgroundView within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the custom Android View so the code is easier to read, test, maintain, and locate during the review.
+ */
+public void stop() {
         running = false;
         lastFrameNanos = 0L;
     }
 
-    private void updateRunningState() {
+        /*
+ * Responsibility: Updates the state or value handled by `updateRunningState` for ScienceAnimatedBackgroundView.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void updateRunningState() {
         PowerManager powerManager = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
         boolean batterySaver = powerManager != null && powerManager.isPowerSaveMode();
         running = userEnabled && !batterySaver && isAttachedToWindow()
@@ -81,25 +109,41 @@ public final class ScienceAnimatedBackgroundView extends View {
         if (running) postInvalidateOnAnimation();
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the `onAttachedToWindow` operation for ScienceAnimatedBackgroundView within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the custom Android View so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         updateRunningState();
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the `onDetachedFromWindow` operation for ScienceAnimatedBackgroundView within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the custom Android View so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
     protected void onDetachedFromWindow() {
         stop();
         super.onDetachedFromWindow();
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the `onWindowVisibilityChanged` operation for ScienceAnimatedBackgroundView within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the custom Android View so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         updateRunningState();
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the `onSizeChanged` operation for ScienceAnimatedBackgroundView within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the custom Android View so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         widthPx = Math.max(1, w);
         heightPx = Math.max(1, h);
@@ -114,7 +158,11 @@ public final class ScienceAnimatedBackgroundView extends View {
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the `onDraw` operation for ScienceAnimatedBackgroundView within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the custom Android View so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawRect(0, 0, widthPx, heightPx, backgroundPaint);
@@ -150,7 +198,11 @@ public final class ScienceAnimatedBackgroundView extends View {
         if (running && isAttachedToWindow()) postInvalidateDelayed(FRAME_DELAY_MS);
     }
 
-    private void rebuildGradient() {
+        /*
+ * Responsibility: Performs the `rebuildGradient` operation for ScienceAnimatedBackgroundView within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the custom Android View so the code is easier to read, test, maintain, and locate during the review.
+ */
+private void rebuildGradient() {
         if (widthPx <= 0 || heightPx <= 0) return;
         boolean night = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
                 == Configuration.UI_MODE_NIGHT_YES;
@@ -186,7 +238,11 @@ public final class ScienceAnimatedBackgroundView extends View {
                 0f, 0f, widthPx, heightPx, colors, null, Shader.TileMode.CLAMP));
     }
 
-    private int accentColor(ScienceSubject currentSubject) {
+        /*
+ * Responsibility: Performs the `accentColor` operation for ScienceAnimatedBackgroundView within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the custom Android View so the code is easier to read, test, maintain, and locate during the review.
+ */
+private int accentColor(ScienceSubject currentSubject) {
         boolean night = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
                 == Configuration.UI_MODE_NIGHT_YES;
         switch (currentSubject) {
@@ -200,12 +256,20 @@ public final class ScienceAnimatedBackgroundView extends View {
         }
     }
 
-    private int withAlpha(int color, int alpha) {
+        /*
+ * Responsibility: Performs the `withAlpha` operation for ScienceAnimatedBackgroundView within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the custom Android View so the code is easier to read, test, maintain, and locate during the review.
+ */
+private int withAlpha(int color, int alpha) {
         return Color.argb(Math.max(0, Math.min(255, alpha)),
                 Color.red(color), Color.green(color), Color.blue(color));
     }
 
-    private float dp(float value) {
+        /*
+ * Responsibility: Performs the `dp` operation for ScienceAnimatedBackgroundView within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the custom Android View so the code is easier to read, test, maintain, and locate during the review.
+ */
+private float dp(float value) {
         return value * getResources().getDisplayMetrics().density;
     }
 
@@ -217,7 +281,11 @@ public final class ScienceAnimatedBackgroundView extends View {
         private float velocityY;
         private int alpha;
 
-        private void move(float frameScale, int width, int height) {
+                /*
+ * Responsibility: Performs the `move` operation for Particle within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+private void move(float frameScale, int width, int height) {
             x += velocityX * frameScale;
             y += velocityY * frameScale;
             if (x < -radius) x = width + radius;

@@ -1,0 +1,5 @@
+<resources>
+ <dimen name="mentor_control_height">52dp</dimen><dimen name="mentor_control_radius">16dp</dimen>
+ <dimen name="mentor_control_text">15sp</dimen><dimen name="mentor_nav_text">12sp</dimen>
+ <color name="mentor_control_ripple">#33FFFFFF</color>
+</resources>

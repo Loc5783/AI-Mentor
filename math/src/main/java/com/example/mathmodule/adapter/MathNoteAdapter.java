@@ -16,6 +16,10 @@ import com.example.mathmodule.databases.MathNoteItem;
 
 import java.util.List;
 
+/*
+ * Role: Adapter for Math, responsible for receiving model data and binding it to RecyclerView/ListView items.
+ * Purpose: The Adapter separates list data from presentation logic, making the UI easier to update and reuse.
+ */
 public class MathNoteAdapter extends RecyclerView.Adapter<MathNoteAdapter.NoteViewHolder> {
 
     public interface NoteActionListener {
@@ -27,11 +31,19 @@ public class MathNoteAdapter extends RecyclerView.Adapter<MathNoteAdapter.NoteVi
     private List<MathNoteItem> noteList;
     private final NoteActionListener listener;
 
+    /*
+     * Responsibility: Initializes the `MathNoteAdapter` object and sets up the required dependencies and initial data.
+     * Purpose: The constructor ensures the object starts in a valid state immediately after creation.
+     */
     public MathNoteAdapter(List<MathNoteItem> noteList, NoteActionListener listener) {
         this.noteList = noteList;
         this.listener = listener;
     }
 
+    /*
+     * Responsibility: Updates or synchronizes `update data` with the latest data or state.
+     * Purpose: Keeps the UI and data synchronized after user actions.
+     */
     public void updateData(List<MathNoteItem> newList) {
         noteList = newList;
         notifyDataSetChanged();
@@ -45,12 +57,16 @@ public class MathNoteAdapter extends RecyclerView.Adapter<MathNoteAdapter.NoteVi
         return new NoteViewHolder(view);
     }
 
+    /*
+     * Responsibility: Handles the Android callback or event `onBindViewHolder` and updates the related state.
+     * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
+     */
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
         MathNoteItem item = noteList.get(position);
         holder.txtTitle.setText(item.getTitle());
         holder.txtFormula.setText(item.getFormula());
-        holder.txtCategory.setText(item.getCategory());
+        holder.txtCategory.setText(com.example.mathmodule.util.MathCategory.GEOMETRY.equals(item.getCategory()) ? holder.itemView.getContext().getString(R.string.math_formula_filter_geometry) : com.example.mathmodule.util.MathCategory.ALGEBRA.equals(item.getCategory()) ? holder.itemView.getContext().getString(R.string.math_formula_filter_algebra) : item.getCategory());
 
         if (item.getIsPinned() == 1) {
             holder.imgStar.setImageResource(android.R.drawable.btn_star_big_on);
@@ -73,6 +89,10 @@ public class MathNoteAdapter extends RecyclerView.Adapter<MathNoteAdapter.NoteVi
         });
     }
 
+    /*
+     * Responsibility: Reads or loads data for `get item count` from the appropriate data source.
+     * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
+     */
     @Override
     public int getItemCount() {
         return noteList == null ? 0 : noteList.size();

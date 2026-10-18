@@ -20,17 +20,29 @@ public final class AssetPeriodicTableRepository implements PeriodicTableReposito
     private final Context context;
     private List<ChemicalElement> cachedElements;
 
-    public AssetPeriodicTableRepository(Context context) {
+        /*
+ * Responsibility: Initializes AssetPeriodicTableRepository and receives or prepares the dependencies/state required by this data repository.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public AssetPeriodicTableRepository(Context context) {
         this.context = context.getApplicationContext();
     }
 
-    @Override
+        /*
+ * Responsibility: Retrieves the data/state required by `getAll` from the appropriate data repository.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+@Override
     public synchronized List<ChemicalElement> getAll() {
         if (cachedElements == null) cachedElements = loadElements();
         return Collections.unmodifiableList(cachedElements);
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the repository operation `search` against the Science data source.
+ * Purpose: Keeps persistence/query details behind the repository abstraction and away from presentation/business code.
+ */
+@Override
     public List<ChemicalElement> search(String keyword) {
         String query = keyword == null ? "" : keyword.trim().toLowerCase(Locale.ROOT);
         if (query.isEmpty()) return getAll();
@@ -46,7 +58,11 @@ public final class AssetPeriodicTableRepository implements PeriodicTableReposito
         return result;
     }
 
-    @Override
+        /*
+ * Responsibility: Retrieves the data/state required by `findByAtomicNumber` from the appropriate data repository.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+@Override
     public ChemicalElement findByAtomicNumber(int atomicNumber) {
         for (ChemicalElement element : getAll()) {
             if (element.getAtomicNumber() == atomicNumber) return element;
@@ -54,7 +70,11 @@ public final class AssetPeriodicTableRepository implements PeriodicTableReposito
         return null;
     }
 
-    private List<ChemicalElement> loadElements() {
+        /*
+ * Responsibility: Retrieves the data/state required by `loadElements` from the appropriate data repository.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+private List<ChemicalElement> loadElements() {
         List<ChemicalElement> result = new ArrayList<>();
         try (InputStream stream = context.getAssets().open("science/periodic_elements.json");
              ByteArrayOutputStream output = new ByteArrayOutputStream()) {

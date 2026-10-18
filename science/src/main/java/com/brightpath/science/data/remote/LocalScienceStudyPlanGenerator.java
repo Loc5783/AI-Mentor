@@ -26,7 +26,11 @@ public final class LocalScienceStudyPlanGenerator implements ScienceStudyPlanGen
             "Cause-and-effect reasoning", "Real-world biology", "Mixed review"
     };
 
-    @Override
+        /*
+ * Responsibility: Generates the Science result handled by `generate` using the configured generator/service and request context.
+ * Purpose: Keeps content generation behind a focused method so the presentation layer stays independent from AI/fallback details.
+ */
+@Override
     public void generate(StudyPlanRequest request, ResultCallback<StudyPlan> callback) {
         try {
             List<StudySession> sessions = new ArrayList<>();
@@ -60,13 +64,21 @@ public final class LocalScienceStudyPlanGenerator implements ScienceStudyPlanGen
         }
     }
 
-    private String[] topics(ScienceSubject subject) {
+        /*
+ * Responsibility: Converts input data in `topics` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+private String[] topics(ScienceSubject subject) {
         if (subject == ScienceSubject.CHEMISTRY) return CHEMISTRY_TOPICS;
         if (subject == ScienceSubject.BIOLOGY) return BIOLOGY_TOPICS;
         return PHYSICS_TOPICS;
     }
 
-    private String buildActivities(int totalMinutes, String topic, String goal) {
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `buildActivities`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+private String buildActivities(int totalMinutes, String topic, String goal) {
         int review = Math.max(5, Math.round(totalMinutes * 0.25f));
         int learn = Math.max(8, Math.round(totalMinutes * 0.35f));
         int practice = Math.max(7, totalMinutes - review - learn);

@@ -13,6 +13,10 @@ import androidx.core.app.NotificationCompat;
 import com.example.asm_final.R;
 import com.example.asm_final.activities.MainActivity;
 
+/*
+ * Role: Utility class for App Shell, grouping reusable logic such as user sessions, levels, formatting, or data conversion.
+ * Purpose: Moving shared logic into helpers reduces duplication and keeps Activities and Fragments focused on screen coordination.
+ */
 public class ReminderReceiver extends BroadcastReceiver {
     private static final String CHANNEL_ID = "study_reminder_channel";
     private static final int NOTIFICATION_ID = 101;
@@ -27,12 +31,17 @@ public class ReminderReceiver extends BroadcastReceiver {
             return;
         }
 
-        showNotification(context);
+        if (ReminderHelper.isReminderEnabled(context)) showNotification(context);
     }
 
+    /*
+     * Responsibility: Displays or binds data from `show notification` to the appropriate UI or navigation destination.
+     * Purpose: Separating presentation logic prevents data processing from being mixed with UI rendering.
+     */
     private void showNotification(Context context) {
         NotificationManager notificationManager = (NotificationManager) 
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager == null) return;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(

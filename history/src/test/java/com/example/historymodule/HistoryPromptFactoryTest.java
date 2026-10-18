@@ -7,6 +7,10 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/*
+ * Role: Test class for History, used to verify key rules and behaviors after code changes.
+ * Purpose: These tests verify key behaviors automatically instead of relying only on manual UI testing.
+ */
 public class HistoryPromptFactoryTest {
     @Test
     public void answerPromptUsesHistoryRulesAndConversationContext() {
@@ -25,6 +29,10 @@ public class HistoryPromptFactoryTest {
         assertFalse(prompt.contains("Ảnh đã được gửi kèm"));
     }
 
+    /*
+     * Responsibility: Performs the `image prompt warns against guessing unreadable history evidence` responsibility of `HistoryPromptFactoryTest` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     @Test
     public void imagePromptWarnsAgainstGuessingUnreadableHistoryEvidence() {
         String prompt = new HistoryPromptFactory().buildAnswerPrompt(

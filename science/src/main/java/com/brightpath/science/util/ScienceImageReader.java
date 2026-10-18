@@ -14,7 +14,11 @@ public final class ScienceImageReader {
     private static final int MAX_SIDE = 1280;
     private static final int MAX_COMPRESSED_BYTES = 5 * 1024 * 1024;
 
-    public ImageData readCompressed(Context context, Uri uri) throws Exception {
+        /*
+ * Responsibility: Performs the `readCompressed` operation for ScienceImageReader within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+public ImageData readCompressed(Context context, Uri uri) throws Exception {
         if (context == null || uri == null) {
             throw new IllegalArgumentException("No image was selected.");
         }
@@ -80,7 +84,11 @@ public final class ScienceImageReader {
         }
     }
 
-    private int calculateSampleSize(int width, int height, int targetSide) {
+        /*
+ * Responsibility: Calculates the value represented by `calculateSampleSize` from the supplied Science learning data.
+ * Purpose: Keeps the calculation rule deterministic and reusable outside the UI.
+ */
+private int calculateSampleSize(int width, int height, int targetSide) {
         int sample = 1;
         int max = Math.max(width, height);
         while (max / sample > targetSide && sample < 16) sample *= 2;
@@ -91,12 +99,24 @@ public final class ScienceImageReader {
         private final byte[] bytes;
         private final String mimeType;
 
-        public ImageData(byte[] bytes, String mimeType) {
+                /*
+ * Responsibility: Initializes ImageData and receives or prepares the dependencies/state required by this domain model.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ImageData(byte[] bytes, String mimeType) {
             this.bytes = bytes == null ? new byte[0] : bytes;
             this.mimeType = mimeType == null ? "image/jpeg" : mimeType;
         }
 
-        public byte[] getBytes() { return bytes; }
-        public String getMimeType() { return mimeType; }
+                /*
+ * Responsibility: Retrieves the data/state required by `getBytes` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public byte[] getBytes() { return bytes; }
+                /*
+ * Responsibility: Retrieves the data/state required by `getMimeType` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getMimeType() { return mimeType; }
     }
 }

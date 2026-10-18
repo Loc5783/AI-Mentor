@@ -1,7 +1,18 @@
 package com.brightpath.science.data.local;
 
+/**
+ * Central schema contract for the Science-owned SQLite database {@code science_ai.db}.
+ *
+ * <p>review NOTE: Open this file when asked "what tables/columns are stored?".
+ * The four main tables are history, bookmarks, notes and quiz attempts. All learning
+ * records contain {@code user_id} so reads/writes can be scoped to the active account.</p>
+ */
 public final class ScienceDbContract {
-    private ScienceDbContract() { }
+        /*
+ * Responsibility: Initializes ScienceDbContract and receives or prepares the dependencies/state required by this SQLite database infrastructure.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+private ScienceDbContract() { }
 
     public static final class History {
         public static final String TABLE = "science_history";
@@ -56,7 +67,11 @@ public final class ScienceDbContract {
         public static final String CREATED_AT = "created_at";
     }
 
-    public static String createHistoryTable() {
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `createHistoryTable`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+public static String createHistoryTable() {
         return "CREATE TABLE IF NOT EXISTS " + History.TABLE + " ("
                 + History.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + History.USER_ID + " INTEGER NOT NULL, "
@@ -72,7 +87,11 @@ public final class ScienceDbContract {
                 + History.REVIEW_SECONDS + " INTEGER NOT NULL DEFAULT 0)";
     }
 
-    public static String createBookmarkTable() {
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `createBookmarkTable`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+public static String createBookmarkTable() {
         return "CREATE TABLE IF NOT EXISTS " + Bookmark.TABLE + " ("
                 + Bookmark.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + Bookmark.USER_ID + " INTEGER NOT NULL, "
@@ -85,7 +104,11 @@ public final class ScienceDbContract {
     }
 
 
-    public static String createNoteTable() {
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `createNoteTable`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+public static String createNoteTable() {
         return "CREATE TABLE IF NOT EXISTS " + Note.TABLE + " ("
                 + Note.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + Note.USER_ID + " INTEGER NOT NULL, "
@@ -96,7 +119,11 @@ public final class ScienceDbContract {
                 + Note.UPDATED_AT + " INTEGER NOT NULL)";
     }
 
-    public static String createQuizAttemptTable() {
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `createQuizAttemptTable`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+public static String createQuizAttemptTable() {
         return "CREATE TABLE IF NOT EXISTS " + QuizAttempt.TABLE + " ("
                 + QuizAttempt.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + QuizAttempt.USER_ID + " INTEGER NOT NULL, "

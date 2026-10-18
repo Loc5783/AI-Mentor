@@ -2,6 +2,8 @@ package com.brightpath.science.data.remote;
 
 import android.util.Base64;
 
+import com.brightpath.science.BuildConfig;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -18,15 +20,16 @@ import java.util.List;
 
 /** Minimal Gemini REST client shared by Science Chat, Quiz and Study Planner. */
 public final class GeminiApiClient {
-    // API keys are loaded from local Gradle properties.
-    private static final String API_KEY_1 = com.brightpath.science.BuildConfig.SCIENCE_GEMINI_API_KEY_1;
-    private static final String API_KEY_2 = com.brightpath.science.BuildConfig.SCIENCE_GEMINI_API_KEY_2;
-    private static final String API_KEY_3 = com.brightpath.science.BuildConfig.SCIENCE_GEMINI_API_KEY_3;
+    // API keys are injected from root api.properties through science/build.gradle.
+    // This keeps secrets out of Java source and the submitted repository/ZIP.
+    private static final String API_KEY_1 = BuildConfig.SCIENCE_GEMINI_API_KEY_1;
+    private static final String API_KEY_2 = BuildConfig.SCIENCE_GEMINI_API_KEY_2;
+    private static final String API_KEY_3 = BuildConfig.SCIENCE_GEMINI_API_KEY_3;
 
     private static final String[] CONFIGURED_KEYS = buildKeyList();
     private static final long[] DISABLED_UNTIL = new long[CONFIGURED_KEYS.length];
     private static int currentKeyIndex = 0;
-    private static String currentModel = "gemini-flash-latest";
+    private static String currentModel = BuildConfig.SCIENCE_GEMINI_MODEL;
     private static String currentStatus = "GOOD";
 
     private static final int CONNECT_TIMEOUT_MS = 20_000;
@@ -42,7 +45,11 @@ public final class GeminiApiClient {
         public final String status;
         public final String finishReason;
 
-        public Result(String text, int promptTokens, int candidateTokens, int totalTokens,
+                /*
+ * Responsibility: Initializes Result and receives or prepares the dependencies/state required by this Science Module component.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public Result(String text, int promptTokens, int candidateTokens, int totalTokens,
                       String status, String finishReason) {
             this.text = text;
             this.promptTokens = promptTokens;
@@ -52,35 +59,71 @@ public final class GeminiApiClient {
             this.finishReason = finishReason == null ? "" : finishReason.trim();
         }
 
-        public boolean wasTruncated() {
+                /*
+ * Responsibility: Performs the `wasTruncated` operation for Result within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+public boolean wasTruncated() {
             return "MAX_TOKENS".equalsIgnoreCase(finishReason);
         }
 
-        @Override
+                /*
+ * Responsibility: Converts input data in `toString` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+@Override
         public String toString() {
             return text;
         }
     }
 
-    public String getModelName() { return currentModel; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getModelName` from the appropriate AI/network or fallback service.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getModelName() { return currentModel; }
 
-    public void setModelName(String modelName) {
+        /*
+ * Responsibility: Updates the state or value handled by `setModelName` for GeminiApiClient.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+public void setModelName(String modelName) {
         if (modelName != null && !modelName.trim().isEmpty()) currentModel = modelName.trim();
     }
 
-    public String getStatus() { return currentStatus; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getStatus` from the appropriate AI/network or fallback service.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getStatus() { return currentStatus; }
 
-    public synchronized String getActiveKeyLabel() {
+        /*
+ * Responsibility: Retrieves the data/state required by `getActiveKeyLabel` from the appropriate AI/network or fallback service.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public synchronized String getActiveKeyLabel() {
         return CONFIGURED_KEYS.length == 0 ? "no key" : "key " + (currentKeyIndex + 1) + "/" + CONFIGURED_KEYS.length;
     }
 
-    public boolean isConfigured() { return CONFIGURED_KEYS.length > 0; }
+        /*
+ * Responsibility: Checks the condition represented by `isConfigured` and returns the corresponding boolean result.
+ * Purpose: Centralizes the decision rule so the same condition is evaluated consistently.
+ */
+public boolean isConfigured() { return CONFIGURED_KEYS.length > 0; }
 
-    public Result testConnection() throws Exception {
+        /*
+ * Responsibility: Performs the AI/service operation `testConnection` using the configured Science request/context.
+ * Purpose: Keeps networking/fallback concerns inside the service layer instead of the UI.
+ */
+public Result testConnection() throws Exception {
         return generateText("Reply with exactly: OK", null, null, 0.0, 32);
     }
 
-    public Result generateText(String prompt, byte[] imageBytes, String imageMimeType,
+        /*
+ * Responsibility: Generates the Science result handled by `generateText` using the configured generator/service and request context.
+ * Purpose: Keeps content generation behind a focused method so the presentation layer stays independent from AI/fallback details.
+ */
+public Result generateText(String prompt, byte[] imageBytes, String imageMimeType,
                                double temperature, int maxOutputTokens) throws Exception {
         if (!isConfigured()) throw new IllegalStateException("No Gemini API key is configured.");
         if (prompt == null || prompt.trim().isEmpty()) throw new IllegalArgumentException("Prompt cannot be empty.");
@@ -164,7 +207,11 @@ public final class GeminiApiClient {
         throw new IllegalStateException("Gemini request failed after multiple attempts.", lastError);
     }
 
-    private static String[] buildKeyList() {
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `buildKeyList`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+private static String[] buildKeyList() {
         List<String> values = new ArrayList<>();
         addUniqueKey(values, API_KEY_1);
         addUniqueKey(values, API_KEY_2);
@@ -172,13 +219,21 @@ public final class GeminiApiClient {
         return values.toArray(new String[0]);
     }
 
-    private static void addUniqueKey(List<String> keys, String value) {
+        /*
+ * Responsibility: Adds the data, listener, duration, key, or UI element represented by `addUniqueKey`.
+ * Purpose: Keeps the incremental update explicit and isolated from unrelated responsibilities.
+ */
+private static void addUniqueKey(List<String> keys, String value) {
         if (value == null) return;
         String key = value.trim();
         if (!key.isEmpty() && !keys.contains(key)) keys.add(key);
     }
 
-    private static synchronized int nextAvailableKeyIndex() {
+        /*
+ * Responsibility: Performs the AI/service operation `nextAvailableKeyIndex` using the configured Science request/context.
+ * Purpose: Keeps networking/fallback concerns inside the service layer instead of the UI.
+ */
+private static synchronized int nextAvailableKeyIndex() {
         if (CONFIGURED_KEYS.length == 0) return -1;
         long now = System.currentTimeMillis();
         for (int offset = 0; offset < CONFIGURED_KEYS.length; offset++) {
@@ -191,14 +246,22 @@ public final class GeminiApiClient {
         return -1;
     }
 
-    private static synchronized void disableKey(int index, long until) {
+        /*
+ * Responsibility: Performs the AI/service operation `disableKey` using the configured Science request/context.
+ * Purpose: Keeps networking/fallback concerns inside the service layer instead of the UI.
+ */
+private static synchronized void disableKey(int index, long until) {
         if (index >= 0 && index < DISABLED_UNTIL.length) {
             DISABLED_UNTIL[index] = until;
             if (CONFIGURED_KEYS.length > 0) currentKeyIndex = (index + 1) % CONFIGURED_KEYS.length;
         }
     }
 
-    private static synchronized long shortestCooldown() {
+        /*
+ * Responsibility: Performs the AI/service operation `shortestCooldown` using the configured Science request/context.
+ * Purpose: Keeps networking/fallback concerns inside the service layer instead of the UI.
+ */
+private static synchronized long shortestCooldown() {
         long now = System.currentTimeMillis();
         long shortest = Long.MAX_VALUE;
         for (long value : DISABLED_UNTIL) {
@@ -207,7 +270,11 @@ public final class GeminiApiClient {
         return shortest == Long.MAX_VALUE ? -1L : shortest;
     }
 
-    private Result parseFullResponse(String responseBody) throws Exception {
+        /*
+ * Responsibility: Converts input data in `parseFullResponse` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+private Result parseFullResponse(String responseBody) throws Exception {
         JSONObject root = new JSONObject(responseBody);
         StringBuilder answer = new StringBuilder();
         JSONArray candidates = root.optJSONArray("candidates");
@@ -237,7 +304,11 @@ public final class GeminiApiClient {
         return new Result(text, prompt, candidate, total, currentStatus, finishReason);
     }
 
-    private JSONObject buildRequest(String prompt, byte[] imageBytes, String imageMimeType,
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `buildRequest`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+private JSONObject buildRequest(String prompt, byte[] imageBytes, String imageMimeType,
                                     double temperature, int maxOutputTokens) throws Exception {
         JSONArray parts = new JSONArray();
         if (imageBytes != null && imageBytes.length > 0) {
@@ -257,7 +328,11 @@ public final class GeminiApiClient {
                 .put("generationConfig", generationConfig);
     }
 
-    private String readResponse(HttpURLConnection connection, int statusCode) throws Exception {
+        /*
+ * Responsibility: Performs the AI/service operation `readResponse` using the configured Science request/context.
+ * Purpose: Keeps networking/fallback concerns inside the service layer instead of the UI.
+ */
+private String readResponse(HttpURLConnection connection, int statusCode) throws Exception {
         InputStream stream = statusCode >= 200 && statusCode < 300
                 ? connection.getInputStream() : connection.getErrorStream();
         if (stream == null) return "";
@@ -269,7 +344,11 @@ public final class GeminiApiClient {
         }
     }
 
-    private GeminiApiException createApiException(int statusCode, String responseBody) {
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `createApiException`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+private GeminiApiException createApiException(int statusCode, String responseBody) {
         String message = responseBody == null ? "" : responseBody.trim();
         String apiStatus = "";
         try {

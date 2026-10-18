@@ -14,6 +14,10 @@ import com.example.historymodule.R;
 
 import java.util.List;
 
+/*
+ * Role: Adapter for History, responsible for receiving model data and binding it to RecyclerView/ListView items.
+ * Purpose: The Adapter separates list data from presentation logic, making the UI easier to update and reuse.
+ */
 public class HistoryChatAdapter extends RecyclerView.Adapter<HistoryChatAdapter.MyViewHolder> {
 
     List<HistoryMessage> messageList;
@@ -22,6 +26,10 @@ public class HistoryChatAdapter extends RecyclerView.Adapter<HistoryChatAdapter.
         this.messageList = messageList;
     }
 
+    /*
+     * Responsibility: Handles the Android callback or event `onCreateViewHolder` and updates the related state.
+     * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
+     */
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -29,6 +37,10 @@ public class HistoryChatAdapter extends RecyclerView.Adapter<HistoryChatAdapter.
         return new MyViewHolder(chatView);
     }
 
+    /*
+     * Responsibility: Handles the Android callback or event `onBindViewHolder` and updates the related state.
+     * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
+     */
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         HistoryMessage message = messageList.get(position);
@@ -46,6 +58,10 @@ public class HistoryChatAdapter extends RecyclerView.Adapter<HistoryChatAdapter.
         }
     }
 
+    /*
+     * Responsibility: Reads or loads data for `get item count` from the appropriate data source.
+     * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
+     */
     @Override
     public int getItemCount() {
         return messageList.size();
@@ -55,6 +71,10 @@ public class HistoryChatAdapter extends RecyclerView.Adapter<HistoryChatAdapter.
         LinearLayout leftChatView, rightChatView;
         TextView leftChatTextView, rightChatTextView;
 
+        /*
+         * Responsibility: Performs the `my view holder` responsibility of `HistoryChatAdapter` and returns or updates the result for the caller.
+         * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+         */
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             leftChatView = itemView.findViewById(R.id.left_chat_view);

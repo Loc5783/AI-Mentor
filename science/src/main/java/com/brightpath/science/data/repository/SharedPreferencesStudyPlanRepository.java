@@ -15,13 +15,21 @@ public final class SharedPreferencesStudyPlanRepository implements StudyPlanRepo
     private final SharedPreferences preferences;
     private final TextCipher textCipher;
 
-    public SharedPreferencesStudyPlanRepository(Context context, TextCipher textCipher) {
+        /*
+ * Responsibility: Initializes SharedPreferencesStudyPlanRepository and receives or prepares the dependencies/state required by this data repository.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public SharedPreferencesStudyPlanRepository(Context context, TextCipher textCipher) {
         preferences = context.getApplicationContext()
                 .getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         this.textCipher = textCipher;
     }
 
-    @Override
+        /*
+ * Responsibility: Retrieves the data/state required by `getLatest` from the appropriate data repository.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+@Override
     public StudyPlan getLatest(int userId) {
         String stored = preferences.getString(key(userId), "");
         if (stored == null || stored.isEmpty()) return null;
@@ -34,23 +42,39 @@ public final class SharedPreferencesStudyPlanRepository implements StudyPlanRepo
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Persists the data supplied to `save` through the appropriate Science storage/repository.
+ * Purpose: Keeps important learner state available after navigation or application restart.
+ */
+@Override
     public void save(int userId, StudyPlan plan) {
-        if (plan == null) return;
+        if (plan == null) throw new IllegalArgumentException("Study plan is missing.");
         try {
             String encrypted = textCipher.encrypt(plan.toJson().toString());
-            preferences.edit().putString(key(userId), encrypted).apply();
-        } catch (Exception ignored) {
-            // A storage failure should not crash the active study session.
+            if (!preferences.edit().putString(key(userId), encrypted).commit()) {
+                throw new IllegalStateException("Unable to write study plan.");
+            }
+        } catch (Exception error) {
+            throw new IllegalStateException("Unable to save study plan.", error);
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Removes or resets the data/state handled by `clear`.
+ * Purpose: Prevents obsolete state from affecting the next Science operation and supports controlled CRUD behavior.
+ */
+@Override
     public void clear(int userId) {
-        preferences.edit().remove(key(userId)).apply();
+        if (!preferences.edit().remove(key(userId)).commit()) {
+            throw new IllegalStateException("Unable to remove study plan.");
+        }
     }
 
-    private String key(int userId) {
+        /*
+ * Responsibility: Performs the repository operation `key` against the Science data source.
+ * Purpose: Keeps persistence/query details behind the repository abstraction and away from presentation/business code.
+ */
+private String key(int userId) {
         return "plan_user_" + Math.max(0, userId);
     }
 }

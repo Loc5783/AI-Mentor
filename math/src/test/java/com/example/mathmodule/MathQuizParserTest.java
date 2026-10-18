@@ -6,6 +6,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/*
+ * Role: Test class for Math, used to verify key rules and behaviors after code changes.
+ * Purpose: These tests verify key behaviors automatically instead of relying only on manual UI testing.
+ */
 public class MathQuizParserTest {
     @Test
     public void extractsJsonArrayFromGeminiMarkdownResponse() {
@@ -14,6 +18,10 @@ public class MathQuizParserTest {
                 MathQuizParser.cleanJson(response));
     }
 
+    /*
+     * Responsibility: Performs the `invalid or missing response returns empty array` responsibility of `MathQuizParserTest` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     @Test
     public void invalidOrMissingResponseReturnsEmptyArray() {
         assertEquals("[]", MathQuizParser.cleanJson(null));

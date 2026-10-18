@@ -25,7 +25,11 @@ public final class PeriodicTableActivity extends AppCompatActivity {
     private EditText searchInput;
     private TextView countView;
 
-    @Override
+        /*
+ * Responsibility: Initializes the Android component, inflates/binds its layout, and prepares dependencies/listeners/state.
+ * Purpose: Establishes the screen's initial state before the learner starts interacting with it.
+ */
+@Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_science_periodic_table);
@@ -43,32 +47,36 @@ public final class PeriodicTableActivity extends AppCompatActivity {
         loadElements();
     }
 
-    private void loadElements() {
+        /*
+ * Responsibility: Retrieves the data/state required by `loadElements` from the appropriate Android screen and user-interaction controller.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+private void loadElements() {
         try {
             List<ChemicalElement> elements = repository.search(searchInput.getText().toString());
             adapter.submitList(elements);
-            countView.setText(elements.size() + " element(s) shown");
+            countView.setText(getString(R.string.science_elements_count, elements.size()));
         } catch (Exception error) {
             adapter.submitList(java.util.Collections.emptyList());
-            countView.setText("Periodic-table data could not be loaded.");
-            Toast.makeText(this, "Unable to load the periodic table.",
+            countView.setText(getString(R.string.science_tool_periodic_table_data_could_not_be_loaded));
+            Toast.makeText(this, getString(R.string.science_tool_unable_to_load_the_periodic_table),
                     Toast.LENGTH_LONG).show();
         }
     }
 
-    private void showElement(ChemicalElement element) {
-        String details = "Atomic number: " + element.getAtomicNumber()
-                + "\nSymbol: " + element.getSymbol()
-                + "\nAtomic mass: " + element.getAtomicMass()
-                + "\nGroup: " + element.getGroup()
-                + "\nPeriod: " + element.getPeriod()
-                + "\nCategory: " + element.getCategory()
-                + "\n\n" + element.getDescription()
-                + "\n\nCommon use: " + element.getCommonUse();
+        /*
+ * Responsibility: Prepares and presents the data/state handled by `showElement` on the UI.
+ * Purpose: Transforms application state into information the learner can see and interact with.
+ */
+private void showElement(ChemicalElement element) {
+        String details = getString(R.string.science_element_details,
+                element.getAtomicNumber(), element.getSymbol(), element.getAtomicMass(),
+                element.getGroup(), element.getPeriod(), element.getCategory(),
+                element.getDescription(), element.getCommonUse());
         new AlertDialog.Builder(this)
                 .setTitle(element.getName() + " (" + element.getSymbol() + ")")
                 .setMessage(details)
-                .setPositiveButton("Close", null)
+                .setPositiveButton(getString(R.string.science_tool_close), null)
                 .show();
     }
 }

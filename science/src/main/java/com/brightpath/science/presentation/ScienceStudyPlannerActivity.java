@@ -60,7 +60,11 @@ public final class ScienceStudyPlannerActivity extends AppCompatActivity {
     private boolean loading;
     private volatile boolean destroyed;
 
-    @Override
+        /*
+ * Responsibility: Initializes the Android component, inflates/binds its layout, and prepares dependencies/listeners/state.
+ * Purpose: Establishes the screen's initial state before the learner starts interacting with it.
+ */
+@Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_science_study_planner);
@@ -78,12 +82,16 @@ public final class ScienceStudyPlannerActivity extends AppCompatActivity {
         } catch (Exception error) {
             showPlan(null);
             statusView.setTextColor(getColor(R.color.science_error));
-            statusView.setText("The saved study plan could not be opened safely.");
-            Toast.makeText(this, "Unable to read the saved study plan.", Toast.LENGTH_SHORT).show();
+            statusView.setText(getString(R.string.science_tool_the_saved_study_plan_could_not_be));
+            Toast.makeText(this, getString(R.string.science_tool_unable_to_read_the_saved_study_plan), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void bindViews() {
+        /*
+ * Responsibility: Binds the relevant data, view, or listener in `bindViews`.
+ * Purpose: Keeps UI binding code focused and separate from higher-level lifecycle/business logic.
+ */
+private void bindViews() {
         subjectSpinner = findViewById(R.id.spPlannerSubject);
         levelSpinner = findViewById(R.id.spPlannerLevel);
         daysSpinner = findViewById(R.id.spPlannerDays);
@@ -96,7 +104,11 @@ public final class ScienceStudyPlannerActivity extends AppCompatActivity {
         sessionsLayout = findViewById(R.id.layoutStudySessions);
     }
 
-    private void setupSpinners() {
+        /*
+ * Responsibility: Updates the state or value handled by `setupSpinners` for ScienceStudyPlannerActivity.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void setupSpinners() {
         String[] subjects = new String[ScienceSubject.values().length];
         for (int i = 0; i < subjects.length; i++) subjects[i] = getString(ScienceSubject.values()[i].getDisplayNameResId());
         subjectSpinner.setAdapter(adapter(subjects));
@@ -104,11 +116,11 @@ public final class ScienceStudyPlannerActivity extends AppCompatActivity {
         String[] levels = new String[EducationLevel.values().length];
         for (int i = 0; i < levels.length; i++) levels[i] = getString(EducationLevel.values()[i].getDisplayNameResId());
         levelSpinner.setAdapter(adapter(levels));
-        
+
         String[] dayLabels = new String[DAY_VALUES.length];
         for (int i = 0; i < dayLabels.length; i++) dayLabels[i] = getString(R.string.science_planner_days_format, DAY_VALUES[i]);
         daysSpinner.setAdapter(adapter(dayLabels));
-        
+
         String[] minuteLabels = new String[MINUTE_VALUES.length];
         for (int i = 0; i < minuteLabels.length; i++) minuteLabels[i] = getString(R.string.science_planner_minutes_format, MINUTE_VALUES[i]);
         minutesSpinner.setAdapter(adapter(minuteLabels));
@@ -120,17 +132,29 @@ public final class ScienceStudyPlannerActivity extends AppCompatActivity {
         minutesSpinner.setSelection(2);
     }
 
-    private android.widget.ArrayAdapter<String> adapter(String[] values) {
+        /*
+ * Responsibility: Handles the `adapter` UI interaction/state operation for ScienceStudyPlannerActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private android.widget.ArrayAdapter<String> adapter(String[] values) {
         return ScienceUiFactory.spinnerAdapter(this, values);
     }
 
-    private void setupActions() {
+        /*
+ * Responsibility: Updates the state or value handled by `setupActions` for ScienceStudyPlannerActivity.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void setupActions() {
         findViewById(R.id.btnStudyPlannerBack).setOnClickListener(view -> finish());
         generateButton.setOnClickListener(view -> generatePlan());
         clearButton.setOnClickListener(view -> confirmClear());
     }
 
-    private void generatePlan() {
+        /*
+ * Responsibility: Generates the Science result handled by `generatePlan` using the configured generator/service and request context.
+ * Purpose: Keeps content generation behind a focused method so the presentation layer stays independent from AI/fallback details.
+ */
+private void generatePlan() {
         if (loading) return;
         setLoading(true);
         long startMoment = System.currentTimeMillis();
@@ -143,28 +167,40 @@ public final class ScienceStudyPlannerActivity extends AppCompatActivity {
                 MINUTE_VALUES[Math.max(0, Math.min(minutesSpinner.getSelectedItemPosition(), MINUTE_VALUES.length - 1))],
                 startMoment
         );
-        statusView.setText("Creating a schedule from " + formatDateTime(startMoment) + "…");
+        statusView.setText(getString(R.string.science_planner_creating, formatDateTime(startMoment)));
         generateUseCase.execute(request, new ResultCallback<StudyPlan>() {
-            @Override
+                        /*
+ * Responsibility: Performs the `onSuccess` operation for  within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
             public void onSuccess(StudyPlan result) {
                 if (destroyed) return;
                 setLoading(false);
                 showPlan(result);
                 Toast.makeText(ScienceStudyPlannerActivity.this,
-                        "Study plan created from the current time.", Toast.LENGTH_SHORT).show();
+                        getString(R.string.science_tool_study_plan_created_from_the_current_time), Toast.LENGTH_SHORT).show();
             }
 
-            @Override
+                        /*
+ * Responsibility: Performs the `onError` operation for  within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+@Override
             public void onError(String message, Throwable error) {
                 if (destroyed) return;
                 setLoading(false);
-                statusView.setText(message == null ? "Unable to create a study plan." : message);
+                statusView.setText(message == null ? getString(R.string.science_tool_unable_to_create_a_study_plan) : message);
                 statusView.setTextColor(getColor(R.color.science_error));
             }
         });
     }
 
-    private void showPlan(@Nullable StudyPlan plan) {
+        /*
+ * Responsibility: Prepares and presents the data/state handled by `showPlan` on the UI.
+ * Purpose: Transforms application state into information the learner can see and interact with.
+ */
+private void showPlan(@Nullable StudyPlan plan) {
         activePlan = plan;
         sessionsLayout.removeAllViews();
         clearButton.setVisibility(plan == null ? View.GONE : View.VISIBLE);
@@ -185,7 +221,11 @@ public final class ScienceStudyPlannerActivity extends AppCompatActivity {
         for (StudySession session : plan.getSessions()) addSessionView(session);
     }
 
-    private void addSessionView(StudySession session) {
+        /*
+ * Responsibility: Adds the data, listener, duration, key, or UI element represented by `addSessionView`.
+ * Purpose: Keeps the incremental update explicit and isolated from unrelated responsibilities.
+ */
+private void addSessionView(StudySession session) {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setPadding(dp(14), dp(12), dp(14), dp(12));
@@ -225,7 +265,11 @@ public final class ScienceStudyPlannerActivity extends AppCompatActivity {
         sessionsLayout.addView(card);
     }
 
-    private void addSafeCompletionListener(CompoundButton checkBox, StudySession session) {
+        /*
+ * Responsibility: Adds the data, listener, duration, key, or UI element represented by `addSafeCompletionListener`.
+ * Purpose: Keeps the incremental update explicit and isolated from unrelated responsibilities.
+ */
+private void addSafeCompletionListener(CompoundButton checkBox, StudySession session) {
         checkBox.setOnCheckedChangeListener((button, checked) -> {
             boolean previous = session.isCompleted();
             session.setCompleted(checked);
@@ -237,19 +281,27 @@ public final class ScienceStudyPlannerActivity extends AppCompatActivity {
                 button.setOnCheckedChangeListener(null);
                 button.setChecked(previous);
                 addSafeCompletionListener(button, session);
-                Toast.makeText(this, "Unable to save this change.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.science_tool_unable_to_save_this_change), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private ScienceSubject selectedSubject() {
+        /*
+ * Responsibility: Changes the active selection/state handled by `selectedSubject`.
+ * Purpose: Keeps the UI and subject-specific Science context synchronized.
+ */
+private ScienceSubject selectedSubject() {
         int position = subjectSpinner.getSelectedItemPosition();
         if (position == 1) return ScienceSubject.CHEMISTRY;
         if (position == 2) return ScienceSubject.BIOLOGY;
         return ScienceSubject.PHYSICS;
     }
 
-    private void confirmClear() {
+        /*
+ * Responsibility: Handles the `confirmClear` UI interaction/state operation for ScienceStudyPlannerActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private void confirmClear() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.science_planner_clear_title)
                 .setMessage(R.string.science_planner_clear_msg)
@@ -259,13 +311,17 @@ public final class ScienceStudyPlannerActivity extends AppCompatActivity {
                         repository.clear(userId);
                         showPlan(null);
                     } catch (Exception error) {
-                        Toast.makeText(this, "Unable to clear the saved plan.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.science_tool_unable_to_clear_the_saved_plan), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .show();
     }
 
-    private void setLoading(boolean value) {
+        /*
+ * Responsibility: Updates the state or value handled by `setLoading` for ScienceStudyPlannerActivity.
+ * Purpose: Keeps the component synchronized with the latest learner, UI, or domain state.
+ */
+private void setLoading(boolean value) {
         if (destroyed) return;
         loading = value;
         progressBar.setVisibility(value ? View.VISIBLE : View.GONE);
@@ -277,18 +333,30 @@ public final class ScienceStudyPlannerActivity extends AppCompatActivity {
         goalInput.setEnabled(!value);
     }
 
-    @Override
+        /*
+ * Responsibility: Releases temporary resources, listeners, or component state during destruction.
+ * Purpose: Reduces leaks and prevents stale callbacks from affecting a destroyed Science screen.
+ */
+@Override
     protected void onDestroy() {
         destroyed = true;
         super.onDestroy();
     }
 
-    private String formatDateTime(long millis) {
+        /*
+ * Responsibility: Normalizes or formats the value handled by `formatDateTime` into a stable representation.
+ * Purpose: Improves consistency for display, comparison, caching, storage, or AI prompt construction.
+ */
+private String formatDateTime(long millis) {
         return new SimpleDateFormat("EEE, dd MMM yyyy · HH:mm", Locale.getDefault())
                 .format(new Date(millis));
     }
 
-    private int dp(int value) {
+        /*
+ * Responsibility: Handles the `dp` UI interaction/state operation for ScienceStudyPlannerActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private int dp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
     }
 }

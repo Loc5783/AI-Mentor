@@ -5,19 +5,19 @@
     <color name="science_primary_container">#134E4A</color>
     <color name="science_on_primary">#042F2E</color>
     <color name="science_accent">#A5B4FC</color>
-    <color name="science_background">#071317</color>
-    <color name="science_surface">#102126</color>
+    <color name="science_background">#101A2C</color>
+    <color name="science_surface">#1B2940</color>
     <color name="science_surface_variant">#183139</color>
     <color name="science_border">#294149</color>
-    <color name="science_text_primary">#F8FAFC</color>
-    <color name="science_text_secondary">#C7D4DB</color>
+    <color name="science_text_primary">#F3F6FF</color>
+    <color name="science_text_secondary">#B8C6DD</color>
     <color name="science_text_disabled">#8FA4AE</color>
     <color name="science_success">#86EFAC</color>
     <color name="science_error">#FCA5A5</color>
     <color name="science_warning">#FCD34D</color>
     <color name="science_focus">#93C5FD</color>
     <color name="science_user_bubble">#164E49</color>
-    <color name="science_assistant_bubble">#102126</color>
+    <color name="science_assistant_bubble">#1B2940</color>
     <color name="science_scrim">#99000000</color>
     <color name="science_white">#FFFFFF</color>
 

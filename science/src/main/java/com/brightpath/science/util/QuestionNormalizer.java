@@ -4,7 +4,11 @@ import java.text.Normalizer;
 import java.util.Locale;
 
 public final class QuestionNormalizer {
-    public String normalize(String value) {
+        /*
+ * Responsibility: Normalizes or formats the value handled by `normalize` into a stable representation.
+ * Purpose: Improves consistency for display, comparison, caching, storage, or AI prompt construction.
+ */
+public String normalize(String value) {
         if (value == null) return "";
         String normalized = Normalizer.normalize(value, Normalizer.Form.NFD)
                 .replaceAll("\\p{M}+", "")

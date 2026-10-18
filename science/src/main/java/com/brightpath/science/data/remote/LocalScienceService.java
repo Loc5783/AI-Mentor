@@ -13,7 +13,11 @@ import java.util.List;
 import java.util.Locale;
 
 public final class LocalScienceService implements ScienceAnswerService, ScienceQuizGenerator {
-    @Override
+        /*
+ * Responsibility: Performs the AI/service operation `answer` using the configured Science request/context.
+ * Purpose: Keeps networking/fallback concerns inside the service layer instead of the UI.
+ */
+@Override
     public void answer(ScienceQuestion question, ResultCallback<ScienceAnswer> callback) {
         String content = createLocalExplanation(question);
         callback.onSuccess(new ScienceAnswer(
@@ -22,15 +26,23 @@ public final class LocalScienceService implements ScienceAnswerService, ScienceQ
                 question.getEducationLevel().getDisplayName(),
                 false,
                 0
-        ));
+        ).withLocalSource());
     }
 
-    @Override
+        /*
+ * Responsibility: Generates the Science result handled by `generateQuiz` using the configured generator/service and request context.
+ * Purpose: Keeps content generation behind a focused method so the presentation layer stays independent from AI/fallback details.
+ */
+@Override
     public void generateQuiz(QuizRequest request, ResultCallback<List<QuizQuestion>> callback) {
         callback.onSuccess(new LocalAdaptiveQuizBank().generate(request));
     }
 
-    private String createLocalExplanation(ScienceQuestion question) {
+        /*
+ * Responsibility: Constructs the object, request, prompt, context, or data structure produced by `createLocalExplanation`.
+ * Purpose: Encapsulates creation rules so callers receive a consistent representation.
+ */
+private String createLocalExplanation(ScienceQuestion question) {
         String q = question.getQuestionText().toLowerCase(Locale.ROOT);
         String shortAnswer;
         String principle;

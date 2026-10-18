@@ -6,6 +6,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/*
+ * Role: Test class for Math, used to verify key rules and behaviors after code changes.
+ * Purpose: These tests verify key behaviors automatically instead of relying only on manual UI testing.
+ */
 public class MathQuizSetTest {
     @Test
     public void keepsMathQuizMetadataAndTrimsEducationLevel() {
@@ -18,6 +22,10 @@ public class MathQuizSetTest {
         assertEquals("High School", set.getEducationLevel());
     }
 
+    /*
+     * Responsibility: Performs the `missing values use safe math defaults` responsibility of `MathQuizSetTest` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     @Test
     public void missingValuesUseSafeMathDefaults() {
         QuizSet set = new QuizSet(1, null, null, null, "  ");

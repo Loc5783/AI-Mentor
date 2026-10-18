@@ -19,12 +19,20 @@ public final class SQLiteScienceBookmarkRepository implements ScienceBookmarkRep
     private final ScienceDbHelper dbHelper;
     private final TextCipher textCipher;
 
-    public SQLiteScienceBookmarkRepository(ScienceDbHelper dbHelper, TextCipher textCipher) {
+        /*
+ * Responsibility: Initializes SQLiteScienceBookmarkRepository and receives or prepares the dependencies/state required by this data repository.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public SQLiteScienceBookmarkRepository(ScienceDbHelper dbHelper, TextCipher textCipher) {
         this.dbHelper = dbHelper;
         this.textCipher = textCipher;
     }
 
-    @Override
+        /*
+ * Responsibility: Persists the data supplied to `save` through the appropriate Science storage/repository.
+ * Purpose: Keeps important learner state available after navigation or application restart.
+ */
+@Override
     public long save(ScienceBookmark bookmark) {
         ContentValues values = new ContentValues();
         values.put(ScienceDbContract.Bookmark.USER_ID, bookmark.getUserId());
@@ -41,7 +49,11 @@ public final class SQLiteScienceBookmarkRepository implements ScienceBookmarkRep
         );
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the repository operation `existsForHistory` against the Science data source.
+ * Purpose: Keeps persistence/query details behind the repository abstraction and away from presentation/business code.
+ */
+@Override
     public boolean existsForHistory(int userId, long historyId) {
         String selection = ScienceDbContract.Bookmark.USER_ID + "=? AND "
                 + ScienceDbContract.Bookmark.HISTORY_ID + "=?";
@@ -58,7 +70,11 @@ public final class SQLiteScienceBookmarkRepository implements ScienceBookmarkRep
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Removes or resets the data/state handled by `deleteForHistory`.
+ * Purpose: Prevents obsolete state from affecting the next Science operation and supports controlled CRUD behavior.
+ */
+@Override
     public void deleteForHistory(int userId, long historyId) {
         dbHelper.getWritableDatabase().delete(
                 ScienceDbContract.Bookmark.TABLE,
@@ -67,7 +83,11 @@ public final class SQLiteScienceBookmarkRepository implements ScienceBookmarkRep
         );
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the repository operation `search` against the Science data source.
+ * Purpose: Keeps persistence/query details behind the repository abstraction and away from presentation/business code.
+ */
+@Override
     public List<ScienceBookmark> search(int userId, ScienceSubject subject, String keyword) {
         List<String> clauses = new ArrayList<>();
         List<String> args = new ArrayList<>();
@@ -100,7 +120,11 @@ public final class SQLiteScienceBookmarkRepository implements ScienceBookmarkRep
         return items;
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the repository operation `countByUser` against the Science data source.
+ * Purpose: Keeps persistence/query details behind the repository abstraction and away from presentation/business code.
+ */
+@Override
     public int countByUser(int userId) {
         try (Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
                 "SELECT COUNT(*) FROM " + ScienceDbContract.Bookmark.TABLE + " WHERE "
@@ -110,7 +134,11 @@ public final class SQLiteScienceBookmarkRepository implements ScienceBookmarkRep
         }
     }
 
-    private ScienceBookmark mapBookmark(Cursor cursor) {
+        /*
+ * Responsibility: Converts input data in `mapBookmark` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+private ScienceBookmark mapBookmark(Cursor cursor) {
         return new ScienceBookmark(
                 cursor.getLong(cursor.getColumnIndexOrThrow(ScienceDbContract.Bookmark.ID)),
                 cursor.getInt(cursor.getColumnIndexOrThrow(ScienceDbContract.Bookmark.USER_ID)),

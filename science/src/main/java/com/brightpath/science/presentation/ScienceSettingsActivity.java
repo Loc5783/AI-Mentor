@@ -25,7 +25,11 @@ public final class ScienceSettingsActivity extends AppCompatActivity {
     private SciencePreferenceStore preferenceStore;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    @Override
+        /*
+ * Responsibility: Initializes the Android component, inflates/binds its layout, and prepares dependencies/listeners/state.
+ * Purpose: Establishes the screen's initial state before the learner starts interacting with it.
+ */
+@Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_science_settings);
@@ -45,20 +49,28 @@ public final class ScienceSettingsActivity extends AppCompatActivity {
         Button saveButton = findViewById(R.id.btnSaveScienceDisplaySettings);
         saveButton.setOnClickListener(view -> {
             preferenceStore.setAnimationEnabled(animationCheckBox.isChecked());
-            Toast.makeText(this, "Science display settings saved.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.science_settings_saved), Toast.LENGTH_SHORT).show();
         });
     }
 
-    private void showConfiguredStatus() {
+        /*
+ * Responsibility: Prepares and presents the data/state handled by `showConfiguredStatus` on the UI.
+ * Purpose: Transforms application state into information the learner can see and interact with.
+ */
+private void showConfiguredStatus() {
         GeminiApiClient client = new GeminiApiClient();
         providerStatusView.setText(client.isConfigured()
-                ? "Configured • " + client.getModelName() + "\nTap Test Gemini connection to verify the key."
-                : "Gemini key is empty in GeminiApiClient.java");
+                ? getString(R.string.science_provider_configured, client.getModelName())
+                : getString(R.string.science_provider_unconfigured));
     }
 
-    private void testGeminiConnection() {
+        /*
+ * Responsibility: Handles the `testGeminiConnection` UI interaction/state operation for ScienceSettingsActivity.
+ * Purpose: Keeps this screen responsibility in a focused function so the main lifecycle code remains readable and easy to explain.
+ */
+private void testGeminiConnection() {
         testConnectionButton.setEnabled(false);
-        providerStatusView.setText("Testing Gemini connection…");
+        providerStatusView.setText(getString(R.string.science_provider_testing));
 
         executor.execute(() -> {
             try {
@@ -66,13 +78,12 @@ public final class ScienceSettingsActivity extends AppCompatActivity {
                 String response = client.testConnection().text;
                 runOnUiThread(() -> {
                     if (isFinishing() || isDestroyed()) return;
-                    providerStatusView.setText("Gemini connection successful • "
-                            + new GeminiApiClient().getModelName() + "\nResponse: " + response);
+                    providerStatusView.setText(getString(R.string.science_provider_success, new GeminiApiClient().getModelName(), response));
                     testConnectionButton.setEnabled(true);
                 });
             } catch (Exception error) {
                 String message = GeminiScienceService.userMessage(
-                        error, "Gemini connection failed."
+                        error, getString(R.string.science_provider_failed)
                 );
                 runOnUiThread(() -> {
                     if (isFinishing() || isDestroyed()) return;
@@ -83,7 +94,11 @@ public final class ScienceSettingsActivity extends AppCompatActivity {
         });
     }
 
-    @Override
+        /*
+ * Responsibility: Releases temporary resources, listeners, or component state during destruction.
+ * Purpose: Reduces leaks and prevents stale callbacks from affecting a destroyed Science screen.
+ */
+@Override
     protected void onDestroy() {
         executor.shutdownNow();
         super.onDestroy();

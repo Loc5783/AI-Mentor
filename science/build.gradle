@@ -2,20 +2,40 @@ plugins {
     id 'com.android.library'
 }
 
+def apiProperties = new Properties()
+def apiPropertiesFile = rootProject.file('api.properties')
+if (apiPropertiesFile.exists()) {
+    apiPropertiesFile.withInputStream { stream -> apiProperties.load(stream) }
+}
+
+def quotedBuildConfigValue = { String value ->
+    String safe = (value ?: '').replace('\\', '\\\\').replace('"', '\\"')
+    return '"' + safe + '"'
+}
+
 android {
     namespace 'com.brightpath.science'
     compileSdk 36
 
-    buildFeatures { buildConfig true }
-
     defaultConfig {
-        buildConfigField "String", "SCIENCE_GEMINI_API_KEY_1", groovy.json.JsonOutput.toJson((project.findProperty("SCIENCE_GEMINI_API_KEY_1") ?: "").toString())
-        buildConfigField "String", "SCIENCE_GEMINI_API_KEY_2", groovy.json.JsonOutput.toJson((project.findProperty("SCIENCE_GEMINI_API_KEY_2") ?: "").toString())
-        buildConfigField "String", "SCIENCE_GEMINI_API_KEY_3", groovy.json.JsonOutput.toJson((project.findProperty("SCIENCE_GEMINI_API_KEY_3") ?: "").toString())
-
         minSdk 24
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        // Science API secrets are read from api.properties at build time.
+        // They are no longer hard-coded in Java source.
+        buildConfigField 'String', 'SCIENCE_GEMINI_API_KEY_1',
+                quotedBuildConfigValue(apiProperties.getProperty('SCIENCE_GEMINI_API_KEY_1', ''))
+        buildConfigField 'String', 'SCIENCE_GEMINI_API_KEY_2',
+                quotedBuildConfigValue(apiProperties.getProperty('SCIENCE_GEMINI_API_KEY_2', ''))
+        buildConfigField 'String', 'SCIENCE_GEMINI_API_KEY_3',
+                quotedBuildConfigValue(apiProperties.getProperty('SCIENCE_GEMINI_API_KEY_3', ''))
+        buildConfigField 'String', 'SCIENCE_GEMINI_MODEL',
+                quotedBuildConfigValue(apiProperties.getProperty('SCIENCE_GEMINI_MODEL', 'gemini-flash-latest'))
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     buildTypes {
@@ -32,6 +52,8 @@ android {
 }
 
 dependencies {
+    implementation project(':data-core')
+    implementation project(':ui-core')
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'com.google.android.material:material:1.14.0'
     implementation 'androidx.activity:activity:1.13.0'

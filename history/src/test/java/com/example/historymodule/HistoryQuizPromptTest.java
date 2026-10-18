@@ -6,6 +6,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
+/*
+ * Role: Test class for History, used to verify key rules and behaviors after code changes.
+ * Purpose: These tests verify key behaviors automatically instead of relying only on manual UI testing.
+ */
 public class HistoryQuizPromptTest {
     @Test
     public void vietnamHistoryQuizKeepsTopicAndHighSchoolRules() {
@@ -18,6 +22,10 @@ public class HistoryQuizPromptTest {
         assertTrue(prompt.contains("correctIndex: 0-3"));
     }
 
+    /*
+     * Responsibility: Performs the `question count is clamped and missing values use history defaults` responsibility of `HistoryQuizPromptTest` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     @Test
     public void questionCountIsClampedAndMissingValuesUseHistoryDefaults() {
         HistoryPromptFactory factory = new HistoryPromptFactory();
@@ -27,7 +35,7 @@ public class HistoryQuizPromptTest {
         assertTrue(minimumPrompt.contains("Phạm vi: Tổng hợp"));
         assertTrue(minimumPrompt.contains("Cấp học: Trung học cơ sở"));
         assertTrue(minimumPrompt.contains("Tạo đúng 5 câu"));
-        assertTrue(maximumPrompt.contains("Tạo đúng 10 câu"));
+        assertTrue(maximumPrompt.contains("Tạo đúng 15 câu"));
         assertTrue(maximumPrompt.contains("Chỉ dùng lịch sử khu vực và thế giới ngoài Việt Nam"));
         assertTrue(maximumPrompt.contains("đánh giá nguồn"));
     }

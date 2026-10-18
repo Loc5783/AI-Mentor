@@ -2,20 +2,24 @@ plugins {
     id 'com.android.library'
 }
 
+def programmingApiProperties = new Properties()
+def programmingApiFile = rootProject.file('api.properties')
+if (programmingApiFile.exists()) {
+    programmingApiFile.withInputStream { programmingApiProperties.load(it) }
+}
+
 android {
     namespace 'com.example.modulelaptrinh'
+    buildFeatures { buildConfig true }
     compileSdk 36
 
-    buildFeatures { buildConfig true }
-
     defaultConfig {
-        buildConfigField "String", "PROGRAMMING_CHAT_GEMINI_API_KEY_1", groovy.json.JsonOutput.toJson((project.findProperty("PROGRAMMING_CHAT_GEMINI_API_KEY_1") ?: "").toString())
-        buildConfigField "String", "PROGRAMMING_CHAT_GEMINI_API_KEY_2", groovy.json.JsonOutput.toJson((project.findProperty("PROGRAMMING_CHAT_GEMINI_API_KEY_2") ?: "").toString())
-        buildConfigField "String", "PROGRAMMING_CHAT_GEMINI_API_KEY_3", groovy.json.JsonOutput.toJson((project.findProperty("PROGRAMMING_CHAT_GEMINI_API_KEY_3") ?: "").toString())
-        buildConfigField "String", "PROGRAMMING_QUIZ_GEMINI_API_KEY_1", groovy.json.JsonOutput.toJson((project.findProperty("PROGRAMMING_QUIZ_GEMINI_API_KEY_1") ?: "").toString())
-        buildConfigField "String", "PROGRAMMING_QUIZ_GEMINI_API_KEY_2", groovy.json.JsonOutput.toJson((project.findProperty("PROGRAMMING_QUIZ_GEMINI_API_KEY_2") ?: "").toString())
-        buildConfigField "String", "PROGRAMMING_QUIZ_GEMINI_API_KEY_3", groovy.json.JsonOutput.toJson((project.findProperty("PROGRAMMING_QUIZ_GEMINI_API_KEY_3") ?: "").toString())
-
+        (1..3).each { index ->
+            def name = "PROGRAMMING_GEMINI_API_KEY_${index}"
+            def value = programmingApiProperties.getProperty(name, '')
+            buildConfigField 'String', name, groovy.json.JsonOutput.toJson(value)
+        }
+        buildConfigField 'String', 'PROGRAMMING_GEMINI_MODEL', groovy.json.JsonOutput.toJson(programmingApiProperties.getProperty('PROGRAMMING_GEMINI_MODEL', 'gemini-flash-latest'))
         minSdk 24
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -35,19 +39,16 @@ android {
 }
 
 dependencies {
+    implementation project(':data-core')
+    implementation project(':ui-core')
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'com.google.android.material:material:1.14.0'
     implementation 'androidx.activity:activity:1.13.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.fragment:fragment:1.8.5'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
-    implementation 'androidx.room:room-runtime:2.6.1'
-    annotationProcessor 'androidx.room:room-compiler:2.6.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
-    implementation 'com.google.code.gson:gson:2.11.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+    // Programming hiện dùng SQLiteOpenHelper trực tiếp và HttpURLConnection.
+    // Các dependency Room/Retrofit/OkHttp cũ đã được bỏ vì không còn file nào sử dụng.
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
     implementation 'io.noties.markwon:core:4.6.2'

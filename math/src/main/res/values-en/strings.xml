@@ -10,12 +10,12 @@
     <string name="math_banner_title">Solve Math with Smart AI</string>
     <string name="math_banner_desc">Scan or enter your problem, AI will help you solve and explain step by step.</string>
 
-    <string name="math_action_scan">Scan Problem</string>
-    <string name="math_action_scan_desc">Use camera to scan problems</string>
+    <string name="math_action_scan">Choose problem image</string>
+    <string name="math_action_scan_desc">Upload a problem image from your device</string>
     <string name="math_action_type">Enter Problem</string>
     <string name="math_action_type_desc">Type manually or paste content</string>
 
-    <!-- Chat AI -->
+    
     <string name="math_chat_welcome">Hello! I am your Math AI Mentor. Do you have any problems to solve?</string>
     <string name="math_chat_hint">Type a math problem (e.g., Solve x^2 - 4 = 0)...</string>
     <string name="math_chat_hint_attached">Image attached. Type your question...</string>
@@ -29,7 +29,7 @@
     <string name="math_chat_ai_prefix">You are a Math AI Mentor.\nSTRICT RULE: Analyze the question carefully. If the question is not related to Mathematics, only reply: \'I am a Math AI Mentor, I can only help you with Math-related problems!\'.\nIf it is a math question, solve it step by step clearly, verify the result, and use LaTeX for formulas. Wrap formulas with $ or $$.\nUser question: </string>
     <string name="math_chat_error_api">Could not receive answer from Gemini.</string>
 
-    <!-- History -->
+    
     <string name="math_history_banner_title">Review Solved Problems</string>
     <string name="math_history_banner_desc">Review and keep learning more effectively every day.</string>
     <string name="math_history_filter_all">All</string>
@@ -37,7 +37,7 @@
     <string name="math_history_filter_7days">Last 7 days</string>
     <string name="math_history_section_title">Solve History</string>
 
-    <!-- Formula / Notes -->
+    
     <string name="math_formula_banner_title">Save and Manage Common Formulas</string>
     <string name="math_formula_banner_desc">Create your own formula list for faster learning.</string>
     <string name="math_formula_filter_algebra">Algebra</string>
@@ -59,10 +59,10 @@
     <string name="math_formula_hint_title">Please enter a title</string>
     <string name="math_formula_hint_content">Please enter content or formula</string>
 
-    <!-- Quiz -->
-    <string name="math_quiz_banner_title">Practice with Quizzes</string>
+    
+    <string name="math_quiz_banner_title">Practice</string>
     <string name="math_quiz_banner_desc">Create AI quiz or practice existing sets.</string>
-    <string name="math_quiz_ai_button">✨ Create New Set with AI</string>
+    <string name="math_quiz_ai_button">Create AI quiz</string>
     <string name="math_quiz_filter_ai">AI Generated</string>
     <string name="math_quiz_list_title">Quiz Sets</string>
     <string name="math_quiz_exp_label">Experience: %1$d EXP</string>
@@ -86,7 +86,7 @@
     <string name="math_quiz_count_15">15 questions</string>
     <string name="math_quiz_count_20">20 questions</string>
 
-    <!-- Level Titles -->
+    
     <string name="math_level_1">Novice</string>
     <string name="math_level_2">Math Student</string>
     <string name="math_level_3">Solver</string>

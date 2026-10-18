@@ -6,11 +6,19 @@ import android.database.sqlite.SQLiteDatabase;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.example.asm_final.activities.database.DatabaseHelper;
 
+/*
+ * Role: Utility class for App Shell, grouping reusable logic such as user sessions, levels, formatting, or data conversion.
+ * Purpose: Moving shared logic into helpers reduces duplication and keeps Activities and Fragments focused on screen coordination.
+ */
 public class DemoDataSeeder {
 
     public static final String DEMO_USER = "admin_demo";
     public static final String DEMO_PASS = "Admin@123";
 
+    /*
+     * Responsibility: Performs the `seed` responsibility of `DemoDataSeeder` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     public static void seed(Context context) {
         DatabaseHelper mainDb = new DatabaseHelper(context);
         SQLiteDatabase db = mainDb.getWritableDatabase();

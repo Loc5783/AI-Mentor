@@ -7,6 +7,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/*
+ * Role: Test class for Math, used to verify key rules and behaviors after code changes.
+ * Purpose: These tests verify key behaviors automatically instead of relying only on manual UI testing.
+ */
 public class MathQuizQuestionTest {
     @Test
     public void normalizesAnswerAndKeepsMathDifficultyReward() {
@@ -20,6 +24,10 @@ public class MathQuizQuestionTest {
         assertEquals(20, question.getExpReward());
     }
 
+    /*
+     * Responsibility: Performs the `invalid correct and selected answers are handled safely` responsibility of `MathQuizQuestionTest` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     @Test
     public void invalidCorrectAndSelectedAnswersAreHandledSafely() {
         QuizQuestion question = new QuizQuestion(
@@ -27,7 +35,7 @@ public class MathQuizQuestionTest {
                 "Z", null, (MathQuizDifficulty) null);
 
         assertEquals("", question.getQuestionText());
-        assertEquals("A", question.getCorrectAnswer());
+        assertEquals("", question.getCorrectAnswer());
         assertEquals(MathQuizDifficulty.MEDIUM, question.getDifficulty());
 
         question.setSelectedAnswer(" d ");

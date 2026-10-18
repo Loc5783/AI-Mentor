@@ -20,6 +20,10 @@ import java.nio.charset.StandardCharsets;
  * Gemini REST client used only by History Chat and History Quiz.
  * The History module keeps its own API key and model configuration.
  */
+/*
+ * Role: AI/API class for History, responsible for preparing requests or prompts, calling the service, and converting response data.
+ * Purpose: Separating AI communication from the UI makes error handling, model or endpoint changes, and logic testing easier.
+ */
 public final class HistoryGeminiApiClient {
     private static final int CONNECT_TIMEOUT_MS = 20_000;
     private static final int READ_TIMEOUT_MS = 120_000;
@@ -28,6 +32,10 @@ public final class HistoryGeminiApiClient {
     private final String apiKey;
     private final String modelName;
 
+    /*
+     * Responsibility: Initializes the `HistoryGeminiApiClient` object and sets up the required dependencies and initial data.
+     * Purpose: The constructor ensures the object starts in a valid state immediately after creation.
+     */
     public HistoryGeminiApiClient() {
         this(BuildConfig.HISTORY_GEMINI_API_KEY, BuildConfig.HISTORY_GEMINI_MODEL);
     }
@@ -39,6 +47,10 @@ public final class HistoryGeminiApiClient {
                 : modelName.trim();
     }
 
+    /*
+     * Responsibility: Validates the conditions or rules handled by `is configured` and returns the result to the caller.
+     * Purpose: A dedicated validation method keeps rules consistent and easier to test.
+     */
     public boolean isConfigured() {
         return !apiKey.isEmpty();
     }
@@ -47,6 +59,10 @@ public final class HistoryGeminiApiClient {
         return modelName;
     }
 
+    /*
+     * Responsibility: Generates data or content for `generate text` based on the input and module rules.
+     * Purpose: Keeping content generation separate makes the strategy easier to change without affecting presentation logic.
+     */
     public Result generateText(String prompt,
                                byte[] imageBytes,
                                String imageMimeType,
@@ -54,7 +70,7 @@ public final class HistoryGeminiApiClient {
                                int maxOutputTokens) throws Exception {
         if (!isConfigured()) {
             throw new IllegalStateException(
-                    "Chưa cấu hình HISTORY_GEMINI_API_KEY trong local.properties hoặc gradle.properties.");
+                    "Chưa cấu hình HISTORY_GEMINI_API_KEY trong api.properties.");
         }
         if (prompt == null || prompt.trim().isEmpty()) {
             throw new IllegalArgumentException("Prompt không được để trống.");
@@ -120,6 +136,10 @@ public final class HistoryGeminiApiClient {
         throw new IllegalStateException("Không thể kết nối Gemini sau nhiều lần thử.", lastError);
     }
 
+    /*
+     * Responsibility: Creates the object or data structure for `build request` using the class's consistent creation rules.
+     * Purpose: Encapsulating creation rules prevents callers from repeating the same initialization steps.
+     */
     private JSONObject buildRequest(String prompt,
                                     byte[] imageBytes,
                                     String imageMimeType,
@@ -152,6 +172,10 @@ public final class HistoryGeminiApiClient {
                 .put("generationConfig", generationConfig);
     }
 
+    /*
+     * Responsibility: Converts or normalizes data in `parse response` into the required format.
+     * Purpose: A centralized conversion point keeps formatting consistent and makes invalid data easier to handle.
+     */
     private Result parseResponse(String responseBody) throws Exception {
         JSONObject root = new JSONObject(responseBody);
         JSONArray candidates = root.optJSONArray("candidates");
@@ -194,6 +218,10 @@ public final class HistoryGeminiApiClient {
         return new Result(result, finishReason, promptTokens, candidateTokens, totalTokens);
     }
 
+    /*
+     * Responsibility: Reads or loads data for `read response` from the appropriate data source.
+     * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
+     */
     private String readResponse(HttpURLConnection connection, int statusCode) throws Exception {
         InputStream stream = statusCode >= 200 && statusCode < 300
                 ? connection.getInputStream()
@@ -209,6 +237,10 @@ public final class HistoryGeminiApiClient {
         }
     }
 
+    /*
+     * Responsibility: Creates the object or data structure for `create api exception` using the class's consistent creation rules.
+     * Purpose: Encapsulating creation rules prevents callers from repeating the same initialization steps.
+     */
     private HistoryGeminiApiException createApiException(int statusCode, String responseBody) {
         String message = responseBody == null ? "" : responseBody.trim();
         String apiStatus = "";
@@ -231,6 +263,10 @@ public final class HistoryGeminiApiClient {
         private final int candidateTokens;
         private final int totalTokens;
 
+        /*
+         * Responsibility: Performs the `result` responsibility of `HistoryGeminiApiClient` and returns or updates the result for the caller.
+         * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+         */
         public Result(String text,
                       String finishReason,
                       int promptTokens,
@@ -243,6 +279,10 @@ public final class HistoryGeminiApiClient {
             this.totalTokens = totalTokens;
         }
 
+        /*
+         * Responsibility: Reads or loads data for `get text` from the appropriate data source.
+         * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
+         */
         public String getText() {
             return text;
         }
@@ -251,6 +291,10 @@ public final class HistoryGeminiApiClient {
             return finishReason;
         }
 
+        /*
+         * Responsibility: Performs the `was truncated` responsibility of `HistoryGeminiApiClient` and returns or updates the result for the caller.
+         * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+         */
         public boolean wasTruncated() {
             return "MAX_TOKENS".equalsIgnoreCase(finishReason);
         }
@@ -259,6 +303,10 @@ public final class HistoryGeminiApiClient {
             return promptTokens;
         }
 
+        /*
+         * Responsibility: Reads or loads data for `get candidate tokens` from the appropriate data source.
+         * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
+         */
         public int getCandidateTokens() {
             return candidateTokens;
         }

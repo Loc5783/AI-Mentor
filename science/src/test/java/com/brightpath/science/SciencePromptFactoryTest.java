@@ -4,7 +4,7 @@ import com.brightpath.science.domain.model.EducationLevel;
 import com.brightpath.science.domain.model.ExplanationStyle;
 import com.brightpath.science.domain.model.ScienceQuestion;
 import com.brightpath.science.domain.model.ScienceSubject;
-import com.brightpath.science.util.DefaultSciencePromptFactory;
+import com.brightpath.science.domain.prompt.DefaultSciencePromptFactory;
 
 import org.junit.Test;
 
@@ -24,6 +24,8 @@ public class SciencePromptFactoryTest {
         String biologyPrompt = factory.buildAnswerPrompt(biology);
 
         assertTrue(physicsPrompt.contains("Physics AI Tutor"));
+        assertTrue(physicsPrompt.contains("SUBJECT SCOPE RULE (MANDATORY)"));
+        assertTrue(physicsPrompt.contains("LOCKED to Physics"));
         assertTrue(physicsPrompt.contains("SI units"));
         assertTrue(chemistryPrompt.contains("Chemistry AI Tutor"));
         assertTrue(chemistryPrompt.contains("Balance reaction equations"));

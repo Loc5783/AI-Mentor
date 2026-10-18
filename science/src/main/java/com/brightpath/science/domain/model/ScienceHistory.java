@@ -13,14 +13,22 @@ public final class ScienceHistory {
     private final long createdAt;
     private final int reviewSeconds;
 
-    public ScienceHistory(long id, int userId, ScienceSubject subject, String educationLevel,
+        /*
+ * Responsibility: Initializes ScienceHistory and receives or prepares the dependencies/state required by this domain model.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ScienceHistory(long id, int userId, ScienceSubject subject, String educationLevel,
                           String explanationStyle, String question, String imageUri,
                           String answer, long createdAt, int reviewSeconds) {
         this(id, userId, "legacy-" + id, subject, educationLevel, explanationStyle,
                 question, imageUri, answer, createdAt, reviewSeconds);
     }
 
-    public ScienceHistory(long id, int userId, String conversationId, ScienceSubject subject,
+        /*
+ * Responsibility: Initializes ScienceHistory and receives or prepares the dependencies/state required by this domain model.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ScienceHistory(long id, int userId, String conversationId, ScienceSubject subject,
                           String educationLevel, String explanationStyle, String question,
                           String imageUri, String answer, long createdAt, int reviewSeconds) {
         this.id = id;
@@ -37,15 +45,59 @@ public final class ScienceHistory {
         this.reviewSeconds = reviewSeconds;
     }
 
-    public long getId() { return id; }
-    public int getUserId() { return userId; }
-    public String getConversationId() { return conversationId; }
-    public ScienceSubject getSubject() { return subject; }
-    public String getEducationLevel() { return educationLevel; }
-    public String getExplanationStyle() { return explanationStyle; }
-    public String getQuestion() { return question; }
-    public String getImageUri() { return imageUri; }
-    public String getAnswer() { return answer; }
-    public long getCreatedAt() { return createdAt; }
-    public int getReviewSeconds() { return reviewSeconds; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getId` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public long getId() { return id; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getUserId` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public int getUserId() { return userId; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getConversationId` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getConversationId() { return conversationId; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getSubject` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public ScienceSubject getSubject() { return subject; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getEducationLevel` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getEducationLevel() { return educationLevel; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getExplanationStyle` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getExplanationStyle() { return explanationStyle; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getQuestion` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getQuestion() { return question; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getImageUri` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getImageUri() { return imageUri; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getAnswer` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public String getAnswer() { return answer; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getCreatedAt` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public long getCreatedAt() { return createdAt; }
+        /*
+ * Responsibility: Retrieves the data/state required by `getReviewSeconds` from the appropriate domain model.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+public int getReviewSeconds() { return reviewSeconds; }
 }

@@ -13,10 +13,9 @@
         <item name="android:windowBackground">@color/backgroundColor</item>
         <item name="android:colorAccent">@color/accentColor</item>
         <item name="android:navigationBarColor">@color/surfaceColor</item>
-        <item name="android:statusBarColor">@color/primaryDarkColor</item>
+        <item name="android:statusBarColor">@color/backgroundColor</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:forceDarkAllowed">false</item>
-    </style>
+    <item name="android:fontFamily">sans-serif</item><item name="android:textColorPrimary">@color/textColorPrimary</item><item name="android:textColorSecondary">@color/textColorSecondary</item><item name="materialButtonStyle">@style/MentorAppButton</item><item name="textInputStyle">@style/MentorAppInput</item><item name="android:windowAnimationStyle">@style/MentorWindowAnimation</item></style>
 
     <style name="Theme.ASMfinal" parent="Base.Theme.ASMfinal" />
 </resources>

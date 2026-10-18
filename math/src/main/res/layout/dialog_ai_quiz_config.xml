@@ -70,6 +70,6 @@
         android:text="@string/math_quiz_config_btn"
         android:textAllCaps="false"
         android:backgroundTint="@color/math_quiz_primary"
-        android:textColor="#FFFFFF" />
+        android:textColor="@color/math_active_text" />
 
 </LinearLayout>

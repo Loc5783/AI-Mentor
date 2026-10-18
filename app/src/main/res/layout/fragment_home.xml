@@ -52,7 +52,9 @@
 
                     <TextView
                         android:id="@+id/tv_total_level_label"
-                        android:layout_width="wrap_content"
+                        android:layout_toStartOf="@id/tv_total_level_value"
+                        android:layout_marginEnd="8dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/home_overall_level"
                         android:textColor="@color/textColorSecondary"
@@ -86,7 +88,7 @@
                     android:layout_height="12dp"
                     android:layout_marginTop="16dp"
                     android:max="100"
-                    android:progress="30"
+                    android:progress="0"
                     android:progressDrawable="@drawable/custom_progress_bar" />
 
                 <TextView
@@ -99,101 +101,20 @@
                     android:textColor="@color/textColorSecondary"
                     android:textSize="12sp" />
 
+                <com.google.android.material.button.MaterialButton android:id="@+id/button_start_learning" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:layout_marginTop="8dp" android:text="@string/ux_choose_subject" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Advanced Stats Section: Pie Chart & Learning Time -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <!-- Pie Chart Card -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2"
-                android:layout_marginEnd="8dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@android:color/transparent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/neumorphic_card_bg"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/home_completion_ratio"
-                        android:textColor="@color/textColorPrimary"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <com.example.asm_final.utils.SimplePieChartView
-                        android:id="@+id/pie_chart_exp"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:layout_marginTop="12dp" />
-
-                    <TextView
-                        android:id="@+id/tv_chart_summary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/home_based_on_exp"
-                        android:textColor="@color/textColorSecondary"
-                        android:textSize="10sp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Learning Time Card -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@android:color/transparent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/neumorphic_card_bg"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/home_learning_time"
-                        android:textColor="@color/textColorPrimary"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <!-- Mini Bars for Time -->
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_math" android:textSize="10sp" android:layout_marginTop="12dp" />
-                    <ProgressBar android:id="@+id/pb_time_math" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:progressDrawable="@drawable/custom_progress_bar" />
-
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_science" android:textSize="10sp" android:layout_marginTop="6dp" />
-                    <ProgressBar android:id="@+id/pb_time_science" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:progressDrawable="@drawable/custom_progress_bar" />
-
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_history" android:textSize="10sp" android:layout_marginTop="6dp" />
-                    <ProgressBar android:id="@+id/pb_time_history" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:progressDrawable="@drawable/custom_progress_bar" />
-
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_it" android:textSize="10sp" android:layout_marginTop="6dp" />
-                    <ProgressBar android:id="@+id/pb_time_prog" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:progressDrawable="@drawable/custom_progress_bar" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" app:cardCornerRadius="24dp" app:cardElevation="0dp" app:cardBackgroundColor="@android:color/transparent">
+          <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp" android:background="@drawable/neumorphic_card_bg">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/home_completion_ratio" android:textColor="@color/textColorPrimary" android:textStyle="bold" android:textSize="16sp"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="8dp">
+              <com.example.asm_final.utils.SimplePieChartView android:id="@+id/pie_chart_exp" android:layout_width="88dp" android:layout_height="88dp" android:layout_marginEnd="12dp"/>
+              <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical"><TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/cat_math" android:textSize="12sp" android:textColor="@color/textColorSecondary" android:layout_marginTop="6dp" android:labelFor="@id/pb_time_math"/><ProgressBar android:id="@+id/pb_time_math" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="3dp" android:progressDrawable="@drawable/custom_progress_bar"/><TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/cat_science" android:textSize="12sp" android:textColor="@color/textColorSecondary" android:layout_marginTop="6dp" android:labelFor="@id/pb_time_science"/><ProgressBar android:id="@+id/pb_time_science" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="3dp" android:progressDrawable="@drawable/custom_progress_bar"/><TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/cat_history" android:textSize="12sp" android:textColor="@color/textColorSecondary" android:layout_marginTop="6dp" android:labelFor="@id/pb_time_history"/><ProgressBar android:id="@+id/pb_time_history" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="3dp" android:progressDrawable="@drawable/custom_progress_bar"/><TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/cat_it" android:textSize="12sp" android:textColor="@color/textColorSecondary" android:layout_marginTop="6dp" android:labelFor="@id/pb_time_prog"/><ProgressBar android:id="@+id/pb_time_prog" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="3dp" android:progressDrawable="@drawable/custom_progress_bar"/></LinearLayout>
+            </LinearLayout>
+            <TextView android:id="@+id/tv_chart_summary" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/home_based_on_exp" android:textSize="12sp" android:textColor="@color/textColorSecondary"/>
+          </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:layout_width="wrap_content"
@@ -223,6 +144,7 @@
         </HorizontalScrollView>
 
 
+        <TextView android:id="@+id/tv_dashboard_status" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:layout_marginTop="12dp" android:text="@string/dashboard_partial" android:textColor="@color/textColorSecondary" android:textSize="14sp" android:visibility="gone" android:clickable="true" android:focusable="true" />
         <!-- Recent Activity Section -->
         <TextView
             android:layout_width="wrap_content"
@@ -233,12 +155,15 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <TextView android:id="@+id/text_recent_empty" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/ux_no_activity" android:textColor="@color/textColorSecondary" android:textSize="14sp" android:visibility="gone" />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_recent_activity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:nestedScrollingEnabled="false" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/button_recent_more" style="@style/Widget.Material3.Button.TextButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/home_more_activity" android:visibility="gone"/>
+
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

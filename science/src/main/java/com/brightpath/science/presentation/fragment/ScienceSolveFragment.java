@@ -21,9 +21,17 @@ import com.brightpath.science.util.ScienceUserSession;
 import java.util.List;
 
 public final class ScienceSolveFragment extends Fragment {
-    public ScienceSolveFragment() { super(R.layout.fragment_science_solve); }
+        /*
+ * Responsibility: Initializes ScienceSolveFragment and receives or prepares the dependencies/state required by this Science UI tab/fragment.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public ScienceSolveFragment() { super(R.layout.fragment_science_solve); }
 
-    @Override
+        /*
+ * Responsibility: Binds the Fragment views after layout creation and configures adapters, listeners, and initial data.
+ * Purpose: Connects the XML layout to Fragment behavior while keeping setup in the correct lifecycle stage.
+ */
+@Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.findViewById(R.id.buttonScienceSolveBack).setOnClickListener(v -> requireActivity().finish());
@@ -41,12 +49,20 @@ public final class ScienceSolveFragment extends Fragment {
                 item -> startActivity(ScienceActivity.createHistoryIntent(requireContext(), item))));
     }
 
-    private void openChat(boolean camera) {
+        /*
+ * Responsibility: Creates the required navigation/action and opens the Science destination handled by `openChat`.
+ * Purpose: Keeps navigation code separate from the business logic executed by the destination screen.
+ */
+private void openChat(boolean camera) {
         Intent intent = new Intent(requireContext(), ScienceActivity.class);
         intent.putExtra(ScienceActivity.EXTRA_OPEN_CAMERA, camera);
         intent.putExtra(ScienceActivity.EXTRA_FOCUS_INPUT, !camera);
         startActivity(intent);
     }
 
-    private ScienceMainActivity main() { return (ScienceMainActivity) requireActivity(); }
+        /*
+ * Responsibility: Provides the helper/reference operation named `main` for ScienceSolveFragment.
+ * Purpose: Keeps this small responsibility isolated so the surrounding class remains easier to read and navigate during review.
+ */
+private ScienceMainActivity main() { return (ScienceMainActivity) requireActivity(); }
 }

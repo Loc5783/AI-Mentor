@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Main shell palette: dark mode -->
-    <color name="neumorphic_background">#0D1524</color>
+    <color name="neumorphic_background">#101A2C</color>
     <color name="neumorphic_shadow_light">#26344A</color>
     <color name="neumorphic_shadow_dark">#050A12</color>
     <color name="neumorphic_accent">#65C6FF</color>
@@ -10,12 +10,12 @@
     <color name="primaryDarkColor">#0B4D73</color>
     <color name="primaryContainerColor">#173B52</color>
     <color name="accentColor">#9BE45A</color>
-    <color name="backgroundColor">#0D1524</color>
-    <color name="surfaceColor">#151F31</color>
+    <color name="backgroundColor">#101A2C</color>
+    <color name="surfaceColor">#1B2940</color>
     <color name="surfaceVariantColor">#1E2A3E</color>
 
-    <color name="textColorPrimary">#F4F7FB</color>
-    <color name="textColorSecondary">#B6C2D2</color>
+    <color name="textColorPrimary">#F3F6FF</color>
+    <color name="textColorSecondary">#B8C6DD</color>
     <color name="dividerColor">#2A3850</color>
     <color name="arrowTintColor">#8391A5</color>
     <color name="buttonShadowColor">#07101D</color>

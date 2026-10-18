@@ -28,7 +28,11 @@ public final class SQLiteScienceHistoryRepository implements ScienceHistoryRepos
     private final QuestionFingerprint fingerprint;
     private final TextCipher textCipher;
 
-    public SQLiteScienceHistoryRepository(ScienceDbHelper dbHelper,
+        /*
+ * Responsibility: Initializes SQLiteScienceHistoryRepository and receives or prepares the dependencies/state required by this data repository.
+ * Purpose: Keeps object creation explicit so the component is ready before its main operations are used.
+ */
+public SQLiteScienceHistoryRepository(ScienceDbHelper dbHelper,
                                           QuestionNormalizer normalizer,
                                           QuestionFingerprint fingerprint,
                                           TextCipher textCipher) {
@@ -38,7 +42,11 @@ public final class SQLiteScienceHistoryRepository implements ScienceHistoryRepos
         this.textCipher = textCipher;
     }
 
-    @Override
+        /*
+ * Responsibility: Normalizes/encrypts the required Science data and inserts the question-answer record for the correct user, subject, and conversation.
+ * Purpose: Creates persistent, user-scoped learning history that can be reopened offline.
+ */
+@Override
     public long save(ScienceQuestion question, String answer) {
         String rawQuestion = question.getQuestionText().isEmpty()
                 ? "Image-based science question" : question.getQuestionText();
@@ -61,7 +69,11 @@ public final class SQLiteScienceHistoryRepository implements ScienceHistoryRepos
         return dbHelper.getWritableDatabase().insert(ScienceDbContract.History.TABLE, null, values);
     }
 
-    @Override
+        /*
+ * Responsibility: Looks up a previous compatible Science answer using the current user, subject, education level, and normalized question.
+ * Purpose: Supports the exact-question cache while preventing cross-user or cross-subject answer reuse.
+ */
+@Override
     public ScienceHistory findCached(int userId, ScienceSubject subject, String educationLevel,
                                      String normalizedQuestion) {
         String selection = ScienceDbContract.History.USER_ID + "=? AND "
@@ -85,7 +97,11 @@ public final class SQLiteScienceHistoryRepository implements ScienceHistoryRepos
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Retrieves the data/state required by `findById` from the appropriate data repository.
+ * Purpose: Provides read access through a focused method so callers do not need to know the underlying storage/implementation details.
+ */
+@Override
     public ScienceHistory findById(int userId, long historyId) {
         if (historyId <= 0) return null;
         String selection = ScienceDbContract.History.USER_ID + "=? AND "
@@ -103,7 +119,11 @@ public final class SQLiteScienceHistoryRepository implements ScienceHistoryRepos
         }
     }
 
-    @Override
+        /*
+ * Responsibility: Loads all history rows belonging to one conversation and one user in chronological order.
+ * Purpose: Reconstructs a complete saved Science chat without exposing another user's records.
+ */
+@Override
     public List<ScienceHistory> findConversation(int userId, String conversationId) {
         List<ScienceHistory> items = new ArrayList<>();
         if (conversationId == null || conversationId.trim().isEmpty()) return items;
@@ -123,7 +143,11 @@ public final class SQLiteScienceHistoryRepository implements ScienceHistoryRepos
         return items;
     }
 
-    @Override
+        /*
+ * Responsibility: Searches saved Science history using user ownership, optional subject filtering, and the requested keyword.
+ * Purpose: Provides fast History-screen review while keeping the query rules inside the repository layer.
+ */
+@Override
     public List<ScienceHistory> search(int userId, ScienceSubject subject, String keyword) {
         List<String> clauses = new ArrayList<>();
         List<String> args = new ArrayList<>();
@@ -158,7 +182,11 @@ public final class SQLiteScienceHistoryRepository implements ScienceHistoryRepos
         return items;
     }
 
-    @Override
+        /*
+ * Responsibility: Adds the data, listener, duration, key, or UI element represented by `addReviewDuration`.
+ * Purpose: Keeps the incremental update explicit and isolated from unrelated responsibilities.
+ */
+@Override
     public void addReviewDuration(long historyId, int seconds) {
         int safeSeconds = Math.max(1, seconds);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -169,20 +197,32 @@ public final class SQLiteScienceHistoryRepository implements ScienceHistoryRepos
                 new Object[]{safeSeconds, historyId});
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the repository operation `countByUser` against the Science data source.
+ * Purpose: Keeps persistence/query details behind the repository abstraction and away from presentation/business code.
+ */
+@Override
     public int countByUser(int userId) {
         return intQuery("SELECT COUNT(*) FROM " + ScienceDbContract.History.TABLE
                 + " WHERE " + ScienceDbContract.History.USER_ID + "=?", userId);
     }
 
-    @Override
+        /*
+ * Responsibility: Converts input data in `totalReviewSeconds` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+@Override
     public int totalReviewSeconds(int userId) {
         return intQuery("SELECT COALESCE(SUM(" + ScienceDbContract.History.REVIEW_SECONDS + "),0) FROM "
                 + ScienceDbContract.History.TABLE + " WHERE "
                 + ScienceDbContract.History.USER_ID + "=?", userId);
     }
 
-    @Override
+        /*
+ * Responsibility: Performs the repository operation `mostFrequentSubject` against the Science data source.
+ * Purpose: Keeps persistence/query details behind the repository abstraction and away from presentation/business code.
+ */
+@Override
     public ScienceSubject mostFrequentSubject(int userId) {
         String sql = "SELECT " + ScienceDbContract.History.SUBJECT + ", COUNT(*) AS amount FROM "
                 + ScienceDbContract.History.TABLE + " WHERE "
@@ -196,14 +236,22 @@ public final class SQLiteScienceHistoryRepository implements ScienceHistoryRepos
         }
     }
 
-    private int intQuery(String sql, int userId) {
+        /*
+ * Responsibility: Performs the repository operation `intQuery` against the Science data source.
+ * Purpose: Keeps persistence/query details behind the repository abstraction and away from presentation/business code.
+ */
+private int intQuery(String sql, int userId) {
         try (Cursor cursor = dbHelper.getReadableDatabase().rawQuery(sql,
                 new String[]{String.valueOf(userId)})) {
             return cursor.moveToFirst() ? cursor.getInt(0) : 0;
         }
     }
 
-    private ScienceHistory mapHistory(Cursor cursor) {
+        /*
+ * Responsibility: Converts input data in `mapHistory` into the domain/model representation used by the Science Module.
+ * Purpose: Keeps parsing/mapping separate from UI and storage code, producing consistent structured data.
+ */
+private ScienceHistory mapHistory(Cursor cursor) {
         return new ScienceHistory(
                 cursor.getLong(cursor.getColumnIndexOrThrow(ScienceDbContract.History.ID)),
                 cursor.getInt(cursor.getColumnIndexOrThrow(ScienceDbContract.History.USER_ID)),

@@ -1,5 +1,9 @@
 package com.example.historymodule.util;
 
+/*
+ * Role: Utility class for History, grouping reusable logic such as user sessions, levels, formatting, or data conversion.
+ * Purpose: Moving shared logic into helpers reduces duplication and keeps Activities and Fragments focused on screen coordination.
+ */
 public final class HistoryPromptFactory {
 
     public String buildAnswerPrompt(String latestMessage,
@@ -28,6 +32,10 @@ public final class HistoryPromptFactory {
                 + "Không dừng giữa câu và không thêm câu hỏi cuối khi yêu cầu đã được giải quyết.";
     }
 
+    /*
+     * Responsibility: Creates the object or data structure for `build continuation prompt` using the class's consistent creation rules.
+     * Purpose: Encapsulating creation rules prevents callers from repeating the same initialization steps.
+     */
     public String buildContinuationPrompt(String latestMessage,
                                           String conversationContext,
                                           String partialAnswer,
@@ -45,10 +53,14 @@ public final class HistoryPromptFactory {
                 + "PHẦN CUỐI ĐANG DỞ:\n" + tail;
     }
 
+    /*
+     * Responsibility: Creates the object or data structure for `build quiz prompt` using the class's consistent creation rules.
+     * Purpose: Encapsulating creation rules prevents callers from repeating the same initialization steps.
+     */
     public String buildQuizPrompt(String topic,
                                   String educationLevel,
                                   int questionCount) {
-        int count = Math.max(5, Math.min(10, questionCount));
+        int count = Math.max(5, Math.min(15, questionCount));
         String safeTopic = topic == null || topic.trim().isEmpty() ? "Tổng hợp" : topic.trim();
         String safeLevel = educationLevel == null || educationLevel.trim().isEmpty()
                 ? "Trung học cơ sở" : educationLevel.trim();
@@ -77,7 +89,7 @@ public final class HistoryPromptFactory {
                 + "Tạo đúng " + count + " câu trắc nghiệm mới bằng tiếng Việt.\n"
                 + "Câu hỏi phải dựa trên dữ kiện đáng tin cậy, không bịa niên đại, nhân vật hoặc sự kiện.\n"
                 + "Mỗi câu có đúng 4 lựa chọn, chỉ một đáp án đúng, phương án nhiễu hợp lý nhưng không mơ hồ.\n"
-                + "Phân bố độ khó cho 5 câu: khoảng 2 EASY, 2 MEDIUM và 1 HARD.\n"
+                + "Phân bố độ khó: khoảng 40% EASY, 40% MEDIUM và 20% HARD.\n"
                 + "EASY là nhớ/nhận biết; MEDIUM là hiểu và nối nguyên nhân – kết quả; HARD là so sánh, đánh giá hoặc suy luận nhiều bước phù hợp cấp học.\n"
                 + "Giải thích ngắn vì sao đáp án đúng.\n\n"
                 + "Chỉ trả về JSON array hợp lệ, không markdown. Mỗi object có đúng các trường:\n"

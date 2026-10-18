@@ -2,144 +2,127 @@ package com.example.historymodule.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.view.*;
+import androidx.annotation.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import androidx.recyclerview.widget.*;
 import com.example.historymodule.HistoryChatActivity;
 import com.example.historymodule.R;
 import com.example.historymodule.adapter.HistoryHistoryAdapter;
-import com.example.historymodule.databases.HistoryHistoryItem;
-import com.example.historymodule.databases.SqliteDbHelper;
+import com.example.historymodule.databases.*;
 import com.example.historymodule.util.HistoryUserSession;
-import com.google.android.material.tabs.TabLayout;
+import com.example.mentor.data.*;
+import com.example.mentor.ui.HistoryControls;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
+/** Reopens real History conversations, with full-message search and explicit delete actions. */
 public final class HistoryHistoryFragment extends Fragment {
-    private final List<HistoryHistoryItem> conversations = new ArrayList<>();
-    private HistoryHistoryAdapter adapter;
-    private SqliteDbHelper dbHelper;
-    private TextView emptyView;
-    private int selectedTabIndex;
-    private int userId;
+  private final List<HistoryHistoryItem> all = new ArrayList<>(), visible = new ArrayList<>();
+  private SqliteDbHelper database;
+  private HistoryHistoryAdapter adapter;
+  private HistoryControls controls;
+  private ConversationSearchIndex search = new ConversationSearchIndex();
+  private int userId;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.history_fragment_conversations, container, false);
-        userId = HistoryUserSession.getUserId(requireContext());
-        dbHelper = new SqliteDbHelper(requireContext());
-        emptyView = view.findViewById(R.id.tvHistoryEmpty);
+  @Nullable
+  @Override
+  public View onCreateView(
+      @NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle state) {
+    return inflater.inflate(com.example.mentor.ui.R.layout.mentor_history_page, parent, false);
+  }
 
-        RecyclerView recycler = view.findViewById(R.id.recycler_chat_history);
-        adapter = new HistoryHistoryAdapter(conversations, new HistoryHistoryAdapter.Listener() {
-            @Override
-            public void onClick(HistoryHistoryItem item) {
-                Intent intent = new Intent(requireContext(), HistoryChatActivity.class);
-                intent.putExtra(HistoryChatActivity.EXTRA_CONVERSATION_ID, item.getReferenceId());
-                startActivity(intent);
-            }
+  @Override
+  public void onViewCreated(@NonNull View root, @Nullable Bundle state) {
+    super.onViewCreated(root, state);
+    userId = HistoryUserSession.getUserId(requireContext());
+    database = new SqliteDbHelper(requireContext());
+    root.findViewById(com.example.mentor.ui.R.id.mentor_history_new)
+        .setOnClickListener(
+            v ->
+                startActivity(
+                    new Intent(requireContext(), HistoryChatActivity.class)
+                        .putExtra(
+                            HistoryChatActivity.EXTRA_CONVERSATION_ID, UUID.randomUUID().toString())
+                        .putExtra(HistoryChatActivity.EXTRA_FOCUS_INPUT, true)));
+    root.findViewById(com.example.mentor.ui.R.id.mentor_history_heading).setVisibility(View.GONE);
+    RecyclerView recycler = root.findViewById(com.example.mentor.ui.R.id.mentor_history_list);
+    recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+    adapter =
+        new HistoryHistoryAdapter(
+            visible,
+            new HistoryHistoryAdapter.Listener() {
+              @Override
+              public void onClick(HistoryHistoryItem item) {
+                startActivity(
+                    new Intent(requireContext(), HistoryChatActivity.class)
+                        .putExtra(
+                            HistoryChatActivity.EXTRA_CONVERSATION_ID, item.getReferenceId()));
+              }
 
-            @Override
-            public void onLongClick(HistoryHistoryItem item) {
+              @Override
+              public void onLongClick(HistoryHistoryItem item) {
                 confirmDelete(item);
-            }
-        });
-        recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recycler.setAdapter(adapter);
+              }
+            });
+    recycler.setAdapter(adapter);
+    controls = new HistoryControls(root, state, this::filter);
+    reload();
+  }
 
-        TabLayout tabs = view.findViewById(R.id.history_tabs);
-        tabs.removeAllTabs();
-        tabs.addTab(tabs.newTab().setText(R.string.history_filter_all));
-        tabs.addTab(tabs.newTab().setText(R.string.history_filter_today));
-        tabs.addTab(tabs.newTab().setText(R.string.history_filter_7days));
-        tabs.addTab(tabs.newTab().setText(R.string.history_filter_last_month));
-        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override public void onTabSelected(TabLayout.Tab tab) {
-                selectedTabIndex = tab.getPosition();
-                loadConversations();
-            }
-            @Override public void onTabUnselected(TabLayout.Tab tab) { }
-            @Override public void onTabReselected(TabLayout.Tab tab) { loadConversations(); }
-        });
+  private void confirmDelete(HistoryHistoryItem item) {
+    new AlertDialog.Builder(requireContext())
+        .setTitle(R.string.history_delete_conv_title)
+        .setMessage(R.string.history_delete_conv_msg)
+        .setPositiveButton(
+            android.R.string.ok,
+            (d, w) -> {
+              database.deleteConversation(userId, item.getReferenceId());
+              reload();
+            })
+        .setNegativeButton(android.R.string.cancel, null)
+        .show();
+  }
 
-        loadConversations();
-        return view;
-    }
+  private void reload() {
+    all.clear();
+    all.addAll(database.loadConversationSummaries(userId, 0, 0, 0));
+    search = database.loadConversationSearchIndex(userId);
+    filter();
+  }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (dbHelper != null && adapter != null) loadConversations();
-    }
+  private void filter() {
+    if (controls == null || adapter == null) return;
+    visible.clear();
+    visible.addAll(
+        controls.filter(
+            all,
+            item -> item.getTitle() + " " + search.text(item.getReferenceId()),
+            item -> Timestamps.parse(item.getTimestamp())));
+    adapter.notifyDataSetChanged();
+  }
 
-    private void confirmDelete(HistoryHistoryItem item) {
-        if (item.getReferenceId() == null) return;
-        new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.history_delete_conv_title)
-                .setMessage(R.string.history_delete_conv_msg)
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                    dbHelper.deleteConversation(userId, item.getReferenceId());
-                    loadConversations();
-                })
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
-    }
+  @Override
+  public void onResume() {
+    super.onResume();
+    if (database != null) reload();
+  }
 
-    private void loadConversations() {
-        long[] range = resolveRange(selectedTabIndex);
-        conversations.clear();
-        conversations.addAll(dbHelper.loadConversationSummaries(userId, range[0], range[1], 100));
-        adapter.notifyDataSetChanged();
-        emptyView.setVisibility(conversations.isEmpty() ? View.VISIBLE : View.GONE);
-    }
+  @Override
+  public void onSaveInstanceState(@NonNull Bundle out) {
+    super.onSaveInstanceState(out);
+    if (controls != null) controls.save(out);
+  }
 
-    private long[] resolveRange(int tabIndex) {
-        Calendar start = Calendar.getInstance();
-        Calendar end = Calendar.getInstance();
-        if (tabIndex == 1) {
-            start.set(Calendar.HOUR_OF_DAY, 0);
-            start.set(Calendar.MINUTE, 0);
-            start.set(Calendar.SECOND, 0);
-            start.set(Calendar.MILLISECOND, 0);
-            return new long[]{start.getTimeInMillis(), 0L};
-        }
-        if (tabIndex == 2) {
-            start.add(Calendar.DAY_OF_YEAR, -7);
-            return new long[]{start.getTimeInMillis(), 0L};
-        }
-        if (tabIndex == 3) {
-            start.set(Calendar.DAY_OF_MONTH, 1);
-            start.set(Calendar.HOUR_OF_DAY, 0);
-            start.set(Calendar.MINUTE, 0);
-            start.set(Calendar.SECOND, 0);
-            start.set(Calendar.MILLISECOND, 0);
-            end.setTimeInMillis(start.getTimeInMillis());
-            start.add(Calendar.MONTH, -1);
-            return new long[]{start.getTimeInMillis(), end.getTimeInMillis()};
-        }
-        return new long[]{0L, 0L};
-    }
-
-    @Override
-    public void onDestroyView() {
-        if (dbHelper != null) dbHelper.close();
-        dbHelper = null;
-        adapter = null;
-        emptyView = null;
-        super.onDestroyView();
-    }
+  @Override
+  public void onDestroyView() {
+    if (database != null) database.close();
+    database = null;
+    adapter = null;
+    controls = null;
+    all.clear();
+    visible.clear();
+    search = new ConversationSearchIndex();
+    super.onDestroyView();
+  }
 }

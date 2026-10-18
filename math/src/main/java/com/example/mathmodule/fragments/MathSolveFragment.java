@@ -13,6 +13,10 @@ import androidx.cardview.widget.CardView;
 import com.example.mathmodule.MathChatActivity;
 import com.example.mathmodule.R;
 
+/*
+ * Role: Fragment for Math, responsible for a specific functional area of the screen and its user interactions.
+ * Purpose: Using Fragments gives each tab or feature a focused responsibility and makes the screen flow easier to explain.
+ */
 public class MathSolveFragment extends Fragment {
 
     @Nullable
@@ -42,6 +46,7 @@ public class MathSolveFragment extends Fragment {
             startActivity(intent);
         });
 
+        view.findViewById(R.id.button_math_calculator).setOnClickListener(v -> com.example.mathmodule.calculator.MathCalculator.show(requireActivity()));
         return view; // Trả về view đã hoàn thiện
     }
 }

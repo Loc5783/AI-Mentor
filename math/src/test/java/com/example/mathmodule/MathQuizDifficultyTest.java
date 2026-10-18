@@ -6,6 +6,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/*
+ * Role: Test class for Math, used to verify key rules and behaviors after code changes.
+ * Purpose: These tests verify key behaviors automatically instead of relying only on manual UI testing.
+ */
 public class MathQuizDifficultyTest {
     @Test
     public void mapsApiDifficultyValuesToMathDifficulty() {
@@ -19,6 +23,10 @@ public class MathQuizDifficultyTest {
                 MathQuizDifficulty.fromApiValue(null));
     }
 
+    /*
+     * Responsibility: Performs the `rewards increase with math question difficulty` responsibility of `MathQuizDifficultyTest` and returns or updates the result for the caller.
+     * Purpose: A focused method improves readability, reuse, and step-by-step explanation.
+     */
     @Test
     public void rewardsIncreaseWithMathQuestionDifficulty() {
         assertEquals(5, MathQuizDifficulty.EASY.getExpReward());

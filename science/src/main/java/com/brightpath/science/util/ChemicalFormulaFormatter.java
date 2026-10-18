@@ -15,7 +15,11 @@ public final class ChemicalFormulaFormatter {
     private static final Pattern DIGIT = Pattern.compile("\\d+");
     private static final Pattern CHARGE = Pattern.compile("(?:\\d+)?[+-]$");
 
-    public CharSequence format(String text) {
+        /*
+ * Responsibility: Normalizes or formats the value handled by `format` into a stable representation.
+ * Purpose: Improves consistency for display, comparison, caching, storage, or AI prompt construction.
+ */
+public CharSequence format(String text) {
         if (text == null || text.isEmpty()) return "";
 
         // 1. Pre-process to clean up messy LaTeX/Text fragments from AI
@@ -90,7 +94,11 @@ public final class ChemicalFormulaFormatter {
         return result;
     }
 
-    private void applySuperscript(SpannableStringBuilder result, int start, int end) {
+        /*
+ * Responsibility: Applies the transformation/style/rule represented by `applySuperscript` to the current Science data or UI state.
+ * Purpose: Encapsulates the change in one place so it can be reused consistently.
+ */
+private void applySuperscript(SpannableStringBuilder result, int start, int end) {
         result.setSpan(new SuperscriptSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         result.setSpan(new RelativeSizeSpan(0.75f), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }

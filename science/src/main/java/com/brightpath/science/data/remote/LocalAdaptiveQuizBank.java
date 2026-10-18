@@ -18,7 +18,11 @@ import java.util.Set;
 
 /** Level-specific, continuously shuffled fallback used when the remote AI is unavailable. */
 public final class LocalAdaptiveQuizBank {
-    public List<QuizQuestion> generate(QuizRequest request) {
+        /*
+ * Responsibility: Generates the Science result handled by `generate` using the configured generator/service and request context.
+ * Purpose: Keeps content generation behind a focused method so the presentation layer stays independent from AI/fallback details.
+ */
+public List<QuizQuestion> generate(QuizRequest request) {
         List<QuizQuestion> bank = bankFor(request.getSubject(), request.getLevel(), request.getVariationSeed());
         Set<String> excluded = new HashSet<>();
         for (String prompt : request.getRecentlyUsedPrompts()) excluded.add(normalize(prompt));
@@ -37,7 +41,7 @@ public final class LocalAdaptiveQuizBank {
 
         List<QuizQuestion> result = new ArrayList<>();
         for (QuizQuestion question : preferred) {
-            result.add(shuffleOptions(applyDifficulty(question, request.getChallenge()), random));
+            result.add(shuffleOptions(applyDifficulty(question, request.getChallenge()), random).asLocal());
             if (result.size() >= request.getNumberOfQuestions()) break;
         }
         return result;
@@ -49,7 +53,11 @@ public final class LocalAdaptiveQuizBank {
      * SUPPORT favours short, confidence-building items; CHALLENGE favours matching and
      * multi-step multiple-choice items. The level-specific bank itself is never changed.
      */
-    private List<QuizQuestion> prioritizeForChallenge(List<QuizQuestion> source,
+        /*
+ * Responsibility: Performs the `prioritizeForChallenge` operation for LocalAdaptiveQuizBank within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+private List<QuizQuestion> prioritizeForChallenge(List<QuizQuestion> source,
                                                        QuizChallenge challenge,
                                                        Random random) {
         List<QuizQuestion> shuffled = new ArrayList<>(source);
@@ -81,13 +89,21 @@ public final class LocalAdaptiveQuizBank {
         return ordered;
     }
 
-    private List<QuizQuestion> bankFor(ScienceSubject subject, EducationLevel level, long seed) {
+        /*
+ * Responsibility: Performs the `bankFor` operation for LocalAdaptiveQuizBank within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+private List<QuizQuestion> bankFor(ScienceSubject subject, EducationLevel level, long seed) {
         if (subject == ScienceSubject.CHEMISTRY) return chemistry(level, seed);
         if (subject == ScienceSubject.BIOLOGY) return biology(level, seed);
         return physics(level, seed);
     }
 
-    private List<QuizQuestion> physics(EducationLevel level, long seed) {
+        /*
+ * Responsibility: Performs the `physics` operation for LocalAdaptiveQuizBank within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+private List<QuizQuestion> physics(EducationLevel level, long seed) {
         int a = 3 + (int) Math.floorMod(seed, 5);
         int b = 2 + (int) Math.floorMod(seed / 7, 4);
         if (level == EducationLevel.UNIVERSITY) {
@@ -155,7 +171,11 @@ public final class LocalAdaptiveQuizBank {
         );
     }
 
-    private List<QuizQuestion> chemistry(EducationLevel level, long seed) {
+        /*
+ * Responsibility: Performs the `chemistry` operation for LocalAdaptiveQuizBank within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+private List<QuizQuestion> chemistry(EducationLevel level, long seed) {
         int n = 2 + (int) Math.floorMod(seed, 4);
         if (level == EducationLevel.UNIVERSITY) {
             return Arrays.asList(
@@ -221,7 +241,11 @@ public final class LocalAdaptiveQuizBank {
         );
     }
 
-    private List<QuizQuestion> biology(EducationLevel level, long seed) {
+        /*
+ * Responsibility: Performs the `biology` operation for LocalAdaptiveQuizBank within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+private List<QuizQuestion> biology(EducationLevel level, long seed) {
         int n = 2 + (int) Math.floorMod(seed, 3);
         if (level == EducationLevel.UNIVERSITY) {
             return Arrays.asList(
@@ -289,7 +313,11 @@ public final class LocalAdaptiveQuizBank {
     }
 
 
-    private QuizQuestion applyDifficulty(QuizQuestion question, QuizChallenge challenge) {
+        /*
+ * Responsibility: Applies the transformation/style/rule represented by `applyDifficulty` to the current Science data or UI state.
+ * Purpose: Encapsulates the change in one place so it can be reused consistently.
+ */
+private QuizQuestion applyDifficulty(QuizQuestion question, QuizChallenge challenge) {
         QuizDifficulty difficulty = question.getDifficulty();
         if (challenge == QuizChallenge.SUPPORT) {
             difficulty = question.getType() == QuizQuestion.Type.MATCHING
@@ -308,7 +336,11 @@ public final class LocalAdaptiveQuizBank {
         );
     }
 
-    private QuizQuestion shuffleOptions(QuizQuestion question, Random random) {
+        /*
+ * Responsibility: Performs the `shuffleOptions` operation for LocalAdaptiveQuizBank within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+private QuizQuestion shuffleOptions(QuizQuestion question, Random random) {
         if (question.getType() != QuizQuestion.Type.MULTIPLE_CHOICE
                 && question.getType() != QuizQuestion.Type.TRUE_FALSE) return question;
         List<String> options = new ArrayList<>(question.getOptions());
@@ -317,33 +349,57 @@ public final class LocalAdaptiveQuizBank {
                 question.getCorrectAnswer(), question.getExplanation(), question.getDifficulty());
     }
 
-    private QuizQuestion mc(String prompt, String a, String b, String c, String d,
+        /*
+ * Responsibility: Performs the `mc` operation for LocalAdaptiveQuizBank within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+private QuizQuestion mc(String prompt, String a, String b, String c, String d,
                             String answer, String explanation) {
         return new QuizQuestion(QuizQuestion.Type.MULTIPLE_CHOICE, prompt,
                 Arrays.asList(a, b, c, d), answer, explanation);
     }
 
-    private QuizQuestion tf(String prompt, boolean answer, String explanation) {
+        /*
+ * Responsibility: Performs the `tf` operation for LocalAdaptiveQuizBank within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+private QuizQuestion tf(String prompt, boolean answer, String explanation) {
         return new QuizQuestion(QuizQuestion.Type.TRUE_FALSE, prompt,
                 Arrays.asList("True", "False"), answer ? "True" : "False", explanation);
     }
 
-    private QuizQuestion fill(String prompt, String answer, String explanation) {
+        /*
+ * Responsibility: Performs the `fill` operation for LocalAdaptiveQuizBank within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+private QuizQuestion fill(String prompt, String answer, String explanation) {
         return new QuizQuestion(QuizQuestion.Type.FILL_BLANK, prompt,
                 Collections.emptyList(), answer, explanation);
     }
 
-    private QuizQuestion match(String prompt, List<String> options,
+        /*
+ * Responsibility: Performs the `match` operation for LocalAdaptiveQuizBank within the Science Module.
+ * Purpose: Encapsulates this responsibility inside the Science Module component so the code is easier to read, test, maintain, and locate during the review.
+ */
+private QuizQuestion match(String prompt, List<String> options,
                                String answer, String explanation) {
         return new QuizQuestion(QuizQuestion.Type.MATCHING, prompt, options, answer, explanation);
     }
 
-    private String normalize(String value) {
+        /*
+ * Responsibility: Normalizes or formats the value handled by `normalize` into a stable representation.
+ * Purpose: Improves consistency for display, comparison, caching, storage, or AI prompt construction.
+ */
+private String normalize(String value) {
         return value == null ? "" : value.toLowerCase(Locale.ROOT)
                 .replaceAll("[^a-z0-9]", "");
     }
 
-    private String format(double value) {
+        /*
+ * Responsibility: Normalizes or formats the value handled by `format` into a stable representation.
+ * Purpose: Improves consistency for display, comparison, caching, storage, or AI prompt construction.
+ */
+private String format(double value) {
         if (Math.abs(value - Math.rint(value)) < 0.00001) {
             return String.valueOf((int) Math.rint(value));
         }

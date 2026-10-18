@@ -17,6 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/*
+ * Role: Adapter for History, responsible for receiving model data and binding it to RecyclerView/ListView items.
+ * Purpose: The Adapter separates list data from presentation logic, making the UI easier to update and reuse.
+ */
 public final class HistoryNoteAdapter
         extends RecyclerView.Adapter<HistoryNoteAdapter.ViewHolder> {
 
@@ -31,6 +35,10 @@ public final class HistoryNoteAdapter
     private final SimpleDateFormat formatter =
             new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
+    /*
+     * Responsibility: Initializes the `HistoryNoteAdapter` object and sets up the required dependencies and initial data.
+     * Purpose: The constructor ensures the object starts in a valid state immediately after creation.
+     */
     public HistoryNoteAdapter(List<HistoryNoteItem> noteList, Listener listener) {
         this.noteList = noteList;
         this.listener = listener;
@@ -44,6 +52,10 @@ public final class HistoryNoteAdapter
         return new ViewHolder(view);
     }
 
+    /*
+     * Responsibility: Handles the Android callback or event `onBindViewHolder` and updates the related state.
+     * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HistoryNoteItem item = noteList.get(position);
@@ -62,6 +74,10 @@ public final class HistoryNoteAdapter
         holder.itemView.setOnClickListener(v -> listener.onEdit(item));
     }
 
+    /*
+     * Responsibility: Reads or loads data for `get item count` from the appropriate data source.
+     * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
+     */
     @Override
     public int getItemCount() {
         return noteList.size();
