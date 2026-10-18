@@ -7,8 +7,8 @@
     <string name="math_nav_notes">Ghi Chú</string>
     <string name="math_nav_quiz">Quiz</string>
 
-    <string name="math_banner_title">Giải bài tập Toán với AI thông minh</string>
-    <string name="math_banner_desc">Chụp bài hoặc nhập đề bài, AI sẽ giúp bạn giải và giải thích chi tiết từng bước.</string>
+    <string name="math_banner_title">Hiểu từng bước giải</string>
+    <string name="math_banner_desc">Chọn ảnh hoặc nhập đề để bắt đầu.</string>
 
     <string name="math_action_scan">Chọn ảnh đề bài</string>
     <string name="math_action_scan_desc">Tải ảnh bài tập từ thiết bị</string>

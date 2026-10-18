@@ -79,3 +79,12 @@ Quy tắc, nghiên cứu, giới hạn và hợp đồng dữ liệu giải đ�
 - Thêm 3 unit tests cho tổng EXP và 1 kiểm thử thiết bị cho nhãn cấp tối đa.
 - published-audit-final-build-verification.log: debug, release, APK test, unit và lint PASS. 119 unit tests, 0 thất bại; lint 0 lỗi và 495 cảnh báo trên toàn bộ module.
 - Lượt thiết bị đầu có 10 lỗi tại bước chụp ảnh (bitmap null), chưa được coi là PASS. Máy giả lập tiếp tục bị ngắt trong lượt toàn bộ. Sau khi khởi động lại, 6/6 ca tập trung PASS (37,011 giây), đã xem ảnh cấp 20 và streak tiếng Anh/tối. Chưa xác nhận trọn bộ 67 ca thiết bị trên bản cuối. API key 10 trường vẫn trống; không gọi AI thật. Báo cáo: ERROR_CHECK_2026-10-18.md.
+
+
+## Hoàn tất giao diện gọn và biểu đồ có ngữ cảnh — 18/10/2026
+
+- Tham khảo tài liệu chính thức Duolingo/Khan Academy/Brilliant, chọn nguyên tắc phù hợp và áp dụng vào dashboard, chọn môn, banner/thao tác bốn môn và tiêu đề tiến độ học tập; nguồn và quyết định trong UI_COMPACT_CHART_2026-10-18.md.
+- Biểu đồ phân biệt đang tải / chưa có EXP / dữ liệu thật / tải thiếu-lỗi; có hướng dẫn và CTA phù hợp, không tạo số liệu giả. Thẻ tiến độ tự xuống hàng, có nhãn cấp/EXP thật.
+- Giữ mọi chức năng, ID/listener mở môn, máy tính riêng Toán và mạch điện Khoa học. Không đổi database, API, reward/streak hay logic quiz.
+- Debug/release/test APK/unit/lint PASS. 119 unit tests, 0 lỗi lint, 499 cảnh báo. Kiểm thử UI thường 4/4 và nhỏ/chữ lớn/ba nút 4/4; sau chỉnh từ ảnh thực tế, lượt bản cuối 4/4 PASS (37,975 giây).
+- 10 trường API key vẫn trống, không gọi AI thật. APK bàn giao đã cập nhật trong ../AIMentor_QA/AImentor-debug.apk. Chưa thử máy thật; không chạy lại toàn bộ 67 ca thiết bị trong đợt giao diện.

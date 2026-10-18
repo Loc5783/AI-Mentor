@@ -221,12 +221,17 @@ public class ResearchUxTest {
       assertNotNull(resumed().findViewById(R.id.mini_math));
       assertEquals(View.VISIBLE,resumed().findViewById(R.id.pie_chart_exp).getVisibility());
       assertNull(resumed().findViewById(R.id.card_learning_streak));
+      assertEquals("0",((TextView)resumed().findViewById(R.id.tv_chart_center)).getText().toString());
+      assertEquals(View.VISIBLE,resumed().findViewById(R.id.button_chart_action).getVisibility());
+      assertEquals(resumed().getString(R.string.home_chart_empty),((TextView)resumed().findViewById(R.id.tv_chart_summary)).getText().toString());
       ThemeHelper.setDarkMode(context,!originalNight);
     });
     waitFor(a -> a instanceof HomeActivity && a.findViewById(R.id.pie_chart_exp)!=null &&
       (a.getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK)==(!originalNight?android.content.res.Configuration.UI_MODE_NIGHT_YES:android.content.res.Configuration.UI_MODE_NIGHT_NO));
     main(() -> assertEquals(View.VISIBLE,resumed().findViewById(R.id.pie_chart_exp).getVisibility()));
     capture("ux-original-dashboard-restored");
+    onView(withId(R.id.button_chart_action)).perform(scrollTo(),click());
+    waitFor(a -> a.findViewById(R.id.cardMath)!=null);
   }
 
   @Test public void subjectProgressCardOpensMathWithCorrectAccount() {
@@ -242,6 +247,9 @@ public class ResearchUxTest {
     main(() -> {
       androidx.recyclerview.widget.RecyclerView list=resumed().findViewById(R.id.rv_recent_activity);
       assertEquals(3,list.getAdapter().getItemCount());
+      assertEquals(resumed().getString(R.string.home_chart_center),((TextView)resumed().findViewById(R.id.tv_chart_center)).getText().toString());
+      assertEquals(View.GONE,resumed().findViewById(R.id.button_chart_action).getVisibility());
+      assertTrue(((TextView)resumed().findViewById(R.id.chart_exp_history)).getText().toString().contains("10"));
       resumed().findViewById(R.id.button_recent_more).performClick();assertEquals(5,list.getAdapter().getItemCount());
       resumed().findViewById(R.id.button_recent_more).performClick();assertEquals(3,list.getAdapter().getItemCount());
     });

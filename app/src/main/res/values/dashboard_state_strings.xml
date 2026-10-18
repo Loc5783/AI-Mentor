@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="zero_count">0</string>
+    <string name="home_chart_center">EXP</string>
+    <string name="home_chart_empty">Chưa có EXP. Hoàn thành quiz đầu tiên để thấy tiến độ của mình.</string>
+    <string name="home_chart_start">Bắt đầu luyện tập</string>
+    <string name="home_chart_total">Tổng cộng %1$d EXP · từ hoạt động học tập</string>
+    <string name="home_chart_subject">%1$s · %2$d EXP</string>
+    <string name="home_chart_subject_unavailable">%1$s · chưa tải được</string>
+    <string name="home_chart_partial">Một số dữ liệu chưa tải được. Thử lại để xem đầy đủ tiến độ.</string>
+    <string name="home_chart_retry">Tải lại tiến độ</string>
+    <string name="home_chart_accessibility">Biểu đồ phân bố EXP, tổng cộng %1$d EXP.</string>
+    <string name="home_chart_loading">Đang tải tiến độ…</string>
+    <string name="home_course_math">Giải bài · Công thức · Quiz</string>
+    <string name="home_course_science">Vật lý · Hóa học · Sinh học</string>
+    <string name="home_course_history">Hỏi đáp · Ghi chú · Quiz</string>
+    <string name="home_course_programming">Ngôn ngữ · Hỏi đáp · Quiz</string>
+    <string name="home_subject_level">Cấp %1$d · %2$d EXP</string>
+    <string name="home_subject_progress_description">%1$s: cấp %2$d, %3$d EXP.</string>
+</resources>

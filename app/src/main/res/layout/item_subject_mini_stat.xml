@@ -6,7 +6,7 @@
 
             <ImageView android:id="@+id/iv_mini_icon" android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_math_stat" android:contentDescription="@null" android:importantForAccessibility="no" />
 
-            <TextView android:id="@+id/tv_mini_name" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:text="@string/cat_math" android:textColor="@color/textColorPrimary" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:id="@+id/tv_mini_name" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:text="@string/cat_math" android:textColor="@color/textColorPrimary" android:textSize="14sp" android:textStyle="bold" />
         </LinearLayout>
 
         <TextView android:id="@+id/tv_mini_exp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/zero_exp" android:textColor="@color/textColorSecondary" android:textSize="12sp" />

@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="zero_count">0</string>
+    <string name="home_chart_center">EXP</string>
+    <string name="home_chart_empty">No EXP yet. Complete your first quiz to see your progress.</string>
+    <string name="home_chart_start">Start practising</string>
+    <string name="home_chart_total">%1$d EXP in total · from learning activities</string>
+    <string name="home_chart_subject">%1$s · %2$d EXP</string>
+    <string name="home_chart_subject_unavailable">%1$s · unavailable</string>
+    <string name="home_chart_partial">Some progress could not be loaded. Try again to see the full picture.</string>
+    <string name="home_chart_retry">Reload progress</string>
+    <string name="home_chart_accessibility">EXP distribution chart, %1$d EXP in total.</string>
+    <string name="home_chart_loading">Loading progress…</string>
+    <string name="home_course_math">Solve · Formulas · Quizzes</string>
+    <string name="home_course_science">Physics · Chemistry · Biology</string>
+    <string name="home_course_history">Ask · Notes · Quizzes</string>
+    <string name="home_course_programming">Languages · Ask · Quizzes</string>
+    <string name="home_subject_level">Level %1$d · %2$d EXP</string>
+    <string name="home_subject_progress_description">%1$s: level %2$d, %3$d EXP.</string>
+</resources>

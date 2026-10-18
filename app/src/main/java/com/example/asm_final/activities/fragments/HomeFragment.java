@@ -113,6 +113,14 @@ public class HomeFragment extends Fragment {
                 ((com.example.asm_final.activities.HomeActivity) requireActivity())
                     .navigateTo(R.id.nav_category, false);
             });
+    view.findViewById(R.id.button_chart_action)
+        .setOnClickListener(
+            v -> {
+              if (Boolean.TRUE.equals(v.getTag())) setupData();
+              else
+                ((com.example.asm_final.activities.HomeActivity) requireActivity())
+                    .navigateTo(R.id.nav_category, false);
+            });
     view.findViewById(R.id.button_recent_more)
         .setOnClickListener(
             v -> {
@@ -251,8 +259,51 @@ public class HomeFragment extends Fragment {
             snapshot.activities.isEmpty() && snapshot.unavailable.isEmpty()
                 ? View.VISIBLE
                 : View.GONE);
+    boolean incomplete = !snapshot.unavailable.isEmpty();
+    ((TextView) view.findViewById(R.id.tv_chart_center))
+        .setText(
+            totalExp == 0
+                ? (incomplete ? "—" : getString(R.string.zero_count))
+                : getString(R.string.home_chart_center));
+    pieChart.setContentDescription(
+        incomplete
+            ? getString(R.string.home_chart_partial)
+            : getString(R.string.home_chart_accessibility, totalExp));
+    int[] legendIds = {
+      R.id.chart_exp_math, R.id.chart_exp_science, R.id.chart_exp_history, R.id.chart_exp_prog
+    };
+    int[] subjectLabels = {
+      R.string.cat_math, R.string.cat_science, R.string.cat_history, R.string.cat_it
+    };
+    RecentActivity.Subject[] subjectNames = {
+      RecentActivity.Subject.MATH,
+      RecentActivity.Subject.SCIENCE,
+      RecentActivity.Subject.HISTORY,
+      RecentActivity.Subject.PROGRAMMING
+    };
+    for (int i = 0; i < legendIds.length; i++) {
+      String labelText = getString(subjectLabels[i]);
+      ((TextView) view.findViewById(legendIds[i]))
+          .setText(
+              snapshot.unavailable.contains(subjectNames[i])
+                  ? getString(R.string.home_chart_subject_unavailable, labelText)
+                  : getString(
+                      R.string.home_chart_subject,
+                      labelText,
+                      snapshot.progress(subjectNames[i]).experience));
+    }
     ((TextView) view.findViewById(R.id.tv_chart_summary))
-        .setText(totalExp == 0 ? R.string.ux_no_exp : R.string.home_based_on_exp);
+        .setText(
+            incomplete
+                ? getString(R.string.home_chart_partial)
+                : totalExp == 0
+                    ? getString(R.string.home_chart_empty)
+                    : getString(R.string.home_chart_total, totalExp));
+    com.google.android.material.button.MaterialButton chartAction =
+        view.findViewById(R.id.button_chart_action);
+    chartAction.setVisibility(incomplete || totalExp == 0 ? View.VISIBLE : View.GONE);
+    chartAction.setTag(incomplete);
+    chartAction.setText(incomplete ? R.string.home_chart_retry : R.string.home_chart_start);
     TextView status = getView().findViewById(R.id.tv_dashboard_status);
     status.setVisibility(snapshot.unavailable.isEmpty() ? View.GONE : View.VISIBLE);
     status.setOnClickListener(v -> setupData());
@@ -274,8 +325,14 @@ public class HomeFragment extends Fragment {
   private void updateMiniStat(View root, String name, int icon, int exp) {
     ((ImageView) root.findViewById(R.id.iv_mini_icon)).setImageResource(icon);
     ((TextView) root.findViewById(R.id.tv_mini_name)).setText(name);
-    root.setContentDescription(getString(R.string.ux_reopen_subject, name));
-    ((TextView) root.findViewById(R.id.tv_mini_exp)).setText(getString(R.string.exp_unit, exp));
+    root.setContentDescription(
+        getString(
+            R.string.home_subject_progress_description,
+            name,
+            ExpLevelCalculator.getLevel(exp),
+            exp));
+    ((TextView) root.findViewById(R.id.tv_mini_exp))
+        .setText(getString(R.string.home_subject_level, ExpLevelCalculator.getLevel(exp), exp));
     ((ProgressBar) root.findViewById(R.id.pb_mini_stat))
         .setProgress(com.example.mentor.data.QuizPolicy.progress(exp));
   }

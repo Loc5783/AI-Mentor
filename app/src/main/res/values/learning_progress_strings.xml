@@ -1,1 +1,4 @@
-<resources><string name="learning_progress_title">Chuỗi học tập và XP tuần</string></resources>
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="learning_progress_title">Tiến độ học tập</string>
+</resources>
