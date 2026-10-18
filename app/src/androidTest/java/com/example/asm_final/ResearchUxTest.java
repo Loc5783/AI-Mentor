@@ -314,10 +314,17 @@ public class ResearchUxTest {
   public void calculatorResultStaysVisibleWhenKeypadScrolls() {
     start(com.example.mathmodule.MathDashboardActivity.class);
     main(() -> com.example.mathmodule.calculator.MathCalculator.show(resumed()));
-    for (String key : new String[] {"6", "×", "7", "="})
+    int entered = 0;
+    String[] expectedExpression = {"6", "6×", "6×7", "42"};
+    for (String key : new String[] {"6", "×", "7", "="}) {
       onView(withText(key))
           .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
           .perform(scrollTo(), click());
+      assertEquals(
+          "Calculator key " + key,
+          expectedExpression[entered++],
+          context.getSharedPreferences("math_calculator", 0).getString("expression", ""));
+    }
     onView(withTagValue(is((Object) "mentor_calculator_keypad"))).perform(swipeUp());
     onView(withText("42"))
         .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())

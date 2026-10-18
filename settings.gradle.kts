@@ -28,3 +28,7 @@ include(":app", ":math", ":science", ":programming", ":history")
 include(":ui-core")
 
 include(":data-core")
+
+// One independently owned module per school subject; legacy Science remains during migration.
+include(":learning-core", ":chat-core")
+include(":literature", ":english", ":geography", ":chemistry", ":physics", ":biology", ":economics-law")

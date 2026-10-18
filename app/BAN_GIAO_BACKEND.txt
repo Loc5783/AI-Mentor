@@ -371,3 +371,25 @@ Phần máy chủ còn thiếu, không được hiểu là đã triển khai:
   khi đưa máy chủ vào sử dụng thực tế.
 
 Tài liệu chi tiết: AUTH_ONBOARDING_2026-10-18.md tại thư mục gốc repo.
+
+BỔ SUNG ĐẠI TU 9 MÔN / CHAT CHUNG / LESSON — 18/10/2026
+
+Quyết định mới của người dùng thay phần cũ khi có xung đột:
+- Năm tab: Dashboard, Chat AI, Lesson, Thi đua, Profile.
+- Mỗi môn một module: math, literature, english, history, geography, chemistry, physics, biology, economics-law.
+- learning-core dùng chung danh tính môn/lớp, quiz ôn tập và reward; chat-core là adapter chat chung theo lớp 10/11/12.
+- Chat dùng API key như chat cũ, cấu hình CHAT_GEMINI_API_KEY_1/2/3 và CHAT_GEMINI_MODEL trong api.properties. Không gửi key này vào API đồng bộ.
+- Bài học hoàn thành nhận 200 EXP; sau mỗi 5 bài có quiz 10 hoặc 15 câu ôn đúng 5 bài trước, nhận 400 EXP. Cả bài và quiz được thắp streak nếu ngày đó chưa thắp. Không countdown.
+- Phải dùng completion ledger/idempotency để tránh cộng lặp; cùng một ngày không tăng streak lần hai. Không bật hai đường thưởng cũ/mới song song.
+- Chưa có backend. Hiện có cấu trúc module và policy/adapter; UI 5 tab, Lesson mới và đồng bộ realtime chưa hoàn tất. Science vẫn hoạt động trong giai đoạn chuyển tiếp; công cụ Lập trình được giữ bổ sung.
+- Đặc tả chi tiết: APP_REDESIGN_2026-10-18.md ở thư mục gốc.
+- Hợp đồng máy đọc: docs/backend/openapi.json (DRAFT, không phải service đã chạy); ghi chú docs/backend/README.md.
+- Backend cần xác thực ownership, migration account local, hồ sơ công khai, dữ liệu bài/quiz phiên bản, ledger thưởng, ranking daily XP/streak, tệp/chat/project và SSE cursor/revision.
+- Hỏi AI thêm phải lưu LessonHandoff rồi quay lại đúng attempt/question/step; không cộng EXP khi bấm Đã hiểu.
+
+CHỐT PHẠM VI MỚI NHẤT:
+- Chỉ triển khai đầy đủ Lesson Sinh học, Hóa học, Vật lý trong đợt này. Sáu môn khác giữ khung. SubjectCatalog giữ đủ 9 entry nhưng lessonModules chỉ trả ba môn được chọn; đây là phạm vi triển khai, không đồng nghĩa nội dung đã xuất bản.
+- EXP chỉ cấp lần hoàn thành đầu tiên của mỗi bài/quiz. Lần đầu: bài 200, quiz ôn 400. Làm lại đầy đủ: 0 EXP, vẫn có thể thắp streak nếu ngày đó chưa thắp. Award ledger khóa account/môn/lớp/rewardUnitId ổn định; không reset khi bỏ/thêm lại môn hay sửa phiên bản nhỏ.
+- Reopen/retry một completion cũ không thắp streak ở ngày khác; cần attempt làm lại mới hợp lệ.
+- Giai đoạn đầu server dùng chung ngày Asia/Ho_Chi_Minh cho streak, profile và ranking. Client không tự đổi timezone.
+- Trước khi bật Lesson mới, gom chọn môn về Lesson, bỏ bước chọn bốn môn cũ bắt buộc tại thiết lập hồ sơ; giữ kiểu trình bày auth đã duyệt, dùng lại lớp hiện có.

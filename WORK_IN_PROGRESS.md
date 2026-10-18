@@ -95,3 +95,13 @@ Quy tắc, nghiên cứu, giới hạn và hợp đồng dữ liệu giải đ�
 - Build debug/release/test APK/unit/lint đạt; 125 unit tests; lint 0 lỗi, 526 cảnh báo. Runner thiết bị OK (76 tests): 68 ca chạy đạt, 8 ca API thật bỏ qua có chủ đích. Chi tiết AUTH_ONBOARDING_2026-10-18.md.
 - Yêu cầu kế tiếp: 5 tab, 9 môn độc lập, Chat AI chung giải thích theo lớp và giữ cách cấu hình API key cũ. Chưa có backend: chuẩn bị giao diện/hợp đồng API, chưa tuyên bố đồng bộ realtime giữa thiết bị.
 - Quy tắc bài học +200 EXP/streak một lần/ngày là yêu cầu mới, chưa bật thay cơ chế quiz hiện hữu trong bản chốt auth. Cần chuyển đổi riêng, tránh thưởng hai lần.
+
+## Nền móng đại tu, phạm vi ba môn — 18/10/2026
+
+- Đăng nhập đã chốt/push riêng f674b6d. Bước mới thêm learning-core, chat-core và khung 9 module môn, chỉ BIOLOGY/CHEMISTRY/PHYSICS thuộc phạm vi Lesson hiện tại; sáu môn khác để khung, không giả có nội dung.
+- Chat chung giữ pool API key kiểu cũ, section CHAT riêng; có ngữ cảnh lớp 10/11/12, lịch sử/tệp trong request, lỗi an toàn và fallback cấu hình sai để không chặn khởi động app. Chưa có UI chat/project/upload/camera mới hoặc backend realtime.
+- Quiz sau mỗi 5 bài, 10/15 câu đúng nhóm 5 bài trước; lần đầu nhận 200 EXP/bài hoặc 400 EXP/quiz. Làm lại 0 EXP nhưng có thể thắp streak ngày mới. Policy có code/test, chưa nối ledger vào quiz cũ.
+- Đặc tả APP_REDESIGN_2026-10-18.md; review FOUNDATION_REVIEW_2026-10-18.md; draft backend docs/backend/openapi.json (34 paths/47 operations/51 schemas). Bàn giao tiếng Việt trong app/BAN_GIAO_BACKEND.txt đã cập nhật.
+- Debug/release/test APK/unit/lint đạt: 149 unit tests, 0 lỗi lint, 534 cảnh báo. Full runner 83 (75 đạt +8 API thật bỏ qua) trên bản scope/reward; sau hardening factory cuối, 12/12 ca chat + Canonical smoke đạt. API key 13 trường trống.
+- Ca máy tính ngang từng lỗi ở lượt full đầu; thêm assert theo từng phím, tập trung 1/1 và full tiếp theo đạt. Chưa xác định nguyên nhân gốc, giữ theo dõi; không coi một lần chạy lại đạt là sửa logic sản phẩm.
+- Bước kế tiếp: Chat UI + local repository/lịch sử/thư mục/tệp, Lesson shell chỉ ba môn, rồi completion ledger và đổi 5 tab. Gom chọn môn về Lesson để tránh trùng bước chọn bốn môn cũ ở onboarding. Không bật các tab trống.

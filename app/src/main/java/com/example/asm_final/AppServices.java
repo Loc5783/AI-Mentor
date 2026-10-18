@@ -7,6 +7,10 @@ import java.util.concurrent.*;
 
 /** Application composition root. Screens consume focused contracts rather than database helpers. */
 public final class AppServices {
+  private final com.example.mentor.learning.SubjectCatalog subjects =
+      com.example.asm_final.learning.SubjectModules.create();
+  private final com.example.mentor.chat.TutorGateway tutor =
+      com.example.mentor.chat.GeminiTutorGateway.configuredClient();
   private final LocalAccountRepository accounts;
   private final com.example.asm_final.onboarding.LearnerProfileRepository learners;
   private final RecoveryService recovery = new UnavailableRecoveryService();
@@ -67,5 +71,13 @@ public final class AppServices {
 
   public ExecutorService io() {
     return io;
+  }
+
+  public com.example.mentor.learning.SubjectCatalog subjects() {
+    return subjects;
+  }
+
+  public com.example.mentor.chat.TutorGateway tutor() {
+    return tutor;
   }
 }

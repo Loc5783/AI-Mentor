@@ -13,6 +13,16 @@ replacing the earlier science-only repository snapshot. Existing Git history is 
 - `history`: history chat, quizzes, notes and saved conversations.
 - `programming`: programming chat, quizzes and notes.
 
+The next architecture has nine independently owned school-subject entries:
+`math`, `literature`, `english`, `history`, `geography`, `chemistry`, `physics`,
+`biology`, and `economics-law`. New subject modules currently contain their entry
+contracts. This release scope targets Biology, Chemistry and Physics only;
+the other six remain framework-only. New curricula and lesson screens are still being implemented.
+`learning-core` owns shared subject, grade, review and reward policies.
+`chat-core` contains the grade-aware general tutor contract and Gemini adapter.
+Legacy Science tools remain available during the gradual split into three subjects.
+See [the staged redesign specification](APP_REDESIGN_2026-10-18.md).
+
 The app package is **`com.example.asm_final`**, distinct from the earlier
 `com.example.aimentor` app. Run the `app` module to open the full application.
 
@@ -25,13 +35,18 @@ Local SDK paths belong in `local.properties`, which is ignored by Git.
 
 ## API configuration
 
-All four modules read the single root `api.properties` file at build time.
+All four legacy modules and the new general tutor read the single root `api.properties` file at build time.
 Git contains empty keys. Fill only the section for the corresponding subject:
 `MATH_`, `HISTORY_`, `PROGRAMMING_`, or `SCIENCE_`. Keys are never borrowed
 from a different subject. Optional rotation slots can remain empty.
+The general tutor has its own `CHAT_GEMINI_API_KEY_1/2/3` pool and
+`CHAT_GEMINI_MODEL`; it does not silently reuse a subject's key.
 After editing, **Sync Gradle and rebuild/run** the app; installed APKs do not
 read this file dynamically. Do not commit filled real keys. `local.properties`
 is only for the Android SDK path. No paid AI calls were made during UI checks.
+
+The draft backend contract is [docs/backend/openapi.json](docs/backend/openapi.json).
+It describes future synchronization and permissions; no realtime backend is deployed.
 
 ## UI updates
 

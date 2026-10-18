@@ -62,6 +62,7 @@ android {
 }
 
 dependencies {
+    api(project(":learning-core"))
     implementation(project(":data-core"))
     implementation(project(":ui-core"))
     implementation(libs.appcompat)

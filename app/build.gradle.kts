@@ -34,6 +34,15 @@ android {
 }
 
 dependencies {
+    implementation(project(":learning-core"))
+    implementation(project(":chat-core"))
+    implementation(project(":literature"))
+    implementation(project(":english"))
+    implementation(project(":geography"))
+    implementation(project(":chemistry"))
+    implementation(project(":physics"))
+    implementation(project(":biology"))
+    implementation(project(":economics-law"))
     implementation(project(":data-core"))
     implementation(project(":ui-core"))
     implementation(project(":math"))
