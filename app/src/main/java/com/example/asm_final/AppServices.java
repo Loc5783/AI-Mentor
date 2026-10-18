@@ -7,7 +7,9 @@ import java.util.concurrent.*;
 
 /** Application composition root. Screens consume focused contracts rather than database helpers. */
 public final class AppServices {
-  private final AccountRepository accounts;
+  private final LocalAccountRepository accounts;
+  private final com.example.asm_final.onboarding.LearnerProfileRepository learners;
+  private final RecoveryService recovery = new UnavailableRecoveryService();
   private final DashboardRepository dashboard;
   private final LearningStreakRepository streaks;
   private final WeeklyQuizRepository weeklyQuizzes;
@@ -16,10 +18,23 @@ public final class AppServices {
 
   public AppServices(Context context) {
     accounts = new LocalAccountRepository(context);
+    learners = new com.example.asm_final.onboarding.LocalLearnerProfiles(context);
     profiles = new LocalUserProfileRepository(context);
     dashboard = LocalSubjectSources.create(context);
     streaks = new LocalLearningStreakRepository(context);
     weeklyQuizzes = new LocalWeeklyQuizRepository(context);
+  }
+
+  public com.example.asm_final.onboarding.LearnerProfileRepository learners() {
+    return learners;
+  }
+
+  public LearnerRegistration learnerRegistration() {
+    return accounts;
+  }
+
+  public RecoveryService recovery() {
+    return recovery;
   }
 
   public UserAuthenticator authenticator() {

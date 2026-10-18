@@ -1,135 +1,124 @@
 package com.example.asm_final.activities;
 
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.asm_final.R;
+import androidx.lifecycle.ViewModelProvider;
+import com.example.asm_final.*;
+import com.example.asm_final.accounts.*;
+import com.example.asm_final.onboarding.*;
+import com.example.asm_final.utils.*;
 
-/*
- * Role: Activity for App Shell, responsible for the screen lifecycle, view binding, and primary user interactions.
- * Purpose: The Activity connects the UI with supporting classes while keeping responsibilities separated instead of concentrating all logic in one place.
- */
 public class RegisterActivity extends AppCompatActivity {
-
-  private EditText edtUser, edtPass, edtConfirm, edtEmail, edtPhone;
-  private TextView tvMsg;
-  private com.example.asm_final.accounts.UserRegistration accounts;
-  private com.example.asm_final.utils.AsyncActionRunner actions;
+  private EditText name, email, password, confirm;
+  private TextView message;
+  private AuthFormModel model;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  protected void onCreate(Bundle state) {
+    super.onCreate(state);
     setContentView(R.layout.activity_register);
-
-    com.example.asm_final.AppServices services =
-        ((com.example.asm_final.AiMentorApplication) getApplication()).services();
-    accounts = services.registration();
-    actions = new com.example.asm_final.utils.AsyncActionRunner(services.io(), this::runOnUiThread);
-
-    edtUser = findViewById(R.id.edtRegisterUsername);
-    edtEmail = findViewById(R.id.edtRegisterEmail);
-    edtPhone = findViewById(R.id.edtRegisterPhone);
-    edtPass = findViewById(R.id.edtRegisterPassword);
-    edtConfirm = findViewById(R.id.edtRegisterConfirmPassword);
-    Button btnRegister = findViewById(R.id.btnRegister);
-    com.example.asm_final.utils.AuthKeyboard.bind(edtConfirm, btnRegister);
-    tvMsg = findViewById(R.id.tvRegisterMessage);
-    TextView tvLogin = findViewById(R.id.tvGoToLogin);
-
-    com.example.asm_final.utils.FormFeedback.bind(edtUser, edtEmail, edtPhone, edtPass, edtConfirm);
-    btnRegister.setOnClickListener(
+    AuthChrome.bind(this);
+    AppServices services = ((AiMentorApplication) getApplication()).services();
+    model = new ViewModelProvider(this).get(AuthFormModel.class);
+    name = findViewById(R.id.edtRegisterUsername);
+    email = findViewById(R.id.edtRegisterEmail);
+    password = findViewById(R.id.edtRegisterPassword);
+    confirm = findViewById(R.id.edtRegisterConfirmPassword);
+    message = findViewById(R.id.tvRegisterMessage);
+    AuthFields.collapseWhenEmpty(message);
+    Button submit = findViewById(R.id.btnRegister);
+    com.google.android.material.checkbox.MaterialCheckBox terms = findViewById(R.id.checkTerms);
+    TextView back = findViewById(R.id.tvGoToLogin);
+    name.setText(model.name);
+    email.setText(model.email);
+    password.setText(model.password);
+    confirm.setText(model.confirm);
+    terms.setChecked(model.accepted);
+    AuthFields.draft(name, s -> model.name = s);
+    AuthFields.draft(email, s -> model.email = s);
+    AuthFields.draft(password, s -> model.password = s);
+    AuthFields.draft(confirm, s -> model.confirm = s);
+    terms.setOnCheckedChangeListener((v, checked) -> model.accepted = checked);
+    AuthFields.live(name, OnboardingPolicy::validName, R.string.auth_invalid_name, 0);
+    AuthFields.live(
+        email, AuthFields::email, R.string.auth_invalid_email, R.string.auth_email_help);
+    AuthFields.live(
+        password,
+        PasswordPolicy::isValid,
+        R.string.reg_msg_weak_pass,
+        R.string.auth_password_rules);
+    AuthFields.confirmation(password, confirm);
+    AuthKeyboard.bind(confirm, submit);
+    findViewById(R.id.auth_terms).setOnClickListener(v -> AuthChrome.terms(this));
+    back.setOnClickListener(v -> finish());
+    submit.setOnClickListener(
         v -> {
-          String u = edtUser.getText().toString().trim();
-          String e = edtEmail.getText().toString().trim();
-          String ph = edtPhone.getText().toString().trim();
-          String p = edtPass.getText().toString().trim();
-          String c = edtConfirm.getText().toString().trim();
-
-          EditText[] fields = {edtUser, edtEmail, edtPhone, edtPass, edtConfirm};
-          String[] values = {u, e, ph, p, c};
-          int[] messages = {
-            R.string.ux_required_username,
-            R.string.ux_required_email,
-            R.string.ux_required_phone,
-            R.string.ux_required_password,
-            R.string.ux_required_confirm
-          };
-          com.example.asm_final.utils.FormFeedback.clear(fields);
-          EditText firstMissing = null;
-          for (int i = 0; i < fields.length; i++)
-            if (values[i].isEmpty()) {
-              com.example.asm_final.utils.FormFeedback.error(fields[i], messages[i]);
-              if (firstMissing == null) firstMissing = fields[i];
-            }
-          if (firstMissing != null) {
-            tvMsg.setText("");
-            com.example.asm_final.utils.FormFeedback.focus(firstMissing);
+          String n = AuthFields.text(name).trim(),
+              e = AuthFields.text(email).trim(),
+              p = AuthFields.text(password),
+              c = AuthFields.text(confirm);
+          FormFeedback.clear(name, email, password, confirm);
+          message.setText("");
+          EditText invalid = null;
+          if (!OnboardingPolicy.validName(n)) {
+            FormFeedback.error(name, R.string.auth_invalid_name);
+            invalid = name;
+          }
+          if (!AuthFields.email(e)) {
+            FormFeedback.error(email, R.string.auth_invalid_email);
+            if (invalid == null) invalid = email;
+          }
+          if (!PasswordPolicy.isValid(p)) {
+            FormFeedback.error(password, R.string.reg_msg_weak_pass);
+            if (invalid == null) invalid = password;
+          }
+          if (!p.equals(c) || c.isEmpty()) {
+            FormFeedback.error(confirm, R.string.reg_msg_mismatch);
+            if (invalid == null) invalid = confirm;
+          }
+          if (invalid != null) {
+            FormFeedback.focus(invalid);
             return;
           }
-
-          // Email validation
-          if (!e.toLowerCase(java.util.Locale.ROOT).endsWith("@gmail.com")) {
-            tvMsg.setText("");
-            com.example.asm_final.utils.FormFeedback.error(
-                edtEmail, R.string.reg_msg_invalid_email);
-            com.example.asm_final.utils.FormFeedback.focus(edtEmail);
+          if (!terms.isChecked()) {
+            message.setText(R.string.auth_terms_required);
+            terms.requestFocus();
             return;
           }
-
-          // Password validation
-          if (!isValidPassword(p)) {
-            tvMsg.setText("");
-            com.example.asm_final.utils.FormFeedback.error(edtPass, R.string.reg_msg_weak_pass);
-            com.example.asm_final.utils.FormFeedback.focus(edtPass);
-            return;
-          }
-
-          if (!p.equals(c)) {
-            tvMsg.setText("");
-            com.example.asm_final.utils.FormFeedback.error(edtConfirm, R.string.reg_msg_mismatch);
-            com.example.asm_final.utils.FormFeedback.focus(edtConfirm);
-            return;
-          }
-
-          btnRegister.setEnabled(false);
-          tvMsg.setText(R.string.auth_processing);
-          actions.submit(
-              () -> accounts.register(u, p, e, ph),
-              result -> {
-                btnRegister.setEnabled(true);
-                if (result != -1) {
-                  tvMsg.setText("");
-                  Toast.makeText(this, R.string.reg_msg_success, Toast.LENGTH_SHORT).show();
-                  finish();
-                } else {
-                  tvMsg.setText("");
-                  com.example.asm_final.utils.FormFeedback.error(edtUser, R.string.reg_msg_exists);
-                  com.example.asm_final.utils.FormFeedback.focus(edtUser);
-                }
+          model.submit(
+              services.io(),
+              () -> {
+                long id = services.learnerRegistration().registerLearner(n, e, p);
+                if (id <= 0) return null;
+                String canonical = services.accountLookup().canonicalUsername(e);
+                return new AuthTicket(canonical, (int) id, services.learners().load((int) id));
               },
-              error -> {
-                btnRegister.setEnabled(true);
-                tvMsg.setText(R.string.auth_storage_error);
-              });
+              R.string.auth_registration_failed);
         });
-
-    tvLogin.setOnClickListener(v -> finish());
-  }
-
-  /*
-   * Responsibility: Validates the conditions or rules handled by `is valid password` and returns the result to the caller.
-   * Purpose: A dedicated validation method keeps rules consistent and easier to test.
-   */
-  private boolean isValidPassword(String password) {
-    return com.example.asm_final.accounts.PasswordPolicy.isValid(password);
-  }
-
-  @Override
-  protected void onDestroy() {
-    if (actions != null) actions.close();
-    super.onDestroy();
+    model.state.observe(
+        this,
+        s -> {
+          submit.setEnabled(!s.busy);
+          back.setEnabled(!s.busy);
+          terms.setEnabled(!s.busy);
+          for (EditText field : new EditText[] {name, email, password, confirm})
+            field.setEnabled(!s.busy);
+          message.setText(
+              s.busy
+                  ? R.string.auth_processing
+                  : s.error == 0 ? R.string.auth_empty_text : s.error);
+          if (s.ticket != null) {
+            AuthTicket ticket = s.ticket;
+            if (ticket.profile == null) {
+              model.consumed();
+              message.setText(R.string.auth_route_error);
+              return;
+            }
+            AuthSession.open(this, ticket.username, ticket.userId, false);
+            model.consumed();
+            AuthRoutes.open(this, ticket.username, ticket.profile, true);
+          }
+        });
   }
 }

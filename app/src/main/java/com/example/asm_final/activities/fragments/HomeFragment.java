@@ -170,6 +170,12 @@ public class HomeFragment extends Fragment {
                         java.util.Collections.emptyList(),
                         java.util.EnumSet.allOf(RecentActivity.Subject.class));
               }
+              com.example.asm_final.onboarding.LearnerProfile learner = null;
+              try {
+                if (resolvedId > 0) learner = services.learners().load(resolvedId);
+              } catch (RuntimeException ignored) {
+              }
+              final com.example.asm_final.onboarding.LearnerProfile learningProfile = learner;
               final int loadedUserId = resolvedId;
               final com.example.asm_final.dashboard.DashboardSnapshot snapshot = loaded;
               new android.os.Handler(android.os.Looper.getMainLooper())
@@ -177,6 +183,24 @@ public class HomeFragment extends Fragment {
                       () -> {
                         if (isAdded() && getView() == owner && loadVersion == version) {
                           userId = loadedUserId;
+                          if (learningProfile != null && !learningProfile.displayName.isEmpty())
+                            txtUsername.setText(learningProfile.displayName);
+                          TextView contextLabel = getView().findViewById(R.id.tv_learning_context);
+                          boolean hasContext =
+                              learningProfile != null
+                                  && learningProfile.grade >= 10
+                                  && learningProfile.grade <= 12
+                                  && learningProfile.goal >= 0
+                                  && learningProfile.goal < 4;
+                          contextLabel.setVisibility(hasContext ? View.VISIBLE : View.GONE);
+                          if (hasContext)
+                            contextLabel.setText(
+                                getString(
+                                    R.string.profile_context,
+                                    learningProfile.grade,
+                                    getResources()
+                                        .getStringArray(R.array.learner_goals)[
+                                        learningProfile.goal]));
                           render(snapshot);
                         }
                       });

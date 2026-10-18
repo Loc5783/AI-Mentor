@@ -88,3 +88,10 @@ Quy tắc, nghiên cứu, giới hạn và hợp đồng dữ liệu giải đ�
 - Giữ mọi chức năng, ID/listener mở môn, máy tính riêng Toán và mạch điện Khoa học. Không đổi database, API, reward/streak hay logic quiz.
 - Debug/release/test APK/unit/lint PASS. 119 unit tests, 0 lỗi lint, 499 cảnh báo. Kiểm thử UI thường 4/4 và nhỏ/chữ lớn/ba nút 4/4; sau chỉnh từ ảnh thực tế, lượt bản cuối 4/4 PASS (37,975 giây).
 - 10 trường API key vẫn trống, không gọi AI thật. APK bàn giao đã cập nhật trong ../AIMentor_QA/AImentor-debug.apk. Chưa thử máy thật; không chạy lại toàn bộ 67 ca thiết bị trong đợt giao diện.
+
+## Chốt auth/onboarding — 18/10/2026
+
+- Đăng nhập/đăng ký, hướng dẫn bốn bước, hồ sơ lớp 10–12, theme và VI/EN đã hoàn thành; người dùng xác nhận hài lòng. Recovery có giao diện và contract, chưa có backend email nên không giả gửi thành công.
+- Build debug/release/test APK/unit/lint đạt; 125 unit tests; lint 0 lỗi, 526 cảnh báo. Runner thiết bị OK (76 tests): 68 ca chạy đạt, 8 ca API thật bỏ qua có chủ đích. Chi tiết AUTH_ONBOARDING_2026-10-18.md.
+- Yêu cầu kế tiếp: 5 tab, 9 môn độc lập, Chat AI chung giải thích theo lớp và giữ cách cấu hình API key cũ. Chưa có backend: chuẩn bị giao diện/hợp đồng API, chưa tuyên bố đồng bộ realtime giữa thiết bị.
+- Quy tắc bài học +200 EXP/streak một lần/ngày là yêu cầu mới, chưa bật thay cơ chế quiz hiện hữu trong bản chốt auth. Cần chuyển đổi riêng, tránh thưởng hai lần.

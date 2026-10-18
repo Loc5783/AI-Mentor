@@ -1,2 +1,9 @@
 package com.example.asm_final.accounts;
-public interface AccountLookup { int userId(String username); }
+
+public interface AccountLookup {
+  int userId(String username);
+
+  default String canonicalUsername(String identifier) {
+    return identifier;
+  }
+}

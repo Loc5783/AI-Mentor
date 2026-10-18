@@ -2,109 +2,107 @@ package com.example.asm_final.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.asm_final.R;
+import androidx.lifecycle.ViewModelProvider;
+import com.example.asm_final.*;
+import com.example.asm_final.accounts.*;
+import com.example.asm_final.utils.*;
 
-/*
- * Role: Activity for App Shell, responsible for the screen lifecycle, view binding, and primary user interactions.
- * Purpose: The Activity connects the UI with supporting classes while keeping responsibilities separated instead of concentrating all logic in one place.
- */
 public class MainActivity extends AppCompatActivity {
+  private EditText name, password;
+  private Button login;
+  private TextView message, register;
+  private AuthFormModel model;
 
-  private EditText edtUsername, edtPassword;
-  private Button btnLogin;
-  private TextView tvMessage, tvGoToRegister;
-  private com.example.asm_final.accounts.UserAuthenticator accounts;
-  private com.example.asm_final.utils.AsyncActionRunner actions;
-
-  /*
-   * Responsibility: Initializes the Android component, inflates and binds the layout, and prepares initial data and listeners.
-   * Purpose: This is the screen entry point, so the initial state must be prepared before user interaction begins.
-   */
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  protected void onCreate(Bundle state) {
+    super.onCreate(state);
     setContentView(R.layout.activity_main);
-
-    com.example.asm_final.AppServices services =
-        ((com.example.asm_final.AiMentorApplication) getApplication()).services();
-    accounts = services.authenticator();
-    actions = new com.example.asm_final.utils.AsyncActionRunner(services.io(), this::runOnUiThread);
-
-    edtUsername = findViewById(R.id.edtLoginUsername);
-    edtPassword = findViewById(R.id.edtLoginPassword);
-    btnLogin = findViewById(R.id.btnLogin);
-    tvMessage = findViewById(R.id.tvLoginMessage);
-    tvGoToRegister = findViewById(R.id.tvGoToRegister);
-    com.example.asm_final.utils.AuthKeyboard.bind(edtPassword, btnLogin);
-
-    com.example.asm_final.utils.FormFeedback.bind(edtUsername, edtPassword);
-    btnLogin.setOnClickListener(
+    AuthChrome.bind(this);
+    AppServices services = ((AiMentorApplication) getApplication()).services();
+    model = new ViewModelProvider(this).get(AuthFormModel.class);
+    name = findViewById(R.id.edtLoginUsername);
+    password = findViewById(R.id.edtLoginPassword);
+    login = findViewById(R.id.btnLogin);
+    message = findViewById(R.id.tvLoginMessage);
+    AuthFields.collapseWhenEmpty(message);
+    register = findViewById(R.id.tvGoToRegister);
+    com.google.android.material.checkbox.MaterialCheckBox remember =
+        findViewById(R.id.checkRemember);
+    name.setText(model.identifier);
+    password.setText(model.password);
+    remember.setChecked(model.remember);
+    AuthFields.draft(name, s -> model.identifier = s);
+    AuthFields.draft(password, s -> model.password = s);
+    remember.setOnCheckedChangeListener((v, checked) -> model.remember = checked);
+    FormFeedback.bind(name, password);
+    AuthKeyboard.bind(password, login);
+    login.setOnClickListener(
         v -> {
-          String username = edtUsername.getText().toString().trim();
-          String password = edtPassword.getText().toString().trim();
-
-          com.example.asm_final.utils.FormFeedback.clear(edtUsername, edtPassword);
-          if (username.isEmpty() || password.isEmpty()) {
-            if (username.isEmpty())
-              com.example.asm_final.utils.FormFeedback.error(
-                  edtUsername, R.string.ux_required_username);
-            if (password.isEmpty())
-              com.example.asm_final.utils.FormFeedback.error(
-                  edtPassword, R.string.ux_required_password);
-            com.example.asm_final.utils.FormFeedback.focus(
-                username.isEmpty() ? edtUsername : edtPassword);
-            tvMessage.setText("");
+          FormFeedback.clear(name, password);
+          String identifier = AuthFields.text(name).trim(), secret = AuthFields.text(password);
+          if (identifier.isEmpty() || secret.isEmpty()) {
+            if (identifier.isEmpty()) FormFeedback.error(name, R.string.ux_required_username);
+            if (secret.isEmpty()) FormFeedback.error(password, R.string.ux_required_password);
+            FormFeedback.focus(identifier.isEmpty() ? name : password);
+            message.setText("");
             return;
           }
-
-          btnLogin.setEnabled(false);
-          tvGoToRegister.setEnabled(false);
-          tvMessage.setText(R.string.auth_processing);
-          actions.submit(
-              () -> accounts.authenticate(username, password),
-              authenticated -> {
-                btnLogin.setEnabled(true);
-                tvGoToRegister.setEnabled(true);
-                if (!getLifecycle()
-                    .getCurrentState()
-                    .isAtLeast(androidx.lifecycle.Lifecycle.State.STARTED)) return;
-                if (authenticated) {
-                  com.example.mentor.data.ActiveUser.set(
-                      this,
-                      ((com.example.asm_final.AiMentorApplication) getApplication())
-                          .services()
-                          .accountLookup()
-                          .userId(username));
-                  Toast.makeText(this, R.string.login_msg_success, Toast.LENGTH_SHORT).show();
-                  Intent intent = new Intent(this, HomeActivity.class);
-                  intent.putExtra("USERNAME", username);
-                  startActivity(intent);
-                  finish();
-                } else {
-                  tvMessage.setText(R.string.login_msg_fail);
-                }
+          model.submit(
+              services.io(),
+              () -> {
+                if (!services.authenticator().authenticate(identifier, secret)) return null;
+                String canonical = services.accountLookup().canonicalUsername(identifier);
+                int id = services.accountLookup().userId(canonical);
+                if (id <= 0) return null;
+                return new AuthTicket(canonical, id, services.learners().load(id));
               },
-              error -> {
-                btnLogin.setEnabled(true);
-                tvGoToRegister.setEnabled(true);
-                tvMessage.setText(R.string.auth_storage_error);
-              });
+              R.string.login_msg_fail);
         });
-
-    tvGoToRegister.setOnClickListener(
-        v -> {
-          startActivity(new Intent(this, RegisterActivity.class));
+    register.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
+    findViewById(R.id.tvForgotPassword)
+        .setOnClickListener(v -> startActivity(new Intent(this, AuthRecoveryActivity.class)));
+    model.state.observe(
+        this,
+        s -> {
+          login.setEnabled(!s.busy);
+          register.setEnabled(!s.busy);
+          name.setEnabled(!s.busy);
+          password.setEnabled(!s.busy);
+          remember.setEnabled(!s.busy);
+          findViewById(R.id.tvForgotPassword).setEnabled(!s.busy);
+          message.setText(
+              s.busy
+                  ? R.string.auth_processing
+                  : s.error == 0 ? R.string.auth_empty_text : s.error);
+          if (s.ticket != null) {
+            AuthTicket ticket = s.ticket;
+            if (ticket.profile == null) {
+              AuthSession.clear(this);
+              model.consumed();
+              message.setText(R.string.auth_route_error);
+              return;
+            }
+            AuthSession.open(this, ticket.username, ticket.userId, model.remember);
+            model.consumed();
+            AuthRoutes.open(this, ticket.username, ticket.profile, true);
+          }
         });
-  }
-
-  @Override
-  protected void onDestroy() {
-    if (actions != null) actions.close();
-    super.onDestroy();
+    if (!model.restoreAttempted) {
+      model.restoreAttempted = true;
+      String saved = AuthSession.remembered(this);
+      if (!saved.isEmpty()) {
+        model.remember = true;
+        remember.setChecked(true);
+        model.submit(
+            services.io(),
+            () -> {
+              int id = services.accountLookup().userId(saved);
+              return id > 0 ? new AuthTicket(saved, id, services.learners().load(id)) : null;
+            },
+            R.string.auth_route_error);
+      }
+    }
   }
 }

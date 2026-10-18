@@ -1,5 +1,5 @@
 <resources>
-<color name="mentor_app_button">#1D4ED8</color>
+<color name="mentor_app_button">@color/primaryColor</color>
     <style name="MentorAppButton" parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">@color/mentor_app_button</item><item name="android:textColor">#FFFFFF</item><item name="cornerRadius">@dimen/mentor_control_radius</item><item name="rippleColor">@color/mentor_control_ripple</item><item name="android:minHeight">@dimen/mentor_control_height</item>
         <item name="android:textAllCaps">false</item><item name="android:textSize">@dimen/mentor_control_text</item>

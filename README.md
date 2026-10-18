@@ -43,8 +43,8 @@ widths instead of fixed overlapping columns.
 
 Login and registration share rounded Material fields, password visibility
 controls, readable spacing, keyboard submission and a bounded form width.
-The original Gmail, phone and password validation and bcrypt password storage
-remain in place. Course cards scroll on compact screens and use two columns
+Signup accepts a valid email from any provider, omits the phone field, and retains
+bcrypt password storage. Course cards scroll on compact screens and use two columns
 on wider windows.
 
 `SystemSafeArea` applies one system-bar, display-cutout and keyboard inset
@@ -148,3 +148,14 @@ All subjects use explicit, untimed submission and a common mistakes-only result 
 The original home dashboard keeps its statistics and subject progress layout.
 Learning streaks and local weekly quiz XP are available from Profile.
 Competitive server leagues are not active yet; see [policy, research and backend handoff](STREAK_AND_LEAGUES_2026-10-17.md).
+
+
+## Authentication and first-time setup — 2026-10-18
+
+The authentication and onboarding flow uses a pastel pink light theme and a plum dark theme. Sign in with an existing username or an email. New student signup collects a name, email, password/confirmation and consent; no phone or address is required.
+
+New students complete four introduction pages and a grade 10–12 learning profile before the Dashboard. SQLite stores account-scoped steps and profile drafts. Returning users continue an unfinished step; completed and migrated accounts do not see onboarding again. Settings includes a guide replay and learning-profile editor.
+
+Forgot-password, reset and verification screens are present, but the email/token backend is **not connected**. Their send/verify/reset actions are disabled with an explicit explanation, never fake success. Google/Facebook sign-in is not offered without a configured provider.
+
+See [architecture, migration, verification and backend limits](AUTH_ONBOARDING_2026-10-18.md). Demo usernames and passwords listed above remain unchanged. API key fields are still empty.

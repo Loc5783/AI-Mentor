@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <color name="auth_background">#FFF7FB</color>
+    <color name="auth_background_end">#FCE7F3</color>
+    <color name="auth_surface">#FCFFFFFF</color>
+    <color name="auth_surface_soft">#FFF0F6</color>
+    <color name="auth_primary">#BE185D</color>
+    <color name="auth_on_primary">#FFFFFF</color>
+    <color name="auth_accent">#EC4899</color>
+    <color name="auth_border">#FBCFE8</color>
+    <color name="auth_text">#1F2937</color>
+    <color name="auth_muted">#626574</color>
+    <color name="auth_success">#087F5B</color>
+    <color name="auth_error">#B42346</color>
+    <color name="auth_pressed">#9D174D</color>
+</resources>

@@ -334,3 +334,40 @@ CẬP NHẬT GIAO DIỆN VÀ STREAK NGÀY 18/10/2026
   một ngày làm quiz hoặc cộng thêm XP. Cần chốt chính sách trước khi bật.
 - Nghiên cứu: https://blog.duolingo.com/how-duolingo-streak-builds-habit/
   và https://www.duolingo.com/help/what-is-a-streak .
+
+
+BỔ SUNG AUTH / ONBOARDING — 18/10/2026
+
+Phần đã làm ở ứng dụng:
+- Login bằng email hoặc username cũ; register học sinh mới bằng họ tên, email,
+  mật khẩu/xác nhận và chấp thuận điều khoản. Không ép Gmail hoặc số điện thoại.
+- BCrypt không đổi; giới hạn mật khẩu 72 byte UTF-8, không cắt/khoảng trắng
+  mật khẩu người dùng một cách âm thầm. Remember me không lưu mật khẩu.
+- user_db schema v3 trong AImentor.db, bảng learner_profiles theo user_id.
+  step 0–3 là intro; 4 là setup; 5 là xong. Có grade, subjects, goal, minutes,
+  display_name và consented_at. Tài khoản cũ được migrate step=5, không mất dữ liệu.
+- Account + profile mới được tạo cùng transaction, có kiểm thử rollback.
+- API addUser/UserRegistration.register cũ giữ compatibility/import/demo.
+  Form học sinh mới dùng LearnerRegistration.registerLearner để bắt đầu step=0.
+- Xem lại hướng dẫn/sửa hồ sơ trong Settings, Dashboard hiện lớp/mục tiêu thật.
+
+Phần máy chủ còn thiếu, không được hiểu là đã triển khai:
+- RecoveryService hiện gắn UnavailableRecoveryService. Không có thư hoặc OTP
+  được gửi, không reset/xác minh giả. UI quên mật khẩu/reset/xác minh đã có.
+- Cần provider auth/email thật, kiểm soát email unique/verified ở server,
+  token reset/xác minh một lần có hạn dùng, chống replay và resend/rate-limit.
+- UI có phản hồi trung tính không tiết lộ account; server cũng phải làm như vậy.
+- Nối session local sang access/refresh token có thể thu hồi. Không tin ActiveUser
+  hoặc remembered username/id như bằng chứng xác thực phía máy chủ.
+- Quyền truy cập user/profile/question bank phải xác định từ session server.
+- Lưu/đồng bộ step và learner profile theo tài khoản máy chủ; tránh bản nháp cũ
+  ghi đè dữ liệu đã hoàn tất. Khớp identity cũ mà không trộn dữ liệu hai học viên.
+- Tích hợp HTTPS App Links cho mã/link hợp lệ và kiểm tra host/token ở server;
+  chưa có deep link reset/verification public trong bản local.
+- Chỉ bật OAuth khi đã có provider/cấu hình thật. Không thêm nút đăng nhập giả.
+- Profile hiện chỉ ghi lựa chọn/hiển thị lớp và mục tiêu, chưa có engine kiểm tra
+  đầu vào hoặc đề xuất lộ trình tự động. Không mô tả chúng như chức năng đã có.
+- Cập nhật chính sách dữ liệu/điều khoản và cơ chế xóa tài khoản phù hợp trước
+  khi đưa máy chủ vào sử dụng thực tế.
+
+Tài liệu chi tiết: AUTH_ONBOARDING_2026-10-18.md tại thư mục gốc repo.

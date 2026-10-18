@@ -117,21 +117,26 @@ public class ResearchUxTest {
           ThemeHelper.setDarkMode(context, originalNight);
         });
     if (userId > 0) {
-    try (com.example.asm_final.activities.database.DatabaseHelper helper =
-        new com.example.asm_final.activities.database.DatabaseHelper(context)) {
-      android.database.sqlite.SQLiteDatabase db = helper.getWritableDatabase();
-      db.execSQL("DROP TRIGGER IF EXISTS ux_fail_note_insert");
-      db.execSQL("DROP TRIGGER IF EXISTS ux_fail_note_update");
-      db.delete("programming_sessions", "user_id=?", new String[] {Integer.toString(userId)});
-      db.delete("programming_notes", "user_id=?", new String[] {Integer.toString(userId)});
-      db.delete(
-          "programming_notes", "user_id=?", new String[] {Integer.toString(userId + 100000000)});
-      db.delete("math_history", "user_id=?", new String[] {Integer.toString(userId)});
-      try(android.database.Cursor tables=db.rawQuery("SELECT 1 FROM sqlite_master WHERE type='table' AND name='history_quiz_attempts'",null)) {
-        if(tables.moveToFirst())db.delete("history_quiz_attempts","user_id=?",new String[]{Integer.toString(userId)});
+      try (com.example.asm_final.activities.database.DatabaseHelper helper =
+          new com.example.asm_final.activities.database.DatabaseHelper(context)) {
+        android.database.sqlite.SQLiteDatabase db = helper.getWritableDatabase();
+        db.execSQL("DROP TRIGGER IF EXISTS ux_fail_note_insert");
+        db.execSQL("DROP TRIGGER IF EXISTS ux_fail_note_update");
+        db.delete("programming_sessions", "user_id=?", new String[] {Integer.toString(userId)});
+        db.delete("programming_notes", "user_id=?", new String[] {Integer.toString(userId)});
+        db.delete(
+            "programming_notes", "user_id=?", new String[] {Integer.toString(userId + 100000000)});
+        db.delete("math_history", "user_id=?", new String[] {Integer.toString(userId)});
+        try (android.database.Cursor tables =
+            db.rawQuery(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='history_quiz_attempts'",
+                null)) {
+          if (tables.moveToFirst())
+            db.delete(
+                "history_quiz_attempts", "user_id=?", new String[] {Integer.toString(userId)});
+        }
+        db.delete("users", "id=?", new String[] {Integer.toString(userId)});
       }
-      db.delete("users", "id=?", new String[] {Integer.toString(userId)});
-    }
     }
     com.example.mentor.data.ActiveUser.set(context, originalUser);
     SharedPreferences.Editor editor =
@@ -187,7 +192,7 @@ public class ResearchUxTest {
   }
 
   @Test
-  public void registrationShowsGmailConstraintBeforeSubmissionAndTargetsInvalidField() {
+  public void registrationShowsEmailGuidanceAndTargetsInvalidField() {
     start(RegisterActivity.class);
     main(
         () -> {
@@ -195,8 +200,10 @@ public class ResearchUxTest {
           assertNotNull(fieldContainer(email).getHelperText());
           assertNull(fieldContainer(email).getError());
           ((EditText) resumed().findViewById(R.id.edtRegisterUsername)).setText("draft_user");
-          email.setText("learner@example.org");
-          ((EditText) resumed().findViewById(R.id.edtRegisterPhone)).setText("0901234567");
+          email.setText("learner@");
+          ((com.google.android.material.checkbox.MaterialCheckBox)
+                  resumed().findViewById(R.id.checkTerms))
+              .setChecked(true);
           ((EditText) resumed().findViewById(R.id.edtRegisterPassword)).setText("Mentor01!2026");
           ((EditText) resumed().findViewById(R.id.edtRegisterConfirmPassword))
               .setText("Mentor01!2026");
@@ -212,51 +219,95 @@ public class ResearchUxTest {
     capture("ux-register-validation");
   }
 
-  @Test public void originalDashboardKeepsAllStatsVisibleAfterThemeChange() {
+  @Test
+  public void originalDashboardKeepsAllStatsVisibleAfterThemeChange() {
     start(HomeActivity.class);
-    waitFor(a -> a.findViewById(R.id.text_recent_empty)!=null && a.findViewById(R.id.text_recent_empty).getVisibility()==View.VISIBLE);
-    main(() -> {
-      assertNotNull(resumed().findViewById(R.id.pie_chart_exp));
-      assertNotNull(resumed().findViewById(R.id.pb_time_math));
-      assertNotNull(resumed().findViewById(R.id.mini_math));
-      assertEquals(View.VISIBLE,resumed().findViewById(R.id.pie_chart_exp).getVisibility());
-      assertNull(resumed().findViewById(R.id.card_learning_streak));
-      assertEquals("0",((TextView)resumed().findViewById(R.id.tv_chart_center)).getText().toString());
-      assertEquals(View.VISIBLE,resumed().findViewById(R.id.button_chart_action).getVisibility());
-      assertEquals(resumed().getString(R.string.home_chart_empty),((TextView)resumed().findViewById(R.id.tv_chart_summary)).getText().toString());
-      ThemeHelper.setDarkMode(context,!originalNight);
-    });
-    waitFor(a -> a instanceof HomeActivity && a.findViewById(R.id.pie_chart_exp)!=null &&
-      (a.getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK)==(!originalNight?android.content.res.Configuration.UI_MODE_NIGHT_YES:android.content.res.Configuration.UI_MODE_NIGHT_NO));
-    main(() -> assertEquals(View.VISIBLE,resumed().findViewById(R.id.pie_chart_exp).getVisibility()));
+    waitFor(
+        a ->
+            a.findViewById(R.id.text_recent_empty) != null
+                && a.findViewById(R.id.text_recent_empty).getVisibility() == View.VISIBLE);
+    main(
+        () -> {
+          assertNotNull(resumed().findViewById(R.id.pie_chart_exp));
+          assertNotNull(resumed().findViewById(R.id.pb_time_math));
+          assertNotNull(resumed().findViewById(R.id.mini_math));
+          assertEquals(View.VISIBLE, resumed().findViewById(R.id.pie_chart_exp).getVisibility());
+          assertNull(resumed().findViewById(R.id.card_learning_streak));
+          assertEquals(
+              "0", ((TextView) resumed().findViewById(R.id.tv_chart_center)).getText().toString());
+          assertEquals(
+              View.VISIBLE, resumed().findViewById(R.id.button_chart_action).getVisibility());
+          assertEquals(
+              resumed().getString(R.string.home_chart_empty),
+              ((TextView) resumed().findViewById(R.id.tv_chart_summary)).getText().toString());
+          ThemeHelper.setDarkMode(context, !originalNight);
+        });
+    waitFor(
+        a ->
+            a instanceof HomeActivity
+                && a.findViewById(R.id.pie_chart_exp) != null
+                && (a.getResources().getConfiguration().uiMode
+                        & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
+                    == (!originalNight
+                        ? android.content.res.Configuration.UI_MODE_NIGHT_YES
+                        : android.content.res.Configuration.UI_MODE_NIGHT_NO));
+    main(
+        () ->
+            assertEquals(View.VISIBLE, resumed().findViewById(R.id.pie_chart_exp).getVisibility()));
     capture("ux-original-dashboard-restored");
-    onView(withId(R.id.button_chart_action)).perform(scrollTo(),click());
-    waitFor(a -> a.findViewById(R.id.cardMath)!=null);
+    onView(withId(R.id.button_chart_action)).perform(scrollTo(), click());
+    waitFor(a -> a.findViewById(R.id.cardMath) != null);
   }
 
-  @Test public void subjectProgressCardOpensMathWithCorrectAccount() {
-    try(com.example.mathmodule.databases.SqliteDbHelper helper=new com.example.mathmodule.databases.SqliteDbHelper(context)) {
-      for(int i=0;i<3;i++)assertTrue(helper.insertHistoryForUser(userId,"UX saved question "+i,"UX saved answer")>0);
+  @Test
+  public void subjectProgressCardOpensMathWithCorrectAccount() {
+    try (com.example.mathmodule.databases.SqliteDbHelper helper =
+        new com.example.mathmodule.databases.SqliteDbHelper(context)) {
+      for (int i = 0; i < 3; i++)
+        assertTrue(
+            helper.insertHistoryForUser(userId, "UX saved question " + i, "UX saved answer") > 0);
     }
-    try(com.example.historymodule.databases.SqliteDbHelper helper=new com.example.historymodule.databases.SqliteDbHelper(context)) {
-      helper.saveQuizAttempt(userId,"Compact history 1","High",1,5,5);
-      helper.saveQuizAttempt(userId,"Compact history 2","High",1,5,5);
+    try (com.example.historymodule.databases.SqliteDbHelper helper =
+        new com.example.historymodule.databases.SqliteDbHelper(context)) {
+      helper.saveQuizAttempt(userId, "Compact history 1", "High", 1, 5, 5);
+      helper.saveQuizAttempt(userId, "Compact history 2", "High", 1, 5, 5);
     }
     start(HomeActivity.class);
-    waitFor(a -> a.findViewById(R.id.rv_recent_activity)!=null && ((androidx.recyclerview.widget.RecyclerView)a.findViewById(R.id.rv_recent_activity)).getAdapter()!=null && ((androidx.recyclerview.widget.RecyclerView)a.findViewById(R.id.rv_recent_activity)).getAdapter().getItemCount()>0);
-    main(() -> {
-      androidx.recyclerview.widget.RecyclerView list=resumed().findViewById(R.id.rv_recent_activity);
-      assertEquals(3,list.getAdapter().getItemCount());
-      assertEquals(resumed().getString(R.string.home_chart_center),((TextView)resumed().findViewById(R.id.tv_chart_center)).getText().toString());
-      assertEquals(View.GONE,resumed().findViewById(R.id.button_chart_action).getVisibility());
-      assertTrue(((TextView)resumed().findViewById(R.id.chart_exp_history)).getText().toString().contains("10"));
-      resumed().findViewById(R.id.button_recent_more).performClick();assertEquals(5,list.getAdapter().getItemCount());
-      resumed().findViewById(R.id.button_recent_more).performClick();assertEquals(3,list.getAdapter().getItemCount());
-    });
+    waitFor(
+        a ->
+            a.findViewById(R.id.rv_recent_activity) != null
+                && ((androidx.recyclerview.widget.RecyclerView)
+                            a.findViewById(R.id.rv_recent_activity))
+                        .getAdapter()
+                    != null
+                && ((androidx.recyclerview.widget.RecyclerView)
+                            a.findViewById(R.id.rv_recent_activity))
+                        .getAdapter()
+                        .getItemCount()
+                    > 0);
+    main(
+        () -> {
+          androidx.recyclerview.widget.RecyclerView list =
+              resumed().findViewById(R.id.rv_recent_activity);
+          assertEquals(3, list.getAdapter().getItemCount());
+          assertEquals(
+              resumed().getString(R.string.home_chart_center),
+              ((TextView) resumed().findViewById(R.id.tv_chart_center)).getText().toString());
+          assertEquals(View.GONE, resumed().findViewById(R.id.button_chart_action).getVisibility());
+          assertTrue(
+              ((TextView) resumed().findViewById(R.id.chart_exp_history))
+                  .getText()
+                  .toString()
+                  .contains("10"));
+          resumed().findViewById(R.id.button_recent_more).performClick();
+          assertEquals(5, list.getAdapter().getItemCount());
+          resumed().findViewById(R.id.button_recent_more).performClick();
+          assertEquals(3, list.getAdapter().getItemCount());
+        });
     capture("ux-original-dashboard-returning-learner");
     main(() -> resumed().findViewById(R.id.mini_math).performClick());
     waitFor(a -> a instanceof com.example.mathmodule.MathDashboardActivity);
-    assertEquals(userId,com.example.mathmodule.util.MathUserSession.getUserId(context));
+    assertEquals(userId, com.example.mathmodule.util.MathUserSession.getUserId(context));
   }
 
   @Test
@@ -264,11 +315,17 @@ public class ResearchUxTest {
     start(com.example.mathmodule.MathDashboardActivity.class);
     main(() -> com.example.mathmodule.calculator.MathCalculator.show(resumed()));
     for (String key : new String[] {"6", "×", "7", "="})
-      onView(withText(key)).inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog()).perform(scrollTo(), click());
+      onView(withText(key))
+          .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
+          .perform(scrollTo(), click());
     onView(withTagValue(is((Object) "mentor_calculator_keypad"))).perform(swipeUp());
-    onView(withText("42")).inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog()).check(matches(isDisplayed()));
+    onView(withText("42"))
+        .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
+        .check(matches(isDisplayed()));
     capture("ux-calculator-pinned-result");
-    onView(withText(com.example.mathmodule.R.string.math_calculator_collapse)).inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog()).perform(click());
+    onView(withText(com.example.mathmodule.R.string.math_calculator_collapse))
+        .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
+        .perform(click());
   }
 
   private Activity startNote(int noteId, String title, String content) {
@@ -516,68 +573,119 @@ public class ResearchUxTest {
                 && !a.isChangingConfigurations());
     main(() -> com.example.mathmodule.calculator.MathCalculator.show(resumed()));
     for (String key : new String[] {"6", "×", "7", "="})
-      onView(withText(key)).inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog()).perform(scrollTo(), click());
-    onView(withText("42")).inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog()).check(matches(isDisplayed()));
+      onView(withText(key))
+          .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
+          .perform(scrollTo(), click());
+    onView(withText("42"))
+        .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
+        .check(matches(isDisplayed()));
     capture("ux-calculator-landscape");
-    onView(withText(com.example.mathmodule.R.string.math_calculator_collapse)).inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog()).perform(click());
-  }
-  @Test public void profileProgressKeepsStreakAndWeeklyXpOffOriginalDashboard() {
-    String language=com.example.asm_final.utils.LocaleHelper.getLanguage(context);
-    main(() -> {
-      com.example.asm_final.utils.LocaleHelper.setLocale(context,InstrumentationRegistry.getArguments().getString("mentorLocale","vi"));
-      ThemeHelper.setDarkMode(context,Boolean.parseBoolean(InstrumentationRegistry.getArguments().getString("mentorNight","false")));
-    });
-    try {
-      start(HomeActivity.class);
-      main(() -> {
-        assertNull(resumed().findViewById(R.id.card_learning_streak));
-        ((HomeActivity)resumed()).navigateTo(R.id.nav_profile,false);
-        ((AppCompatActivity)resumed()).getSupportFragmentManager().executePendingTransactions();
-        resumed().findViewById(R.id.button_learning_progress).performClick();
-      });
-      final View[] progress={null};
-      long until=android.os.SystemClock.uptimeMillis()+15000;
-      while(android.os.SystemClock.uptimeMillis()<until) {
-        main(() -> {
-          androidx.fragment.app.Fragment hub=((AppCompatActivity)resumed()).getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-          androidx.fragment.app.DialogFragment dialog=(androidx.fragment.app.DialogFragment)hub.getChildFragmentManager().findFragmentByTag("learning_progress");
-          if(dialog!=null&&dialog.getDialog()!=null) {
-            LinearLayout week=dialog.getDialog().findViewById(R.id.streak_week_days);
-            if(week!=null&&week.getChildCount()==7)progress[0]=dialog.getDialog().getWindow().getDecorView();
-          }
-        });
-        if(progress[0]!=null)break;android.os.SystemClock.sleep(50);
-      }
-      assertNotNull(progress[0]);
-      main(() -> {
-        LinearLayout week=progress[0].findViewById(R.id.streak_week_days);
-        for(int i=0;i<7;i++) {
-          TextView day=(TextView)week.getChildAt(i);
-          assertTrue(day.getWidth()>0);assertTrue(day.getRight()<=week.getWidth());assertTrue(day.getLineCount()<=2);assertNotNull(day.getContentDescription());
-        }
-        assertTrue(((TextView)progress[0].findViewById(R.id.weekly_quiz_xp)).getText().toString().contains("0"));
-      });
-      main(() -> {
-        android.widget.ProgressBar milestone=progress[0].findViewById(R.id.streak_milestone_progress);
-        assertEquals(3,milestone.getMax());assertEquals(0,milestone.getProgress());
-      });
-      capture("ux-profile-streak-weekly-progress");
-      onView(withId(R.id.button_streak_quiz)).inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog()).perform(scrollTo(),click());
-      waitFor(a -> a.findViewById(R.id.cardMath)!=null);
-    } finally {main(() -> com.example.asm_final.utils.LocaleHelper.setLocale(context,language));}
+    onView(withText(com.example.mathmodule.R.string.math_calculator_collapse))
+        .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
+        .perform(click());
   }
 
-  @Test public void maximumDashboardLevelDoesNotPromiseAnotherLevel() {
-    try(com.example.mathmodule.databases.SqliteDbHelper helper = new com.example.mathmodule.databases.SqliteDbHelper(context)) {
+  @Test
+  public void profileProgressKeepsStreakAndWeeklyXpOffOriginalDashboard() {
+    String language = com.example.asm_final.utils.LocaleHelper.getLanguage(context);
+    main(
+        () -> {
+          com.example.asm_final.utils.LocaleHelper.setLocale(
+              context, InstrumentationRegistry.getArguments().getString("mentorLocale", "vi"));
+          ThemeHelper.setDarkMode(
+              context,
+              Boolean.parseBoolean(
+                  InstrumentationRegistry.getArguments().getString("mentorNight", "false")));
+        });
+    try {
+      start(HomeActivity.class);
+      main(
+          () -> {
+            assertNull(resumed().findViewById(R.id.card_learning_streak));
+            ((HomeActivity) resumed()).navigateTo(R.id.nav_profile, false);
+            ((AppCompatActivity) resumed())
+                .getSupportFragmentManager()
+                .executePendingTransactions();
+            resumed().findViewById(R.id.button_learning_progress).performClick();
+          });
+      final View[] progress = {null};
+      long until = android.os.SystemClock.uptimeMillis() + 15000;
+      while (android.os.SystemClock.uptimeMillis() < until) {
+        main(
+            () -> {
+              androidx.fragment.app.Fragment hub =
+                  ((AppCompatActivity) resumed())
+                      .getSupportFragmentManager()
+                      .findFragmentById(R.id.fragment_container);
+              androidx.fragment.app.DialogFragment dialog =
+                  (androidx.fragment.app.DialogFragment)
+                      hub.getChildFragmentManager().findFragmentByTag("learning_progress");
+              if (dialog != null && dialog.getDialog() != null) {
+                LinearLayout week = dialog.getDialog().findViewById(R.id.streak_week_days);
+                if (week != null && week.getChildCount() == 7)
+                  progress[0] = dialog.getDialog().getWindow().getDecorView();
+              }
+            });
+        if (progress[0] != null) break;
+        android.os.SystemClock.sleep(50);
+      }
+      assertNotNull(progress[0]);
+      main(
+          () -> {
+            LinearLayout week = progress[0].findViewById(R.id.streak_week_days);
+            for (int i = 0; i < 7; i++) {
+              TextView day = (TextView) week.getChildAt(i);
+              assertTrue(day.getWidth() > 0);
+              assertTrue(day.getRight() <= week.getWidth());
+              assertTrue(day.getLineCount() <= 2);
+              assertNotNull(day.getContentDescription());
+            }
+            assertTrue(
+                ((TextView) progress[0].findViewById(R.id.weekly_quiz_xp))
+                    .getText()
+                    .toString()
+                    .contains("0"));
+          });
+      main(
+          () -> {
+            android.widget.ProgressBar milestone =
+                progress[0].findViewById(R.id.streak_milestone_progress);
+            assertEquals(3, milestone.getMax());
+            assertEquals(0, milestone.getProgress());
+          });
+      capture("ux-profile-streak-weekly-progress");
+      onView(withId(R.id.button_streak_quiz))
+          .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
+          .perform(scrollTo(), click());
+      waitFor(a -> a.findViewById(R.id.cardMath) != null);
+    } finally {
+      main(() -> com.example.asm_final.utils.LocaleHelper.setLocale(context, language));
+    }
+  }
+
+  @Test
+  public void maximumDashboardLevelDoesNotPromiseAnotherLevel() {
+    try (com.example.mathmodule.databases.SqliteDbHelper helper =
+        new com.example.mathmodule.databases.SqliteDbHelper(context)) {
       helper.getUserExp(userId);
-      helper.getWritableDatabase().execSQL("UPDATE math_user_profile SET exp=? WHERE user_id=?",new Object[]{Integer.MAX_VALUE,userId});
+      helper
+          .getWritableDatabase()
+          .execSQL(
+              "UPDATE math_user_profile SET exp=? WHERE user_id=?",
+              new Object[] {Integer.MAX_VALUE, userId});
     }
     start(HomeActivity.class);
-    waitFor(a -> ((android.widget.ProgressBar)a.findViewById(R.id.pb_total_exp)).getProgress()==100);
-    main(() -> {
-      assertEquals(resumed().getString(R.string.home_level_number,20),((TextView)resumed().findViewById(R.id.tv_total_level_value)).getText().toString());
-      assertEquals(resumed().getString(R.string.home_max_level_reached),((TextView)resumed().findViewById(R.id.tv_exp_detail)).getText().toString());
-    });
+    waitFor(
+        a -> ((android.widget.ProgressBar) a.findViewById(R.id.pb_total_exp)).getProgress() == 100);
+    main(
+        () -> {
+          assertEquals(
+              resumed().getString(R.string.home_level_number, 20),
+              ((TextView) resumed().findViewById(R.id.tv_total_level_value)).getText().toString());
+          assertEquals(
+              resumed().getString(R.string.home_max_level_reached),
+              ((TextView) resumed().findViewById(R.id.tv_exp_detail)).getText().toString());
+        });
     capture("ux-dashboard-maximum-level");
   }
 }

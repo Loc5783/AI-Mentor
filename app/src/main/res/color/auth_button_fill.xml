@@ -1,0 +1,1 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android"><item android:state_enabled="false" android:color="@color/auth_border"/><item android:state_pressed="true" android:color="@color/auth_pressed"/><item android:color="@color/auth_primary"/></selector>

@@ -1,31 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Main shell palette: dark mode -->
-    <color name="neumorphic_background">#101A2C</color>
-    <color name="neumorphic_shadow_light">#26344A</color>
-    <color name="neumorphic_shadow_dark">#050A12</color>
-    <color name="neumorphic_accent">#65C6FF</color>
-
-    <color name="primaryColor">#65C6FF</color>
-    <color name="primaryDarkColor">#0B4D73</color>
-    <color name="primaryContainerColor">#173B52</color>
-    <color name="accentColor">#9BE45A</color>
-    <color name="backgroundColor">#101A2C</color>
-    <color name="surfaceColor">#1B2940</color>
-    <color name="surfaceVariantColor">#1E2A3E</color>
-
-    <color name="textColorPrimary">#F3F6FF</color>
-    <color name="textColorSecondary">#B8C6DD</color>
-    <color name="dividerColor">#2A3850</color>
+    <color name="neumorphic_background">#18111F</color>
+    <color name="neumorphic_shadow_light">#392740</color>
+    <color name="neumorphic_shadow_dark">#100B15</color>
+    <color name="neumorphic_accent">#F9A8D4</color>
+    <color name="primaryColor">#9D175B</color>
+    <color name="primaryDarkColor">#6D164B</color>
+    <color name="primaryContainerColor">#4C1F3B</color>
+    <color name="accentColor">#F9A8D4</color>
+    <color name="backgroundColor">#18111F</color>
+    <color name="surfaceColor">#251B2E</color>
+    <color name="surfaceVariantColor">#35223D</color>
+    <color name="textColorPrimary">#FFF5FA</color>
+    <color name="textColorSecondary">#C6B7CA</color>
+    <color name="dividerColor">#4B3451</color>
     <color name="arrowTintColor">#8391A5</color>
     <color name="buttonShadowColor">#07101D</color>
-    <color name="progressTrackColor">#2B3950</color>
-    <color name="navHeaderColor">#173B5E</color>
+    <color name="progressTrackColor">#4B3451</color>
+    <color name="navHeaderColor">#6D164B</color>
     <color name="reminderAccentColor">#FFC061</color>
-    <color name="themeAccentColor">#9BE45A</color>
-
+    <color name="themeAccentColor">#F9A8D4</color>
     <color name="errorColor">#FF8B8B</color>
-
     <color name="cat_math_bg">#102C45</color>
     <color name="cat_science_bg">#16351F</color>
     <color name="cat_history_bg">#3B2914</color>
