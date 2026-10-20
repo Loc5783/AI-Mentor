@@ -2,11 +2,11 @@
   "subjectId": "biology",
   "grade": 10,
   "version": "intro-2026.1",
-  "title": "Làm quen với tế bào",
+  "title": "Tế bào, chuyển hóa và sinh sản",
   "published": true,
-  "coverage": "INTRODUCTORY_BLOCK_ONLY",
+  "coverage": "PARTIAL_GRADE_10",
   "extendedReviews": false,
-  "sourceNote": "Nội dung nhập môn do AI Mentor biên soạn; không phải bản sao SGK hay toàn bộ chương trình năm học. Cần giáo viên duyệt trước khi dùng chính thức.",
+  "sourceNote": "20 bài ngắn lớp 10 do AI Mentor biên soạn, không phải bản sao SGK hay toàn bộ chương trình năm học. Đầu vào chỉ khảo sát 5 bài nhập môn. Cần giáo viên duyệt trước khi dùng chính thức.",
   "lessons": [
     {
       "id": "biology-10-cell-basics",
@@ -380,6 +380,1131 @@
           ],
           "correctOptionId": "a",
           "explanation": "Trong điều kiện đã nêu, chênh lệch thế nước làm nước đi về phía có nhiều chất tan hơn. Cần xét cả áp suất nếu điều kiện thay đổi."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-water",
+      "title": "Nước trong tế bào",
+      "guidance": [
+        "Nước có tính phân cực, tạo liên kết hydrogen và hòa tan nhiều chất ion hoặc phân cực. Nước là môi trường của nhiều phản ứng sinh hóa; không phải dung môi hòa tan được mọi chất."
+      ],
+      "examples": [
+        "Muối ăn hòa tan trong nước nhưng dầu không hòa tan tốt. Hai hiện tượng liên quan tính chất phân tử và tương tác với nước, không chỉ do chất ở thể rắn hay lỏng."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-water-q1",
+          "prompt": "Nước hòa tan tốt nhiều chất nhờ đặc tính nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không tương tác với ion"
+            },
+            {
+              "id": "b",
+              "text": "Tính phân cực"
+            },
+            {
+              "id": "c",
+              "text": "Hoàn toàn không phân cực"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Phân tử nước có các phần điện tích khác nhau, tương tác được với ion và nhiều phân tử phân cực."
+        },
+        {
+          "id": "biology-10-water-q2",
+          "prompt": "Chất nào không hòa tan tốt trong nước ở điều kiện thường?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Dầu ăn"
+            },
+            {
+              "id": "b",
+              "text": "Muối ăn với lượng vừa phải"
+            },
+            {
+              "id": "c",
+              "text": "Đường với lượng vừa phải"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Dầu chủ yếu gồm các phân tử kị nước, khó hòa tan trong nước phân cực."
+        },
+        {
+          "id": "biology-10-water-q3",
+          "prompt": "Nhận định nào phù hợp về nước trong tế bào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ làm tăng khối lượng, không có vai trò khác"
+            },
+            {
+              "id": "b",
+              "text": "Hòa tan hoàn toàn mọi loại lipid"
+            },
+            {
+              "id": "c",
+              "text": "Là môi trường phản ứng nhưng không hòa tan mọi chất"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nước tham gia cấu trúc và phản ứng, nhưng các chất kị nước vẫn cần cách tổ chức hoặc vận chuyển riêng."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-carbohydrates",
+      "title": "Carbohydrate: đường và chất dự trữ",
+      "guidance": [
+        "Carbohydrate gồm đường đơn, đường đôi và đường đa. Glucose là nguồn nguyên liệu năng lượng quan trọng; tinh bột ở thực vật và glycogen ở động vật giúp dự trữ, còn cellulose tham gia thành tế bào thực vật."
+      ],
+      "examples": [
+        "Hạt gạo dự trữ tinh bột. Trong cơ thể người, glycogen tập trung chủ yếu ở gan và cơ; cellulose không được enzyme tiêu hóa của người phân giải như tinh bột."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-carbohydrates-q1",
+          "prompt": "Glucose thuộc nhóm nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đường đơn"
+            },
+            {
+              "id": "b",
+              "text": "Protein"
+            },
+            {
+              "id": "c",
+              "text": "Nucleic acid"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Glucose là monosaccharide, một đơn vị đường đơn phổ biến."
+        },
+        {
+          "id": "biology-10-carbohydrates-q2",
+          "prompt": "Chất dự trữ carbohydrate điển hình ở động vật là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cellulose"
+            },
+            {
+              "id": "b",
+              "text": "DNA"
+            },
+            {
+              "id": "c",
+              "text": "Glycogen"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Glycogen dự trữ glucose, đặc biệt ở gan và cơ."
+        },
+        {
+          "id": "biology-10-carbohydrates-q3",
+          "prompt": "Tinh bột và cellulose đều tạo từ glucose nhưng có vai trò khác nhau vì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tinh bột là protein"
+            },
+            {
+              "id": "b",
+              "text": "Cách liên kết và cấu trúc khác nhau"
+            },
+            {
+              "id": "c",
+              "text": "Cellulose không chứa nguyên tử carbon"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Kiểu liên kết và cách sắp xếp các đơn vị làm thay đổi hình dạng, tính chất và khả năng enzyme phân giải."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-lipids",
+      "title": "Lipid: dự trữ và tạo màng",
+      "guidance": [
+        "Lipid là nhóm chất đa dạng, phần lớn ít tan trong nước. Mỡ dự trữ năng lượng; phospholipid có đầu ưa nước và đuôi kị nước, thuận lợi hình thành lớp kép của màng."
+      ],
+      "examples": [
+        "Trong lớp kép phospholipid, các đầu ưa nước hướng về môi trường nước hai phía, các đuôi kị nước hướng vào nhau bên trong."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-lipids-q1",
+          "prompt": "Đặc điểm chung của nhiều lipid là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đều là chuỗi amino acid"
+            },
+            {
+              "id": "b",
+              "text": "Đều chứa thông tin di truyền"
+            },
+            {
+              "id": "c",
+              "text": "Ít tan trong nước"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Lipid có nhiều vùng không phân cực, nên thường khó hòa tan trong nước."
+        },
+        {
+          "id": "biology-10-lipids-q2",
+          "prompt": "Trong lớp kép màng, đuôi phospholipid thường hướng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ vào nhân tế bào"
+            },
+            {
+              "id": "b",
+              "text": "Vào nhau, tránh môi trường nước"
+            },
+            {
+              "id": "c",
+              "text": "Ra nước ở cả hai phía"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Đuôi kị nước được che bên trong, còn đầu ưa nước hướng ra các môi trường nước."
+        },
+        {
+          "id": "biology-10-lipids-q3",
+          "prompt": "Chức năng nào phù hợp với mỡ dự trữ?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Dự trữ năng lượng dài hạn"
+            },
+            {
+              "id": "b",
+              "text": "Làm khuôn trực tiếp sao chép DNA"
+            },
+            {
+              "id": "c",
+              "text": "Luôn xúc tác mọi phản ứng"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Mỡ là nguồn dự trữ giàu năng lượng; không đảm nhiệm chức năng lưu trữ trình tự di truyền của DNA."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-proteins",
+      "title": "Protein và hình dạng chức năng",
+      "guidance": [
+        "Protein được cấu tạo từ amino acid nối bằng liên kết peptide. Trình tự và sự gấp cuộn quyết định cấu trúc không gian và chức năng; nhiệt độ hoặc pH không phù hợp có thể gây biến tính."
+      ],
+      "examples": [
+        "Lòng trắng trứng đông lại khi đun do protein thay đổi cấu trúc. Biến tính không nhất thiết đồng nghĩa mọi liên kết peptide đều bị cắt."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-proteins-q1",
+          "prompt": "Đơn phân cấu tạo protein là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nucleotide"
+            },
+            {
+              "id": "b",
+              "text": "Amino acid"
+            },
+            {
+              "id": "c",
+              "text": "Glucose"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Các amino acid nối thành chuỗi polypeptide qua liên kết peptide."
+        },
+        {
+          "id": "biology-10-proteins-q2",
+          "prompt": "Protein có thể mất chức năng khi bị biến tính chủ yếu do?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thay đổi cấu trúc không gian phù hợp"
+            },
+            {
+              "id": "b",
+              "text": "Luôn chuyển thành DNA"
+            },
+            {
+              "id": "c",
+              "text": "Tự mất mọi nguyên tử carbon"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nhiều chức năng phụ thuộc hình dạng; thay đổi gấp cuộn có thể làm mất vị trí gắn hay hoạt tính."
+        },
+        {
+          "id": "biology-10-proteins-q3",
+          "prompt": "Đun nóng một enzyme làm mất hoạt tính. Kết luận hợp lý nhất?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mọi amino acid chắc chắn đã biến thành glucose"
+            },
+            {
+              "id": "b",
+              "text": "Enzyme chưa từng là protein"
+            },
+            {
+              "id": "c",
+              "text": "Cấu trúc enzyme có thể đã biến đổi"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nhiệt cao có thể làm biến tính enzyme protein; chỉ từ mất hoạt tính chưa kết luận mọi liên kết peptide bị phá."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-nucleic-acids",
+      "title": "DNA và RNA",
+      "guidance": [
+        "DNA và RNA là nucleic acid, cấu tạo từ nucleotide. DNA lưu trữ thông tin di truyền; nhiều loại RNA tham gia biểu hiện thông tin. DNA thường có A, T, G, C; RNA thường có A, U, G, C."
+      ],
+      "examples": [
+        "Trong DNA mạch kép, A bắt cặp với T, G với C. Đoạn một mạch A–G–T có mạch bổ sung tương ứng T–C–A, nếu chỉ xét thứ tự bắt cặp."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-nucleic-acids-q1",
+          "prompt": "Đơn phân của nucleic acid là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nucleotide"
+            },
+            {
+              "id": "b",
+              "text": "Amino acid"
+            },
+            {
+              "id": "c",
+              "text": "Acid béo"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nucleotide gồm đường, phosphate và base nitrogen."
+        },
+        {
+          "id": "biology-10-nucleic-acids-q2",
+          "prompt": "Base thường có ở RNA thay cho T của DNA là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "G"
+            },
+            {
+              "id": "b",
+              "text": "C"
+            },
+            {
+              "id": "c",
+              "text": "U"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "RNA dùng uracil (U), còn DNA thường dùng thymine (T)."
+        },
+        {
+          "id": "biology-10-nucleic-acids-q3",
+          "prompt": "Trong DNA mạch kép, mạch A–G–T có các base bổ sung lần lượt?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "A–G–T"
+            },
+            {
+              "id": "b",
+              "text": "T–C–A"
+            },
+            {
+              "id": "c",
+              "text": "U–C–A"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "A ghép T, G ghép C, T ghép A. U thuộc RNA, không dùng cho câu hỏi DNA này."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-organelles",
+      "title": "Sự phối hợp của các bào quan",
+      "guidance": [
+        "Ribosome tổng hợp protein; lưới nội chất và bộ máy Golgi tham gia xử lí, vận chuyển nhiều sản phẩm tế bào. Ti thể tham gia hô hấp tế bào; lục lạp quang hợp ở tế bào thực vật có khả năng quang hợp."
+      ],
+      "examples": [
+        "Một protein tiết ra ngoài thường được tổng hợp trên ribosome gắn lưới nội chất hạt, đi qua hệ thống màng và Golgi rồi được đưa ra ngoài qua túi vận chuyển."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-organelles-q1",
+          "prompt": "Cấu trúc trực tiếp tổng hợp chuỗi polypeptide là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bộ máy Golgi"
+            },
+            {
+              "id": "b",
+              "text": "Thành cellulose"
+            },
+            {
+              "id": "c",
+              "text": "Ribosome"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Ribosome thực hiện dịch mã để tạo chuỗi polypeptide."
+        },
+        {
+          "id": "biology-10-organelles-q2",
+          "prompt": "Bào quan nổi bật trong biến đổi, phân loại và đóng gói nhiều sản phẩm là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thành tế bào"
+            },
+            {
+              "id": "b",
+              "text": "Bộ máy Golgi"
+            },
+            {
+              "id": "c",
+              "text": "Nucleoid của vi khuẩn"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Golgi nhận và xử lí nhiều sản phẩm từ lưới nội chất trước khi phân phối."
+        },
+        {
+          "id": "biology-10-organelles-q3",
+          "prompt": "Protein tiết bị kẹt do hệ Golgi hoạt động kém. Khâu dễ bị ảnh hưởng là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Xử lí và phân phối protein"
+            },
+            {
+              "id": "b",
+              "text": "Nhân đôi mọi neutron"
+            },
+            {
+              "id": "c",
+              "text": "Tạo ánh sáng cho quang hợp"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Golgi hỗ trợ hoàn thiện, phân loại, đóng gói; rối loạn làm giảm vận chuyển protein đến nơi cần."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-enzymes",
+      "title": "Enzyme và trung tâm hoạt động",
+      "guidance": [
+        "Enzyme là chất xúc tác sinh học, phần lớn có bản chất protein. Enzyme giảm năng lượng hoạt hóa, có tính đặc hiệu và không bị tiêu hao tổng thể sau phản ứng. Hoạt tính phụ thuộc điều kiện như nhiệt độ, pH."
+      ],
+      "examples": [
+        "Amylase hỗ trợ phân giải tinh bột nhưng không thay thế mọi enzyme khác. Tăng nhiệt độ quá cao có thể làm enzyme biến tính thay vì luôn làm phản ứng nhanh hơn."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-enzymes-q1",
+          "prompt": "Enzyme làm phản ứng thuận lợi hơn chủ yếu bằng cách?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Luôn tăng nhiệt độ đến sôi"
+            },
+            {
+              "id": "b",
+              "text": "Giảm năng lượng hoạt hóa"
+            },
+            {
+              "id": "c",
+              "text": "Tự tạo thêm nguyên tử"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Enzyme tạo con đường phản ứng có rào năng lượng thấp hơn, không thay đổi quy luật bảo toàn vật chất."
+        },
+        {
+          "id": "biology-10-enzymes-q2",
+          "prompt": "Một enzyme thường chỉ phù hợp với một số cơ chất vì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đặc điểm trung tâm hoạt động phù hợp"
+            },
+            {
+              "id": "b",
+              "text": "Nó không tương tác với phân tử nào"
+            },
+            {
+              "id": "c",
+              "text": "Mọi cơ chất đều có hình dạng giống nhau"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Sự phù hợp cấu trúc và tính chất hóa học giúp enzyme nhận diện cơ chất."
+        },
+        {
+          "id": "biology-10-enzymes-q3",
+          "prompt": "Đun rất nóng làm tốc độ phản ứng do enzyme giảm. Giải thích phù hợp?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Enzyme chắc chắn hoạt động mạnh hơn vô hạn"
+            },
+            {
+              "id": "b",
+              "text": "Năng lượng hoạt hóa tự bằng 0 mãi mãi"
+            },
+            {
+              "id": "c",
+              "text": "Enzyme có thể bị biến tính"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nhiệt quá mức làm thay đổi cấu trúc, trung tâm hoạt động có thể không còn phù hợp cơ chất."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-atp",
+      "title": "ATP và sự ghép cặp năng lượng",
+      "guidance": [
+        "ATP là chất trung gian truyền năng lượng phổ biến trong tế bào, gồm adenine, ribose và ba nhóm phosphate. Thủy phân ATP thành ADP và phosphate có thể ghép với quá trình cần năng lượng; ATP được tái tạo liên tục."
+      ],
+      "examples": [
+        "Bơm ion chủ động có thể ghép với thủy phân ATP để đưa ion ngược gradient. ATP không thay thế mỡ hay glycogen như kho dự trữ năng lượng dài hạn chính."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-atp-q1",
+          "prompt": "ATP có bao nhiêu nhóm phosphate?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "3"
+            },
+            {
+              "id": "b",
+              "text": "1"
+            },
+            {
+              "id": "c",
+              "text": "2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tên adenosine triphosphate thể hiện ba nhóm phosphate."
+        },
+        {
+          "id": "biology-10-atp-q2",
+          "prompt": "Sản phẩm thường xét khi thủy phân ATP là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "DNA và glucose"
+            },
+            {
+              "id": "b",
+              "text": "Protein và cellulose"
+            },
+            {
+              "id": "c",
+              "text": "ADP và phosphate vô cơ"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Phản ứng ATP + nước → ADP + Pi có thể cung cấp năng lượng tự do cho quá trình ghép cặp."
+        },
+        {
+          "id": "biology-10-atp-q3",
+          "prompt": "Bơm ion vận chuyển ngược gradient cần ATP. ATP chủ yếu đóng vai trò?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tạo thêm ion từ hư không"
+            },
+            {
+              "id": "b",
+              "text": "Trung gian ghép năng lượng cho vận chuyển"
+            },
+            {
+              "id": "c",
+              "text": "Mang nguyên vẹn ion qua màng như túi"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Bơm dùng năng lượng của phản ứng ghép cặp để đổi cấu hình và vận chuyển ion; ATP không tự là chiếc túi chở ion."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-cellular-respiration",
+      "title": "Hô hấp tế bào",
+      "guidance": [
+        "Hô hấp tế bào phân giải chất hữu cơ và chuyển một phần năng lượng thành ATP. Trong hô hấp hiếu khí, oxygen là chất nhận electron cuối; đường phân ở tế bào chất, các giai đoạn tiếp theo chủ yếu ở ti thể của tế bào nhân thực."
+      ],
+      "examples": [
+        "Tế bào người có thể oxi hóa glucose, tạo CO₂, nước và ATP. Không đồng nhất hô hấp tế bào với động tác hít thở của cả cơ thể."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-cellular-respiration-q1",
+          "prompt": "Vai trò quan trọng của hô hấp tế bào là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ đưa không khí vào phổi"
+            },
+            {
+              "id": "b",
+              "text": "Luôn tạo glucose từ CO₂"
+            },
+            {
+              "id": "c",
+              "text": "Chuyển năng lượng chất hữu cơ thành dạng tế bào sử dụng"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hô hấp tế bào là chuỗi phản ứng chuyển hóa; hít thở hỗ trợ trao đổi khí ở cấp cơ thể."
+        },
+        {
+          "id": "biology-10-cellular-respiration-q2",
+          "prompt": "Ở tế bào nhân thực, đường phân diễn ra tại?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ngoài thành tế bào"
+            },
+            {
+              "id": "b",
+              "text": "Tế bào chất"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ trong nhân"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Đường phân diễn ra ở bào tương, không bắt buộc phải có ti thể."
+        },
+        {
+          "id": "biology-10-cellular-respiration-q3",
+          "prompt": "Thiếu oxygen kéo dài, chuỗi truyền electron hiếu khí bị ảnh hưởng vì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thiếu chất nhận electron cuối cùng"
+            },
+            {
+              "id": "b",
+              "text": "Oxygen là enzyme duy nhất của đường phân"
+            },
+            {
+              "id": "c",
+              "text": "Mọi tế bào lập tức không còn DNA"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Trong hô hấp hiếu khí, O₂ nhận electron cuối. Thiếu nó làm hạn chế chuỗi truyền electron và tổng hợp ATP theo cơ chế này."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-photosynthesis",
+      "title": "Quang hợp ở thực vật",
+      "guidance": [
+        "Quang hợp chuyển năng lượng ánh sáng thành năng lượng hóa học, sử dụng CO₂ để tạo chất hữu cơ. Ở thực vật, pha sáng diễn ra ở màng thylakoid; chu trình Calvin diễn ra ở chất nền lục lạp và sử dụng sản phẩm pha sáng."
+      ],
+      "examples": [
+        "Oxygen giải phóng trong quang hợp có nguồn từ nước. Cây vẫn hô hấp tế bào cả khi có ánh sáng; quang hợp không thay thế hô hấp."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-photosynthesis-q1",
+          "prompt": "Bào quan quang hợp ở thực vật là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bộ máy Golgi"
+            },
+            {
+              "id": "b",
+              "text": "Lục lạp"
+            },
+            {
+              "id": "c",
+              "text": "Ti thể"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Lục lạp chứa hệ sắc tố và bộ máy quang hợp."
+        },
+        {
+          "id": "biology-10-photosynthesis-q2",
+          "prompt": "Nguồn carbon để tổng hợp chất hữu cơ trong quang hợp là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "CO₂"
+            },
+            {
+              "id": "b",
+              "text": "O₂"
+            },
+            {
+              "id": "c",
+              "text": "N₂ khí quyển trực tiếp ở mọi cây"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "CO₂ được cố định vào hợp chất hữu cơ; O₂ không phải nguồn carbon."
+        },
+        {
+          "id": "biology-10-photosynthesis-q3",
+          "prompt": "Ban ngày, tế bào lá có lục lạp thường thực hiện?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ quang hợp, hô hấp dừng hoàn toàn"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ hô hấp, không thể quang hợp"
+            },
+            {
+              "id": "c",
+              "text": "Cả quang hợp và hô hấp tế bào"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Khi điều kiện phù hợp, quang hợp diễn ra song song với hô hấp tế bào, dù trao đổi khí ròng có thể nghiêng về quang hợp."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-cell-cycle",
+      "title": "Chu kì tế bào",
+      "guidance": [
+        "Chu kì tế bào gồm kì trung gian và giai đoạn phân bào. Trong kì trung gian, pha S nhân đôi DNA; tế bào còn tăng trưởng và chuẩn bị. Các điểm kiểm soát giúp hạn chế truyền sai hỏng sang tế bào con."
+      ],
+      "examples": [
+        "Trước nguyên phân, một nhiễm sắc thể được nhân đôi thành hai chromatid chị em gắn nhau. Lượng DNA tăng nhưng số nhiễm sắc thể tính theo tâm động chưa tăng ngay ở pha S."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-cell-cycle-q1",
+          "prompt": "DNA được nhân đôi chủ yếu ở pha nào của kì trung gian?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Pha S"
+            },
+            {
+              "id": "b",
+              "text": "Pha G₁"
+            },
+            {
+              "id": "c",
+              "text": "Pha G₂"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Pha S là giai đoạn tổng hợp, nhân đôi DNA trước phân bào."
+        },
+        {
+          "id": "biology-10-cell-cycle-q2",
+          "prompt": "Hai chromatid chị em hình thành sau quá trình?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tế bào mất toàn bộ DNA"
+            },
+            {
+              "id": "b",
+              "text": "Hô hấp tế bào trực tiếp"
+            },
+            {
+              "id": "c",
+              "text": "Nhân đôi DNA"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nhân đôi tạo hai bản sao DNA gắn với nhau trong nhiễm sắc thể kép."
+        },
+        {
+          "id": "biology-10-cell-cycle-q3",
+          "prompt": "Điểm kiểm soát phát hiện DNA hỏng trước phân chia giúp?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thay mọi gene bằng protein"
+            },
+            {
+              "id": "b",
+              "text": "Hạn chế truyền sai hỏng cho tế bào con"
+            },
+            {
+              "id": "c",
+              "text": "Đảm bảo mọi tế bào phân chia nhanh vô hạn"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Dừng chu kì có thể tạo thời gian sửa chữa hoặc ngăn tế bào sai hỏng tiếp tục phân chia."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-mitosis",
+      "title": "Nguyên phân và sự phân li",
+      "guidance": [
+        "Nguyên phân phân li các chromatid chị em về hai cực sau khi DNA đã nhân đôi. Nếu diễn ra bình thường và chia tế bào chất hoàn tất, một tế bào tạo hai tế bào con có bộ nhiễm sắc thể như tế bào mẹ ban đầu."
+      ],
+      "examples": [
+        "Tế bào cơ thể có 2n = 4 trải qua một lần nguyên phân bình thường tạo hai tế bào con, mỗi tế bào 2n = 4."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-mitosis-q1",
+          "prompt": "Sau một lần nguyên phân và chia tế bào chất bình thường, số tế bào con là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "4"
+            },
+            {
+              "id": "b",
+              "text": "8"
+            },
+            {
+              "id": "c",
+              "text": "2"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Một tế bào phân chia thành hai tế bào con."
+        },
+        {
+          "id": "biology-10-mitosis-q2",
+          "prompt": "Tế bào mẹ 2n = 8 nguyên phân bình thường. Mỗi tế bào con có?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "16 nhiễm sắc thể ổn định"
+            },
+            {
+              "id": "b",
+              "text": "8 nhiễm sắc thể"
+            },
+            {
+              "id": "c",
+              "text": "4 nhiễm sắc thể"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Nguyên phân bảo toàn số nhiễm sắc thể của tế bào mẹ ở mỗi tế bào con."
+        },
+        {
+          "id": "biology-10-mitosis-q3",
+          "prompt": "Một tế bào nguyên phân liên tiếp hai lần, mọi tế bào con đều tiếp tục chia bình thường. Có bao nhiêu tế bào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "4"
+            },
+            {
+              "id": "b",
+              "text": "2"
+            },
+            {
+              "id": "c",
+              "text": "8"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Mỗi lần số tế bào gấp đôi: 1 → 2 → 4. Không nhầm số lần phân chia với số tế bào."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-meiosis",
+      "title": "Giảm phân và bộ nhiễm sắc thể",
+      "guidance": [
+        "Giảm phân gồm một lần nhân đôi DNA và hai lần phân bào, tạo tế bào có số nhiễm sắc thể giảm một nửa. Cặp nhiễm sắc thể tương đồng phân li ở giảm phân I; chromatid chị em thường phân li ở giảm phân II."
+      ],
+      "examples": [
+        "Một tế bào mẹ 2n = 6 giảm phân bình thường tạo các sản phẩm mang n = 3. Tổ hợp và trao đổi chéo góp phần tạo biến dị di truyền."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-meiosis-q1",
+          "prompt": "Trước hai lần phân bào giảm phân, DNA nhân đôi mấy lần?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không nhân đôi"
+            },
+            {
+              "id": "b",
+              "text": "1"
+            },
+            {
+              "id": "c",
+              "text": "2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "DNA nhân đôi trước giảm phân I; không có lần nhân đôi DNA xen giữa giảm phân I và II."
+        },
+        {
+          "id": "biology-10-meiosis-q2",
+          "prompt": "Tế bào mẹ 2n = 10 giảm phân bình thường. Sản phẩm đơn bội có?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "5 nhiễm sắc thể"
+            },
+            {
+              "id": "b",
+              "text": "10 nhiễm sắc thể"
+            },
+            {
+              "id": "c",
+              "text": "20 nhiễm sắc thể"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Bộ đơn bội n bằng một nửa 2n, nên n = 5."
+        },
+        {
+          "id": "biology-10-meiosis-q3",
+          "prompt": "Điểm phân biệt quan trọng ở giảm phân I là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "DNA nhân đôi thêm ngay khi hai cực tách"
+            },
+            {
+              "id": "b",
+              "text": "Mọi tế bào con giữ nguyên bộ lưỡng bội"
+            },
+            {
+              "id": "c",
+              "text": "Các nhiễm sắc thể tương đồng phân li"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Sự phân li của cặp tương đồng làm giảm số bộ nhiễm sắc thể; chromatid chị em chủ yếu tách ở lần II."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-microbial-growth",
+      "title": "Sinh trưởng của quần thể vi khuẩn",
+      "guidance": [
+        "Nhiều vi khuẩn sinh sản bằng phân đôi. Trong pha lũy thừa với điều kiện phù hợp và thời gian thế hệ g không đổi, N = N₀ × 2ᵏ, k = t/g. Công thức không áp dụng vô hạn khi dinh dưỡng cạn hoặc chất thải tích tụ."
+      ],
+      "examples": [
+        "Ban đầu 100 tế bào, sau ba thế hệ phân đôi lý tưởng: N = 100 × 2³ = 800 tế bào."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-microbial-growth-q1",
+          "prompt": "Sau một lần phân đôi bình thường, một vi khuẩn tạo?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "2 tế bào"
+            },
+            {
+              "id": "b",
+              "text": "4 tế bào ngay lập tức"
+            },
+            {
+              "id": "c",
+              "text": "1 virus"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Một tế bào mẹ phân chia thành hai tế bào con."
+        },
+        {
+          "id": "biology-10-microbial-growth-q2",
+          "prompt": "Ban đầu 20 tế bào, sau hai thế hệ phân đôi lý tưởng có?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "40"
+            },
+            {
+              "id": "b",
+              "text": "60"
+            },
+            {
+              "id": "c",
+              "text": "80"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "N = 20 × 2² = 80 tế bào."
+        },
+        {
+          "id": "biology-10-microbial-growth-q3",
+          "prompt": "Vì sao không dùng N = N₀ × 2ᵏ mãi trong bình nuôi kín?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Số tế bào luôn tự giữ ở 2"
+            },
+            {
+              "id": "b",
+              "text": "Dinh dưỡng và môi trường trở nên hạn chế"
+            },
+            {
+              "id": "c",
+              "text": "Vi khuẩn không bao giờ cần nguyên liệu"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mô hình tăng lũy thừa cần điều kiện phù hợp; cạn dinh dưỡng và tích tụ chất thải làm thay đổi tốc độ sinh trưởng."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-viruses",
+      "title": "Virus và tế bào chủ",
+      "guidance": [
+        "Virus có vật chất di truyền DNA hoặc RNA và vỏ protein; một số có vỏ ngoài. Virus không có hệ tế bào và chuyển hóa độc lập, phải dựa vào tế bào chủ để nhân lên. Kháng sinh kháng khuẩn không trực tiếp trị virus."
+      ],
+      "examples": [
+        "Virus cúm nhân lên trong tế bào chủ. Dùng kháng sinh cho nhiễm virus đơn thuần không loại được virus; việc điều trị cần hướng dẫn chuyên môn, không tự dùng thuốc."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-viruses-q1",
+          "prompt": "Virus cần yếu tố nào để nhân lên?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ nước tinh khiết"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ đường trong bình vô trùng"
+            },
+            {
+              "id": "c",
+              "text": "Tế bào chủ phù hợp"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Virus cần bộ máy và nguyên liệu của tế bào chủ vì không có chuyển hóa độc lập đầy đủ."
+        },
+        {
+          "id": "biology-10-viruses-q2",
+          "prompt": "Thành phần có ở virus điển hình là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ribosome tự hoạt động độc lập"
+            },
+            {
+              "id": "b",
+              "text": "Vật chất di truyền và vỏ protein"
+            },
+            {
+              "id": "c",
+              "text": "Nhân có màng và ti thể"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Virus không có cấu trúc tế bào; hệ gene và capsid là hai thành phần cơ bản."
+        },
+        {
+          "id": "biology-10-viruses-q3",
+          "prompt": "Vì sao kháng sinh kháng khuẩn không trực tiếp diệt virus?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Virus không có nhiều đích tác động đặc trưng của vi khuẩn"
+            },
+            {
+              "id": "b",
+              "text": "Virus là một vi khuẩn lớn hơn"
+            },
+            {
+              "id": "c",
+              "text": "Kháng sinh luôn làm virus biến thành tế bào người"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nhiều kháng sinh nhắm thành tế bào hoặc ribosome vi khuẩn; virus không có các cấu trúc đó. Không suy ra cách điều trị cá nhân từ bài học này."
         }
       ]
     }

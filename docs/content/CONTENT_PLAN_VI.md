@@ -11,9 +11,9 @@ Cập nhật 20/10/2026. Người dùng chọn nội dung các lớp 10, 11, 12 
 ## Trạng thái runtime
 | Môn | Lớp10 | Lớp11 | Lớp12 |
 |---|---|---|---|
-| Vật lý | 5 bài/15 câu nhập môn | Chưa biên soạn | Chưa biên soạn |
-| Hóa học | 5 bài/15 câu nhập môn | Chưa biên soạn | Chưa biên soạn |
-| Sinh học | 5 bài/15 câu nhập môn | Chưa biên soạn | Chưa biên soạn |
+| Vật lý | 20 bài/60 câu, 4 quiz ôn | Chưa biên soạn | Chưa biên soạn |
+| Hóa học | 20 bài/60 câu, 4 quiz ôn | Chưa biên soạn | Chưa biên soạn |
+| Sinh học | 20 bài/60 câu, 4 quiz ôn | Chưa biên soạn | Chưa biên soạn |
 
 Ba gói backend/curriculum hiện có chưa được ánh xạ là đủ mục lục Kết nối tri thức. Sáu môn khác vẫn chỉ giữ khung.
 
@@ -26,3 +26,15 @@ Ba gói backend/curriculum hiện có chưa được ánh xạ là đủ mục l
 6. Giữ ID thưởng ổn định khi sửa nhỏ; thay cấu trúc phải có version/migration, không làm mất tiến độ hoặc nhận EXP lặp.
 
 Tài liệu này chốt nguồn và cách triển khai, chưa phải mục lục chi tiết đã đối chiếu hay nội dung đủ cả năm.
+
+## Bổ sung 15 bài mỗi môn — 20/10/2026
+
+Tổng thêm 45 bài, 135 câu có đáp án và lời giải. Mỗi môn hiện có 20 bài, 60 câu thực hành và 4 checkpoint 10 câu, mỗi checkpoint lấy hai câu từ từng bài trong đúng nhóm năm bài. Không thêm 15 bài tổng cộng và không chia thành nội dung lớp 11–12 chưa được biên soạn.
+
+- Lý 6–10: biến đổi đều, độ dịch chuyển, đồ thị v–t, rơi tự do, ném ngang. 11–15: hợp lực, ba định luật Newton, trọng lực/lực đỡ. 16–20: ma sát, công, công suất, động/thế năng, cơ năng.
+- Hóa 6–10: lớp/phân lớp, cấu hình, electron ngoài cùng, chu kì, xu hướng tuần hoàn. 11–15: octet, ion, cộng hóa trị, phân cực, hydrogen. 16–20: số oxi hóa, redox, nhiệt phản ứng, tốc độ, halogen.
+- Sinh 6–10: nước, carbohydrate, lipid, protein, nucleic acid. 11–15: bào quan, enzyme, ATP, hô hấp, quang hợp. 16–20: chu kì tế bào, nguyên phân, giảm phân, vi khuẩn, virus.
+
+Nội dung tự biên soạn theo chủ đề lớp 10; không tự nhận trùng đầy đủ mục lục SGK. Các nguồn khoa học dùng đối chiếu khái niệm: [OpenStax Physics, công và năng lượng](https://openstax.org/books/physics/pages/9-1-work-power-and-the-work-energy-theorem), [Chemistry 2e, cấu hình electron](https://openstax.org/books/chemistry-2e/pages/6-4-electronic-structure-of-atoms-electron-configurations), [Biology 2e, virus và vật chủ](https://openstax.org/books/biology-2e/pages/21-2-virus-infections-and-hosts). Cần giáo viên duyệt mức độ khó, thuật ngữ và coverage trước dùng chính thức.
+
+Giữ version `intro-2026.1` vì đây là mở rộng tương thích bằng cách nối cuối: năm bài đầu, câu hỏi, vị trí đáp án, placement và review đầu không đổi. Không dùng cách này nếu sửa nội dung đang làm hay đổi ID. Kiểm thử nâng cấp thực tế khởi động lại server với cùng SQLite, giữ bài đã xong, số lần sai, bước đang làm và ledger; bài mới nhận thưởng, bài cũ không nhận lại. 33 ca backend đạt, bao gồm đi hết 20 bài + 4 review cho từng môn.

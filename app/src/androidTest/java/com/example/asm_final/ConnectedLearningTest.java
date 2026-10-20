@@ -37,6 +37,7 @@ public final class ConnectedLearningTest {
   private BackendSession session;
   private LessonViewModel model;
   private final Map<String, String> answers = new HashMap<>();
+  private int curriculumLessonCount;
 
   private void main(Runnable action) {
     ins.runOnMainSync(action);
@@ -147,6 +148,7 @@ public final class ConnectedLearningTest {
       int n;
       while ((n = in.read(buffer)) != -1) bytes.write(buffer, 0, n);
       JSONArray lessons = new JSONObject(bytes.toString("UTF-8")).getJSONArray("lessons");
+      curriculumLessonCount = lessons.length();
       for (int i = 0; i < lessons.length(); i++) {
         JSONArray questions = lessons.getJSONObject(i).getJSONArray("questions");
         for (int q = 0; q < questions.length(); q++)
@@ -723,7 +725,7 @@ public final class ConnectedLearningTest {
     main(
         () -> {
           assertEquals(
-              current().getString(R.string.overview_lessons, 1, 5),
+              current().getString(R.string.overview_lessons, 1, curriculumLessonCount),
               ((android.widget.TextView) current().findViewById(R.id.tv_total_level_value))
                   .getText()
                   .toString());

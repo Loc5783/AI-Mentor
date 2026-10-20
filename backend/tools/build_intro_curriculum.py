@@ -6,6 +6,10 @@ Run from any directory: python backend/tools/build_intro_curriculum.py
 import json
 from pathlib import Path
 
+from biology_extension import LESSONS as BIOLOGY_EXTENSION
+from chemistry_extension import LESSONS as CHEMISTRY_EXTENSION
+from physics_extension import LESSONS as PHYSICS_EXTENSION
+
 PACKS = {
     ("physics", 10): ("Chuyển động quanh ta", [
         ("position", "Vị trí và hệ quy chiếu",
@@ -106,10 +110,20 @@ PACKS = {
 }
 
 
+EXTENSIONS = {
+    ("physics", 10): ("Cơ học: chuyển động, lực và năng lượng", PHYSICS_EXTENSION),
+    ("chemistry", 10): ("Từ nguyên tử đến phản ứng hóa học", CHEMISTRY_EXTENSION),
+    ("biology", 10): ("Tế bào, chuyển hóa và sinh sản", BIOLOGY_EXTENSION),
+}
+
+
 def build():
     target = Path(__file__).resolve().parents[1] / "curriculum"
     target.mkdir(exist_ok=True)
     for (subject, grade), (title, units) in PACKS.items():
+        title, extension = EXTENSIONS[(subject, grade)]
+        # Append only: existing option rotation and IDs must remain unchanged.
+        units = units + extension
         lessons = []
         for number, (slug, name, guidance, example, questions) in enumerate(units):
             lid = f"{subject}-{grade}-{slug}"
@@ -126,8 +140,8 @@ def build():
                                "explanation": explanation})
             lessons.append({"id": lid, "title": name, "guidance": [guidance], "examples": [example], "questions": values})
         course = {"subjectId": subject, "grade": grade, "version": "intro-2026.1", "title": title,
-                  "published": True, "coverage": "INTRODUCTORY_BLOCK_ONLY", "extendedReviews": False,
-                  "sourceNote": "Nội dung nhập môn do AI Mentor biên soạn; không phải bản sao SGK hay toàn bộ chương trình năm học. Cần giáo viên duyệt trước khi dùng chính thức.",
+                  "published": True, "coverage": "PARTIAL_GRADE_10", "extendedReviews": False,
+                  "sourceNote": "20 bài ngắn lớp 10 do AI Mentor biên soạn, không phải bản sao SGK hay toàn bộ chương trình năm học. Đầu vào chỉ khảo sát 5 bài nhập môn. Cần giáo viên duyệt trước khi dùng chính thức.",
                   "lessons": lessons}
         (target / f"{subject}-{grade}.json").write_text(json.dumps(course, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 

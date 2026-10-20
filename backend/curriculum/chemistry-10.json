@@ -2,11 +2,11 @@
   "subjectId": "chemistry",
   "grade": 10,
   "version": "intro-2026.1",
-  "title": "Khám phá nguyên tử",
+  "title": "Từ nguyên tử đến phản ứng hóa học",
   "published": true,
-  "coverage": "INTRODUCTORY_BLOCK_ONLY",
+  "coverage": "PARTIAL_GRADE_10",
   "extendedReviews": false,
-  "sourceNote": "Nội dung nhập môn do AI Mentor biên soạn; không phải bản sao SGK hay toàn bộ chương trình năm học. Cần giáo viên duyệt trước khi dùng chính thức.",
+  "sourceNote": "20 bài ngắn lớp 10 do AI Mentor biên soạn, không phải bản sao SGK hay toàn bộ chương trình năm học. Đầu vào chỉ khảo sát 5 bài nhập môn. Cần giáo viên duyệt trước khi dùng chính thức.",
   "lessons": [
     {
       "id": "chemistry-10-particles",
@@ -380,6 +380,1131 @@
           ],
           "correctOptionId": "a",
           "explanation": "Z = 12 nên có 12 proton. Điện tích 2+ do mất 2 electron, còn 10 electron."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-electron-shells",
+      "title": "Lớp và phân lớp electron",
+      "guidance": [
+        "Electron trong nguyên tử được mô tả theo lớp và phân lớp năng lượng. Lớp n có tối đa 2n² electron; các phân lớp s, p, d, f chứa tối đa 2, 6, 10, 14 electron. Sức chứa tối đa không đồng nghĩa lớp đã được điền đầy."
+      ],
+      "examples": [
+        "Lớp n = 2 có phân lớp 2s và 2p, tổng sức chứa tối đa 2 + 6 = 8 electron."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-electron-shells-q1",
+          "prompt": "Phân lớp s chứa tối đa bao nhiêu electron?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "8"
+            },
+            {
+              "id": "b",
+              "text": "2"
+            },
+            {
+              "id": "c",
+              "text": "6"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Phân lớp s có một orbital; mỗi orbital chứa tối đa hai electron."
+        },
+        {
+          "id": "chemistry-10-electron-shells-q2",
+          "prompt": "Lớp n = 2 chứa tối đa bao nhiêu electron?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "8"
+            },
+            {
+              "id": "b",
+              "text": "4"
+            },
+            {
+              "id": "c",
+              "text": "18"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "2n² = 2 × 2² = 8 electron."
+        },
+        {
+          "id": "chemistry-10-electron-shells-q3",
+          "prompt": "Phân lớp 2p đang có 4 electron. Nó nhận thêm tối đa bao nhiêu để đầy?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "4"
+            },
+            {
+              "id": "b",
+              "text": "6"
+            },
+            {
+              "id": "c",
+              "text": "2"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Phân lớp p chứa tối đa 6; còn 6 − 4 = 2 chỗ electron."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-electron-configuration",
+      "title": "Viết cấu hình electron đơn giản",
+      "guidance": [
+        "Ở trạng thái cơ bản, electron điền vào các mức năng lượng thấp trước. Với 18 nguyên tố đầu có thứ tự 1s, 2s, 2p, 3s, 3p. Tổng các số mũ bằng số electron của nguyên tử hoặc ion đang xét."
+      ],
+      "examples": [
+        "Na trung hòa có Z = 11: 1s² 2s² 2p⁶ 3s¹. Tổng electron là 2 + 2 + 6 + 1 = 11."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-electron-configuration-q1",
+          "prompt": "Tổng số mũ trong cấu hình electron cho biết?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Số electron"
+            },
+            {
+              "id": "b",
+              "text": "Luôn là số neutron"
+            },
+            {
+              "id": "c",
+              "text": "Luôn là số khối"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Mỗi số mũ đếm electron ở phân lớp tương ứng."
+        },
+        {
+          "id": "chemistry-10-electron-configuration-q2",
+          "prompt": "Cấu hình 1s² 2s² 2p⁶ có tổng bao nhiêu electron?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "8"
+            },
+            {
+              "id": "b",
+              "text": "6"
+            },
+            {
+              "id": "c",
+              "text": "10"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Cộng 2 + 2 + 6 = 10 electron."
+        },
+        {
+          "id": "chemistry-10-electron-configuration-q3",
+          "prompt": "Nguyên tử Mg có Z = 12. Cấu hình trạng thái cơ bản nào đúng?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "1s² 2s² 2p⁶ 3s¹"
+            },
+            {
+              "id": "b",
+              "text": "1s² 2s² 2p⁶ 3s²"
+            },
+            {
+              "id": "c",
+              "text": "1s² 2s² 2p⁸"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mg trung hòa có 12 electron; 2p tối đa 6 và hai electron còn lại vào 3s."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-valence-electrons",
+      "title": "Electron lớp ngoài cùng",
+      "guidance": [
+        "Electron lớp ngoài cùng thuộc lớp có n lớn nhất đang có electron. Với nguyên tố nhóm A, chúng giúp dự đoán nhiều tính chất hóa học; không được suy rộng mọi quy tắc nhóm A cho kim loại chuyển tiếp."
+      ],
+      "examples": [
+        "Al: 1s² 2s² 2p⁶ 3s² 3p¹. Lớp ngoài cùng n = 3 có 2 + 1 = 3 electron."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-valence-electrons-q1",
+          "prompt": "Lớp ngoài cùng là lớp đang có electron với n?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nhỏ nhất"
+            },
+            {
+              "id": "b",
+              "text": "Luôn bằng 1"
+            },
+            {
+              "id": "c",
+              "text": "Lớn nhất"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Xét lớp có electron và số lượng tử chính n lớn nhất."
+        },
+        {
+          "id": "chemistry-10-valence-electrons-q2",
+          "prompt": "Na có cấu hình kết thúc 3s¹, không có electron lớp cao hơn. Số electron ngoài cùng là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "11"
+            },
+            {
+              "id": "b",
+              "text": "1"
+            },
+            {
+              "id": "c",
+              "text": "3"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Lớp ngoài cùng n = 3 chỉ chứa một electron ở 3s."
+        },
+        {
+          "id": "chemistry-10-valence-electrons-q3",
+          "prompt": "Cấu hình kết thúc 3s² 3p⁵, không có lớp cao hơn. Electron ngoài cùng là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "7"
+            },
+            {
+              "id": "b",
+              "text": "5"
+            },
+            {
+              "id": "c",
+              "text": "17"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Cộng electron cùng lớp n = 3: 2 + 5 = 7; không chỉ đếm phân lớp cuối."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-periodic-table",
+      "title": "Chu kì trong bảng tuần hoàn",
+      "guidance": [
+        "Bảng tuần hoàn hiện đại xếp nguyên tố theo chiều tăng số hiệu nguyên tử Z. Với nguyên tử trạng thái cơ bản, số lớp có electron bằng số thứ tự chu kì."
+      ],
+      "examples": [
+        "Na có ba lớp electron và Z = 11 nên thuộc chu kì 3; vị trí không được xác định bằng số neutron."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-periodic-table-q1",
+          "prompt": "Bảng tuần hoàn xếp theo chiều tăng của?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Số khối của mọi đồng vị"
+            },
+            {
+              "id": "b",
+              "text": "Số hiệu nguyên tử"
+            },
+            {
+              "id": "c",
+              "text": "Số neutron"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Z là số proton và xác định nguyên tố; các đồng vị vẫn chung một ô."
+        },
+        {
+          "id": "chemistry-10-periodic-table-q2",
+          "prompt": "Nguyên tử trạng thái cơ bản có hai lớp electron thuộc chu kì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "2"
+            },
+            {
+              "id": "b",
+              "text": "1"
+            },
+            {
+              "id": "c",
+              "text": "4"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Số lớp đang có electron bằng số chu kì."
+        },
+        {
+          "id": "chemistry-10-periodic-table-q3",
+          "prompt": "Mg có cấu hình 1s² 2s² 2p⁶ 3s². Thuộc chu kì nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "2"
+            },
+            {
+              "id": "b",
+              "text": "12"
+            },
+            {
+              "id": "c",
+              "text": "3"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Có các lớp n = 1, 2, 3; lớp lớn nhất n = 3 nên ở chu kì 3."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-periodic-trends",
+      "title": "Xu hướng tính chất trong một chu kì",
+      "guidance": [
+        "Trong một chu kì của các nguyên tố nhóm A, từ trái sang phải bán kính nguyên tử nhìn chung giảm; độ âm điện nhìn chung tăng nếu không xét khí hiếm. Đây là xu hướng, không thay thế dữ liệu khi cần so sánh chính xác."
+      ],
+      "examples": [
+        "Trong chu kì 3, Na có bán kính nguyên tử lớn hơn Cl; Cl hút electron liên kết mạnh hơn Na."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-periodic-trends-q1",
+          "prompt": "Từ trái sang phải trong một chu kì nhóm A, bán kính nhìn chung?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Giảm"
+            },
+            {
+              "id": "b",
+              "text": "Tăng mãi"
+            },
+            {
+              "id": "c",
+              "text": "Luôn bằng nhau"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Điện tích hạt nhân tăng trong khi electron được thêm cùng lớp chính, làm lực hút hiệu dụng nhìn chung tăng."
+        },
+        {
+          "id": "chemistry-10-periodic-trends-q2",
+          "prompt": "Trong chu kì 3, Na và Cl: nguyên tử nào thường có bán kính lớn hơn?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cl"
+            },
+            {
+              "id": "b",
+              "text": "Luôn bằng nhau"
+            },
+            {
+              "id": "c",
+              "text": "Na"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Na ở phía trái chu kì, phù hợp xu hướng bán kính giảm sang phải."
+        },
+        {
+          "id": "chemistry-10-periodic-trends-q3",
+          "prompt": "So Na và Cl, nguyên tố nào hút cặp electron liên kết mạnh hơn?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không thể so bằng độ âm điện"
+            },
+            {
+              "id": "b",
+              "text": "Cl"
+            },
+            {
+              "id": "c",
+              "text": "Na"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Cl có độ âm điện cao hơn; độ âm điện mô tả khả năng hút electron trong liên kết."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-octet",
+      "title": "Quy tắc octet và giới hạn",
+      "guidance": [
+        "Nhiều nguyên tử nhóm A có xu hướng nhường, nhận hoặc dùng chung electron để có lớp ngoài cùng bền kiểu khí hiếm, thường tám electron. H thường đạt hai electron; quy tắc octet không đúng cho mọi chất."
+      ],
+      "examples": [
+        "Na nhường một electron tạo Na⁺ có cấu hình như Ne. Cl nhận một electron tạo Cl⁻ có cấu hình như Ar."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-octet-q1",
+          "prompt": "Theo quy tắc octet, nhiều nguyên tử hướng đến bao nhiêu electron ngoài cùng?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "12"
+            },
+            {
+              "id": "b",
+              "text": "18"
+            },
+            {
+              "id": "c",
+              "text": "8"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Octet nghĩa là tám; vẫn có ngoại lệ và H theo cấu hình hai electron."
+        },
+        {
+          "id": "chemistry-10-octet-q2",
+          "prompt": "Na có một electron ngoài cùng thường tạo Na⁺ bằng cách?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nhường 1 proton"
+            },
+            {
+              "id": "b",
+              "text": "Nhường 1 electron"
+            },
+            {
+              "id": "c",
+              "text": "Nhận 1 electron"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mất một electron tạo điện tích +1; hạt nhân không đổi trong quá trình hóa học này."
+        },
+        {
+          "id": "chemistry-10-octet-q3",
+          "prompt": "Trong phân tử H₂, mỗi H có thể được xem là đạt lớp bền với?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "2 electron nhờ cặp dùng chung"
+            },
+            {
+              "id": "b",
+              "text": "8 electron riêng"
+            },
+            {
+              "id": "c",
+              "text": "0 electron"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Hai H dùng chung một cặp electron; mỗi H đạt cấu hình lớp thứ nhất hai electron, không phải octet."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-ionic-bond",
+      "title": "Liên kết ion",
+      "guidance": [
+        "Liên kết ion là lực hút tĩnh điện giữa các ion trái dấu. Chất ion thường tạo mạng tinh thể; công thức biểu diễn tỉ lệ ion để tổng điện tích bằng 0, không nhất thiết là phân tử riêng biệt."
+      ],
+      "examples": [
+        "Mg²⁺ cần hai Cl⁻ để trung hòa điện: công thức MgCl₂."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-ionic-bond-q1",
+          "prompt": "Liên kết ion hình thành chủ yếu do?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chuyển neutron qua lại"
+            },
+            {
+              "id": "b",
+              "text": "Hút tĩnh điện giữa ion trái dấu"
+            },
+            {
+              "id": "c",
+              "text": "Hai ion cùng dấu hút nhau"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Ion dương và ion âm hút nhau bằng tương tác điện."
+        },
+        {
+          "id": "chemistry-10-ionic-bond-q2",
+          "prompt": "Ca²⁺ và Cl⁻ tạo chất có công thức nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "CaCl₂"
+            },
+            {
+              "id": "b",
+              "text": "Ca₂Cl"
+            },
+            {
+              "id": "c",
+              "text": "CaCl"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Một Ca²⁺ cần hai Cl⁻ để tổng điện tích +2 − 2 = 0."
+        },
+        {
+          "id": "chemistry-10-ionic-bond-q3",
+          "prompt": "Al³⁺ và O²⁻ tạo chất trung hòa với tỉ lệ ion tối giản nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "1 Al³⁺ : 1 O²⁻"
+            },
+            {
+              "id": "b",
+              "text": "3 Al³⁺ : 2 O²⁻"
+            },
+            {
+              "id": "c",
+              "text": "2 Al³⁺ : 3 O²⁻"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Bội chung của 3 và 2 là 6: hai ion Al tổng +6, ba ion O tổng −6, được Al₂O₃."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-covalent-bond",
+      "title": "Liên kết cộng hóa trị",
+      "guidance": [
+        "Liên kết cộng hóa trị được tạo bởi một hoặc nhiều cặp electron dùng chung. Một cặp tạo liên kết đơn, hai cặp tạo liên kết đôi, ba cặp tạo liên kết ba."
+      ],
+      "examples": [
+        "Trong H₂, hai nguyên tử H dùng chung một cặp electron, tạo liên kết đơn H–H."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-covalent-bond-q1",
+          "prompt": "Đặc trưng của liên kết cộng hóa trị là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cặp electron dùng chung"
+            },
+            {
+              "id": "b",
+              "text": "Luôn chuyển hoàn toàn electron thành ion"
+            },
+            {
+              "id": "c",
+              "text": "Dùng chung proton"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Các nguyên tử liên kết thông qua một hay nhiều cặp electron chung."
+        },
+        {
+          "id": "chemistry-10-covalent-bond-q2",
+          "prompt": "Liên kết đôi tương ứng bao nhiêu cặp electron chung?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "1"
+            },
+            {
+              "id": "b",
+              "text": "4"
+            },
+            {
+              "id": "c",
+              "text": "2"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mỗi vạch liên kết biểu diễn một cặp electron dùng chung."
+        },
+        {
+          "id": "chemistry-10-covalent-bond-q3",
+          "prompt": "Trong N₂ có liên kết ba. Số electron tham gia ba cặp chung là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "12"
+            },
+            {
+              "id": "b",
+              "text": "6"
+            },
+            {
+              "id": "c",
+              "text": "3"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Ba cặp, mỗi cặp hai electron: 3 × 2 = 6 electron dùng chung."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-bond-polarity",
+      "title": "Độ phân cực của liên kết",
+      "guidance": [
+        "Khi hai nguyên tử hút cặp electron chung khác nhau, liên kết có thể phân cực về nguyên tử có độ âm điện lớn hơn. Phân cực liên kết và phân cực toàn phân tử là hai khái niệm khác nhau."
+      ],
+      "examples": [
+        "Trong H–Cl, electron chung lệch về Cl: Cl mang phần điện tích âm, H mang phần điện tích dương; không phải hai ion tách rời trong phân tử khí HCl."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-bond-polarity-q1",
+          "prompt": "Cặp electron chung lệch về nguyên tử có?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Số neutron luôn lớn hơn"
+            },
+            {
+              "id": "b",
+              "text": "Khối lượng luôn nhỏ hơn"
+            },
+            {
+              "id": "c",
+              "text": "Độ âm điện lớn hơn"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Độ âm điện mô tả khả năng hút electron của nguyên tử trong liên kết."
+        },
+        {
+          "id": "chemistry-10-bond-polarity-q2",
+          "prompt": "Liên kết Cl–Cl giữa hai nguyên tử giống nhau được coi là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không có electron chung"
+            },
+            {
+              "id": "b",
+              "text": "Cộng hóa trị không phân cực"
+            },
+            {
+              "id": "c",
+              "text": "Ion thuần túy"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hai nguyên tử có cùng độ âm điện nên không có sự lệch ưu tiên của cặp chung."
+        },
+        {
+          "id": "chemistry-10-bond-polarity-q3",
+          "prompt": "CO₂ thẳng có hai liên kết C=O phân cực đối xứng. Toàn phân tử?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không phân cực do các moment triệt tiêu"
+            },
+            {
+              "id": "b",
+              "text": "Luôn phân cực vì từng liên kết phân cực"
+            },
+            {
+              "id": "c",
+              "text": "Không có liên kết cộng hóa trị"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Cần xét hình học: hai moment bằng nhau ngược chiều nên tổng moment lưỡng cực bằng 0."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-hydrogen-bond",
+      "title": "Liên kết hydrogen",
+      "guidance": [
+        "Liên kết hydrogen thường xuất hiện khi H đã liên kết với F, O hoặc N tương tác với cặp electron tự do thích hợp của nguyên tử khác. Tương tác này yếu hơn liên kết cộng hóa trị O–H bên trong phân tử nước."
+      ],
+      "examples": [
+        "Giữa các phân tử nước có liên kết hydrogen; đun sôi chủ yếu làm các phân tử tách xa nhau, không phân hủy nước thành hydrogen và oxygen."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-hydrogen-bond-q1",
+          "prompt": "Trong nước, liên kết hydrogen điển hình hình thành giữa?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ hai nguyên tử O tạo liên kết đôi"
+            },
+            {
+              "id": "b",
+              "text": "Các phân tử nước"
+            },
+            {
+              "id": "c",
+              "text": "Hai neutron trong hạt nhân"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "H của một phân tử tương tác với cặp electron tự do trên O của phân tử khác."
+        },
+        {
+          "id": "chemistry-10-hydrogen-bond-q2",
+          "prompt": "Liên kết O–H bên trong phân tử nước là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Liên kết cộng hóa trị"
+            },
+            {
+              "id": "b",
+              "text": "Liên kết hydrogen giữa hai phân tử"
+            },
+            {
+              "id": "c",
+              "text": "Liên kết kim loại"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Phải phân biệt cặp electron chung O–H với tương tác hydrogen giữa các phân tử."
+        },
+        {
+          "id": "chemistry-10-hydrogen-bond-q3",
+          "prompt": "Khi nước sôi ở điều kiện thường, mô tả phù hợp là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mọi H₂O tách thành H₂ và O₂"
+            },
+            {
+              "id": "b",
+              "text": "Proton biến thành electron"
+            },
+            {
+              "id": "c",
+              "text": "Phân tử nước tách xa, vẫn chủ yếu là H₂O"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Chuyển thể không đồng nghĩa phản ứng phân hủy; liên kết cộng hóa trị trong H₂O vẫn được giữ."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-oxidation-number",
+      "title": "Xác định số oxi hóa",
+      "guidance": [
+        "Tổng số oxi hóa của các nguyên tử bằng điện tích tiểu phân. Đơn chất có số oxi hóa 0; O thường −2 trừ ngoại lệ như peroxide, H thường +1 trừ hydride kim loại. Số oxi hóa là quy ước, không luôn là điện tích thật."
+      ],
+      "examples": [
+        "Trong CO₂ trung hòa: x + 2 × (−2) = 0, nên carbon có số oxi hóa +4."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-oxidation-number-q1",
+          "prompt": "Số oxi hóa của nguyên tố trong đơn chất O₂ là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "0"
+            },
+            {
+              "id": "b",
+              "text": "−2"
+            },
+            {
+              "id": "c",
+              "text": "+2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Mọi nguyên tố trong đơn chất có số oxi hóa bằng 0."
+        },
+        {
+          "id": "chemistry-10-oxidation-number-q2",
+          "prompt": "Trong MgO, O có số oxi hóa −2. Mg có số oxi hóa?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "−2"
+            },
+            {
+              "id": "b",
+              "text": "0"
+            },
+            {
+              "id": "c",
+              "text": "+2"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tổng bằng 0 nên x − 2 = 0, x = +2."
+        },
+        {
+          "id": "chemistry-10-oxidation-number-q3",
+          "prompt": "Trong ion SO₄²⁻, O có số oxi hóa −2. S có số oxi hóa?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "+4"
+            },
+            {
+              "id": "b",
+              "text": "+6"
+            },
+            {
+              "id": "c",
+              "text": "+8"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "x + 4 × (−2) = −2, nên x = +6. Tổng bằng điện tích ion, không phải 0."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-redox",
+      "title": "Oxi hóa và khử",
+      "guidance": [
+        "Oxi hóa là nhường electron, số oxi hóa tăng. Khử là nhận electron, số oxi hóa giảm. Chất khử nhường electron và bị oxi hóa; chất oxi hóa nhận electron và bị khử."
+      ],
+      "examples": [
+        "Zn → Zn²⁺ + 2e là oxi hóa. Cu²⁺ + 2e → Cu là khử; trong phản ứng Zn + Cu²⁺ → Zn²⁺ + Cu, Zn là chất khử."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-redox-q1",
+          "prompt": "Quá trình nhường electron gọi là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khử"
+            },
+            {
+              "id": "b",
+              "text": "Thẩm thấu"
+            },
+            {
+              "id": "c",
+              "text": "Oxi hóa"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nhường electron làm số oxi hóa tăng."
+        },
+        {
+          "id": "chemistry-10-redox-q2",
+          "prompt": "Cu²⁺ nhận 2 electron thành Cu. Cu²⁺ trải qua quá trình?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không đổi số oxi hóa"
+            },
+            {
+              "id": "b",
+              "text": "Khử"
+            },
+            {
+              "id": "c",
+              "text": "Oxi hóa"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Số oxi hóa giảm từ +2 xuống 0, tương ứng nhận electron."
+        },
+        {
+          "id": "chemistry-10-redox-q3",
+          "prompt": "Trong Zn + Cu²⁺ → Zn²⁺ + Cu, chất khử là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Zn"
+            },
+            {
+              "id": "b",
+              "text": "Cu²⁺"
+            },
+            {
+              "id": "c",
+              "text": "Zn²⁺"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Zn nhường electron cho Cu²⁺, nên Zn là chất khử và bị oxi hóa."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-reaction-enthalpy",
+      "title": "Phản ứng tỏa nhiệt và thu nhiệt",
+      "guidance": [
+        "Phản ứng tỏa nhiệt truyền nhiệt ra môi trường, có ΔH < 0 khi xét hệ phản ứng ở áp suất không đổi. Phản ứng thu nhiệt nhận nhiệt từ môi trường, ΔH > 0. Cần phân biệt hệ và môi trường."
+      ],
+      "examples": [
+        "Một phản ứng có ΔH = −100 kJ theo phương trình đã viết: hệ tỏa 100 kJ khi phản ứng xảy ra đúng lượng chất theo hệ số đó."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-reaction-enthalpy-q1",
+          "prompt": "Phản ứng tỏa nhiệt có ΔH?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Luôn bằng 0"
+            },
+            {
+              "id": "b",
+              "text": "Âm"
+            },
+            {
+              "id": "c",
+              "text": "Dương"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hệ mất năng lượng dưới dạng nhiệt nên enthalpy giảm, ΔH < 0."
+        },
+        {
+          "id": "chemistry-10-reaction-enthalpy-q2",
+          "prompt": "Phản ứng có ΔH = +50 kJ là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thu nhiệt"
+            },
+            {
+              "id": "b",
+              "text": "Tỏa nhiệt"
+            },
+            {
+              "id": "c",
+              "text": "Không trao đổi nhiệt"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Dấu dương cho biết hệ nhận nhiệt theo phương trình đã xét."
+        },
+        {
+          "id": "chemistry-10-reaction-enthalpy-q3",
+          "prompt": "Đảo chiều phương trình có ΔH = −80 kJ, cùng lượng chất. ΔH chiều ngược bằng?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "−80 kJ"
+            },
+            {
+              "id": "b",
+              "text": "0 kJ"
+            },
+            {
+              "id": "c",
+              "text": "+80 kJ"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Đảo chiều biến đổi thì đổi dấu enthalpy: từ tỏa 80 kJ thành thu 80 kJ."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-reaction-rate",
+      "title": "Tốc độ phản ứng",
+      "guidance": [
+        "Tốc độ phản ứng thể hiện mức thay đổi nồng độ theo thời gian. Nhiệt độ, nồng độ, diện tích tiếp xúc và chất xúc tác có thể ảnh hưởng tốc độ; không đồng nhất phản ứng nhanh với tạo nhiều sản phẩm cuối hơn."
+      ],
+      "examples": [
+        "Cùng khối lượng CaCO₃, dạng bột phản ứng với acid nhanh hơn dạng viên trong điều kiện giống nhau vì diện tích tiếp xúc lớn hơn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-reaction-rate-q1",
+          "prompt": "Tốc độ phản ứng cho biết?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phản ứng diễn ra nhanh hay chậm"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ khối lượng sản phẩm cuối"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ số neutron"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tốc độ liên hệ lượng chất hoặc nồng độ biến đổi trong một đơn vị thời gian."
+        },
+        {
+          "id": "chemistry-10-reaction-rate-q2",
+          "prompt": "Cùng khối lượng đá vôi, dạng bột thường phản ứng nhanh hơn viên do?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bột luôn có số mol lớn hơn"
+            },
+            {
+              "id": "b",
+              "text": "Bột không có liên kết hóa học"
+            },
+            {
+              "id": "c",
+              "text": "Diện tích tiếp xúc lớn hơn"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Chia nhỏ tăng diện tích tiếp xúc, còn số mol giữ nguyên nếu cùng chất và khối lượng."
+        },
+        {
+          "id": "chemistry-10-reaction-rate-q3",
+          "prompt": "Thêm xúc tác thích hợp vào phản ứng, nhận xét nào đúng?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Biến mất hoàn toàn như chất phản ứng"
+            },
+            {
+              "id": "b",
+              "text": "Có thể tăng tốc độ mà không bị tiêu hao tổng thể"
+            },
+            {
+              "id": "c",
+              "text": "Luôn tăng lượng sản phẩm cực đại bất kể chất đầu"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Xúc tác tạo con đường phản ứng thuận lợi hơn và được tái tạo; không tự tạo thêm nguyên tử hay thay giới hạn chất phản ứng."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-halogens",
+      "title": "Làm quen với nhóm halogen",
+      "guidance": [
+        "Halogen thuộc nhóm 17 (VIIA), có bảy electron lớp ngoài cùng. Đơn chất thường gồm phân tử X₂ và có tính oxi hóa; ion halide X⁻ nhận thêm một electron so với nguyên tử trung hòa. Không tự thử với halogen vì có độc tính."
+      ],
+      "examples": [
+        "Cl₂ + 2e → 2Cl⁻: mỗi nguyên tử chlorine nhận một electron, số oxi hóa giảm từ 0 xuống −1."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-halogens-q1",
+          "prompt": "Nguyên tử halogen nhóm A có bao nhiêu electron ngoài cùng?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "1"
+            },
+            {
+              "id": "b",
+              "text": "8"
+            },
+            {
+              "id": "c",
+              "text": "7"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Halogen thuộc nhóm VIIA, tương ứng bảy electron ngoài cùng."
+        },
+        {
+          "id": "chemistry-10-halogens-q2",
+          "prompt": "Cl trung hòa có Z = 17. Ion Cl⁻ có bao nhiêu electron?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "17"
+            },
+            {
+              "id": "b",
+              "text": "18"
+            },
+            {
+              "id": "c",
+              "text": "16"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Cl⁻ nhận thêm một electron so với Cl trung hòa: 17 + 1 = 18."
+        },
+        {
+          "id": "chemistry-10-halogens-q3",
+          "prompt": "Trong Cl₂ + 2e → 2Cl⁻, chlorine trải qua quá trình?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khử vì nhận electron"
+            },
+            {
+              "id": "b",
+              "text": "Oxi hóa vì nhận electron"
+            },
+            {
+              "id": "c",
+              "text": "Không thay đổi số oxi hóa"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Số oxi hóa giảm từ 0 xuống −1; nhận electron là khử."
         }
       ]
     }
