@@ -190,6 +190,15 @@ public final class ConnectedLearningTest {
 
   @Test
   public void dashboardReceivesServerChangesWithoutLeavingTheScreen() throws Exception {
+    try (com.example.asm_final.learning.LearningSetupStore store =
+        new com.example.asm_final.learning.LearningSetupStore(context)) {
+      store.save(
+          owner,
+          10,
+          java.util.EnumSet.of(
+              com.example.mentor.learning.SubjectId.PHYSICS,
+              com.example.mentor.learning.SubjectId.CHEMISTRY));
+    }
     BackendClient otherClient = new BackendClient(context, owner);
     for (String subject : new String[] {"physics", "chemistry"}) {
       otherClient.request(
@@ -584,6 +593,10 @@ public final class ConnectedLearningTest {
 
   @Test
   public void realPlacementLessonHelpChatReturnRotationAndRewards() throws Exception {
+    try (com.example.asm_final.learning.LearningSetupStore store =
+        new com.example.asm_final.learning.LearningSetupStore(context)) {
+      store.save(owner, 10, java.util.EnumSet.of(com.example.mentor.learning.SubjectId.PHYSICS));
+    }
     LessonActivity activity =
         (LessonActivity)
             ins.startActivitySync(
@@ -614,7 +627,7 @@ public final class ConnectedLearningTest {
         () -> {
           android.widget.ProgressBar progress = current().findViewById(R.id.course_path_progress);
           assertNotNull(progress);
-          assertEquals(5, progress.getMax());
+          assertEquals(curriculumLessonCount, progress.getMax());
           assertEquals(0, progress.getProgress());
         });
     String unit = model.path.getJSONArray("units").getJSONObject(0).getString("id");
@@ -697,7 +710,7 @@ public final class ConnectedLearningTest {
     main(
         () -> {
           android.widget.ProgressBar progress = current().findViewById(R.id.course_path_progress);
-          assertEquals(5, progress.getMax());
+          assertEquals(curriculumLessonCount, progress.getMax());
           assertEquals(1, progress.getProgress());
           android.view.View path = (android.view.View) progress.getParent().getParent();
           android.widget.ScrollView scroll =

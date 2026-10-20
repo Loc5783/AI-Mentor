@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_legacy_tools" android:icon="@drawable/ic_category" android:title="@string/lesson_tools" />
         <item android:id="@id/nav_competition" android:icon="@drawable/ic_competition" android:title="@string/nav_competition" />
         <item android:id="@id/nav_chat" android:icon="@drawable/ic_chat" android:title="@string/chat_nav" />
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home"
-            android:title="Home" />
+            android:title="@string/nav_dashboard" />
         <item
             android:id="@+id/nav_category"
             android:icon="@drawable/ic_category"
-            android:title="Category" />
+            android:title="@string/nav_lesson" />
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_nav_profile"
-            android:title="Hồ sơ cá nhân" />
+            android:title="@string/nav_profile_label" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings"
-            android:title="Settings" />
+            android:title="@string/settings_title" />
     </group>
 
-    <item android:title="Others">
+    <item android:title="@string/settings_title">
         <menu>
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_nav_logout"
-                android:title="Logout" />
+                android:title="@string/menu_logout" />
         </menu>
     </item>
 </menu>

@@ -1,3 +1,11 @@
+## Cập nhật mới hơn — chia môn và thêm nội dung, 20/10/2026
+- Đã push snapshot trước khi thêm bài lên Loc5783/AI-Mentor: 2d35d81eb6d36f4ffe4c6a2beb8234ed2d9a6e3d.
+- Thêm đúng 15 bài/môn Lý–Hóa–Sinh: tổng 60 bài, 180 câu thực hành lớp 10, 4 quiz ôn/môn. Giữ nguyên 5 bài đầu, ID, đáp án, placement/review cũ và ledger; 33 ca backend PASS.
+- Dashboard bỏ hẳn fallback bốn module; chỉ hiển thị môn đang chọn, biểu đồ cũng lọc cùng danh sách, chưa có dữ liệu/máy chủ có thông báo rõ.
+- Bỏ source/module Programming, cấu hình, điều hướng, seeder và các ca kiểm thử riêng đã hết phạm vi. Chín môn độc lập; science-support chỉ là thư viện dùng chung/compatibility. Công cụ mạch điện thuộc physics, bảng tuần hoàn và dữ liệu nguyên tố thuộc chemistry.
+- API bổ trợ quiz đổi SCIENCE_GEMINI_* thành QUIZ_GEMINI_*; Math/History và Chat giữ key pool riêng. Tất cả key Git vẫn trống. Các báo cáo cũ phía dưới là lịch sử, không phải trạng thái hiện tại.
+- Chi tiết rà soát và kiểm chứng cuối ở MODULE_AUDIT_2026-10-20.md.
+
 # AIMentor — hiệu ứng nhẹ và API cũ, 20/10/2026
 
 ## Yêu cầu và thay đổi

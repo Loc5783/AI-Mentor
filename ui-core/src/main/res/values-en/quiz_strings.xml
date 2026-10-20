@@ -49,7 +49,6 @@
     <string name="mentor_quiz_interrupted">Quiz creation was interrupted when the screen changed. Your settings are kept; retry or open a saved quiz.</string>
     <string name="mentor_quiz_matching_hint">Enter pairs, for example A-2, B-1</string>
     <string name="mentor_quiz_scope_math">Mathematics</string>
-    <string name="mentor_quiz_scope_programming">Programming</string>
     <string name="mentor_quiz_scope_physics">Physics</string>
     <string name="mentor_quiz_scope_chemistry">Chemistry</string>
     <string name="mentor_quiz_scope_biology">Biology</string>

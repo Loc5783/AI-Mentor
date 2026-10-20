@@ -13,7 +13,7 @@ public class OnboardingPolicyTest {
 
   @Test
   public void validHighSchoolPreferencesNeedNoPhoneOrDailyTime() {
-    assertTrue(OnboardingPolicy.valid(profile(10, "MATH,SCIENCE", 0, 0)));
+    assertTrue(OnboardingPolicy.valid(profile(10, "MATH,BIOLOGY", 0, 0)));
     assertTrue(OnboardingPolicy.valid(profile(12, "HISTORY", 3, 240)));
   }
 
@@ -26,17 +26,17 @@ public class OnboardingPolicyTest {
   }
 
   @Test
-  public void subjectChoicesCannotBeEmptyUnknownOrDuplicated() {
-    for (String value : new String[] {"", "MATH,MATH", "CHEMISTRY", "MATH,"})
+  public void subjectChoicesRejectRemovedUnknownOrDuplicatedSubjects() {
+    for (String value : new String[] {"PROGRAMMING", "SCIENCE", "MATH,MATH", "UNKNOWN", "MATH,"})
       assertFalse(OnboardingPolicy.valid(profile(11, value, 1, 0)));
   }
 
   @Test
   public void optionalTimeIsNotAQuizTimerAndCannotBeNegative() {
-    assertFalse(OnboardingPolicy.valid(profile(11, "SCIENCE", 0, -1)));
-    assertFalse(OnboardingPolicy.valid(profile(11, "SCIENCE", 0, 4)));
-    assertFalse(OnboardingPolicy.valid(profile(11, "SCIENCE", 0, 241)));
-    assertTrue(OnboardingPolicy.valid(profile(11, "SCIENCE", 0, 5)));
+    assertFalse(OnboardingPolicy.valid(profile(11, "BIOLOGY", 0, -1)));
+    assertFalse(OnboardingPolicy.valid(profile(11, "BIOLOGY", 0, 4)));
+    assertFalse(OnboardingPolicy.valid(profile(11, "BIOLOGY", 0, 241)));
+    assertTrue(OnboardingPolicy.valid(profile(11, "BIOLOGY", 0, 5)));
   }
 
   @Test

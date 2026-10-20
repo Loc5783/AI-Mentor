@@ -7,11 +7,9 @@
     <string name="lesson_description">Chọn lớp và môn bạn muốn tập trung. Mỗi môn có lộ trình học riêng.</string>
     <string name="lesson_grade">Chọn / đổi lớp</string>
     <string name="lesson_manage">Thêm / quản lý môn học</string>
-    <string name="lesson_other_subjects">Toán · Văn · Anh · Sử · Địa · GDKT: đang để khung, sẽ bổ sung sau.</string>
     <string name="lesson_choose_prompt">Bắt đầu bằng cách chọn lớp và thêm Sinh học, Hóa học hoặc Vật lý.</string>
     <string name="lesson_path_pending">Học từng bước, kiểm tra đầu vào và ôn tập sau mỗi 5 bài. Lộ trình cần kết nối máy chủ; các công cụ ôn tập hiện có vẫn dùng riêng.</string>
-    <string name="lesson_open_tools">Mở quiz môn học</string>
-    <string name="lesson_tools">Công cụ đã có</string>
+    <string name="lesson_open_tools">Mở công cụ môn học</string>
     <string name="lesson_circuit">Mạch điện</string>
     <string name="lesson_periodic">Bảng tuần hoàn</string>
     <string name="competition_title">Cùng nhau tiến bộ</string>

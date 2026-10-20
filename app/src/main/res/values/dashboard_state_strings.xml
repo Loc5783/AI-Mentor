@@ -16,10 +16,6 @@
     <string name="home_chart_retry">Tải lại tiến độ</string>
     <string name="home_chart_accessibility">Biểu đồ phân bố EXP, tổng cộng %1$d EXP.</string>
     <string name="home_chart_loading">Đang tải tiến độ…</string>
-    <string name="home_course_math">Giải bài · Công thức · Quiz</string>
-    <string name="home_course_science">Vật lý · Hóa học · Sinh học</string>
-    <string name="home_course_history">Hỏi đáp · Ghi chú · Quiz</string>
-    <string name="home_course_programming">Ngôn ngữ · Hỏi đáp · Quiz</string>
     <string name="home_subject_level">Cấp %1$d · %2$d EXP</string>
     <string name="home_subject_progress_description">%1$s: cấp %2$d, %3$d EXP.</string>
 </resources>

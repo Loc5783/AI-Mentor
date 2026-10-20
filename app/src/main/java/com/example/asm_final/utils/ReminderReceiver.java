@@ -39,7 +39,7 @@ public class ReminderReceiver extends BroadcastReceiver {
      * Purpose: Separating presentation logic prevents data processing from being mixed with UI rendering.
      */
     private void showNotification(Context context) {
-        NotificationManager notificationManager = (NotificationManager) 
+        NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager == null) return;
 

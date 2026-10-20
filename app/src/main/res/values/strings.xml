@@ -19,12 +19,8 @@
     <string name="settings_about">Về ứng dụng</string>
     <string name="settings_version">Phiên bản 1.0.0</string>
     <string name="home_welcome">🏠 Trang chủ\nChào mừng bạn đến với ứng dụng!</string>
-    <string name="cat_title">Danh mục môn học</string>
     <string name="cat_math">Toán học</string>
-    <string name="cat_science">Khoa học</string>
     <string name="cat_history">Lịch sử</string>
-    <string name="cat_it">Lập trình</string>
-    <string name="cat_selected">Bạn đã chọn: %s</string>
     <string name="prof_title">Hồ sơ cá nhân</string>
     <string name="prof_choose_avatar">Chọn ảnh đại diện</string>
     <string name="prof_hint_fullname">Họ và tên</string>
@@ -80,11 +76,8 @@
     <string name="home_level_4">Bậc thầy</string>
     <string name="home_level_5">Huyền thoại</string>
     <string name="activity_solve_math">Giải Toán</string>
-    <string name="activity_ask_science">Hỏi Khoa học</string>
-    <string name="activity_quiz_science">Quiz Khoa học</string>
     <string name="activity_quiz_history">Quiz Lịch sử</string>
     <string name="activity_chat_history">Chat Lịch sử</string>
-    <string name="activity_chat_prog">Chat Lập trình</string>
     <string name="exp_unit">%1$d EXP</string>
     <string name="login_btn_demo">🚀 Dùng thử (Demo)</string>
     <string name="settings_status_on">Bật</string>

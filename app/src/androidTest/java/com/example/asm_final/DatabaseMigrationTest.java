@@ -142,7 +142,7 @@ public class DatabaseMigrationTest {
   }
 
   @Test
-  public void freshInstallAllFiveSchemasCoexistInOneFile() {
+  public void freshInstallActiveSchemasCoexistInOneFile() {
     try (Isolated c = new Isolated();
         com.example.asm_final.activities.database.DatabaseHelper accounts =
             new com.example.asm_final.activities.database.DatabaseHelper(c);
@@ -150,23 +150,19 @@ public class DatabaseMigrationTest {
             new com.example.mathmodule.databases.SqliteDbHelper(c);
         com.example.historymodule.databases.SqliteDbHelper history =
             new com.example.historymodule.databases.SqliteDbHelper(c);
-        com.example.modulelaptrinh.database.ProgrammingDbHelper programming =
-            new com.example.modulelaptrinh.database.ProgrammingDbHelper(c);
         com.brightpath.science.data.local.ScienceDbHelper science =
             new com.brightpath.science.data.local.ScienceDbHelper(c)) {
       String path = accounts.getWritableDatabase().getPath();
-      for (ModuleDatabaseHelper module : Arrays.asList(math, history, programming, science))
+      for (ModuleDatabaseHelper module : Arrays.asList(math, history, science))
         assertEquals(path, module.getWritableDatabase().getPath());
       try (Cursor row =
           accounts
               .getReadableDatabase()
               .rawQuery("SELECT COUNT(*) FROM mentor_schema_versions", null)) {
         assertTrue(row.moveToFirst());
-        assertEquals(5, row.getInt(0));
+        assertEquals(4, row.getInt(0));
       }
-      for (String table :
-          Arrays.asList(
-              "users", "math_notes", "history_notes", "programming_notes", "science_notes"))
+      for (String table : Arrays.asList("users", "math_notes", "history_notes", "science_notes"))
         try (Cursor row =
             accounts.getReadableDatabase().rawQuery("SELECT COUNT(*) FROM " + table, null)) {
           assertTrue(row.moveToFirst());

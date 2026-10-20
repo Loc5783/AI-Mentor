@@ -53,8 +53,6 @@ public class LearningStreakTest {
             "history_quiz_attempts",
             "history_messages",
             "science_quiz_attempts",
-            "programming_quiz_attempts",
-            "programming_user_progress"
           }) {
         try {
           db.delete(table, "user_id=?", new String[] {String.valueOf(owner)});
@@ -102,12 +100,6 @@ public class LearningStreakTest {
     try (com.example.mathmodule.databases.SqliteDbHelper math =
         new com.example.mathmodule.databases.SqliteDbHelper(context)) {
       assertTrue(math.saveQuizAttemptAndAddExp(0, 1, 5, 5));
-    }
-    assertTrue(repository.load(owner).completedToday);
-    clearDays();
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper programming =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      assertTrue(programming.saveQuizResult(owner, "Programming", "Basic", "Topic", 5, 1, 5) > 0);
     }
     assertTrue(repository.load(owner).completedToday);
     clearDays();

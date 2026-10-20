@@ -19,12 +19,8 @@
     <string name="settings_about">About App</string>
     <string name="settings_version">Version 1.0.0</string>
     <string name="home_welcome">🏠 Home\nWelcome to the application!</string>
-    <string name="cat_title">Course Categories</string>
     <string name="cat_math">Mathematics</string>
-    <string name="cat_science">Science</string>
     <string name="cat_history">History</string>
-    <string name="cat_it">Programming</string>
-    <string name="cat_selected">You selected: %s</string>
     <string name="prof_title">User Profile</string>
     <string name="prof_choose_avatar">Choose Avatar</string>
     <string name="prof_hint_fullname">Full Name</string>
@@ -80,11 +76,8 @@
     <string name="home_level_4">Master</string>
     <string name="home_level_5">Legend</string>
     <string name="activity_solve_math">Solve Math</string>
-    <string name="activity_ask_science">Ask Science</string>
-    <string name="activity_quiz_science">Science Quiz</string>
     <string name="activity_quiz_history">History Quiz</string>
     <string name="activity_chat_history">History Chat</string>
-    <string name="activity_chat_prog">Programming Chat</string>
     <string name="exp_unit">%1$d EXP</string>
     <string name="login_btn_demo">🚀 Demo Login</string>
     <string name="settings_status_on">On</string>

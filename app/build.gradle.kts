@@ -1,6 +1,7 @@
 // Role: Module build configuration defining Android plugins, SDK settings, dependencies, and compiler options.
 // Purpose: Controls the module build environment and dependencies; it does not contain screen business logic.
 import java.util.Properties
+import java.net.URI
 
 plugins {
     alias(libs.plugins.android.application)
@@ -14,6 +15,16 @@ val backendUrl = mentorConfig.getProperty("MENTOR_BACKEND_URL", "").trim()
 require(backendUrl.isEmpty() || backendUrl.matches(Regex("https://[A-Za-z0-9.-]+(?::[0-9]+)?(?:/[A-Za-z0-9_/-]*)?"))) {
     "MENTOR_BACKEND_URL must be an HTTPS base URL without credentials, query or fragment"
 }
+val localBackendConfig = Properties().apply {
+    val file = rootProject.file("backend.local.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+val debugBackendUrl = localBackendConfig.getProperty("MENTOR_DEBUG_BACKEND_URL", backendUrl).trim()
+require(debugBackendUrl.isEmpty() || runCatching {
+    val uri = URI(debugBackendUrl)
+    val local = uri.scheme == "http" && uri.host in listOf("127.0.0.1", "10.0.2.2") && uri.port in 1..65535
+    (uri.scheme == "https" || local) && uri.host != null && uri.userInfo == null && uri.query == null && uri.fragment == null && (uri.port == -1 || uri.port in 1..65535)
+}.getOrDefault(false)) { "Debug backend must use HTTPS or the explicit local emulator host with a port" }
 
 android {
     namespace = "com.example.asm_final"
@@ -31,6 +42,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "MENTOR_BACKEND_URL", "\"$debugBackendUrl\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -59,9 +73,8 @@ dependencies {
     implementation(project(":data-core"))
     implementation(project(":ui-core"))
     implementation(project(":math"))
-    implementation(project(":science"))
-    implementation(project(":programming"))
-    implementation(project(":history"))
+    implementation(project(":science-support"))
+        implementation(project(":history"))
     implementation(libs.activity)
     implementation(libs.appcompat)
     implementation(libs.constraintlayout)

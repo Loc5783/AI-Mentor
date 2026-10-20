@@ -20,7 +20,7 @@ Dữ liệu mặc định trong backend/data, bị loại khỏi Git. MENTOR_DAT
 - Event stream SSE có cursor, kiểm tra phiên và sự kiện riêng theo account. Dữ liệu sự kiện không có nội dung chat, mật khẩu hay API key.
 
 ## Chưa hoàn tất
-- Mở rộng và giáo viên duyệt nội dung ba môn cho lớp 10–12; hiện mới có ba block nhập môn lớp 10, không phải toàn bộ năm học.
+- Mở rộng và giáo viên duyệt nội dung ba môn cho lớp 10–12; hiện có 20 bài ngắn/60 câu/4 review cho mỗi môn lớp 10, không phải toàn bộ năm học.
 - Đồng bộ Android, migration account/chat cũ, outbox offline và xử lý xung đột nhiều thiết bị.
 - Gửi email reset/xác minh bằng SMTP/provider thật; không giả gửi email.
 - Dọn tệp sau xóa, lưu trữ dài hạn/pagination lớn, retention cursor và hoàn thiện kiểm thử tải.
@@ -45,7 +45,7 @@ Android có màn lộ trình/làm bài mới dùng API; cấu hình `MENTOR_BACK
 - Dữ liệu legacy được giữ riêng, có đường xem trong Profile; không cộng lặp vào EXP lộ trình mới/bảng thi đua. Đây chưa phải migration toàn bộ chat/bank cũ.
 - Android đã nối SSE để làm mới summary, bảng thi đua và hồ sơ công khai đang xem: cursor trước refresh, reconnect/backoff, gộp sự kiện và hủy theo lifecycle/account. Bảng dùng rank server và hai trục STREAK/DAILY_XP × FRIENDS/GLOBAL; chỉ bạn ACCEPTED được đưa vào FRIENDS. Ảnh công khai tải qua endpoint cùng origin có xác thực và giới hạn dung lượng/kích thước decode. Đây chưa phải sync toàn bộ app; UI quản lý lời mời, profile editor/onboarding, lesson state trên thiết bị khác, chat cloud và outbox offline còn phải nối.
 
-Sáu môn ngoài Sinh/Hóa/Lý chỉ là khung. /health phân biệt engine đã triển khai với publishedCourses (hiện chỉ ba gói nhập môn lớp 10); không đồng nghĩa Android đã nối realtime hay đủ nội dung lớp 11–12.
+Sáu môn ngoài Sinh/Hóa/Lý chỉ là khung. /health phân biệt engine đã triển khai với publishedCourses (hiện chỉ ba gói lớp 10, mỗi gói 20 bài); không đồng nghĩa Android đã nối realtime hay đủ nội dung lớp 11–12.
 
 ## Nguồn kỹ thuật
 https://fastapi.tiangolo.com/tutorial/security/

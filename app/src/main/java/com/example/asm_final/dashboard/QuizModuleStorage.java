@@ -11,10 +11,7 @@ final class QuizModuleStorage {
         new com.example.mathmodule.databases.SqliteDbHelper(context)) {
       db.getWritableDatabase();
     }
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper db =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      db.getWritableDatabase();
-    }
+
     try (com.brightpath.science.data.local.ScienceDbHelper db =
         new com.brightpath.science.data.local.ScienceDbHelper(context)) {
       db.getWritableDatabase();

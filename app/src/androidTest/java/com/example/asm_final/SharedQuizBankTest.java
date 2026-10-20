@@ -74,10 +74,7 @@ public class SharedQuizBankTest {
         new com.example.mathmodule.databases.SqliteDbHelper(context)) {
       db.getWritableDatabase();
     }
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper db =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      db.getWritableDatabase();
-    }
+
     try (com.example.historymodule.databases.SqliteDbHelper db =
         new com.example.historymodule.databases.SqliteDbHelper(context)) {
       db.getWritableDatabase();
@@ -100,35 +97,32 @@ public class SharedQuizBankTest {
               a.finish();
         });
     if (owner > 0) {
-    try (QuizBank bank = new QuizBank(context)) {
-      android.database.sqlite.SQLiteDatabase db = bank.getWritableDatabase();
-      db.execSQL("DROP TRIGGER IF EXISTS qa_bank_fail");
-      db.execSQL("DROP TRIGGER IF EXISTS qa_progress_fail");
-      db.delete(
-          "mentor_quiz_bank_questions",
-          "set_id IN (SELECT id FROM mentor_quiz_bank_sets WHERE user_id=?)",
-          new String[] {String.valueOf(owner)});
-      db.delete("mentor_quiz_bank_sets", "user_id=?", new String[] {String.valueOf(owner)});
-      for (String table :
-          new String[] {
-            "history_quiz_attempts",
-            "programming_quiz_attempts",
-            "programming_user_progress",
-            "science_quiz_attempts",
-            "math_quiz_attempts",
-            "math_user_profile",
-            "history_messages",
-            "math_history",
-            "science_history",
-            "programming_sessions"
-          }) db.delete(table, "user_id=?", new String[] {String.valueOf(owner)});
-      db.delete(
-          "math_quiz_questions",
-          "set_id IN (SELECT id FROM math_quiz_sets WHERE owner_id=?)",
-          new String[] {String.valueOf(owner)});
-      db.delete("math_quiz_sets", "owner_id=?", new String[] {String.valueOf(owner)});
-      db.delete("users", "id=?", new String[] {String.valueOf(owner)});
-    }
+      try (QuizBank bank = new QuizBank(context)) {
+        android.database.sqlite.SQLiteDatabase db = bank.getWritableDatabase();
+        db.execSQL("DROP TRIGGER IF EXISTS qa_bank_fail");
+        db.execSQL("DROP TRIGGER IF EXISTS qa_progress_fail");
+        db.delete(
+            "mentor_quiz_bank_questions",
+            "set_id IN (SELECT id FROM mentor_quiz_bank_sets WHERE user_id=?)",
+            new String[] {String.valueOf(owner)});
+        db.delete("mentor_quiz_bank_sets", "user_id=?", new String[] {String.valueOf(owner)});
+        for (String table :
+            new String[] {
+              "history_quiz_attempts",
+              "science_quiz_attempts",
+              "math_quiz_attempts",
+              "math_user_profile",
+              "history_messages",
+              "math_history",
+              "science_history",
+            }) db.delete(table, "user_id=?", new String[] {String.valueOf(owner)});
+        db.delete(
+            "math_quiz_questions",
+            "set_id IN (SELECT id FROM math_quiz_sets WHERE owner_id=?)",
+            new String[] {String.valueOf(owner)});
+        db.delete("math_quiz_sets", "owner_id=?", new String[] {String.valueOf(owner)});
+        db.delete("users", "id=?", new String[] {String.valueOf(owner)});
+      }
     }
     ActiveUser.set(context, previous);
     main(
@@ -312,29 +306,6 @@ public class SharedQuizBankTest {
             .getTotalExp(owner));
   }
 
-  @Test
-  public void programmingAttemptAndExpRollBackTogether() {
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper helper =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      android.database.sqlite.SQLiteDatabase db = helper.getWritableDatabase();
-      db.execSQL(
-          "CREATE TRIGGER qa_progress_fail BEFORE INSERT ON programming_user_progress WHEN"
-              + " NEW.user_id="
-              + owner
-              + " BEGIN SELECT RAISE(ABORT,'QA failure'); END");
-      assertEquals(
-          -1, helper.saveQuizResult(owner, "Lập trình", "Trung học cơ sở", "QA topic", 3, 3, 35));
-      try (android.database.Cursor c =
-          db.rawQuery(
-              "SELECT COUNT(*) FROM programming_quiz_attempts WHERE user_id=?",
-              new String[] {String.valueOf(owner)})) {
-        c.moveToFirst();
-        assertEquals(0, c.getInt(0));
-      }
-      assertEquals(0, helper.getTotalExpAllSubjects(owner));
-    }
-  }
-
   private void selectQuizTab(int navigationId, int tabId) {
     main(
         () -> {
@@ -345,22 +316,6 @@ public class SharedQuizBankTest {
               .getSupportFragmentManager()
               .executePendingTransactions();
         });
-  }
-
-  @Test
-  public void programmingCanPracticeFifteenSavedQuestionsWithoutCallingAI() {
-    savedQuiz("programming", "Lập trình", "Trung học cơ sở", false);
-    launch(
-        com.example.modulelaptrinh.MainActivity.class,
-        new Intent().putExtra(com.example.modulelaptrinh.MainActivity.EXTRA_USER_ID, owner));
-    selectQuizTab(
-        com.example.modulelaptrinh.R.id.bottom_nav, com.example.modulelaptrinh.R.id.nav_quiz);
-    chooseBank(activity.findViewById(com.example.mentor.ui.R.id.mentor_quiz_setup));
-    submitAndCheck();
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper db =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      assertEquals(175, db.getTotalExpAllSubjects(owner));
-    }
   }
 
   @Test
@@ -553,30 +508,7 @@ public class SharedQuizBankTest {
               "UPDATE history_messages SET created_at=? WHERE user_id=? AND conversation_id=?",
               new Object[] {old, owner, previous});
     }
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper helper =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      android.database.sqlite.SQLiteDatabase db = helper.getWritableDatabase();
-      for (int i = 0; i < 2; i++) {
-        ContentValues session = new ContentValues();
-        session.put("user_id", owner);
-        session.put("name", i == 0 ? "QA current topic" : "QA old topic");
-        session.put("timestamp", i == 0 ? now : old);
-        long id = db.insertOrThrow("programming_sessions", null, session);
-        for (String text :
-            new String[] {
-              i == 0 ? "QA current topic" : "QA old topic",
-              i == 0 ? "Lực đàn hồi" : "QA old answer",
-              "QA final message"
-            }) {
-          ContentValues message = new ContentValues();
-          message.put("session_id", id);
-          message.put("content", text);
-          message.put("is_user", 1);
-          message.put("timestamp", i == 0 ? now : old);
-          db.insertOrThrow("programming_messages", null, message);
-        }
-      }
-    }
+
     com.brightpath.science.domain.repository.ScienceHistoryRepository repo =
         com.brightpath.science.di.ScienceModule.get(context).historyRepository();
     for (int i = 0; i < 2; i++) {
@@ -602,30 +534,25 @@ public class SharedQuizBankTest {
   }
 
   @Test
-  public void fourHistoriesSearchActualContentAndFilterCanonicalEpochDates() {
+  public void retainedHistoriesSearchActualContentAndFilterCanonicalEpochDates() {
     seedHistoryFixtures();
     Class<?>[] types = {
       com.example.mathmodule.MathDashboardActivity.class,
       com.example.historymodule.HistoryDashboardActivity.class,
-      com.example.modulelaptrinh.MainActivity.class,
       com.brightpath.science.presentation.ScienceMainActivity.class
     };
     int[] navigation = {
       com.example.mathmodule.R.id.bottom_navigation,
       com.example.historymodule.R.id.bottom_navigation,
-      com.example.modulelaptrinh.R.id.bottom_nav,
       com.brightpath.science.R.id.scienceBottomNavigation
     };
     int[] tabs = {
       com.example.mathmodule.R.id.nav_history,
       com.example.historymodule.R.id.nav_history,
-      com.example.modulelaptrinh.R.id.nav_history,
       com.brightpath.science.R.id.navScienceHistory
     };
     for (int i = 0; i < types.length; i++) {
-      launch(
-          types[i],
-          new Intent().putExtra(com.example.modulelaptrinh.MainActivity.EXTRA_USER_ID, owner));
+      launch(types[i], new Intent().putExtra("USER_ID", owner));
       selectQuizTab(navigation[i], tabs[i]);
       main(
           () -> {
@@ -652,7 +579,9 @@ public class SharedQuizBankTest {
                           activity.findViewById(com.example.mentor.ui.R.id.mentor_history_list))
                       .getAdapter()
                       .getItemCount()));
-      if(Boolean.parseBoolean(InstrumentationRegistry.getArguments().getString("mentorRequireIme","false")))verifyHistoryKeyboard(navigation[i]);
+      if (Boolean.parseBoolean(
+          InstrumentationRegistry.getArguments().getString("mentorRequireIme", "false")))
+        verifyHistoryKeyboard(navigation[i]);
       capture("history-shared-subject-" + i);
       main(() -> activity.finish());
     }
@@ -696,31 +625,50 @@ public class SharedQuizBankTest {
   }
 
   private void verifyHistoryKeyboard(int navigationId) {
-    onView(androidx.test.espresso.matcher.ViewMatchers.withId(com.example.mentor.ui.R.id.mentor_history_search))
-        .perform(androidx.test.espresso.action.ViewActions.click(),androidx.test.espresso.action.ViewActions.replaceText("dan hoi"));
+    onView(
+            androidx.test.espresso.matcher.ViewMatchers.withId(
+                com.example.mentor.ui.R.id.mentor_history_search))
+        .perform(
+            androidx.test.espresso.action.ViewActions.click(),
+            androidx.test.espresso.action.ViewActions.replaceText("dan hoi"));
     awaitKeyboard(true);
-    main(()->{
-      assertEquals(View.GONE,activity.findViewById(navigationId).getVisibility());
-      androidx.recyclerview.widget.RecyclerView list=activity.findViewById(com.example.mentor.ui.R.id.mentor_history_list);
-      assertTrue("History list must have usable space above the keyboard",list.getHeight()>0);
-      assertEquals(1,list.getAdapter().getItemCount());
-    });
-    onView(androidx.test.espresso.matcher.ViewMatchers.withId(com.example.mentor.ui.R.id.mentor_history_search))
+    main(
+        () -> {
+          assertEquals(View.GONE, activity.findViewById(navigationId).getVisibility());
+          androidx.recyclerview.widget.RecyclerView list =
+              activity.findViewById(com.example.mentor.ui.R.id.mentor_history_list);
+          assertTrue(
+              "History list must have usable space above the keyboard", list.getHeight() > 0);
+          assertEquals(1, list.getAdapter().getItemCount());
+        });
+    onView(
+            androidx.test.espresso.matcher.ViewMatchers.withId(
+                com.example.mentor.ui.R.id.mentor_history_search))
         .perform(androidx.test.espresso.action.ViewActions.closeSoftKeyboard());
     awaitKeyboard(false);
-    main(()->assertEquals(View.VISIBLE,activity.findViewById(navigationId).getVisibility()));
+    main(() -> assertEquals(View.VISIBLE, activity.findViewById(navigationId).getVisibility()));
   }
+
   private void awaitKeyboard(boolean visible) {
-    long until=android.os.SystemClock.uptimeMillis()+15000;
-    while(android.os.SystemClock.uptimeMillis()<until) {
-      boolean[] ready={false};main(()->{
-        androidx.core.view.WindowInsetsCompat insets=androidx.core.view.ViewCompat.getRootWindowInsets(activity.getWindow().getDecorView());
-        ready[0]=insets!=null&&insets.isVisible(androidx.core.view.WindowInsetsCompat.Type.ime())==visible;
-      });
-      if(ready[0])return;android.os.SystemClock.sleep(50);
+    long until = android.os.SystemClock.uptimeMillis() + 15000;
+    while (android.os.SystemClock.uptimeMillis() < until) {
+      boolean[] ready = {false};
+      main(
+          () -> {
+            androidx.core.view.WindowInsetsCompat insets =
+                androidx.core.view.ViewCompat.getRootWindowInsets(
+                    activity.getWindow().getDecorView());
+            ready[0] =
+                insets != null
+                    && insets.isVisible(androidx.core.view.WindowInsetsCompat.Type.ime())
+                        == visible;
+          });
+      if (ready[0]) return;
+      android.os.SystemClock.sleep(50);
     }
     fail("Keyboard visibility did not update");
   }
+
   @Test
   public void reviewMistakesOnlyKeepsAnswersAndNeverAwardsAgain() {
     launchHistory();
@@ -756,16 +704,28 @@ public class SharedQuizBankTest {
         });
   }
 
-  @Test public void legacyTimedOutDraftRemainsEditableAndRequiresAllAnswers() {
+  @Test
+  public void legacyTimedOutDraftRemainsEditableAndRequiresAllAnswers() {
     launchHistory();
-    main(() -> {
-      final int[] saves={0};
-      QuizFormView.Saver saver=(c,n,e,d)->{saves[0]++;d.complete(true,e);};
-      form().bind(cards(false),saver);
-      Bundle state=form().state();state.putBoolean("timedOut",true);
-      assertTrue(form().restore(state,saver));
-      form().submit();assertEquals(0,saves[0]);assertFalse(form().submitted());
-      answerAll();form().submit();assertEquals(1,saves[0]);assertTrue(form().submitted());
-    });
+    main(
+        () -> {
+          final int[] saves = {0};
+          QuizFormView.Saver saver =
+              (c, n, e, d) -> {
+                saves[0]++;
+                d.complete(true, e);
+              };
+          form().bind(cards(false), saver);
+          Bundle state = form().state();
+          state.putBoolean("timedOut", true);
+          assertTrue(form().restore(state, saver));
+          form().submit();
+          assertEquals(0, saves[0]);
+          assertFalse(form().submitted());
+          answerAll();
+          form().submit();
+          assertEquals(1, saves[0]);
+          assertTrue(form().submitted());
+        });
   }
 }

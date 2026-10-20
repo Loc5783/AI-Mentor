@@ -25,9 +25,27 @@ public final class ProfileSetupActivity extends AppCompatActivity {
   private Button save;
   private final int[] gradeIds = {R.id.grade_10, R.id.grade_11, R.id.grade_12};
   private final int[] interestIds = {
-    R.id.interest_math, R.id.interest_science, R.id.interest_history, R.id.interest_programming
+    R.id.interest_math,
+    R.id.interest_literature,
+    R.id.interest_english,
+    R.id.interest_history,
+    R.id.interest_geography,
+    R.id.interest_chemistry,
+    R.id.interest_physics,
+    R.id.interest_biology,
+    R.id.interest_economics_law
   };
-  private final String[] subjects = {"MATH", "SCIENCE", "HISTORY", "PROGRAMMING"};
+  private final String[] subjects = {
+    "MATH",
+    "LITERATURE",
+    "ENGLISH",
+    "HISTORY",
+    "GEOGRAPHY",
+    "CHEMISTRY",
+    "PHYSICS",
+    "BIOLOGY",
+    "ECONOMICS_LAW"
+  };
   private int goalIndex = -1;
 
   @Override
@@ -52,12 +70,16 @@ public final class ProfileSetupActivity extends AppCompatActivity {
     save.setEnabled(false);
     ChipGroup grades = findViewById(R.id.grade_choices),
         interests = findViewById(R.id.interest_choices);
-    int[] labels = {R.string.cat_math, R.string.cat_science, R.string.cat_history, R.string.cat_it};
     for (int i = 0; i < 3; i++) {
       Chip c = chip(gradeIds[i], getString(R.string.profile_grade_number, i + 10));
       grades.addView(c);
     }
-    for (int i = 0; i < 4; i++) interests.addView(chip(interestIds[i], getString(labels[i])));
+    for (int i = 0; i < subjects.length; i++)
+      interests.addView(
+          chip(
+              interestIds[i],
+              com.example.mentor.learning.SubjectId.valueOf(subjects[i])
+                  .label(com.example.asm_final.utils.LocaleHelper.getLanguage(this))));
     goal.setSimpleItems(getResources().getStringArray(R.array.learner_goals));
     goal.setOnItemClickListener((parent, view, position, row) -> goalIndex = position);
     AuthFields.live(name, OnboardingPolicy::validName, R.string.auth_invalid_name, 0);
@@ -143,7 +165,7 @@ public final class ProfileSetupActivity extends AppCompatActivity {
     minutes.setText(p.minutes > 0 ? Integer.toString(p.minutes) : "");
     for (int i = 0; i < 3; i++) ((Chip) findViewById(gradeIds[i])).setChecked(p.grade == i + 10);
     Set<String> selected = new HashSet<>(Arrays.asList(p.subjects.split(",")));
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < subjects.length; i++)
       ((Chip) findViewById(interestIds[i])).setChecked(selected.contains(subjects[i]));
     goalIndex = p.goal;
     if (goalIndex >= 0 && goalIndex < 4)
@@ -154,7 +176,7 @@ public final class ProfileSetupActivity extends AppCompatActivity {
     int grade = 0;
     for (int i = 0; i < 3; i++) if (((Chip) findViewById(gradeIds[i])).isChecked()) grade = i + 10;
     List<String> selected = new ArrayList<>();
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < subjects.length; i++)
       if (((Chip) findViewById(interestIds[i])).isChecked()) selected.add(subjects[i]);
     int duration = 0;
     try {

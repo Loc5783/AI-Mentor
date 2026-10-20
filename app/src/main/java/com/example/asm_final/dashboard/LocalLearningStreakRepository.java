@@ -47,8 +47,7 @@ public final class LocalLearningStreakRepository implements LearningStreakReposi
           String[] queries = {
             "SELECT timestamp FROM math_quiz_attempts WHERE user_id=? AND total_count>0",
             "SELECT created_at FROM history_quiz_attempts WHERE user_id=? AND total_count>0",
-            "SELECT created_at FROM science_quiz_attempts WHERE user_id=? AND total_questions>0",
-            "SELECT created_at FROM programming_quiz_attempts WHERE user_id=? AND total_questions>0"
+            "SELECT created_at FROM science_quiz_attempts WHERE user_id=? AND total_questions>0"
           };
           for (String sql : queries)
             try (Cursor c = db.rawQuery(sql, new String[] {String.valueOf(userId)})) {

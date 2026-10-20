@@ -59,15 +59,6 @@ public final class LessonHubFragment extends Fragment {
     courses = new LinearLayout(requireContext());
     courses.setOrientation(LinearLayout.VERTICAL);
     content.addView(courses);
-    content.addView(
-        ScreenViews.text(requireContext(), getString(R.string.lesson_other_subjects), 13, false));
-    content.addView(
-        ScreenViews.button(
-            requireContext(),
-            R.string.lesson_tools,
-            () ->
-                ((com.example.asm_final.activities.HomeActivity) requireActivity())
-                    .navigateTo(R.id.nav_legacy_tools, true)));
     return ScreenViews.scroll(requireContext(), content);
   }
 
@@ -122,7 +113,6 @@ public final class LessonHubFragment extends Fragment {
     if (selected.isEmpty()) {
       courses.addView(
           ScreenViews.text(requireContext(), getString(R.string.lesson_choose_prompt), 16, false));
-      return;
     }
     for (SubjectId id : new SubjectId[] {SubjectId.BIOLOGY, SubjectId.CHEMISTRY, SubjectId.PHYSICS})
       if (selected.contains(id)) {
@@ -161,7 +151,8 @@ public final class LessonHubFragment extends Fragment {
                       startActivity(
                           new android.content.Intent(
                               requireContext(),
-                              com.brightpath.science.presentation.CircuitDiagramActivity.class))));
+                              com.example.mentor.physics.presentation.CircuitDiagramActivity
+                                  .class))));
         if (id == SubjectId.CHEMISTRY)
           extras.addView(
               ScreenViews.button(
@@ -171,7 +162,8 @@ public final class LessonHubFragment extends Fragment {
                       startActivity(
                           new android.content.Intent(
                               requireContext(),
-                              com.brightpath.science.presentation.PeriodicTableActivity.class))));
+                              com.example.mentor.chemistry.presentation.PeriodicTableActivity
+                                  .class))));
         Button toggle =
             ScreenViews.button(
                 requireContext(),
@@ -199,6 +191,25 @@ public final class LessonHubFragment extends Fragment {
         extras.setVisibility(toolsExpanded.contains(id) ? View.VISIBLE : View.GONE);
         courses.addView(card);
       }
+    for (SubjectId id : SubjectId.values()) {
+      if (services().subjects().hasLessonScope(id)) continue;
+      LinearLayout card = ScreenViews.card(requireContext());
+      card.setTag("subject-framework:" + id.wireId);
+      card.addView(ScreenViews.text(requireContext(), id.label(language()), 20, true));
+      card.addView(
+          ScreenViews.text(requireContext(), getString(R.string.subject_lessons_soon), 14, false));
+      if (id == SubjectId.MATH || id == SubjectId.HISTORY)
+        card.addView(
+            ScreenViews.button(
+                requireContext(),
+                R.string.lesson_open_tools,
+                () -> {
+                  if (id == SubjectId.MATH)
+                    com.example.mathmodule.api.MathFeature.open(requireContext(), owner);
+                  else com.example.historymodule.api.HistoryFeature.open(requireContext(), owner);
+                }));
+      courses.addView(card);
+    }
   }
 
   private void openSubject(SubjectId id) {
@@ -213,7 +224,8 @@ public final class LessonHubFragment extends Fragment {
         preferences.getStylePosition());
     startActivity(
         new android.content.Intent(
-            requireContext(), com.brightpath.science.presentation.ScienceQuizActivity.class));
+                requireContext(), com.brightpath.science.presentation.ScienceQuizActivity.class)
+            .putExtra("SUBJECT", id.name()));
   }
 
   private void chooseGrade() {

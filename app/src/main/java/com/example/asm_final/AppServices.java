@@ -21,7 +21,6 @@ public final class AppServices {
   private final com.example.asm_final.chat.ChatStore chats;
   private final com.example.asm_final.onboarding.LearnerProfileRepository learners;
   private final RecoveryService recovery = new UnavailableRecoveryService();
-  private final DashboardRepository dashboard;
   private final LearningStreakRepository streaks;
   private final WeeklyQuizRepository weeklyQuizzes;
   private final UserProfileRepository profiles;
@@ -37,7 +36,6 @@ public final class AppServices {
         new LiveOverviewUpdates(
             context, owner -> new com.example.asm_final.backend.BackendEventStream(context, owner));
     profiles = new LocalUserProfileRepository(context);
-    dashboard = LocalSubjectSources.create(context);
     streaks = new LocalLearningStreakRepository(context);
     competition =
         new com.example.asm_final.competition.BackendCompetitionRepository(
@@ -118,9 +116,6 @@ public final class AppServices {
     return weeklyQuizzes;
   }
 
-  public DashboardRepository dashboard() {
-    return dashboard;
-  }
 
   public ExecutorService io() {
     return io;

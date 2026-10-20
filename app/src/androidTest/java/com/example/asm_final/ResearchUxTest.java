@@ -96,10 +96,7 @@ public class ResearchUxTest {
         new com.example.mathmodule.databases.SqliteDbHelper(context)) {
       helper.getWritableDatabase();
     }
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper helper =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      helper.getWritableDatabase();
-    }
+
     username = "ux_" + System.nanoTime();
     AppServices services = ((AiMentorApplication) context.getApplicationContext()).services();
     assertTrue(
@@ -128,10 +125,6 @@ public class ResearchUxTest {
         android.database.sqlite.SQLiteDatabase db = helper.getWritableDatabase();
         db.execSQL("DROP TRIGGER IF EXISTS ux_fail_note_insert");
         db.execSQL("DROP TRIGGER IF EXISTS ux_fail_note_update");
-        db.delete("programming_sessions", "user_id=?", new String[] {Integer.toString(userId)});
-        db.delete("programming_notes", "user_id=?", new String[] {Integer.toString(userId)});
-        db.delete(
-            "programming_notes", "user_id=?", new String[] {Integer.toString(userId + 100000000)});
         db.delete("math_history", "user_id=?", new String[] {Integer.toString(userId)});
         try (android.database.Cursor tables =
             db.rawQuery(
@@ -226,113 +219,6 @@ public class ResearchUxTest {
   }
 
   @Test
-  public void originalDashboardKeepsAllStatsVisibleAfterThemeChange() {
-    start(HomeActivity.class);
-    waitFor(
-        a ->
-            a.findViewById(R.id.text_recent_empty) != null
-                && a.findViewById(R.id.text_recent_empty).getVisibility() == View.VISIBLE);
-    main(
-        () -> {
-          assertNotNull(resumed().findViewById(R.id.pie_chart_exp));
-          assertNotNull(resumed().findViewById(R.id.pb_time_math));
-          assertNotNull(resumed().findViewById(R.id.mini_math));
-          assertEquals(View.GONE, resumed().findViewById(R.id.chart_data_group).getVisibility());
-          assertEquals(
-              View.VISIBLE, resumed().findViewById(R.id.chart_placeholder).getVisibility());
-          assertEquals(
-              resumed().getString(R.string.home_chart_empty_title),
-              ((TextView) resumed().findViewById(R.id.chart_placeholder_title))
-                  .getText()
-                  .toString());
-          assertNull(resumed().findViewById(R.id.card_learning_streak));
-          assertEquals(
-              "0", ((TextView) resumed().findViewById(R.id.tv_chart_center)).getText().toString());
-          assertEquals(
-              View.VISIBLE, resumed().findViewById(R.id.button_chart_action).getVisibility());
-          assertEquals(
-              resumed().getString(R.string.home_chart_empty),
-              ((TextView) resumed().findViewById(R.id.tv_chart_summary)).getText().toString());
-          ThemeHelper.setDarkMode(context, !originalNight);
-        });
-    waitFor(
-        a ->
-            a instanceof HomeActivity
-                && a.findViewById(R.id.pie_chart_exp) != null
-                && (a.getResources().getConfiguration().uiMode
-                        & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
-                    == (!originalNight
-                        ? android.content.res.Configuration.UI_MODE_NIGHT_YES
-                        : android.content.res.Configuration.UI_MODE_NIGHT_NO)
-                && a.findViewById(R.id.chart_loading_spinner).getVisibility() == View.GONE);
-    main(
-        () ->
-            assertEquals(View.GONE, resumed().findViewById(R.id.chart_data_group).getVisibility()));
-    capture("ux-original-dashboard-restored");
-    onView(withId(R.id.button_chart_action)).perform(scrollTo(), click());
-    waitFor(
-        a ->
-            a instanceof HomeActivity
-                && ((HomeActivity) a)
-                        .getSupportFragmentManager()
-                        .findFragmentById(R.id.fragment_container)
-                    instanceof com.example.asm_final.activities.fragments.LessonHubFragment);
-  }
-
-  @Test
-  public void subjectProgressCardOpensMathWithCorrectAccount() {
-    try (com.example.mathmodule.databases.SqliteDbHelper helper =
-        new com.example.mathmodule.databases.SqliteDbHelper(context)) {
-      for (int i = 0; i < 3; i++)
-        assertTrue(
-            helper.insertHistoryForUser(userId, "UX saved question " + i, "UX saved answer") > 0);
-    }
-    try (com.example.historymodule.databases.SqliteDbHelper helper =
-        new com.example.historymodule.databases.SqliteDbHelper(context)) {
-      helper.saveQuizAttempt(userId, "Compact history 1", "High", 1, 5, 5);
-      helper.saveQuizAttempt(userId, "Compact history 2", "High", 1, 5, 5);
-    }
-    start(HomeActivity.class);
-    waitFor(
-        a ->
-            a.findViewById(R.id.rv_recent_activity) != null
-                && ((androidx.recyclerview.widget.RecyclerView)
-                            a.findViewById(R.id.rv_recent_activity))
-                        .getAdapter()
-                    != null
-                && ((androidx.recyclerview.widget.RecyclerView)
-                            a.findViewById(R.id.rv_recent_activity))
-                        .getAdapter()
-                        .getItemCount()
-                    > 0);
-    main(
-        () -> {
-          androidx.recyclerview.widget.RecyclerView list =
-              resumed().findViewById(R.id.rv_recent_activity);
-          assertEquals(3, list.getAdapter().getItemCount());
-          assertEquals(
-              resumed().getString(R.string.home_chart_center),
-              ((TextView) resumed().findViewById(R.id.tv_chart_center)).getText().toString());
-          assertEquals(View.GONE, resumed().findViewById(R.id.button_chart_action).getVisibility());
-          assertEquals(View.VISIBLE, resumed().findViewById(R.id.chart_data_group).getVisibility());
-          assertEquals(View.GONE, resumed().findViewById(R.id.chart_placeholder).getVisibility());
-          assertTrue(
-              ((TextView) resumed().findViewById(R.id.chart_exp_history))
-                  .getText()
-                  .toString()
-                  .contains("10"));
-          resumed().findViewById(R.id.button_recent_more).performClick();
-          assertEquals(5, list.getAdapter().getItemCount());
-          resumed().findViewById(R.id.button_recent_more).performClick();
-          assertEquals(3, list.getAdapter().getItemCount());
-        });
-    capture("ux-original-dashboard-returning-learner");
-    main(() -> resumed().findViewById(R.id.mini_math).performClick());
-    waitFor(a -> a instanceof com.example.mathmodule.MathDashboardActivity);
-    assertEquals(userId, com.example.mathmodule.util.MathUserSession.getUserId(context));
-  }
-
-  @Test
   public void calculatorResultStaysVisibleWhenKeypadScrolls() {
     start(com.example.mathmodule.MathDashboardActivity.class);
     main(() -> com.example.mathmodule.calculator.MathCalculator.show(resumed()));
@@ -357,74 +243,25 @@ public class ResearchUxTest {
         .perform(click());
   }
 
-  private Activity startNote(int noteId, String title, String content) {
-    foreground =
-        ins.startActivitySync(
-            new Intent(context, com.example.modulelaptrinh.NoteEditorActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(com.example.modulelaptrinh.MainActivity.EXTRA_USER_ID, userId)
-                .putExtra("NOTE_ID", noteId)
-                .putExtra("NOTE_TITLE", title)
-                .putExtra("NOTE_CONTENT", content));
-    waitFor(a -> a == foreground && a.hasWindowFocus());
-    return foreground;
-  }
-
-  private void editNote(String title, String content) {
-    main(
-        () -> {
-          ((EditText) resumed().findViewById(com.example.modulelaptrinh.R.id.et_note_title))
-              .setText(title);
-          ((EditText) resumed().findViewById(com.example.modulelaptrinh.R.id.et_note_content))
-              .setText(content);
-        });
-  }
-
-  private void trigger(String operation) {
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper helper =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      helper
-          .getWritableDatabase()
-          .execSQL(
-              "CREATE TRIGGER ux_fail_note_"
-                  + operation.toLowerCase(java.util.Locale.ROOT)
-                  + " BEFORE "
-                  + operation
-                  + " ON programming_notes WHEN NEW.user_id="
-                  + userId
-                  + " BEGIN SELECT RAISE(ABORT,'UX simulated write failure'); END");
-    }
-  }
-
   @Test
   public void offlineChatRetainsTypedQuestionInEachOnlineOnlySubject() {
     org.junit.Assume.assumeFalse(
         new com.example.mathmodule.api.MathGeminiApiClient().isConfigured());
     org.junit.Assume.assumeFalse(
         new com.example.historymodule.api.HistoryAiService().isConfigured());
-    org.junit.Assume.assumeFalse(
-        new com.example.modulelaptrinh.utils.GeminiApiClient(
-                com.example.modulelaptrinh.utils.GeminiApiClient.Usage.CHAT)
-            .isConfigured());
     Class<?>[] types = {
       com.example.mathmodule.MathChatActivity.class,
       com.example.historymodule.HistoryChatActivity.class,
-      com.example.modulelaptrinh.ProgrammingChatActivity.class
     };
     int[] inputs = {
       com.example.mathmodule.R.id.math_edt_question,
       com.example.historymodule.R.id.message_edit_text,
-      com.example.modulelaptrinh.R.id.et_chat_input
     };
     int[] sends = {
-      com.example.mathmodule.R.id.math_btn_send,
-      com.example.historymodule.R.id.send_btn,
-      com.example.modulelaptrinh.R.id.iv_send
+      com.example.mathmodule.R.id.math_btn_send, com.example.historymodule.R.id.send_btn,
     };
     int[] lists = {
-      com.example.mathmodule.R.id.math_recycler_view,
-      com.example.historymodule.R.id.recycler_view,
-      com.example.modulelaptrinh.R.id.rv_chat_detail
+      com.example.mathmodule.R.id.math_recycler_view, com.example.historymodule.R.id.recycler_view,
     };
     for (int index = 0; index < types.length; index++) {
       final int i = index;
@@ -432,7 +269,7 @@ public class ResearchUxTest {
           ins.startActivitySync(
               new Intent(context, types[i])
                   .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                  .putExtra(com.example.modulelaptrinh.MainActivity.EXTRA_USER_ID, userId));
+                  .putExtra("USER_ID", userId));
       waitFor(a -> a == foreground && a.hasWindowFocus());
       final int[] messageCount = {0};
       main(
@@ -468,118 +305,6 @@ public class ResearchUxTest {
           });
       capture("ux-offline-chat-" + i);
       main(() -> resumed().finish());
-    }
-  }
-
-  @Test
-  public void noteSaveAndBackPreserveDraftAcrossRecreation() {
-    Activity first = startNote(-1, "", "");
-    editNote("Lesson", "Version one");
-    main(() -> first.findViewById(com.example.modulelaptrinh.R.id.btn_save).performClick());
-    int id;
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper helper =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      java.util.List<com.example.modulelaptrinh.database.ProgrammingNote> notes =
-          helper.getAllNotes(userId);
-      assertEquals(1, notes.size());
-      id = notes.get(0).getId();
-      assertEquals("Version one", notes.get(0).getContent());
-    }
-    Activity editing = startNote(id, "Lesson", "Version one");
-    editNote("Lesson", "Unsaved draft");
-    main(editing::recreate);
-    waitFor(a -> a != editing && a instanceof com.example.modulelaptrinh.NoteEditorActivity);
-    main(
-        () -> {
-          assertEquals(
-              "Unsaved draft",
-              ((EditText) resumed().findViewById(com.example.modulelaptrinh.R.id.et_note_content))
-                  .getText()
-                  .toString());
-          ((AppCompatActivity) resumed()).getOnBackPressedDispatcher().onBackPressed();
-        });
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper helper =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      java.util.List<com.example.modulelaptrinh.database.ProgrammingNote> notes =
-          helper.getAllNotes(userId);
-      assertEquals(1, notes.size());
-      assertEquals(id, notes.get(0).getId());
-      assertEquals("Unsaved draft", notes.get(0).getContent());
-    }
-  }
-
-  @Test
-  public void failedNoteInsertStaysOpenAndKeepsDraft() {
-    trigger("INSERT");
-    Activity editing = startNote(-1, "", "");
-    editNote("Important", "Do not lose this");
-    main(() -> editing.findViewById(com.example.modulelaptrinh.R.id.btn_save).performClick());
-    main(
-        () -> {
-          assertFalse(editing.isFinishing());
-          assertEquals(
-              "Do not lose this",
-              ((EditText) editing.findViewById(com.example.modulelaptrinh.R.id.et_note_content))
-                  .getText()
-                  .toString());
-          assertFalse(
-              ((TextView) editing.findViewById(com.example.modulelaptrinh.R.id.note_save_status))
-                  .getText()
-                  .toString()
-                  .isEmpty());
-        });
-    capture("ux-note-write-failed");
-    main(() -> ((AppCompatActivity) editing).getOnBackPressedDispatcher().onBackPressed());
-    capture("ux-note-back-recovery");
-    onView(withText(com.example.modulelaptrinh.R.string.note_keep_editing))
-        .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
-        .perform(click());
-    main(() -> assertFalse(editing.isFinishing()));
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper helper =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      assertTrue(helper.getAllNotes(userId).isEmpty());
-      helper.getWritableDatabase().execSQL("DROP TRIGGER ux_fail_note_insert");
-    }
-    main(() -> editing.findViewById(com.example.modulelaptrinh.R.id.btn_save).performClick());
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper helper =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      assertEquals("Do not lose this", helper.getAllNotes(userId).get(0).getContent());
-    }
-  }
-
-  @Test
-  public void failedNoteUpdateKeepsStoredDataAndEditorOpen() {
-    int id;
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper helper =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      id = (int) helper.insertNote(userId, "Lesson", "Stored version");
-    }
-    trigger("UPDATE");
-    Activity editing = startNote(id, "Lesson", "Stored version");
-    editNote("Lesson", "Retry later");
-    main(() -> editing.findViewById(com.example.modulelaptrinh.R.id.btn_save).performClick());
-    main(() -> assertFalse(editing.isFinishing()));
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper helper =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      assertEquals("Stored version", helper.getAllNotes(userId).get(0).getContent());
-    }
-  }
-
-  @Test
-  public void noteCannotOverwriteAnotherAccountsRecord() {
-    int otherId = userId + 100000000, noteId;
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper helper =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      noteId = (int) helper.insertNote(otherId, "Other user", "Keep private");
-    }
-    Activity editing = startNote(noteId, "Other user", "Keep private");
-    editNote("Wrong owner", "Must not save");
-    main(() -> editing.findViewById(com.example.modulelaptrinh.R.id.btn_save).performClick());
-    main(() -> assertFalse(editing.isFinishing()));
-    try (com.example.modulelaptrinh.database.ProgrammingDbHelper helper =
-        new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      assertEquals("Keep private", helper.getAllNotes(otherId).get(0).getContent());
-      assertTrue(helper.getAllNotes(userId).isEmpty());
     }
   }
 
@@ -696,31 +421,5 @@ public class ResearchUxTest {
     } finally {
       main(() -> com.example.asm_final.utils.LocaleHelper.setLocale(context, language));
     }
-  }
-
-  @Test
-  public void maximumDashboardLevelDoesNotPromiseAnotherLevel() {
-    try (com.example.mathmodule.databases.SqliteDbHelper helper =
-        new com.example.mathmodule.databases.SqliteDbHelper(context)) {
-      helper.getUserExp(userId);
-      helper
-          .getWritableDatabase()
-          .execSQL(
-              "UPDATE math_user_profile SET exp=? WHERE user_id=?",
-              new Object[] {Integer.MAX_VALUE, userId});
-    }
-    start(HomeActivity.class);
-    waitFor(
-        a -> ((android.widget.ProgressBar) a.findViewById(R.id.pb_total_exp)).getProgress() == 100);
-    main(
-        () -> {
-          assertEquals(
-              resumed().getString(R.string.home_level_number, 20),
-              ((TextView) resumed().findViewById(R.id.tv_total_level_value)).getText().toString());
-          assertEquals(
-              resumed().getString(R.string.home_max_level_reached),
-              ((TextView) resumed().findViewById(R.id.tv_exp_detail)).getText().toString());
-        });
-    capture("ux-dashboard-maximum-level");
   }
 }

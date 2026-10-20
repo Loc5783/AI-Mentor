@@ -94,7 +94,7 @@ def create_app(settings=None):
             "features":["auth","profile","chat_projects","chat_messages","attachments","friendships","rankings","events","learning_engine"],
             "learningEngineReady":True,
             "publishedCourses":[{"subjectId":s,"grade":g,"version":c["version"]} for (s,g),c in sorted(catalog.courses.items())],
-            "androidRealtimeConnected":False}
+            "realtimeTransport":"SSE"}
 
     @app.post("/auth/sign-up",status_code=201)
     def signup(body: models.SignUp,request: Request):

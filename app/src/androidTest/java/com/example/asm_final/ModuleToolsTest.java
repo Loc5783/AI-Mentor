@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class ModuleToolsTest {
+  @org.junit.Rule public final LocalBackendIsolation localBackend = new LocalBackendIsolation();
   private final Instrumentation ins = InstrumentationRegistry.getInstrumentation();
 
   private Activity resumed() {
@@ -91,8 +92,8 @@ public class ModuleToolsTest {
   @Test
   public void specializedScienceToolsRemainAccessible() {
     Class<?>[] tools = {
-      com.brightpath.science.presentation.PeriodicTableActivity.class,
-      com.brightpath.science.presentation.CircuitDiagramActivity.class,
+      com.example.mentor.chemistry.presentation.PeriodicTableActivity.class,
+      com.example.mentor.physics.presentation.CircuitDiagramActivity.class,
       com.brightpath.science.presentation.ScienceStudyPlannerActivity.class,
       com.brightpath.science.presentation.ScienceProgressActivity.class,
       com.brightpath.science.presentation.ScienceBookmarksActivity.class,
@@ -181,7 +182,7 @@ public class ModuleToolsTest {
 
   @Test
   public void circuitUpdatesValuesAndSwitchState() {
-    start(com.brightpath.science.presentation.CircuitDiagramActivity.class);
+    start(com.example.mentor.physics.presentation.CircuitDiagramActivity.class);
     main(
         () -> {
           ((EditText) resumed().findViewById(com.brightpath.science.R.id.etCircuitVoltage))
@@ -266,18 +267,16 @@ public class ModuleToolsTest {
                 resumed().findViewById(R.id.btnLogin).performClick();
               });
           waitFor(a -> a instanceof com.example.asm_final.activities.HomeActivity);
-          main(
-              () -> {
-                ((com.example.asm_final.activities.HomeActivity) resumed())
-                    .navigateTo(R.id.nav_legacy_tools, false);
-                ((AppCompatActivity) resumed())
-                    .getSupportFragmentManager()
-                    .executePendingTransactions();
-              });
-          int[] cards = {R.id.cardMath, R.id.cardScience, R.id.cardHistory, R.id.cardIT};
-          for (int id : cards) {
-            main(() -> resumed().findViewById(id).performClick());
-            waitFor(a -> !(a instanceof com.example.asm_final.activities.HomeActivity));
+          Class<?>[] tools = {
+            com.example.mathmodule.MathDashboardActivity.class,
+            com.example.historymodule.HistoryDashboardActivity.class,
+            com.example.mentor.physics.presentation.CircuitDiagramActivity.class,
+            com.example.mentor.chemistry.presentation.PeriodicTableActivity.class
+          };
+          for (Class<?> tool : tools) {
+            final Activity launched =
+                ins.startActivitySync(new Intent(c, tool).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            waitFor(a -> a == launched && a.hasWindowFocus());
             main(
                 () -> {
                   assertEquals(
@@ -293,8 +292,8 @@ public class ModuleToolsTest {
                       (resumed().getResources().getConfiguration().uiMode
                               & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
                           == android.content.res.Configuration.UI_MODE_NIGHT_YES);
+                  resumed().finish();
                 });
-            main(() -> resumed().finish());
             waitFor(a -> a instanceof com.example.asm_final.activities.HomeActivity);
           }
           main(() -> ((com.example.asm_final.activities.HomeActivity) resumed()).logout());

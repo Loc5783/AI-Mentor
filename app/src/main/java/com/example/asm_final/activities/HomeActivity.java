@@ -120,7 +120,6 @@ public class HomeActivity extends AppCompatActivity
     else if (id == R.id.nav_chat) fragment = new GeneralChatFragment();
     else if (id == R.id.nav_category) fragment = new LessonHubFragment();
     else if (id == R.id.nav_competition) fragment = new CompetitionFragment();
-    else if (id == R.id.nav_legacy_tools) fragment = new CategoryFragment();
     else if (id == R.id.nav_profile) fragment = new ProfileHubFragment();
     else if (id == R.id.nav_edit_profile) fragment = new ProfileFragment();
     else if (id == R.id.nav_settings) fragment = new SettingsFragment();
@@ -151,7 +150,6 @@ public class HomeActivity extends AppCompatActivity
     else if (current instanceof GeneralChatFragment) destination = R.id.nav_chat;
     else if (current instanceof LessonHubFragment) destination = R.id.nav_category;
     else if (current instanceof CompetitionFragment) destination = R.id.nav_competition;
-    else if (current instanceof CategoryFragment) destination = R.id.nav_legacy_tools;
     else if (current instanceof ProfileHubFragment) destination = R.id.nav_profile;
     else if (current instanceof ProfileFragment) destination = R.id.nav_edit_profile;
     else if (current instanceof SettingsFragment) destination = R.id.nav_settings;
@@ -177,7 +175,7 @@ public class HomeActivity extends AppCompatActivity
         .findItem(
             destination == R.id.nav_settings || destination == R.id.nav_edit_profile
                 ? R.id.nav_profile
-                : destination == R.id.nav_legacy_tools ? R.id.nav_category : destination)
+                : destination)
         .setChecked(true);
     syncing = false;
   }

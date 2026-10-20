@@ -140,22 +140,13 @@ public final class BackendClient {
     this(context, owner, endpoint(context));
   }
 
-  /** Loopback HTTP is accepted only in debug builds for instrumented backend integration tests. */
+  /** Local HTTP is restricted to debug tests and Android Emulator's host alias. */
   public BackendClient(Context context, int owner, String endpoint) {
     this.context = context.getApplicationContext();
     this.owner = owner;
     String value = endpoint.replaceAll("/+$", "");
-    if (!value.isEmpty()) {
-      URI uri = URI.create(value);
-      boolean local =
-          BuildConfig.DEBUG && "http".equals(uri.getScheme()) && "127.0.0.1".equals(uri.getHost());
-      if ((!"https".equals(uri.getScheme()) && !local)
-          || uri.getHost() == null
-          || uri.getUserInfo() != null
-          || uri.getQuery() != null
-          || uri.getFragment() != null)
-        throw new IllegalArgumentException("Invalid backend endpoint");
-    }
+    if (!value.isEmpty() && !BackendEndpointPolicy.allowed(value, BuildConfig.DEBUG))
+      throw new IllegalArgumentException("Invalid backend endpoint");
     base = value;
     sessionLock = LOCKS.computeIfAbsent(base + ":" + owner, ignored -> new Object());
     sessions = new BackendSession(context, owner, base);

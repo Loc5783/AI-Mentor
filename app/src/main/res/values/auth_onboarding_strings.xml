@@ -40,7 +40,7 @@
     <string name="auth_exit">Đăng xuất</string>
     <string name="onboard_step">Bước %1$d / 4</string>
     <string name="onboard_1_title">Chào mừng bạn đến với AI Mentor! 🌸</string>
-    <string name="onboard_1_body">Học thông minh hơn, theo tốc độ của bạn.\n\nKhám phá Toán, Khoa học, Lịch sử và Lập trình. Khi gặp câu hỏi khó, bạn có thêm một người bạn để cùng tìm hiểu.</string>
+    <string name="onboard_1_body">Học thông minh hơn, theo tốc độ của bạn.\n\nKhám phá các môn học, với lộ trình Lý, Hóa và Sinh. Khi gặp câu hỏi khó, bạn có thêm một người bạn để cùng tìm hiểu.</string>
     <string name="onboard_2_title">Học cùng AI, hiểu bài theo cách của bạn</string>
     <string name="onboard_2_body">Đặt câu hỏi hoặc gửi ảnh đề bài.\n\nXem giải thích từng bước, lưu ghi chú và quay lại những cuộc trò chuyện cần thiết. Các tính năng AI cần kết nối và dịch vụ được cấu hình.</string>
     <string name="onboard_3_title">Mỗi học sinh đều có hành trình riêng</string>
@@ -50,11 +50,11 @@
     <string name="profile_setup_title">Hồ sơ học tập của bạn</string>
     <string name="profile_setup_body">Vài lựa chọn để ghi lại điều bạn muốn tập trung. Không cần địa chỉ hay số điện thoại.</string>
     <string name="profile_grade">Bạn đang học lớp nào?</string>
-    <string name="profile_interests">Môn bạn quan tâm</string>
+    <string name="profile_interests">Môn quan tâm (không bắt buộc)</string>
     <string name="profile_goal">Mục tiêu học tập</string>
     <string name="profile_minutes">Phút học mỗi ngày</string>
     <string name="profile_minutes_help">Để trống nếu chưa muốn đặt mục tiêu; từ 5 đến 240 phút. Đây không phải thời gian giới hạn quiz.</string>
-    <string name="profile_required">Chọn lớp 10–12, ít nhất một môn và một mục tiêu.</string>
+    <string name="profile_required">Chọn lớp và mục tiêu học tập.</string>
     <string name="profile_invalid_minutes">Nhập từ 5 đến 240 phút, hoặc để trống.</string>
     <string name="profile_goal_0">Củng cố kiến thức</string>
     <string name="profile_goal_1">Nâng cao điểm số</string>

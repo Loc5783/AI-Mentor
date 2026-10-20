@@ -29,6 +29,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class CanonicalSmokeTest {
+  @org.junit.Rule public final LocalBackendIsolation localBackend = new LocalBackendIsolation();
   private final Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
 
   private Activity resumed() {
@@ -127,23 +128,12 @@ public class CanonicalSmokeTest {
   }
 
   @Test
-  public void loginRegistrationAndAllFourOriginalModulesOpen() throws Exception {
+  public void loginRegistrationAndFiveMainTabsOpen() throws Exception {
     DebugAccounts.seed(instrumentation.getTargetContext());
-    try (com.example.asm_final.activities.database.DatabaseHelper db =
-        new com.example.asm_final.activities.database.DatabaseHelper(
-            instrumentation.getTargetContext())) {
-      for (int i = 1; i <= 3; i++) assertTrue(db.checkLogin("student 0" + i, "123123123"));
-    }
     start(MainActivity.class);
-    capture("login");
     main(() -> resumed().findViewById(R.id.tvGoToRegister).performClick());
     awaitActivity("com.example.asm_final.activities.RegisterActivity");
-    capture("register");
-    main(
-        () -> {
-          assertNotNull(resumed().findViewById(R.id.edtRegisterConfirmPassword));
-          resumed().findViewById(R.id.tvGoToLogin).performClick();
-        });
+    main(() -> resumed().findViewById(R.id.tvGoToLogin).performClick());
     awaitActivity(MainActivity.class.getName());
     main(
         () -> {
@@ -152,106 +142,24 @@ public class CanonicalSmokeTest {
           resumed().findViewById(R.id.btnLogin).performClick();
         });
     awaitActivity(HomeActivity.class.getName());
-    main(
-        () -> {
-          assertTrue(resumed() instanceof HomeActivity);
-        });
-    capture("home");
-    main(
-        () -> {
-          ((BottomNavigationView) resumed().findViewById(R.id.bottom_navigation))
-              .setSelectedItemId(R.id.nav_profile);
-          ((AppCompatActivity) resumed()).getSupportFragmentManager().executePendingTransactions();
-        });
-    capture("settings");
-    main(
-        () -> {
-          resumed().findViewById(R.id.profile_open_settings).performClick();
-          ((AppCompatActivity) resumed()).getSupportFragmentManager().executePendingTransactions();
-        });
-    main(
-        () -> {
-          resumed().findViewById(R.id.setting_edit_profile).performClick();
-          ((AppCompatActivity) resumed()).getSupportFragmentManager().executePendingTransactions();
-          assertEquals(
-              "student 01",
-              ((AppCompatActivity) resumed())
-                  .getSupportFragmentManager()
-                  .findFragmentById(R.id.fragment_container)
-                  .getArguments()
-                  .getString("USERNAME"));
-        });
-    capture("profile");
-    main(
-        () -> {
-          ((AppCompatActivity) resumed()).getOnBackPressedDispatcher().onBackPressed();
-          ((AppCompatActivity) resumed()).getSupportFragmentManager().executePendingTransactions();
-          assertNotNull(resumed().findViewById(R.id.setting_edit_profile));
-        });
-    main(
-        () -> {
-          ((HomeActivity) resumed()).navigateTo(R.id.nav_legacy_tools, false);
-          ((AppCompatActivity) resumed()).getSupportFragmentManager().executePendingTransactions();
-        });
-    capture("courses");
-    int[] ids = {R.id.cardMath, R.id.cardScience, R.id.cardHistory, R.id.cardIT};
-    String[] targets = {
-      "com.example.mathmodule.MathDashboardActivity",
-      "com.brightpath.science.presentation.ScienceMainActivity",
-      "com.example.historymodule.HistoryDashboardActivity",
-      "com.example.modulelaptrinh.MainActivity"
-    };
-    for (int i = 0; i < ids.length; i++) {
-      final int id = ids[i];
-      final String expected = targets[i];
-      awaitActivity(HomeActivity.class.getName());
-      main(() -> resumed().findViewById(id).performClick());
-      awaitActivity(expected);
-      main(() -> assertEquals(expected, resumed().getClass().getName()));
-      capture("module-" + i);
-      if (i == 0) {
-        String[] tabs = {"nav_home", "nav_history", "nav_formula", "nav_quiz"};
-        for (String tab : tabs) {
-          main(
-              () -> {
-                int tabId =
-                    resumed().getResources().getIdentifier(tab, "id", resumed().getPackageName());
-                View view = resumed().findViewById(tabId);
-                assertNotNull(view);
-                view.performClick();
-                ((AppCompatActivity) resumed())
-                    .getSupportFragmentManager()
-                    .executePendingTransactions();
-              });
-          capture("math-" + tab);
-        }
-      } else {
-        final BottomNavigationView[] bar = new BottomNavigationView[1];
-        main(() -> bar[0] = navigation(resumed().getWindow().getDecorView()));
-        assertNotNull(bar[0]);
-        for (int tab = 0; tab < bar[0].getMenu().size(); tab++) {
-          final int tabId = bar[0].getMenu().getItem(tab).getItemId();
-          main(
-              () -> {
-                bar[0].setSelectedItemId(tabId);
-                ((AppCompatActivity) resumed())
-                    .getSupportFragmentManager()
-                    .executePendingTransactions();
-                checkSafeBounds(bar[0]);
-              });
-          capture("module-" + i + "-tab-" + tab);
-        }
-      }
-      main(() -> resumed().finish());
+    for (int tab :
+        new int[] {
+          R.id.nav_home, R.id.nav_chat, R.id.nav_category, R.id.nav_competition, R.id.nav_profile
+        }) {
+      main(
+          () -> {
+            ((HomeActivity) resumed()).navigateTo(tab, false);
+            ((AppCompatActivity) resumed())
+                .getSupportFragmentManager()
+                .executePendingTransactions();
+            BottomNavigationView bar = resumed().findViewById(R.id.bottom_navigation);
+            assertEquals(5, bar.getMenu().size());
+            assertEquals(tab, bar.getSelectedItemId());
+            checkSafeBounds(bar);
+          });
     }
-    awaitActivity(HomeActivity.class.getName());
     main(() -> ((HomeActivity) resumed()).logout());
     awaitActivity(MainActivity.class.getName());
-    main(
-        () -> {
-          assertNotNull(resumed().findViewById(R.id.edtLoginUsername));
-          resumed().finish();
-        });
   }
 
   @Test

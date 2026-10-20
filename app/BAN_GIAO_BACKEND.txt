@@ -1,3 +1,8 @@
+CẬP NHẬT MỚI NHẤT 20/10/2026 — CẤU TRÚC MÔN HỌC
+Có 9 module môn; không có Programming hoặc môn tổng Science. Lý/Hóa/Sinh có 20 bài lớp 10 mỗi môn, 60 câu thực hành và 4 checkpoint 10 câu/môn. 6 môn khác chưa có lộ trình mới; Toán/Sử giữ công cụ đã có. Chưa có nội dung 11/12.
+Dashboard chỉ đọc môn đang chọn, không cộng EXP cũ vào ledger server. science-support giữ schema, lịch sử và engine quiz bổ trợ; không phải một môn. Lý sở hữu mạch điện, Hóa sở hữu bảng tuần hoàn/dữ liệu nguyên tố. Bảng migration Programming cũ chỉ để tương thích dữ liệu, không còn module hay API key tương ứng.
+Quiz bổ trợ dùng QUIZ_GEMINI_API_KEY_1/2/3, không còn SCIENCE_GEMINI_*; xem api.properties (key public trống). Contract đang triển khai ở docs/backend/runtime-openapi.json. Các mô tả snapshot cũ bên dưới cần đọc theo mốc lịch sử.
+
 ﻿BÀN GIAO BACKEND — ỨNG DỤNG AIMENTOR
 Cập nhật: 19/10/2026
 Mã nguồn tham chiếu: https://github.com/Loc5783/AI-Mentor

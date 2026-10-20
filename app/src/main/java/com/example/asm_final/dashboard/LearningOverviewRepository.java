@@ -41,7 +41,7 @@ public final class LearningOverviewRepository {
     try (RemoteAccountLinks links = new RemoteAccountLinks(context)) {
       remoteId = links.remoteId(owner, endpoint);
     }
-    if (remoteId.isEmpty()) return new Snapshot(Mode.LOCAL, null, false);
+    if (remoteId.isEmpty()) return new Snapshot(Mode.UNAVAILABLE, null, true);
     if (grade < 10 || grade > 12) return new Snapshot(Mode.NO_GRADE, null, false);
     try {
       JSONObject value =

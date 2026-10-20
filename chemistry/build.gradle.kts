@@ -8,5 +8,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 }
-dependencies { api(project(":learning-core")) }
+dependencies {
+    api(project(":learning-core"))
+    implementation(project(":science-support"))
+    implementation(project(":ui-core"))
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    testImplementation(libs.junit)
+}
 

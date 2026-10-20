@@ -51,6 +51,7 @@ public abstract class ModuleDatabaseHelper implements AutoCloseable {
               "quiz_attempts:history_quiz_attempts"
             };
         break;
+      // Historical import metadata only; no Programming feature/schema is registered.
       case "ProgrammingMentor.db":
         tables =
             new String[] {

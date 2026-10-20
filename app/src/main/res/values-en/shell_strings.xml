@@ -7,11 +7,9 @@
     <string name="lesson_description">Choose your grade and subjects. Each subject has its own learning path.</string>
     <string name="lesson_grade">Choose / change grade</string>
     <string name="lesson_manage">Add / manage subjects</string>
-    <string name="lesson_other_subjects">Math · Literature · English · History · Geography · Economics and Law: framework only, coming later.</string>
     <string name="lesson_choose_prompt">Start by choosing your grade and adding Biology, Chemistry or Physics.</string>
     <string name="lesson_path_pending">Learn step by step, take an entry assessment and review every five lessons. The learning path needs a server connection; existing practice tools remain available separately.</string>
-    <string name="lesson_open_tools">Open subject quizzes</string>
-    <string name="lesson_tools">Existing study tools</string>
+    <string name="lesson_open_tools">Open study tools</string>
     <string name="lesson_circuit">Electric circuits</string>
     <string name="lesson_periodic">Periodic table</string>
     <string name="competition_title">Grow together</string>

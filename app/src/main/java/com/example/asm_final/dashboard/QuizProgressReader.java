@@ -27,8 +27,6 @@ public final class QuizProgressReader {
         "SELECT timestamp,exp_earned FROM math_quiz_attempts WHERE user_id=? AND total_count>0",
         "SELECT created_at,exp_earned FROM history_quiz_attempts WHERE user_id=? AND total_count>0",
         "SELECT created_at,exp_earned FROM science_quiz_attempts WHERE user_id=? AND"
-            + " total_questions>0",
-        "SELECT created_at,exp_earned FROM programming_quiz_attempts WHERE user_id=? AND"
             + " total_questions>0"
       };
       for (String sql : queries)

@@ -59,21 +59,7 @@
         <activity android:name=".activities.ProfileSetupActivity" android:exported="false" android:theme="@style/Theme.AIMentor.Auth"/>
         <activity android:name=".activities.AuthRecoveryActivity" android:exported="false" android:theme="@style/Theme.AIMentor.Auth"/>
 
-        <!-- ===== MODULE PROGRAMMING ===== -->
-        <activity
-            android:name="com.example.modulelaptrinh.MainActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ModuleLapTrinh" />
-        <activity
-            android:name="com.example.modulelaptrinh.ProgrammingChatActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ModuleLapTrinh" />
-        <activity
-            android:name="com.example.modulelaptrinh.NoteEditorActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ModuleLapTrinh" />
-
-        <!-- ===== MODULE SCIENCE ===== -->
+        <!-- ===== SHARED LEGACY SCIENCE INFRASTRUCTURE ===== -->
         <activity
             android:name="com.brightpath.science.presentation.ScienceMainActivity"
             android:exported="false"
@@ -95,11 +81,11 @@
             android:exported="false"
             android:theme="@style/Theme.ScienceFeature" />
         <activity
-            android:name="com.brightpath.science.presentation.PeriodicTableActivity"
+            android:name="com.example.mentor.chemistry.presentation.PeriodicTableActivity"
             android:exported="false"
             android:theme="@style/Theme.ScienceFeature" />
         <activity
-            android:name="com.brightpath.science.presentation.CircuitDiagramActivity"
+            android:name="com.example.mentor.physics.presentation.CircuitDiagramActivity"
             android:exported="false"
             android:theme="@style/Theme.ScienceFeature" />
         <activity

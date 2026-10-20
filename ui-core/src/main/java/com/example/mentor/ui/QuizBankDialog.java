@@ -136,7 +136,6 @@ final class QuizBankDialog {
 
   private static String scopeLabel(Context context,String raw) {
     if("math".equalsIgnoreCase(raw))return context.getString(R.string.mentor_quiz_scope_math);
-    if("programming".equalsIgnoreCase(raw)||"Lập trình".equals(raw))return context.getString(R.string.mentor_quiz_scope_programming);
     if("physics".equalsIgnoreCase(raw))return context.getString(R.string.mentor_quiz_scope_physics);
     if("chemistry".equalsIgnoreCase(raw))return context.getString(R.string.mentor_quiz_scope_chemistry);
     if("biology".equalsIgnoreCase(raw))return context.getString(R.string.mentor_quiz_scope_biology);

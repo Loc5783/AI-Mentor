@@ -23,12 +23,12 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "ASM-final"
-include(":app", ":math", ":science", ":programming", ":history")
+include(":app", ":math", ":science-support", ":history")
 
 include(":ui-core")
 
 include(":data-core")
 
-// One independently owned module per school subject; legacy Science remains during migration.
+// Nine school subjects; science-support is shared legacy infrastructure, not a subject.
 include(":learning-core", ":chat-core")
 include(":literature", ":english", ":geography", ":chemistry", ":physics", ":biology", ":economics-law")

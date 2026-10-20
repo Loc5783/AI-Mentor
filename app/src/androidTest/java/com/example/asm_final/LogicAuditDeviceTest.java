@@ -67,7 +67,7 @@ public class LogicAuditDeviceTest {
     assertTrue(owner>0); ActiveUser.set(context,owner);
     helper=new com.example.historymodule.databases.SqliteDbHelper(context); storage=helper.getWritableDatabase();
     try(com.example.mathmodule.databases.SqliteDbHelper db=new com.example.mathmodule.databases.SqliteDbHelper(context)) { db.getWritableDatabase(); }
-    try(com.example.modulelaptrinh.database.ProgrammingDbHelper db=new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) { db.getWritableDatabase(); }
+
     com.brightpath.science.di.ScienceModule.get(context).noteRepository().getAll(owner);
     try(com.example.mentor.data.QuizBank bank = new com.example.mentor.data.QuizBank(context)) { bank.getWritableDatabase(); }
   }
@@ -81,7 +81,7 @@ public class LogicAuditDeviceTest {
       if(owner>0) {
         storage.delete("mentor_quiz_bank_questions","set_id IN (SELECT id FROM mentor_quiz_bank_sets WHERE user_id=?)",new String[]{String.valueOf(owner)});
         storage.delete("mentor_quiz_bank_sets","user_id=?",new String[]{String.valueOf(owner)});
-        for(String table:new String[]{"history_messages","history_notes","math_notes","math_history","science_notes","programming_sessions"})
+        for(String table:new String[]{"history_messages","history_notes","math_notes","math_history","science_notes"})
           storage.delete(table,"user_id=?",new String[]{String.valueOf(owner)});
         storage.delete("users","id=?",new String[]{String.valueOf(owner)});
       }
@@ -132,14 +132,7 @@ public class LogicAuditDeviceTest {
         com.brightpath.science.domain.model.EducationLevel.MIDDLE_SCHOOL,"Goal",false,Collections.emptyList())); fail("Write was reported successful"); }
     catch(IllegalStateException expected) { assertEquals("previous",context.getSharedPreferences("SCIENCE_STUDY_PLANS",0).getString(key,"")); }
   }
-  @Test public void programmingRotationKeepsSessionAndDoesNotCreateDuplicateWelcome() {
-    launch(com.example.modulelaptrinh.ProgrammingChatActivity.class,new Intent().putExtra(com.example.modulelaptrinh.MainActivity.EXTRA_USER_ID,owner));
-    long id=(long)field(activity,"sessionId");
-    assertTrue(id>0); recreate(); assertEquals(id,field(activity,"sessionId"));
-    try(com.example.modulelaptrinh.database.ProgrammingDbHelper db=new com.example.modulelaptrinh.database.ProgrammingDbHelper(context)) {
-      assertEquals(1,db.getAllSessions(owner).size()); assertEquals(1,db.getMessagesBySession(id).size());
-    }
-  }
+
   @Test public void historyRotationKeepsNewConversationInsteadOfLaunchConversation() {
     launch(com.example.historymodule.HistoryChatActivity.class,new Intent().putExtra(com.example.historymodule.HistoryChatActivity.EXTRA_CONVERSATION_ID,"original"));
     main(() -> invoke(activity,"startNewConversation"));
@@ -200,28 +193,5 @@ public class LogicAuditDeviceTest {
   @Test public void mathFailedNoteUpdateKeepsDraftAndAllowsRetry() { failedNoteEdit(0); }
   @Test public void historyFailedNoteUpdateKeepsDraftAndAllowsRetry() { failedNoteEdit(1); }
   @Test public void scienceFailedNoteUpdateKeepsDraftAndAllowsRetry() { failedNoteEdit(2); }
-  @Test public void programmingQuizTabRequiresConfirmationBeforeDiscardingAttempt() {
-    launch(com.example.modulelaptrinh.MainActivity.class,new Intent().putExtra(com.example.modulelaptrinh.MainActivity.EXTRA_USER_ID,owner));
-    main(() -> {
-      com.google.android.material.bottomnavigation.BottomNavigationView nav=activity.findViewById(com.example.modulelaptrinh.R.id.bottom_nav);
-      nav.setSelectedItemId(com.example.modulelaptrinh.R.id.nav_quiz);
-      ((AppCompatActivity)activity).getSupportFragmentManager().executePendingTransactions();
-      com.example.mentor.ui.QuizFormView form=activity.findViewById(com.example.mentor.ui.R.id.mentor_quiz_form);
-      form.bind(Collections.singletonList(new com.example.mentor.data.QuizCard("QA question",
-          Arrays.asList("One","Two","Three","Four"), com.example.mentor.data.QuizCard.letters(4),"A","Reason","EASY",false)),
-          (correct,count,exp,completion) -> completion.complete(false,0));
-      nav.setSelectedItemId(com.example.modulelaptrinh.R.id.nav_home);
-      assertEquals(com.example.modulelaptrinh.R.id.nav_quiz,nav.getSelectedItemId());
-    });
-    onView(withText(com.example.mentor.ui.R.string.mentor_quiz_continue)).inRoot(isDialog()).perform(click());
-    main(() -> ((AppCompatActivity)activity).getOnBackPressedDispatcher().onBackPressed());
-    onView(withText(com.example.mentor.ui.R.string.mentor_quiz_continue)).inRoot(isDialog()).perform(click());
-    assertFalse(activity.isFinishing());
-    main(() -> ((com.google.android.material.bottomnavigation.BottomNavigationView)activity.findViewById(com.example.modulelaptrinh.R.id.bottom_nav)).setSelectedItemId(com.example.modulelaptrinh.R.id.nav_home));
-    onView(withText(com.example.mentor.ui.R.string.mentor_quiz_leave)).inRoot(isDialog()).perform(click());
-    main(() -> {
-      ((AppCompatActivity)activity).getSupportFragmentManager().executePendingTransactions();
-      assertEquals(com.example.modulelaptrinh.R.id.nav_home,((com.google.android.material.bottomnavigation.BottomNavigationView)activity.findViewById(com.example.modulelaptrinh.R.id.bottom_nav)).getSelectedItemId());
-    });
-  }
+
 }

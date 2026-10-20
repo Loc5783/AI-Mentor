@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class AuthOnboardingTest {
+  @org.junit.Rule public final LocalBackendIsolation localBackend = new LocalBackendIsolation();
   private final Instrumentation ins = InstrumentationRegistry.getInstrumentation();
   private final Context context = ins.getTargetContext();
   private AppServices services;
@@ -191,7 +192,7 @@ public class AuthOnboardingTest {
         () -> {
           click(R.id.grade_11);
           click(R.id.interest_math);
-          click(R.id.interest_science);
+          click(R.id.interest_biology);
           MaterialAutoCompleteTextView goals = current().findViewById(R.id.profile_goal_choice);
           goals.setText(current().getResources().getStringArray(R.array.learner_goals)[3], false);
           goals.getOnItemClickListener().onItemClick(null, null, 3, 3);
@@ -282,7 +283,7 @@ public class AuthOnboardingTest {
     assertEquals(5, p.step);
     assertEquals(11, p.grade);
     assertEquals(3, p.goal);
-    assertEquals("MATH,SCIENCE", p.subjects);
+    assertEquals("MATH,BIOLOGY", p.subjects);
     waitFor(
         a ->
             a instanceof HomeActivity

@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class GeneralChatTest {
+  @org.junit.Rule public final LocalBackendIsolation localBackend = new LocalBackendIsolation();
   private final Instrumentation ins = InstrumentationRegistry.getInstrumentation();
   private final Context context = ins.getTargetContext();
   private AiMentorApplication app;
@@ -399,6 +400,104 @@ public class GeneralChatTest {
     }
   }
 
+  @Test
+  public void dashboardAndHubUseSchoolSubjectsAcrossChoiceChangesAndRecreation() throws Exception {
+    services.learners().setGrade(owner, 10);
+    try (LearningSetupStore setup = new LearningSetupStore(context)) {
+      setup.save(owner, 10, EnumSet.of(SubjectId.BIOLOGY, SubjectId.PHYSICS));
+    }
+    HomeActivity first =
+        (HomeActivity)
+            ins.startActivitySync(
+                new Intent(context, HomeActivity.class)
+                    .putExtra("USERNAME", username)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    await(
+        () ->
+            first.findViewById(R.id.dashboard_subject_grid) != null
+                && first
+                        .findViewById(R.id.dashboard_subject_grid)
+                        .findViewWithTag("dashboard-subject:biology")
+                    != null);
+    main(
+        () -> {
+          android.view.ViewGroup cards = first.findViewById(R.id.dashboard_subject_grid);
+          assertEquals(2, cards.getChildCount());
+          assertNotNull(cards.findViewWithTag("dashboard-subject:physics"));
+          assertNull(cards.findViewWithTag("dashboard-subject:chemistry"));
+          assertFalse(
+              ((android.widget.TextView) first.findViewById(R.id.tv_chart_summary))
+                  .getText()
+                  .toString()
+                  .trim()
+                  .isEmpty());
+          first.recreate();
+        });
+    HomeActivity[] restored = {null};
+    await(
+        () -> {
+          for (Activity a :
+              ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED))
+            if (a instanceof HomeActivity
+                && a != first
+                && a.findViewById(android.R.id.content).findViewWithTag("dashboard-subject:biology")
+                    != null) {
+              restored[0] = (HomeActivity) a;
+              return true;
+            }
+          return false;
+        });
+    try (LearningSetupStore setup = new LearningSetupStore(context)) {
+      setup.save(owner, 10, EnumSet.of(SubjectId.CHEMISTRY));
+    }
+    main(() -> restored[0].navigateTo(R.id.nav_category, false));
+    await(
+        () ->
+            restored[0]
+                    .findViewById(android.R.id.content)
+                    .findViewWithTag("subject-framework:literature")
+                != null);
+    main(
+        () -> {
+          assertEquals(9, services.subjects().all().size());
+          for (SubjectId id : SubjectId.values())
+            if (!services.subjects().hasLessonScope(id))
+              assertNotNull(
+                  restored[0]
+                      .findViewById(android.R.id.content)
+                      .findViewWithTag("subject-framework:" + id.wireId));
+          restored[0].navigateTo(R.id.nav_home, false);
+        });
+    await(
+        () ->
+            restored[0].findViewById(R.id.dashboard_subject_grid) != null
+                && restored[0]
+                        .findViewById(R.id.dashboard_subject_grid)
+                        .findViewWithTag("dashboard-subject:chemistry")
+                    != null);
+    main(
+        () -> {
+          android.view.ViewGroup cards = restored[0].findViewById(R.id.dashboard_subject_grid);
+          assertEquals(1, cards.getChildCount());
+          assertNull(cards.findViewWithTag("dashboard-subject:biology"));
+          assertNull(cards.findViewWithTag("dashboard-subject:physics"));
+        });
+    java.util.concurrent.CountDownLatch frames = new java.util.concurrent.CountDownLatch(1);
+    ins.runOnMainSync(
+        () ->
+            restored[0]
+                .getWindow()
+                .getDecorView()
+                .postOnAnimation(
+                    () ->
+                        restored[0].getWindow().getDecorView().postOnAnimation(frames::countDown)));
+    assertTrue(frames.await(5, TimeUnit.SECONDS));
+    try (FileOutputStream out =
+        new FileOutputStream(new File(context.getExternalFilesDir(null), "school-dashboard.png"))) {
+      ins.getUiAutomation().takeScreenshot().compress(Bitmap.CompressFormat.PNG, 100, out);
+    }
+  }
+
   private android.widget.TextView text(android.view.View root, String value) {
     if (root instanceof android.widget.TextView
         && value.contentEquals(((android.widget.TextView) root).getText()))
@@ -477,7 +576,7 @@ public class GeneralChatTest {
         () -> {
           for (Activity activity :
               ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED))
-            if (activity instanceof com.brightpath.science.presentation.CircuitDiagramActivity)
+            if (activity instanceof com.example.mentor.physics.presentation.CircuitDiagramActivity)
               return true;
           return false;
         });

@@ -16,10 +16,6 @@
     <string name="home_chart_retry">Reload progress</string>
     <string name="home_chart_accessibility">EXP distribution chart, %1$d EXP in total.</string>
     <string name="home_chart_loading">Loading progress…</string>
-    <string name="home_course_math">Solve · Formulas · Quizzes</string>
-    <string name="home_course_science">Physics · Chemistry · Biology</string>
-    <string name="home_course_history">Ask · Notes · Quizzes</string>
-    <string name="home_course_programming">Languages · Ask · Quizzes</string>
     <string name="home_subject_level">Level %1$d · %2$d EXP</string>
     <string name="home_subject_progress_description">%1$s: level %2$d, %3$d EXP.</string>
 </resources>

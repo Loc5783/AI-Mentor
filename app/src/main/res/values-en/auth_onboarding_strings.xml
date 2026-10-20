@@ -40,7 +40,7 @@
     <string name="auth_exit">Sign out</string>
     <string name="onboard_step">Step %1$d / 4</string>
     <string name="onboard_1_title">Welcome to AI Mentor!</string>
-    <string name="onboard_1_body">Learn smarter, at your own pace.\n\nExplore Math, Science, History and Programming. When a question gets tricky, you have a companion to help you work through it.</string>
+    <string name="onboard_1_body">Learn smarter, at your own pace.\n\nExplore your school subjects, with learning paths for Physics, Chemistry and Biology. When a question gets tricky, you have a companion to help you work through it.</string>
     <string name="onboard_2_title">Learn with AI, understand it your way</string>
     <string name="onboard_2_body">Ask a question or share a photo of a problem.\n\nExplore step-by-step explanations, save notes and revisit conversations. AI features need a connection and a configured service.</string>
     <string name="onboard_3_title">Every student has their own journey</string>
@@ -50,11 +50,11 @@
     <string name="profile_setup_title">Your learning profile</string>
     <string name="profile_setup_body">A few choices to record your focus. No address or phone number needed.</string>
     <string name="profile_grade">Which grade are you in?</string>
-    <string name="profile_interests">Subjects you care about</string>
+    <string name="profile_interests">Subject interests (optional)</string>
     <string name="profile_goal">Learning goal</string>
     <string name="profile_minutes">Minutes per day</string>
     <string name="profile_minutes_help">Leave blank if unsure, or choose 5 to 240 minutes. This is not a quiz time limit.</string>
-    <string name="profile_required">Choose grade 10–12, at least one subject and a goal.</string>
+    <string name="profile_required">Choose your grade and learning goal.</string>
     <string name="profile_invalid_minutes">Enter 5 to 240 minutes, or leave it blank.</string>
     <string name="profile_goal_0">Strengthen foundations</string>
     <string name="profile_goal_1">Improve grades</string>
