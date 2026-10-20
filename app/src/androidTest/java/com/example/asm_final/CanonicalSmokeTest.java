@@ -166,6 +166,11 @@ public class CanonicalSmokeTest {
     capture("settings");
     main(
         () -> {
+          resumed().findViewById(R.id.profile_open_settings).performClick();
+          ((AppCompatActivity) resumed()).getSupportFragmentManager().executePendingTransactions();
+        });
+    main(
+        () -> {
           resumed().findViewById(R.id.setting_edit_profile).performClick();
           ((AppCompatActivity) resumed()).getSupportFragmentManager().executePendingTransactions();
           assertEquals(
@@ -185,8 +190,7 @@ public class CanonicalSmokeTest {
         });
     main(
         () -> {
-          ((BottomNavigationView) resumed().findViewById(R.id.bottom_navigation))
-              .setSelectedItemId(R.id.nav_category);
+          ((HomeActivity) resumed()).navigateTo(R.id.nav_legacy_tools, false);
           ((AppCompatActivity) resumed()).getSupportFragmentManager().executePendingTransactions();
         });
     capture("courses");

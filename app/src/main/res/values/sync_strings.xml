@@ -1,0 +1,27 @@
+<resources>
+    <string name="auth_account_exists">Email này đã có tài khoản. Hãy đăng nhập để tiếp tục.</string>
+    <string name="auth_server_rate_limit">Bạn đã thử nhiều lần. Vui lòng chờ một chút rồi thử lại.</string>
+    <string name="auth_server_error">Chưa xác nhận được tài khoản trên máy chủ. Hãy thử lại.</string>
+    <string name="auth_server_offline">Chưa kết nối được máy chủ. Kiểm tra mạng rồi thử lại; dữ liệu trên thiết bị vẫn được giữ.</string>
+    <string name="overview_title">Tiến độ bài học</string>
+    <string name="overview_lessons">%1$d / %2$d bài</string>
+    <string name="overview_daily_xp">Hôm nay: %1$d EXP</string>
+    <string name="overview_streak">Streak: %1$d ngày</string>
+    <string name="overview_no_enrollment">Chọn môn để bắt đầu lộ trình học.</string>
+    <string name="overview_current">Đã cập nhật từ dữ liệu bài học</string>
+    <string name="overview_cached">Đang xem dữ liệu đã lưu. Chưa tải được bản cập nhật mới nhất.</string>
+    <string name="overview_expired">Phiên đăng nhập cần được xác nhận lại. Tiến độ đã lưu vẫn được giữ.</string>
+    <string name="overview_error">Chưa tải được tiến độ bài học. Hãy thử lại.</string>
+    <string name="overview_practice">Đúng ở lần thử đầu: %1$d / %2$d câu</string>
+    <string name="overview_assisted">%1$d câu đã dùng hướng dẫn · không phải đánh giá toàn bộ kiến thức</string>
+    <string name="overview_source">EXP từ bài học và quiz ôn tập · tích lũy qua các lớp</string>
+    <string name="overview_choose_grade">Chọn lớp để xem tiến độ bài học.</string>
+    <string name="overview_reload">Cập nhật tiến độ</string>
+    <string name="overview_sign_in">Đăng nhập lại</string>
+    <string name="overview_practice_heading">Kết quả luyện tập</string>
+    <string name="overview_no_practice">Hoàn thành bài học để xem kết quả luyện tập tại đây.</string>
+    <string name="overview_subject_progress">%1$d / %2$d bài · %3$d EXP</string>
+    <string name="overview_no_curriculum">Chưa có lộ trình cho lớp này</string>
+    <string name="overview_legacy_title">Dữ liệu công cụ cũ</string>
+    <string name="overview_legacy_note">Đây là thống kê từ các công cụ trước đây trên thiết bị. Dữ liệu này được giữ riêng và không cộng lại vào EXP của lộ trình mới.</string>
+</resources>

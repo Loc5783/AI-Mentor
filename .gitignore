@@ -23,3 +23,13 @@ local.properties
 
 # Local validation output
 /*-verification.log
+
+# Backend runtime, databases, uploads and private environment
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+/backend/data/
+/backend/uploads/
+/backend/.env
+*.sqlite3-wal
+*.sqlite3-shm

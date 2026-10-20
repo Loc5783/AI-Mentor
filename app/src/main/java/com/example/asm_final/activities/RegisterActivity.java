@@ -88,12 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
           }
           model.submit(
               services.io(),
-              () -> {
-                long id = services.learnerRegistration().registerLearner(n, e, p);
-                if (id <= 0) return null;
-                String canonical = services.accountLookup().canonicalUsername(e);
-                return new AuthTicket(canonical, (int) id, services.learners().load((int) id));
-              },
+              () -> services.accountAccess().register(n, e, p),
               R.string.auth_registration_failed);
         });
     model.state.observe(

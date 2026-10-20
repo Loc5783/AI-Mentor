@@ -6,6 +6,20 @@ import android.database.sqlite.*;
 import com.example.asm_final.activities.database.DatabaseHelper;
 
 public final class LocalLearnerProfiles implements LearnerProfileRepository {
+  @Override
+  public void setGrade(int userId, int grade) {
+    if (userId <= 0 || grade < 10 || grade > 12)
+      throw new IllegalArgumentException("Invalid learner grade");
+    try (DatabaseHelper h = new DatabaseHelper(context)) {
+      ContentValues values = new ContentValues();
+      values.put("grade", grade);
+      if (h.getWritableDatabase()
+              .update(
+                  "learner_profiles", values, "user_id=?", new String[] {Integer.toString(userId)})
+          != 1) throw new SQLiteException("Missing learner profile");
+    }
+  }
+
   private final Context context;
 
   public LocalLearnerProfiles(Context c) {

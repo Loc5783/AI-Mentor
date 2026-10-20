@@ -49,6 +49,7 @@
             android:theme="@style/Theme.ASMfinal" />
 
         <!-- Register -->
+        <activity android:name=".activities.LessonActivity" android:exported="false" />
         <activity
             android:name=".activities.RegisterActivity"
             android:exported="false"

@@ -1,4 +1,49 @@
-# Tiến độ AIMentor — 17/10/2026
+# Tiến độ AIMentor
+
+## Hiệu ứng nhẹ và API cũ — 20/10/2026, mới nhất
+- Lộ trình Lý/Hóa/Sinh có chặng đánh số/đường nối/progress, review riêng. Tách LessonPathData/View, LessonCompletionView, SoftMotion/MotionSettings theo SOLID.
+- Motion160–240ms, press0.99, không loop/icon trang trí mới; tắt motion có hỗ trợ minSDK24. Nút xuống dòng; công cụ bổ trợ mở/thu gọn giữ qua rotation, vẫn tới mạch điện/bảng tuần hoàn.
+- Debug/release/test APK, lint, 173 JVM tests PASS. Bật/tắt motion mỗi lượt2/2; connected/công cụ2/2; năm tab PASS. Lỗi ID/test lifecycle ban đầu đã sửa; không tính lượt lỗi là toàn PASS.
+- Dùng key từ đúng ZIP theo cho phép: 3/3 ca Gemini thật Lý/Hóa/Sinh PASS qua adapter chat. Key nạp file QA runtime, đã xóa; cấu hình public trống. Mặc định live tests SKIP đúng opt-in.
+- Nội dung vẫn15 bài/45 câu lớp10. Người dùng chọn loại đang dùng lớp10–12; đã đối chiếu nguồn Chính phủ, chốt Kết nối tri thức2026–2027. Chưa thêm gói11/12. Xem docs/content/CONTENT_PLAN_VI.md.
+- Chi tiết: RESUMED_PROGRESS_2026-10-20.md. APK/ảnh/log tại ../AIMentor_QA/soft-learning/. Chưa commit/push hay deployment.
+
+## Thi đua và hồ sơ công khai — 19/10/2026, bước mới nhất
+- SOLID được lưu thành tiêu chí chung trong AGENTS.md của repository. Không áp dụng quy trình Git main/integration đã gửi nhầm từ project khác.
+- Đã thay CompetitionFragment cũ bằng view nhận state từ CompetitionViewModel. CompetitionRepository/PublicProfileRepository là các hợp đồng; adapter backend, DTO public, kiểm tra rank, đọc ảnh và UI được tách riêng, lắp ghép ở AppServices.
+- Thi đua đã dùng GET /rankings cho STREAK/DAILY_XP × FRIENDS/GLOBAL, hiện rank server, giữ đồng hạng, thông báo tối đa 100 người và chỉ bạn ACCEPTED. List/header cùng RecyclerView, có loading/lỗi/chưa kết nối/chưa có bạn bè; không dựng người dùng giả.
+- Bấm người học mở hồ sơ có nickname/bio/streak/EXP ngày/ảnh server. Nhận SSE cho board, friendship và public profile đang xem. Ảnh tải cùng origin có xác thực, giới hạn 4 MiB, decode mẫu tối đa khoảng 512 px.
+- Giữ filter qua recreation, giữ số liệu cá nhân khi đổi filter; một request đang chạy chỉ giữ một lượt refresh tiếp theo, không để burst sự kiện làm kết quả mãi bị loại. Khi phiên hết hạn có nút đăng nhập lại.
+- Debug/release/test APK, lint PASS; 173 JVM tests không lỗi. Bảy ca connected đã đạt qua các lượt: lần đầu 5 đạt/2 bị rate-limit setup; chạy lại 3 ca (gồm 2 bị chặn và ca ranking bản cuối) OK. Xem RESUMED_PROGRESS_2026-10-19.md.
+- Chưa có UI quản lý lời mời kết bạn, profile editor cloud, chat cloud/outbox hoặc deployment Internet. URL/key vẫn trống, APK dùng backend QA khi được cấu hình. Chưa commit/push.
+
+## Realtime thống kê và SOLID — bước tiếp theo ngày 19/10/2026
+- Android đã nhận SSE cho Dashboard, thống kê cá nhân trong Profile và Thi đua khi mở màn. Khi server có enrollment/completion hoặc hồ sơ của chính tài khoản thay đổi, tải lại summary thật, không cộng EXP trên client.
+- Tách EventStream (hợp đồng), BackendEventStream (xác thực/kết nối/cursor), SseReader (framing có giới hạn), OverviewEventPolicy (lọc sự kiện), LiveOverviewUpdates (gộp/reconnect/hủy), OverviewLiveBinding (kết nối lifecycle). AppServices lắp ghép; Fragment không quản lý socket/token.
+- Chốt cursor trước khi refresh; nối lại vẫn giữ cursor. Không giữ khóa session suốt stream. Gộp burst 500 ms, reconnect lùi 1–30 giây, hủy khi pause/đổi tài khoản. Dashboard không xóa đồ thị đang xem trong mỗi lần cập nhật nền.
+- Debug/test APK, release, lint PASS; 164 unit tests không lỗi. Năm ca Android–backend PASS qua hai lượt (4 + 1), gồm Dashboard nhận thay đổi khi vẫn ở nguyên màn, tự nối lại/gộp 100 sự kiện/hủy callback. Kết quả cuối xem RESUMED_PROGRESS_2026-10-19.md.
+- Đây là realtime summary, chưa phải đồng bộ toàn app: cloud chat, metadata hồ sơ/onboarding, danh sách ranking/public profile, outbox và lesson path giữa hai thiết bị còn tiếp tục. Không có deployment; URL/key vẫn trống. Chưa commit/push.
+
+## Tài khoản và tiến độ chung — 19/10/2026, lượt mới nhất
+- Đã nối Main login/register với backend và dùng chung phiên cho Lesson khi URL được cấu hình. Liên kết local chỉ khi chứng minh cả hai credentials; không gộp theo email. Refresh đa client và logout trễ đã kiểm tra.
+- Dashboard, Profile stats và số liệu cá nhân ở Thi đua dùng GET /me/dashboard; có cache riêng theo server/account/grade, trạng thái lỗi/đã lưu rõ ràng. Profile có đường xem thống kê công cụ cũ riêng, không cộng lại EXP legacy.
+- Completion/overview/public profile/ranking cùng ngày học và streak policy. Ca mô phỏng qua nửa đêm phát hiện lỗi, đã sửa và kiểm tra lại.
+- Build debug/release/test + lint PASS; 155 unit test; 23 backend test; 3 ca Android–backend PASS. Full regression OK (95 tests, opt-in bỏ qua theo cấu hình). Xem RESUMED_PROGRESS_2026-10-19.md và ../AIMentor_QA/unified-progress/.
+- Chưa có deployment, native SSE, cloud chat/bank/outbox hoặc sync đầy đủ metadata. URL/API key vẫn trống. Mã và APK lưu local, chưa commit/push. Backend bàn giao đã cập nhật trong app/BAN_GIAO_BACKEND.txt và backend/README.md.
+
+## Dashboard — cập nhật 19/10/2026
+- Không để vòng biểu đồ rỗng và bốn thanh 0 thay cho thông báo: khi chưa có dữ liệu, ẩn nhóm đồ thị và hiện biểu tượng, lời nhắc, nút bắt đầu luyện tập.
+- Phân biệt đang tải, chưa có dữ liệu, tải một phần, tải lỗi toàn bộ và có dữ liệu. Lỗi đọc không bị diễn giải thành người dùng chưa học; cho tải lại.
+- Giữ bố cục Dashboard cũ, dùng VI/EN và màu theo theme; không dựng số liệu giả. Biểu đồ hiện vẫn là phân bố EXP từ nguồn cũ trên thiết bị, chưa nối thống kê bài học server.
+- Build debug/test APK, unit và lint PASS: dashboard-states-build-verification.log. Sáu test trạng thái mới đạt; hai ca giao diện chạy tiếng Việt và hai ca tiếng Anh đạt (gồm đổi sáng/tối và có/chưa có dữ liệu). Báo cáo: ../AIMentor_QA/dashboard-states/vi-result.txt và en-result.txt.
+- Lượt chạy đầu bị System UI ANR che cửa sổ, không tính PASS; đã đóng hộp thoại trên emulator QA riêng và chạy lại thành công.
+- APK QA đã cập nhật. Chưa commit/push, chưa phải đã cập nhật app đang cài trên máy người dùng.
+
+> ĐÃ TIẾP TỤC ngày 19/10/2026. Checkpoint tạm dừng cũ: PAUSED_PROGRESS_2026-10-18.md. Lỗi Gradle DSL và lỗi lint cấu hình mạng QA đã sửa; build debug/release/test APK và lint PASS trong resumed-learning-device-build-verification.log. Backend 17/17 test PASS trong resumed-backend-tests-verification.log. Đang kiểm tra Android với backend thật; chưa hoàn tất đại tu và chưa push. Người dùng đã yêu cầu làm cả backend. Ảnh quy trình Git main/integration được người dùng xác nhận thuộc project khác, không áp dụng cho AIMentor; tệp AGENTS.md vừa tạo nhầm đã gỡ, nhánh làm việc đã trở về codex/publish-completed.
+
+## Lịch sử — 17/10/2026
+
+Kiểm chứng bổ sung ngày 19/10: full device regression OK (93 tests; ca API opt-in bỏ qua theo cấu hình), ca backend-connected chạy riêng PASS, tổng báo cáo unit 149/149, backend 17/17. Chi tiết và giới hạn hiện tại: RESUMED_PROGRESS_2026-10-19.md.
 
 Người dùng đã tiếp tục sửa trên máy, không dùng cloud. Backend máy chủ để bàn giao riêng.
 

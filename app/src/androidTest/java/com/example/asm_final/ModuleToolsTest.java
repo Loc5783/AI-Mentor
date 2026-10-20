@@ -101,17 +101,24 @@ public class ModuleToolsTest {
     };
     for (Class<?> tool : tools) {
       start(tool);
-      main(() -> {
-        if (tool == com.brightpath.science.presentation.ScienceHistoryActivity.class) {
-          assertTrue(resumed() instanceof com.brightpath.science.presentation.ScienceMainActivity);
-          assertEquals(com.brightpath.science.R.id.navScienceHistory,
-              ((com.google.android.material.bottomnavigation.BottomNavigationView) resumed().findViewById(
-                  com.brightpath.science.R.id.scienceBottomNavigation)).getSelectedItemId());
-        } else assertEquals(tool, resumed().getClass());
-        assertNotNull(resumed().findViewById(android.R.id.content));
-        assertNull(resumed().findViewById(android.R.id.content).findViewWithTag(
-            com.example.mathmodule.calculator.MathCalculator.TAG));
-      });
+      main(
+          () -> {
+            if (tool == com.brightpath.science.presentation.ScienceHistoryActivity.class) {
+              assertTrue(
+                  resumed() instanceof com.brightpath.science.presentation.ScienceMainActivity);
+              assertEquals(
+                  com.brightpath.science.R.id.navScienceHistory,
+                  ((com.google.android.material.bottomnavigation.BottomNavigationView)
+                          resumed()
+                              .findViewById(com.brightpath.science.R.id.scienceBottomNavigation))
+                      .getSelectedItemId());
+            } else assertEquals(tool, resumed().getClass());
+            assertNotNull(resumed().findViewById(android.R.id.content));
+            assertNull(
+                resumed()
+                    .findViewById(android.R.id.content)
+                    .findViewWithTag(com.example.mathmodule.calculator.MathCalculator.TAG));
+          });
       main(() -> resumed().finish());
     }
   }
@@ -262,7 +269,7 @@ public class ModuleToolsTest {
           main(
               () -> {
                 ((com.example.asm_final.activities.HomeActivity) resumed())
-                    .navigateTo(R.id.nav_category, false);
+                    .navigateTo(R.id.nav_legacy_tools, false);
                 ((AppCompatActivity) resumed())
                     .getSupportFragmentManager()
                     .executePendingTransactions();

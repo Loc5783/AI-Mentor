@@ -1,0 +1,27 @@
+<resources>
+    <string name="auth_account_exists">This email already has an account. Sign in to continue.</string>
+    <string name="auth_server_rate_limit">Too many attempts. Please wait a moment and try again.</string>
+    <string name="auth_server_error">Your account could not be confirmed by the server. Try again.</string>
+    <string name="auth_server_offline">Cannot connect to the server. Check your connection and retry; data on this device is kept.</string>
+    <string name="overview_title">Lesson progress</string>
+    <string name="overview_lessons">%1$d / %2$d lessons</string>
+    <string name="overview_daily_xp">Today: %1$d EXP</string>
+    <string name="overview_streak">Streak: %1$d days</string>
+    <string name="overview_no_enrollment">Choose a subject to start your learning path.</string>
+    <string name="overview_current">Updated from your lesson activity</string>
+    <string name="overview_cached">Showing saved progress. The latest update could not be loaded.</string>
+    <string name="overview_expired">Your session needs to be confirmed again. Saved progress is kept.</string>
+    <string name="overview_error">Lesson progress could not be loaded. Try again.</string>
+    <string name="overview_practice">Correct on the first try: %1$d / %2$d questions</string>
+    <string name="overview_assisted">%1$d questions used guidance · not an assessment of all your knowledge</string>
+    <string name="overview_source">EXP from lessons and review quizzes · across grades</string>
+    <string name="overview_choose_grade">Choose a grade to view your lesson progress.</string>
+    <string name="overview_reload">Refresh progress</string>
+    <string name="overview_sign_in">Sign in again</string>
+    <string name="overview_practice_heading">Practice results</string>
+    <string name="overview_no_practice">Complete a lesson to see your practice results here.</string>
+    <string name="overview_subject_progress">%1$d / %2$d lessons · %3$d EXP</string>
+    <string name="overview_no_curriculum">No learning path for this grade yet</string>
+    <string name="overview_legacy_title">Earlier tool activity</string>
+    <string name="overview_legacy_note">These statistics come from the earlier tools on this device. They are preserved separately and are not added again to EXP from the new learning path.</string>
+</resources>

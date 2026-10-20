@@ -8,4 +8,6 @@ public interface LearnerProfileRepository {
   void saveDraft(LearnerProfile profile);
 
   void complete(LearnerProfile profile);
+
+  void setGrade(int userId, int grade);
 }

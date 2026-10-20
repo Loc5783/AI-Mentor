@@ -1,0 +1,2 @@
+<resources><style name="ChatIconButton"><item name="android:layout_width">48dp</item><item name="android:layout_height">48dp</item><item name="android:padding">12dp</item><item name="android:background">?attr/selectableItemBackgroundBorderless</item><item name="android:tint">@color/textColorPrimary</item></style></resources>
+

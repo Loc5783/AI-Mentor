@@ -51,13 +51,7 @@ public class MainActivity extends AppCompatActivity {
           }
           model.submit(
               services.io(),
-              () -> {
-                if (!services.authenticator().authenticate(identifier, secret)) return null;
-                String canonical = services.accountLookup().canonicalUsername(identifier);
-                int id = services.accountLookup().userId(canonical);
-                if (id <= 0) return null;
-                return new AuthTicket(canonical, id, services.learners().load(id));
-              },
+              () -> services.accountAccess().signIn(identifier, secret),
               R.string.login_msg_fail);
         });
     register.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
@@ -97,10 +91,7 @@ public class MainActivity extends AppCompatActivity {
         remember.setChecked(true);
         model.submit(
             services.io(),
-            () -> {
-              int id = services.accountLookup().userId(saved);
-              return id > 0 ? new AuthTicket(saved, id, services.learners().load(id)) : null;
-            },
+            () -> services.accountAccess().restore(saved),
             R.string.auth_route_error);
       }
     }

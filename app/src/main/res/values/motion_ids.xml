@@ -1,1 +1,10 @@
-<resources><item type="id" name="mentor_motion_entered"/><item type="id" name="mentor_motion_card"/><item type="id" name="mentor_motion_list"/></resources>
+<resources>
+    <item type="id" name="mentor_motion_entered"/>
+    <item type="id" name="mentor_motion_card"/>
+    <item type="id" name="mentor_motion_list"/>
+    <item type="id" name="soft_motion_bound"/>
+    <item type="id" name="soft_motion_press"/>
+    <item type="id" name="course_path_progress"/>
+    <item type="id" name="course_path_summary"/>
+    <item type="id" name="course_completion_card"/>
+</resources>

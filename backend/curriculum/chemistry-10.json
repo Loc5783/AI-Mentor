@@ -1,0 +1,387 @@
+{
+  "subjectId": "chemistry",
+  "grade": 10,
+  "version": "intro-2026.1",
+  "title": "Khám phá nguyên tử",
+  "published": true,
+  "coverage": "INTRODUCTORY_BLOCK_ONLY",
+  "extendedReviews": false,
+  "sourceNote": "Nội dung nhập môn do AI Mentor biên soạn; không phải bản sao SGK hay toàn bộ chương trình năm học. Cần giáo viên duyệt trước khi dùng chính thức.",
+  "lessons": [
+    {
+      "id": "chemistry-10-particles",
+      "title": "Các hạt trong nguyên tử",
+      "guidance": [
+        "Nguyên tử gồm hạt nhân và các electron. Proton mang điện dương, electron mang điện âm; neutron không mang điện."
+      ],
+      "examples": [
+        "Nguyên tử carbon-12 có 6 proton, 6 neutron và 6 electron khi trung hòa."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-particles-q1",
+          "prompt": "Hạt nào mang điện tích âm?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Electron"
+            },
+            {
+              "id": "b",
+              "text": "Proton"
+            },
+            {
+              "id": "c",
+              "text": "Neutron"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Electron mang điện tích −1 theo đơn vị điện tích nguyên tố."
+        },
+        {
+          "id": "chemistry-10-particles-q2",
+          "prompt": "Hai loại hạt chủ yếu tạo nên hạt nhân nguyên tử là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Electron và proton"
+            },
+            {
+              "id": "b",
+              "text": "Electron và neutron"
+            },
+            {
+              "id": "c",
+              "text": "Proton và neutron"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hạt nhân gồm proton và neutron; electron phân bố ngoài hạt nhân."
+        },
+        {
+          "id": "chemistry-10-particles-q3",
+          "prompt": "Một nguyên tử trung hòa có 8 proton. Nó có bao nhiêu electron?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "0"
+            },
+            {
+              "id": "b",
+              "text": "8"
+            },
+            {
+              "id": "c",
+              "text": "16"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Trung hòa điện nghĩa tổng điện tích dương và âm cân bằng. Vì vậy số electron bằng số proton, bằng 8."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-atomic-number",
+      "title": "Số hiệu nguyên tử",
+      "guidance": [
+        "Số hiệu nguyên tử Z bằng số proton. Các nguyên tử thuộc cùng một nguyên tố có cùng Z."
+      ],
+      "examples": [
+        "Mọi nguyên tử oxygen có Z = 8, tức đều có 8 proton, dù số neutron có thể khác nhau."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-atomic-number-q1",
+          "prompt": "Số hiệu nguyên tử Z bằng số hạt nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Neutron"
+            },
+            {
+              "id": "b",
+              "text": "Proton cộng neutron"
+            },
+            {
+              "id": "c",
+              "text": "Proton"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Z được định nghĩa là số proton trong hạt nhân."
+        },
+        {
+          "id": "chemistry-10-atomic-number-q2",
+          "prompt": "Nguyên tử có 11 proton thuộc nguyên tố có Z bằng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không xác định"
+            },
+            {
+              "id": "b",
+              "text": "11"
+            },
+            {
+              "id": "c",
+              "text": "22"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Z bằng số proton nên Z = 11."
+        },
+        {
+          "id": "chemistry-10-atomic-number-q3",
+          "prompt": "Hai nguyên tử có cùng số proton nhưng khác số neutron có cùng nguyên tố không?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Có"
+            },
+            {
+              "id": "b",
+              "text": "Không"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ khi cùng số khối"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Số proton quyết định nguyên tố. Khác số neutron không làm đổi nguyên tố."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-mass-number",
+      "title": "Số khối",
+      "guidance": [
+        "Số khối A = Z + N, trong đó N là số neutron. A là số đếm nucleon, không phải khối lượng nguyên tử đo bằng gam."
+      ],
+      "examples": [
+        "Natri-23 có Z = 11 nên N = 23 − 11 = 12 neutron."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-mass-number-q1",
+          "prompt": "Công thức liên hệ số khối A, proton Z và neutron N là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "A = số electron"
+            },
+            {
+              "id": "b",
+              "text": "A = Z + N"
+            },
+            {
+              "id": "c",
+              "text": "A = Z − N"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Số khối là tổng số proton và neutron trong hạt nhân."
+        },
+        {
+          "id": "chemistry-10-mass-number-q2",
+          "prompt": "Nguyên tử có 6 proton và 7 neutron có số khối là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "13"
+            },
+            {
+              "id": "b",
+              "text": "1"
+            },
+            {
+              "id": "c",
+              "text": "6"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "A = 6 + 7 = 13."
+        },
+        {
+          "id": "chemistry-10-mass-number-q3",
+          "prompt": "Hạt nhân có A = 35 và Z = 17. Số neutron là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "52"
+            },
+            {
+              "id": "b",
+              "text": "17"
+            },
+            {
+              "id": "c",
+              "text": "18"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "N = A − Z = 35 − 17 = 18."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-isotopes",
+      "title": "Đồng vị",
+      "guidance": [
+        "Đồng vị của cùng nguyên tố có cùng số proton nhưng khác số neutron, nên thường khác số khối."
+      ],
+      "examples": [
+        "Carbon-12 và carbon-14 đều có 6 proton; chúng lần lượt có 6 và 8 neutron."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-isotopes-q1",
+          "prompt": "Các đồng vị của cùng nguyên tố luôn giống nhau về?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Số proton"
+            },
+            {
+              "id": "b",
+              "text": "Số neutron"
+            },
+            {
+              "id": "c",
+              "text": "Số khối"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Cùng nguyên tố nghĩa cùng Z, do đó cùng số proton."
+        },
+        {
+          "id": "chemistry-10-isotopes-q2",
+          "prompt": "Carbon-14 có 6 proton. Số neutron là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "6"
+            },
+            {
+              "id": "b",
+              "text": "14"
+            },
+            {
+              "id": "c",
+              "text": "8"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "N = 14 − 6 = 8."
+        },
+        {
+          "id": "chemistry-10-isotopes-q3",
+          "prompt": "Hai nguyên tử có (Z, A) là (8, 16) và (8, 18). Chúng là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cùng số neutron"
+            },
+            {
+              "id": "b",
+              "text": "Hai đồng vị của oxygen"
+            },
+            {
+              "id": "c",
+              "text": "Hai nguyên tố khác nhau"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Cả hai có Z = 8 nhưng A khác nhau, nên là đồng vị; số neutron lần lượt là 8 và 10."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-10-ions",
+      "title": "Nguyên tử và ion",
+      "guidance": [
+        "Khi nhường hoặc nhận electron, nguyên tử trở thành ion. Nhường electron tạo ion dương; nhận electron tạo ion âm. Hạt nhân không đổi trong quá trình này."
+      ],
+      "examples": [
+        "Na có 11 proton. Khi nhường 1 electron, Na⁺ còn 10 electron và vẫn có 11 proton."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-10-ions-q1",
+          "prompt": "Nguyên tử nhường một electron thường tạo thành?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ion âm"
+            },
+            {
+              "id": "b",
+              "text": "Nguyên tố mới"
+            },
+            {
+              "id": "c",
+              "text": "Ion dương"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mất electron âm khiến tổng điện tích trở nên dương; số proton không đổi."
+        },
+        {
+          "id": "chemistry-10-ions-q2",
+          "prompt": "Nguyên tử có 17 proton nhận thêm 1 electron từ trạng thái trung hòa. Ion có bao nhiêu electron?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "17"
+            },
+            {
+              "id": "b",
+              "text": "18"
+            },
+            {
+              "id": "c",
+              "text": "16"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Ban đầu có 17 electron; nhận thêm 1 thành 18 electron."
+        },
+        {
+          "id": "chemistry-10-ions-q3",
+          "prompt": "Ion Mg²⁺ có Z = 12. Số proton và electron lần lượt là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "12 và 10"
+            },
+            {
+              "id": "b",
+              "text": "10 và 12"
+            },
+            {
+              "id": "c",
+              "text": "12 và 14"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Z = 12 nên có 12 proton. Điện tích 2+ do mất 2 electron, còn 10 electron."
+        }
+      ]
+    }
+  ]
+}

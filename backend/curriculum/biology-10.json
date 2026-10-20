@@ -1,0 +1,387 @@
+{
+  "subjectId": "biology",
+  "grade": 10,
+  "version": "intro-2026.1",
+  "title": "Làm quen với tế bào",
+  "published": true,
+  "coverage": "INTRODUCTORY_BLOCK_ONLY",
+  "extendedReviews": false,
+  "sourceNote": "Nội dung nhập môn do AI Mentor biên soạn; không phải bản sao SGK hay toàn bộ chương trình năm học. Cần giáo viên duyệt trước khi dùng chính thức.",
+  "lessons": [
+    {
+      "id": "biology-10-cell-basics",
+      "title": "Tế bào — đơn vị của sự sống",
+      "guidance": [
+        "Tế bào là đơn vị cấu trúc và chức năng cơ bản của cơ thể sống. Một sinh vật có thể gồm một hoặc nhiều tế bào."
+      ],
+      "examples": [
+        "Vi khuẩn là sinh vật đơn bào. Cơ thể người gồm nhiều loại tế bào đảm nhiệm các chức năng khác nhau."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-cell-basics-q1",
+          "prompt": "Đơn vị cấu trúc và chức năng cơ bản của cơ thể sống là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tế bào"
+            },
+            {
+              "id": "b",
+              "text": "Nguyên tử riêng lẻ"
+            },
+            {
+              "id": "c",
+              "text": "Cơ quan"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Các hoạt động sống cơ bản diễn ra ở cấp tế bào; cơ quan được cấu tạo từ nhiều tế bào."
+        },
+        {
+          "id": "biology-10-cell-basics-q2",
+          "prompt": "Sinh vật đơn bào có cơ thể gồm?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đúng hai tế bào"
+            },
+            {
+              "id": "b",
+              "text": "Không có tế bào"
+            },
+            {
+              "id": "c",
+              "text": "Một tế bào"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Đơn bào nghĩa là cơ thể gồm một tế bào thực hiện các hoạt động sống."
+        },
+        {
+          "id": "biology-10-cell-basics-q3",
+          "prompt": "Tế bào cơ và tế bào thần kinh có hình dạng khác nhau chủ yếu vì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Một loại không phải tế bào"
+            },
+            {
+              "id": "b",
+              "text": "Chuyên hóa cho chức năng khác nhau"
+            },
+            {
+              "id": "c",
+              "text": "Không có điểm chung nào"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Sự chuyên hóa về cấu trúc giúp tế bào đảm nhiệm chức năng như co cơ hoặc truyền tín hiệu."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-membrane",
+      "title": "Màng sinh chất",
+      "guidance": [
+        "Màng sinh chất bao quanh tế bào, gồm lớp kép phospholipid và protein. Màng có tính thấm chọn lọc, điều hòa trao đổi chất với môi trường."
+      ],
+      "examples": [
+        "Một số phân tử nhỏ không phân cực có thể đi qua lớp lipid; nhiều chất khác cần protein vận chuyển."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-membrane-q1",
+          "prompt": "Thành phần nền tảng của màng sinh chất là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Một lớp cellulose duy nhất"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ DNA"
+            },
+            {
+              "id": "c",
+              "text": "Lớp kép phospholipid và protein"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Lớp kép phospholipid tạo nền màng, protein tham gia vận chuyển và nhiều chức năng khác."
+        },
+        {
+          "id": "biology-10-membrane-q2",
+          "prompt": "Tính thấm chọn lọc nghĩa là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không chất nào đi qua"
+            },
+            {
+              "id": "b",
+              "text": "Các chất đi qua màng với khả năng khác nhau"
+            },
+            {
+              "id": "c",
+              "text": "Mọi chất đi qua như nhau"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Màng không phải hàng rào kín tuyệt đối; cấu trúc màng và protein quyết định khả năng đi qua của từng chất."
+        },
+        {
+          "id": "biology-10-membrane-q3",
+          "prompt": "Nếu màng mất khả năng điều hòa trao đổi chất, nguy cơ trực tiếp là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mất ổn định môi trường bên trong tế bào"
+            },
+            {
+              "id": "b",
+              "text": "Tự tăng gấp đôi DNA ngay"
+            },
+            {
+              "id": "c",
+              "text": "Tạo thêm thành cellulose ngay"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Trao đổi không được kiểm soát làm xáo trộn thành phần bên trong, ảnh hưởng hoạt động sống của tế bào."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-prokaryote",
+      "title": "Tế bào nhân sơ",
+      "guidance": [
+        "Tế bào nhân sơ không có nhân được bao bởi màng nhân. Vật chất di truyền nằm ở vùng nhân; tế bào vẫn có màng sinh chất và ribosome."
+      ],
+      "examples": [
+        "Vi khuẩn có DNA ở vùng nhân và ribosome để tổng hợp protein; không có ti thể có màng bao như tế bào nhân thực."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-prokaryote-q1",
+          "prompt": "Đặc điểm nổi bật của tế bào nhân sơ là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không có màng sinh chất"
+            },
+            {
+              "id": "b",
+              "text": "Không có nhân được màng nhân bao bọc"
+            },
+            {
+              "id": "c",
+              "text": "Không có DNA"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Nhân sơ có DNA nhưng DNA không nằm trong nhân có màng bao."
+        },
+        {
+          "id": "biology-10-prokaryote-q2",
+          "prompt": "Cấu trúc nào có ở tế bào vi khuẩn điển hình?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ribosome"
+            },
+            {
+              "id": "b",
+              "text": "Lục lạp có màng kép"
+            },
+            {
+              "id": "c",
+              "text": "Nhân có màng bao"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Ribosome tham gia tổng hợp protein và có ở cả tế bào nhân sơ lẫn nhân thực."
+        },
+        {
+          "id": "biology-10-prokaryote-q3",
+          "prompt": "Quan sát thấy tế bào không có màng nhân. Có thể kết luận tế bào không có vật chất di truyền không?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Có; DNA chỉ tồn tại trong màng nhân"
+            },
+            {
+              "id": "b",
+              "text": "Có; mọi tế bào đều có nhân thực"
+            },
+            {
+              "id": "c",
+              "text": "Không; cần phân biệt DNA với màng nhân"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tế bào nhân sơ chứa DNA ở vùng nhân. Thiếu màng nhân không đồng nghĩa thiếu DNA."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-eukaryote",
+      "title": "Tế bào nhân thực",
+      "guidance": [
+        "Tế bào nhân thực có nhân được màng bao bọc và các bào quan chuyên hóa. Nhân chứa phần lớn DNA của tế bào; ribosome tổng hợp protein."
+      ],
+      "examples": [
+        "Tế bào động vật điển hình có nhân, ti thể và ribosome. Tế bào thực vật quang hợp còn có lục lạp."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-eukaryote-q1",
+          "prompt": "Tế bào nhân thực điển hình có đặc điểm nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Có nhân được màng bao bọc"
+            },
+            {
+              "id": "b",
+              "text": "Luôn không có DNA"
+            },
+            {
+              "id": "c",
+              "text": "Không có ribosome"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nhân có màng bao là đặc điểm phân biệt cơ bản của tế bào nhân thực."
+        },
+        {
+          "id": "biology-10-eukaryote-q2",
+          "prompt": "Cấu trúc trực tiếp tổng hợp protein là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Màng nhân"
+            },
+            {
+              "id": "b",
+              "text": "Không bào"
+            },
+            {
+              "id": "c",
+              "text": "Ribosome"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Ribosome liên kết các amino acid theo thông tin được truyền từ gene."
+        },
+        {
+          "id": "biology-10-eukaryote-q3",
+          "prompt": "Một tế bào lá đang quang hợp cần bào quan nào trực tiếp thu nhận năng lượng ánh sáng?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nhân"
+            },
+            {
+              "id": "b",
+              "text": "Lục lạp"
+            },
+            {
+              "id": "c",
+              "text": "Ribosome"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Lục lạp chứa sắc tố quang hợp và bộ máy chuyển hóa năng lượng ánh sáng."
+        }
+      ]
+    },
+    {
+      "id": "biology-10-transport",
+      "title": "Vận chuyển qua màng",
+      "guidance": [
+        "Khuếch tán thụ động không cần tế bào cung cấp năng lượng trực tiếp và đi theo gradient nồng độ của chất. Thẩm thấu là sự di chuyển của nước qua màng thấm chọn lọc."
+      ],
+      "examples": [
+        "Với màng chỉ cho nước qua, nước có xu hướng đi từ phía có nồng độ chất tan thấp sang phía có nồng độ chất tan cao hơn."
+      ],
+      "questions": [
+        {
+          "id": "biology-10-transport-q1",
+          "prompt": "Vận chuyển thụ động thường có đặc điểm nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Luôn tiêu thụ ATP trực tiếp"
+            },
+            {
+              "id": "b",
+              "text": "Luôn ngược gradient nồng độ"
+            },
+            {
+              "id": "c",
+              "text": "Không cần cung cấp năng lượng trực tiếp"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Khuếch tán sử dụng chênh lệch nồng độ, không cần tế bào cung cấp năng lượng trực tiếp."
+        },
+        {
+          "id": "biology-10-transport-q2",
+          "prompt": "Thẩm thấu là sự di chuyển của chất nào qua màng thấm chọn lọc?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ DNA"
+            },
+            {
+              "id": "b",
+              "text": "Nước"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ protein"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Thuật ngữ thẩm thấu mô tả chuyển động của nước qua màng thấm chọn lọc."
+        },
+        {
+          "id": "biology-10-transport-q3",
+          "prompt": "Màng chỉ cho nước qua, một phía nhiều chất tan hơn. Nước có xu hướng đi về đâu?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phía có nồng độ chất tan cao hơn"
+            },
+            {
+              "id": "b",
+              "text": "Phía có nồng độ chất tan thấp hơn"
+            },
+            {
+              "id": "c",
+              "text": "Không di chuyển dù có chênh lệch"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Trong điều kiện đã nêu, chênh lệch thế nước làm nước đi về phía có nhiều chất tan hơn. Cần xét cả áp suất nếu điều kiện thay đổi."
+        }
+      ]
+    }
+  ]
+}

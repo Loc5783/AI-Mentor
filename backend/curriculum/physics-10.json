@@ -1,0 +1,387 @@
+{
+  "subjectId": "physics",
+  "grade": 10,
+  "version": "intro-2026.1",
+  "title": "Chuyển động quanh ta",
+  "published": true,
+  "coverage": "INTRODUCTORY_BLOCK_ONLY",
+  "extendedReviews": false,
+  "sourceNote": "Nội dung nhập môn do AI Mentor biên soạn; không phải bản sao SGK hay toàn bộ chương trình năm học. Cần giáo viên duyệt trước khi dùng chính thức.",
+  "lessons": [
+    {
+      "id": "physics-10-position",
+      "title": "Vị trí và hệ quy chiếu",
+      "guidance": [
+        "Mô tả vị trí cần một mốc và chiều dương. Tọa độ có thể âm; điều đó không có nghĩa vật không chuyển động."
+      ],
+      "examples": [
+        "Chọn cổng trường làm gốc, chiều đông là chiều dương. Một bạn cách cổng 20 m về tây có tọa độ −20 m."
+      ],
+      "questions": [
+        {
+          "id": "physics-10-position-q1",
+          "prompt": "Muốn nói rõ vị trí của một vật, trước hết cần chọn gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mốc và hệ tọa độ"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ khối lượng vật"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ màu sắc vật"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Vị trí được xác định tương đối với mốc trong hệ tọa độ đã chọn."
+        },
+        {
+          "id": "physics-10-position-q2",
+          "prompt": "Gốc tại nhà, chiều đông dương. Bạn ở 30 m về tây có tọa độ bao nhiêu?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "+30 m"
+            },
+            {
+              "id": "b",
+              "text": "0 m"
+            },
+            {
+              "id": "c",
+              "text": "−30 m"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Phía tây ngược chiều dương nên tọa độ là −30 m."
+        },
+        {
+          "id": "physics-10-position-q3",
+          "prompt": "Xe đứng yên so với mặt đường. Người đi bộ có thấy xe đổi vị trí so với mình không?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ khi xe tăng khối lượng"
+            },
+            {
+              "id": "b",
+              "text": "Có thể có"
+            },
+            {
+              "id": "c",
+              "text": "Không bao giờ"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Chuyển động có tính tương đối. Người đi bộ đổi vị trí so với xe, nên xe cũng đổi vị trí trong hệ quy chiếu gắn với người đó."
+        }
+      ]
+    },
+    {
+      "id": "physics-10-displacement",
+      "title": "Quãng đường và độ dịch chuyển",
+      "guidance": [
+        "Quãng đường là tổng chiều dài đường đi. Độ dịch chuyển nối vị trí đầu với vị trí cuối; trong chuyển động thẳng, Δx = x₂ − x₁."
+      ],
+      "examples": [
+        "Đi 5 m về đông rồi 2 m về tây: quãng đường 7 m, độ dịch chuyển +3 m nếu chọn chiều đông dương."
+      ],
+      "questions": [
+        {
+          "id": "physics-10-displacement-q1",
+          "prompt": "Đại lượng nào bằng tổng chiều dài đường đã đi?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Độ dịch chuyển luôn có dấu"
+            },
+            {
+              "id": "b",
+              "text": "Gia tốc"
+            },
+            {
+              "id": "c",
+              "text": "Quãng đường"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Quãng đường cộng chiều dài từng chặng, không trừ chặng đi ngược chiều."
+        },
+        {
+          "id": "physics-10-displacement-q2",
+          "prompt": "Từ x = −2 m đến x = 4 m, độ dịch chuyển bằng bao nhiêu?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "−6 m"
+            },
+            {
+              "id": "b",
+              "text": "+6 m"
+            },
+            {
+              "id": "c",
+              "text": "+2 m"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Δx = 4 − (−2) = +6 m."
+        },
+        {
+          "id": "physics-10-displacement-q3",
+          "prompt": "Chạy trọn một vòng sân dài 400 m về đúng chỗ cũ, độ lớn độ dịch chuyển là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "0 m"
+            },
+            {
+              "id": "b",
+              "text": "400 m"
+            },
+            {
+              "id": "c",
+              "text": "800 m"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Vị trí đầu và cuối trùng nhau nên độ dịch chuyển bằng 0; quãng đường vẫn là 400 m."
+        }
+      ]
+    },
+    {
+      "id": "physics-10-speed",
+      "title": "Tốc độ trung bình",
+      "guidance": [
+        "Tốc độ trung bình bằng tổng quãng đường chia tổng thời gian: v = s/t. Tính cả thời gian dừng nếu nó thuộc khoảng thời gian đang xét."
+      ],
+      "examples": [
+        "Đi 120 m trong 60 s rồi nghỉ 20 s: tốc độ trung bình của toàn bộ 80 s là 120/80 = 1,5 m/s."
+      ],
+      "questions": [
+        {
+          "id": "physics-10-speed-q1",
+          "prompt": "Công thức tính tốc độ trung bình là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Quãng đường × thời gian"
+            },
+            {
+              "id": "b",
+              "text": "Tổng quãng đường / tổng thời gian"
+            },
+            {
+              "id": "c",
+              "text": "Độ dịch chuyển × thời gian"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Tốc độ trung bình dùng tổng quãng đường và tổng thời gian, không lấy trung bình cộng tùy ý các tốc độ."
+        },
+        {
+          "id": "physics-10-speed-q2",
+          "prompt": "Đi được 150 m trong 30 s, tốc độ trung bình là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "5 m/s"
+            },
+            {
+              "id": "b",
+              "text": "0,2 m/s"
+            },
+            {
+              "id": "c",
+              "text": "4500 m/s"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "v = s/t = 150/30 = 5 m/s."
+        },
+        {
+          "id": "physics-10-speed-q3",
+          "prompt": "Đi 100 m trong 50 s rồi nghỉ 50 s. Tốc độ trung bình cả khoảng là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "2 m/s"
+            },
+            {
+              "id": "b",
+              "text": "4 m/s"
+            },
+            {
+              "id": "c",
+              "text": "1 m/s"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tổng thời gian là 100 s. v = 100/100 = 1 m/s."
+        }
+      ]
+    },
+    {
+      "id": "physics-10-velocity",
+      "title": "Vận tốc và chiều chuyển động",
+      "guidance": [
+        "Vận tốc trung bình bằng độ dịch chuyển chia thời gian. Trong chuyển động thẳng, dấu vận tốc thể hiện chiều so với chiều dương."
+      ],
+      "examples": [
+        "Trong 4 s, vật từ x = 10 m đến x = 2 m: v = (2 − 10)/4 = −2 m/s."
+      ],
+      "questions": [
+        {
+          "id": "physics-10-velocity-q1",
+          "prompt": "Vận tốc trung bình được tính từ đại lượng nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Độ dịch chuyển và thời gian"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ quãng đường"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ khối lượng"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Vận tốc trung bình là Δx/Δt trong chuyển động thẳng."
+        },
+        {
+          "id": "physics-10-velocity-q2",
+          "prompt": "Vật dịch chuyển −12 m trong 3 s. Vận tốc trung bình bằng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "+4 m/s"
+            },
+            {
+              "id": "b",
+              "text": "−36 m/s"
+            },
+            {
+              "id": "c",
+              "text": "−4 m/s"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "v = −12/3 = −4 m/s, tức theo chiều âm."
+        },
+        {
+          "id": "physics-10-velocity-q3",
+          "prompt": "Đi rồi quay lại đúng vị trí ban đầu sau 20 s. Vận tốc trung bình là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không thể bằng 0"
+            },
+            {
+              "id": "b",
+              "text": "0 m/s"
+            },
+            {
+              "id": "c",
+              "text": "Luôn dương"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Độ dịch chuyển bằng 0 nên vận tốc trung bình bằng 0, dù tốc độ trung bình có thể khác 0."
+        }
+      ]
+    },
+    {
+      "id": "physics-10-acceleration",
+      "title": "Gia tốc trong chuyển động thẳng",
+      "guidance": [
+        "Gia tốc trung bình a = (v₂ − v₁)/Δt. Dấu gia tốc phải xét cùng dấu vận tốc để biết vật nhanh lên hay chậm đi."
+      ],
+      "examples": [
+        "Xe có v tăng từ 2 lên 8 m/s trong 3 s: a = (8 − 2)/3 = 2 m/s²."
+      ],
+      "questions": [
+        {
+          "id": "physics-10-acceleration-q1",
+          "prompt": "Đơn vị SI của gia tốc là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "m/s"
+            },
+            {
+              "id": "b",
+              "text": "m²/s"
+            },
+            {
+              "id": "c",
+              "text": "m/s²"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Gia tốc là độ biến thiên vận tốc trong một giây nên có đơn vị (m/s)/s = m/s²."
+        },
+        {
+          "id": "physics-10-acceleration-q2",
+          "prompt": "Vận tốc tăng từ 4 lên 10 m/s trong 2 s. Gia tốc trung bình bằng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "12 m/s²"
+            },
+            {
+              "id": "b",
+              "text": "3 m/s²"
+            },
+            {
+              "id": "c",
+              "text": "7 m/s²"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "a = (10 − 4)/2 = 3 m/s²."
+        },
+        {
+          "id": "physics-10-acceleration-q3",
+          "prompt": "Xe đang có v = +10 m/s và a = −2 m/s² không đổi. Ngay lúc đó xe thế nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đang chậm dần"
+            },
+            {
+              "id": "b",
+              "text": "Đang nhanh dần"
+            },
+            {
+              "id": "c",
+              "text": "Đã đứng yên"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Gia tốc ngược dấu vận tốc nên độ lớn vận tốc đang giảm; xe chưa đứng yên khi v vẫn là +10 m/s."
+        }
+      ]
+    }
+  ]
+}

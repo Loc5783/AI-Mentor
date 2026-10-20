@@ -1,8 +1,34 @@
 ﻿BÀN GIAO BACKEND — ỨNG DỤNG AIMENTOR
-Cập nhật: 18/10/2026
+Cập nhật: 19/10/2026
 Mã nguồn tham chiếu: https://github.com/Loc5783/AI-Mentor
 Mốc chức năng trước khi viết tài liệu: commit 2fd1e13.
 Vị trí tài liệu: app/BAN_GIAO_BACKEND.txt
+
+CẬP NHẬT QUAN TRỌNG — PHẦN DƯỚI LÀ THIẾT KẾ/HỒ SƠ LỊCH SỬ
+Người dùng đã yêu cầu làm cả backend. Thư mục backend/ hiện chứa dịch vụ
+FastAPI/SQLite chạy được: auth, chat, hồ sơ, tệp, bạn bè, ranking, SSE,
+engine enrollment/placement/lesson/review/completion/question-bank.
+Hợp đồng API đúng với code hiện tại: docs/backend/runtime-openapi.json;
+docs/backend/openapi.json trước đó là thiết kế, không phải mọi endpoint đã làm.
+Đợt hiện tại hoàn thiện Sinh/Hóa/Lý; sáu môn khác chỉ là khung.
+Nội dung thật mới có ba block nhập môn lớp 10, cần mở rộng và giáo viên duyệt.
+
+Android khi cấu hình backend dùng chung phiên đăng nhập ở màn chính cho Lesson.
+Endpoint GET /me/dashboard?grade=10|11|12 là nguồn thống kê chung cho Dashboard,
+Profile và số liệu cá nhân ở Thi đua. EXP/streak do ledger server quyết định,
+không nhận EXP tùy ý từ client. Cache tách theo account/server/grade.
+Không gộp người dùng chỉ vì trùng email. Dữ liệu công cụ cũ giữ riêng, xem từ
+Profile; chưa nhập XP cũ vào xếp hạng mới và chưa chuyển đủ chat/bank cũ.
+
+CHƯA CÓ DEPLOYMENT INTERNET. MENTOR_BACKEND_URL và API key trên Git để trống.
+Android đã nối SSE cho summary ở Dashboard, Profile stats, số liệu cá nhân
+Thi đua: cursor, reconnect/backoff, gộp sự kiện, hủy theo lifecycle/account.
+Bảng thi đua đã nối hai tiêu chí/hai phạm vi và rank server; bấm người học mở
+hồ sơ công khai (biệt danh, bio, streak, EXP ngày, ảnh), nhận cập nhật SSE.
+Outbox, chat cloud, UI quản lý lời mời kết bạn, profile editor/onboarding,
+lesson state trên thiết bị khác và đồng bộ đầy đủ thiết lập còn phải làm.
+Chưa hoàn tất đại tu. SOLID được giữ làm tiêu chí chung trong AGENTS.md.
+Các câu mô tả "chưa có backend" bên dưới chỉ phản ánh mốc tài liệu cũ.
 
 1. MỤC ĐÍCH VÀ PHẠM VI
 

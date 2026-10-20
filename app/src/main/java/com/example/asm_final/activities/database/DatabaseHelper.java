@@ -187,6 +187,33 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
     }
   }
 
+  /** A local cache for an authenticated server identity. Never enables local-password fallback. */
+  public long addRemoteAccount(String username, String email, String displayName, int grade) {
+    SQLiteDatabase db = getWritableDatabase();
+    db.beginTransaction();
+    try {
+      long id =
+          insertAccount(
+              db,
+              username,
+              java.util.UUID.randomUUID().toString(),
+              email,
+              "",
+              grade >= 10 && grade <= 12 ? 5 : 0,
+              displayName,
+              System.currentTimeMillis());
+      if (id > 0 && grade >= 10 && grade <= 12) {
+        ContentValues values = new ContentValues();
+        values.put("grade", grade);
+        db.update("learner_profiles", values, "user_id=?", new String[] {Long.toString(id)});
+      }
+      db.setTransactionSuccessful();
+      return id;
+    } finally {
+      db.endTransaction();
+    }
+  }
+
   /*
    * Responsibility: Validates the conditions or rules handled by `check login` and returns the result to the caller.
    * Purpose: A dedicated validation method keeps rules consistent and easier to test.

@@ -1,0 +1,16 @@
+<resources>
+    <string name="ranking_loading">Loading competition…</string>
+    <string name="ranking_error">Could not load the ranking. Check your connection and try again.</string>
+    <string name="ranking_login">Your session has expired. Sign in again to view the ranking.</string>
+    <string name="ranking_empty">There are no learners in this list yet.</string>
+    <string name="ranking_friends_empty">No friends to compete with yet. Accepted friends will appear here.</string>
+    <string name="ranking_rules">Equal scores share a rank · Up to 100 learners shown</string>
+    <string name="ranking_day">Learning day %1$s · UTC+7</string>
+    <string name="ranking_retry">Refresh</string>
+    <string name="ranking_profile">Learner profile</string>
+    <string name="ranking_profile_error">Could not load this profile. Please try again.</string>
+    <string name="ranking_bio_empty">No introduction yet.</string>
+    <string name="ranking_avatar_error">Could not load the avatar.</string>
+    <string name="ranking_open_profile">View %1$s, rank %2$d, %3$s</string>
+    <string name="ranking_close">Close</string>
+</resources>

@@ -1,0 +1,12 @@
+<resources>
+    <item type="id" name="ranking_list"/>
+    <item type="id" name="ranking_status"/>
+    <item type="id" name="ranking_refresh"/>
+    <item type="id" name="ranking_scope_global"/>
+    <item type="id" name="ranking_scope_friends"/>
+    <item type="id" name="ranking_metric_xp"/>
+    <item type="id" name="ranking_metric_streak"/>
+    <item type="id" name="public_profile_name"/>
+    <item type="id" name="public_profile_bio"/>
+    <item type="id" name="public_profile_stats"/>
+</resources>

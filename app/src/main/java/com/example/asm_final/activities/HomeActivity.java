@@ -32,6 +32,7 @@ public class HomeActivity extends AppCompatActivity
   private String username;
   private int destination = R.id.nav_home;
   private boolean syncing;
+  private int authenticatedOwner;
 
   @Override
   protected void onCreate(Bundle state) {
@@ -50,6 +51,7 @@ public class HomeActivity extends AppCompatActivity
         logout();
         return;
       }
+      authenticatedOwner = accountId;
       learning = authServices.learners().load(accountId);
     } catch (RuntimeException storageError) {
       android.widget.Toast.makeText(
@@ -89,7 +91,8 @@ public class HomeActivity extends AppCompatActivity
           return true;
         });
     getSupportFragmentManager().addOnBackStackChangedListener(this::syncNavigation);
-    if (state == null) navigateTo(R.id.nav_home, false);
+    if (state == null)
+      navigateTo(getIntent().hasExtra("CHAT_THREAD_ID") ? R.id.nav_chat : R.id.nav_home, false);
     else {
       destination = state.getInt("shell_destination", R.id.nav_home);
       syncNavigation();
@@ -114,7 +117,10 @@ public class HomeActivity extends AppCompatActivity
   public void navigateTo(int id, boolean remember) {
     Fragment fragment;
     if (id == R.id.nav_home) fragment = new HomeFragment();
-    else if (id == R.id.nav_category) fragment = new CategoryFragment();
+    else if (id == R.id.nav_chat) fragment = new GeneralChatFragment();
+    else if (id == R.id.nav_category) fragment = new LessonHubFragment();
+    else if (id == R.id.nav_competition) fragment = new CompetitionFragment();
+    else if (id == R.id.nav_legacy_tools) fragment = new CategoryFragment();
     else if (id == R.id.nav_profile) fragment = new ProfileHubFragment();
     else if (id == R.id.nav_edit_profile) fragment = new ProfileFragment();
     else if (id == R.id.nav_settings) fragment = new SettingsFragment();
@@ -132,10 +138,20 @@ public class HomeActivity extends AppCompatActivity
     syncNavigationSelection();
   }
 
+  @Override
+  protected void onResume() {
+    super.onResume();
+    if (authenticatedOwner > 0
+        && com.example.mentor.data.ActiveUser.get(this) != authenticatedOwner) finish();
+  }
+
   private void syncNavigation() {
     Fragment current = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
     if (current instanceof HomeFragment) destination = R.id.nav_home;
-    else if (current instanceof CategoryFragment) destination = R.id.nav_category;
+    else if (current instanceof GeneralChatFragment) destination = R.id.nav_chat;
+    else if (current instanceof LessonHubFragment) destination = R.id.nav_category;
+    else if (current instanceof CompetitionFragment) destination = R.id.nav_competition;
+    else if (current instanceof CategoryFragment) destination = R.id.nav_legacy_tools;
     else if (current instanceof ProfileHubFragment) destination = R.id.nav_profile;
     else if (current instanceof ProfileFragment) destination = R.id.nav_edit_profile;
     else if (current instanceof SettingsFragment) destination = R.id.nav_settings;
@@ -144,6 +160,15 @@ public class HomeActivity extends AppCompatActivity
 
   private void syncNavigationSelection() {
     syncing = true;
+    findViewById(R.id.toolbar)
+        .setVisibility(
+            destination == R.id.nav_home
+                    || destination == R.id.nav_chat
+                    || destination == R.id.nav_category
+                    || destination == R.id.nav_competition
+                    || destination == R.id.nav_profile
+                ? View.GONE
+                : View.VISIBLE);
     navigationView.setCheckedItem(
         destination == R.id.nav_edit_profile ? R.id.nav_profile : destination);
     // Profile is owned by Settings in bottom navigation, and remains selected correctly on back.
@@ -152,7 +177,7 @@ public class HomeActivity extends AppCompatActivity
         .findItem(
             destination == R.id.nav_settings || destination == R.id.nav_edit_profile
                 ? R.id.nav_profile
-                : destination)
+                : destination == R.id.nav_legacy_tools ? R.id.nav_category : destination)
         .setChecked(true);
     syncing = false;
   }
@@ -172,6 +197,14 @@ public class HomeActivity extends AppCompatActivity
   }
 
   public void logout() {
+    int owner = com.example.mentor.data.ActiveUser.get(this);
+    if (owner > 0) {
+      Runnable revoke = com.example.asm_final.backend.BackendClient.detach(this, owner);
+      ((com.example.asm_final.AiMentorApplication) getApplication())
+          .services()
+          .io()
+          .execute(revoke);
+    }
     com.example.asm_final.accounts.AuthSession.clear(this);
     startActivity(
         new Intent(this, MainActivity.class)

@@ -30,6 +30,7 @@ public class ResearchUxTest {
   private String username;
   private int userId, originalUser;
   private boolean originalNight;
+  private String originalLanguage;
   private Map<String, ?> calculatorState;
   private Activity foreground;
 
@@ -85,6 +86,10 @@ public class ResearchUxTest {
   public void prepare() {
     originalUser = com.example.mentor.data.ActiveUser.get(context);
     originalNight = ThemeHelper.isDarkMode(context);
+    originalLanguage = com.example.asm_final.utils.LocaleHelper.getLanguage(context);
+    String testLanguage =
+        InstrumentationRegistry.getArguments().getString("mentorLocale", originalLanguage);
+    main(() -> com.example.asm_final.utils.LocaleHelper.setLocale(context, testLanguage));
     calculatorState = new HashMap<>(context.getSharedPreferences("math_calculator", 0).getAll());
     context.getSharedPreferences("math_calculator", 0).edit().clear().apply();
     try (com.example.mathmodule.databases.SqliteDbHelper helper =
@@ -115,6 +120,7 @@ public class ResearchUxTest {
                     ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(stage)))
               a.finish();
           ThemeHelper.setDarkMode(context, originalNight);
+          com.example.asm_final.utils.LocaleHelper.setLocale(context, originalLanguage);
         });
     if (userId > 0) {
       try (com.example.asm_final.activities.database.DatabaseHelper helper =
@@ -231,7 +237,14 @@ public class ResearchUxTest {
           assertNotNull(resumed().findViewById(R.id.pie_chart_exp));
           assertNotNull(resumed().findViewById(R.id.pb_time_math));
           assertNotNull(resumed().findViewById(R.id.mini_math));
-          assertEquals(View.VISIBLE, resumed().findViewById(R.id.pie_chart_exp).getVisibility());
+          assertEquals(View.GONE, resumed().findViewById(R.id.chart_data_group).getVisibility());
+          assertEquals(
+              View.VISIBLE, resumed().findViewById(R.id.chart_placeholder).getVisibility());
+          assertEquals(
+              resumed().getString(R.string.home_chart_empty_title),
+              ((TextView) resumed().findViewById(R.id.chart_placeholder_title))
+                  .getText()
+                  .toString());
           assertNull(resumed().findViewById(R.id.card_learning_streak));
           assertEquals(
               "0", ((TextView) resumed().findViewById(R.id.tv_chart_center)).getText().toString());
@@ -250,13 +263,20 @@ public class ResearchUxTest {
                         & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
                     == (!originalNight
                         ? android.content.res.Configuration.UI_MODE_NIGHT_YES
-                        : android.content.res.Configuration.UI_MODE_NIGHT_NO));
+                        : android.content.res.Configuration.UI_MODE_NIGHT_NO)
+                && a.findViewById(R.id.chart_loading_spinner).getVisibility() == View.GONE);
     main(
         () ->
-            assertEquals(View.VISIBLE, resumed().findViewById(R.id.pie_chart_exp).getVisibility()));
+            assertEquals(View.GONE, resumed().findViewById(R.id.chart_data_group).getVisibility()));
     capture("ux-original-dashboard-restored");
     onView(withId(R.id.button_chart_action)).perform(scrollTo(), click());
-    waitFor(a -> a.findViewById(R.id.cardMath) != null);
+    waitFor(
+        a ->
+            a instanceof HomeActivity
+                && ((HomeActivity) a)
+                        .getSupportFragmentManager()
+                        .findFragmentById(R.id.fragment_container)
+                    instanceof com.example.asm_final.activities.fragments.LessonHubFragment);
   }
 
   @Test
@@ -294,6 +314,8 @@ public class ResearchUxTest {
               resumed().getString(R.string.home_chart_center),
               ((TextView) resumed().findViewById(R.id.tv_chart_center)).getText().toString());
           assertEquals(View.GONE, resumed().findViewById(R.id.button_chart_action).getVisibility());
+          assertEquals(View.VISIBLE, resumed().findViewById(R.id.chart_data_group).getVisibility());
+          assertEquals(View.GONE, resumed().findViewById(R.id.chart_placeholder).getVisibility());
           assertTrue(
               ((TextView) resumed().findViewById(R.id.chart_exp_history))
                   .getText()
@@ -664,7 +686,13 @@ public class ResearchUxTest {
       onView(withId(R.id.button_streak_quiz))
           .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
           .perform(scrollTo(), click());
-      waitFor(a -> a.findViewById(R.id.cardMath) != null);
+      waitFor(
+          a ->
+              a instanceof HomeActivity
+                  && ((HomeActivity) a)
+                          .getSupportFragmentManager()
+                          .findFragmentById(R.id.fragment_container)
+                      instanceof com.example.asm_final.activities.fragments.LessonHubFragment);
     } finally {
       main(() -> com.example.asm_final.utils.LocaleHelper.setLocale(context, language));
     }

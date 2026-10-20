@@ -300,7 +300,7 @@ public class AuthOnboardingTest {
     await(HomeActivity.class);
     main(
         () -> {
-          ((HomeActivity) current()).navigateTo(R.id.nav_profile, false);
+          ((HomeActivity) current()).navigateTo(R.id.nav_settings, false);
           ((AppCompatActivity) current()).getSupportFragmentManager().executePendingTransactions();
         });
     waitFor(a -> a.findViewById(R.id.setting_app_guide) != null);

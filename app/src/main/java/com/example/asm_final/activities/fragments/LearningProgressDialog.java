@@ -39,8 +39,14 @@ public final class LearningProgressDialog extends DialogFragment {
               dismiss();
               host.navigateTo(R.id.nav_category, false);
             });
-    return new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
-        .setTitle(R.string.learning_progress_title)
+    com.google.android.material.dialog.MaterialAlertDialogBuilder builder =
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext());
+    boolean legacy = getArguments() != null && getArguments().getBoolean("legacy_only", false);
+    content
+        .findViewById(R.id.legacy_progress_note)
+        .setVisibility(legacy ? View.VISIBLE : View.GONE);
+    return builder
+        .setTitle(legacy ? R.string.overview_legacy_title : R.string.learning_progress_title)
         .setView(content)
         .setPositiveButton(android.R.string.ok, null)
         .create();

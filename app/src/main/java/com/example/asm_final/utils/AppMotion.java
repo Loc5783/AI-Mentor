@@ -1,12 +1,9 @@
 package com.example.asm_final.utils;
 
 import android.animation.AnimatorInflater;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Application;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.cardview.widget.CardView;
@@ -25,10 +22,7 @@ public final class AppMotion implements Application.ActivityLifecycleCallbacks {
   }
 
   private static boolean enabled(View view) {
-    if (Build.VERSION.SDK_INT >= 26 && !ValueAnimator.areAnimatorsEnabled()) return false;
-    return Settings.Global.getFloat(
-            view.getContext().getContentResolver(), Settings.Global.TRANSITION_ANIMATION_SCALE, 1f)
-        > 0f;
+    return MotionSettings.enabled(view.getContext());
   }
 
   private static void enter(View view) {
@@ -44,14 +38,18 @@ public final class AppMotion implements Application.ActivityLifecycleCallbacks {
   }
 
   private static void decorate(View view) {
-    if (view instanceof CardView
-        && view.isClickable()
-        && view.getTag(R.id.mentor_motion_card) == null) {
+    if (view.getTag(R.id.soft_motion_press) != null) SoftMotion.press(view);
+    if (view instanceof CardView && view.isClickable()) {
       view.setTag(R.id.mentor_motion_card, true);
       if (enabled(view) && view.getStateListAnimator() == null)
         view.setStateListAnimator(
             AnimatorInflater.loadStateListAnimator(
                 view.getContext(), com.example.mentor.ui.R.animator.mentor_card_press));
+      else if (!enabled(view)) {
+        view.setStateListAnimator(null);
+        view.setScaleX(1f);
+        view.setScaleY(1f);
+      }
       if (view.getForeground() == null) {
         android.util.TypedValue value = new android.util.TypedValue();
         if (view.getContext()

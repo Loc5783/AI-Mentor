@@ -25,6 +25,7 @@ import java.util.List;
  * Purpose: Using Fragments gives each tab or feature a focused responsibility and makes the screen flow easier to explain.
  */
 public class HomeFragment extends Fragment {
+  private com.example.asm_final.dashboard.OverviewUpdates.Subscription liveUpdates;
 
   private TextView txtUsername, tvTotalLevel, tvLevelTitle, tvExpDetail;
   private ProgressBar pbTotal;
@@ -40,6 +41,8 @@ public class HomeFragment extends Fragment {
   private String username;
   private int userId;
   private int loadVersion;
+  private boolean remoteOverview, remoteNeedsLogin;
+  private int learningGrade;
   private boolean recentExpanded;
   private RecentActivity.Subject recentSubject;
   private List<RecentActivity> recentActivities = java.util.Collections.emptyList();
@@ -96,8 +99,13 @@ public class HomeFragment extends Fragment {
     };
     for (int i = 0; i < subjects.length; i++) {
       final RecentActivity.Subject subject = names[i];
+      final int position = i;
       subjects[i].setOnClickListener(
           v -> {
+            if (remoteOverview) {
+              openRemoteSubject(position);
+              return;
+            }
             if (userId > 0)
               com.example.asm_final.utils.SubjectNavigator.open(requireContext(), subject, userId);
           });
@@ -106,7 +114,10 @@ public class HomeFragment extends Fragment {
     view.findViewById(R.id.button_start_learning)
         .setOnClickListener(
             v -> {
-              if (recentSubject != null && userId > 0)
+              if (remoteOverview) {
+                ((com.example.asm_final.activities.HomeActivity) requireActivity())
+                    .navigateTo(R.id.nav_category, false);
+              } else if (recentSubject != null && userId > 0)
                 com.example.asm_final.utils.SubjectNavigator.open(
                     requireContext(), recentSubject, userId);
               else
@@ -116,7 +127,9 @@ public class HomeFragment extends Fragment {
     view.findViewById(R.id.button_chart_action)
         .setOnClickListener(
             v -> {
-              if (Boolean.TRUE.equals(v.getTag())) setupData();
+              if (remoteNeedsLogin)
+                ((com.example.asm_final.activities.HomeActivity) requireActivity()).logout();
+              else if (Boolean.TRUE.equals(v.getTag())) setupData();
               else
                 ((com.example.asm_final.activities.HomeActivity) requireActivity())
                     .navigateTo(R.id.nav_category, false);
@@ -140,11 +153,48 @@ public class HomeFragment extends Fragment {
   public void onResume() {
     super.onResume();
     setupData();
+    liveUpdates =
+        com.example.asm_final.dashboard.OverviewLiveBinding.start(this, () -> setupData(false));
+  }
+
+  @Override
+  public void onPause() {
+    if (liveUpdates != null) {
+      liveUpdates.close();
+      liveUpdates = null;
+    }
+    super.onPause();
   }
 
   private void setupData() {
+    setupData(true);
+  }
+
+  private void setupData(boolean showLoading) {
+    if (getView() == null) return;
+    if (showLoading)
+      renderChartState(com.example.asm_final.dashboard.DashboardChartState.loading(), 0);
+    if (showLoading
+        && !com.example.asm_final.backend.BackendClient.endpoint(requireContext()).isEmpty()) {
+      tvTotalLevel.setText("—");
+      tvLevelTitle.setText(R.string.auth_processing);
+      tvExpDetail.setVisibility(View.GONE);
+      pbTotal.setProgress(0);
+      getView().findViewById(R.id.dashboard_subject_grid).setVisibility(View.GONE);
+      rvRecent.setVisibility(View.GONE);
+      getView().findViewById(R.id.text_recent_empty).setVisibility(View.GONE);
+      getView().findViewById(R.id.button_recent_more).setVisibility(View.GONE);
+      getView().findViewById(R.id.tv_dashboard_status).setVisibility(View.GONE);
+    }
     if (username == null || username.isEmpty()) {
       txtUsername.setText(R.string.home_default_user);
+      renderChartState(
+          com.example.asm_final.dashboard.DashboardChartState.from(
+              new com.example.asm_final.dashboard.DashboardSnapshot(
+                  new java.util.EnumMap<>(RecentActivity.Subject.class),
+                  java.util.Collections.emptyList(),
+                  java.util.EnumSet.allOf(RecentActivity.Subject.class))),
+          0);
       return;
     }
 
@@ -159,10 +209,19 @@ public class HomeFragment extends Fragment {
         .execute(
             () -> {
               com.example.asm_final.dashboard.DashboardSnapshot loaded;
+              com.example.asm_final.dashboard.LearningOverviewRepository.Snapshot overview = null;
+              com.example.asm_final.onboarding.LearnerProfile learner = null;
               int resolvedId = 0;
               try {
                 resolvedId = services.accountLookup().userId(username);
-                loaded = services.dashboard().load(resolvedId);
+                learner = services.learners().load(resolvedId);
+                overview =
+                    services.overview().load(resolvedId, learner == null ? 0 : learner.grade);
+                loaded =
+                    overview.mode
+                            == com.example.asm_final.dashboard.LearningOverviewRepository.Mode.LOCAL
+                        ? services.dashboard().load(resolvedId)
+                        : null;
               } catch (RuntimeException error) {
                 loaded =
                     new com.example.asm_final.dashboard.DashboardSnapshot(
@@ -170,19 +229,22 @@ public class HomeFragment extends Fragment {
                         java.util.Collections.emptyList(),
                         java.util.EnumSet.allOf(RecentActivity.Subject.class));
               }
-              com.example.asm_final.onboarding.LearnerProfile learner = null;
-              try {
-                if (resolvedId > 0) learner = services.learners().load(resolvedId);
-              } catch (RuntimeException ignored) {
-              }
+              final com.example.asm_final.dashboard.LearningOverviewRepository.Snapshot remote =
+                  overview;
               final com.example.asm_final.onboarding.LearnerProfile learningProfile = learner;
               final int loadedUserId = resolvedId;
               final com.example.asm_final.dashboard.DashboardSnapshot snapshot = loaded;
               new android.os.Handler(android.os.Looper.getMainLooper())
                   .post(
                       () -> {
-                        if (isAdded() && getView() == owner && loadVersion == version) {
+                        if (isAdded()
+                            && getView() == owner
+                            && loadVersion == version
+                            && (loadedUserId <= 0
+                                || com.example.mentor.data.ActiveUser.get(context)
+                                    == loadedUserId)) {
                           userId = loadedUserId;
+                          learningGrade = learningProfile == null ? 0 : learningProfile.grade;
                           if (learningProfile != null && !learningProfile.displayName.isEmpty())
                             txtUsername.setText(learningProfile.displayName);
                           TextView contextLabel = getView().findViewById(R.id.tv_learning_context);
@@ -201,13 +263,29 @@ public class HomeFragment extends Fragment {
                                     getResources()
                                         .getStringArray(R.array.learner_goals)[
                                         learningProfile.goal]));
-                          render(snapshot);
+                          if (remote != null
+                              && remote.mode
+                                  != com.example.asm_final.dashboard.LearningOverviewRepository.Mode
+                                      .LOCAL) renderRemote(remote);
+                          else render(snapshot);
                         }
                       });
             });
   }
 
   private void render(com.example.asm_final.dashboard.DashboardSnapshot snapshot) {
+    remoteOverview = false;
+    remoteNeedsLogin = false;
+    getView().findViewById(R.id.dashboard_subject_grid).setVisibility(View.VISIBLE);
+    miniProg.setVisibility(View.VISIBLE);
+    rvRecent.setVisibility(View.VISIBLE);
+    tvExpDetail.setVisibility(View.VISIBLE);
+    ((TextView) getView().findViewById(R.id.tv_total_level_label))
+        .setText(R.string.home_overall_level);
+    ((TextView) getView().findViewById(R.id.dashboard_recent_heading))
+        .setText(R.string.home_recent_activity);
+    getView().findViewById(R.id.chart_exp_prog).setVisibility(View.VISIBLE);
+    pbExpProg.setVisibility(View.VISIBLE);
     int mathExp = snapshot.progress(RecentActivity.Subject.MATH).experience;
     int scienceExp = snapshot.progress(RecentActivity.Subject.SCIENCE).experience;
     int historyExp = snapshot.progress(RecentActivity.Subject.HISTORY).experience;
@@ -316,21 +394,223 @@ public class HomeFragment extends Fragment {
                       labelText,
                       snapshot.progress(subjectNames[i]).experience));
     }
-    ((TextView) view.findViewById(R.id.tv_chart_summary))
-        .setText(
-            incomplete
-                ? getString(R.string.home_chart_partial)
-                : totalExp == 0
-                    ? getString(R.string.home_chart_empty)
-                    : getString(R.string.home_chart_total, totalExp));
-    com.google.android.material.button.MaterialButton chartAction =
-        view.findViewById(R.id.button_chart_action);
-    chartAction.setVisibility(incomplete || totalExp == 0 ? View.VISIBLE : View.GONE);
-    chartAction.setTag(incomplete);
-    chartAction.setText(incomplete ? R.string.home_chart_retry : R.string.home_chart_start);
+    renderChartState(com.example.asm_final.dashboard.DashboardChartState.from(snapshot), totalExp);
     TextView status = getView().findViewById(R.id.tv_dashboard_status);
     status.setVisibility(snapshot.unavailable.isEmpty() ? View.GONE : View.VISIBLE);
     status.setOnClickListener(v -> setupData());
+  }
+
+  private void openRemoteSubject(int index) {
+    if (index < 0 || index >= 3 || learningGrade < 10 || learningGrade > 12) {
+      ((com.example.asm_final.activities.HomeActivity) requireActivity())
+          .navigateTo(R.id.nav_category, false);
+      return;
+    }
+    String[] ids = {"biology", "chemistry", "physics"};
+    startActivity(
+        new android.content.Intent(
+                requireContext(), com.example.asm_final.activities.LessonActivity.class)
+            .putExtra("SUBJECT", ids[index])
+            .putExtra("GRADE", learningGrade)
+            .putExtra("USERNAME", username));
+  }
+
+  private void renderRemote(
+      com.example.asm_final.dashboard.LearningOverviewRepository.Snapshot snapshot) {
+    remoteOverview = true;
+    remoteNeedsLogin = snapshot.needsLogin;
+    recentSubject = null;
+    View view = getView();
+    com.example.asm_final.dashboard.LearningOverviewData data = snapshot.data;
+    ((TextView) view.findViewById(R.id.tv_total_level_label)).setText(R.string.overview_title);
+    ((TextView) view.findViewById(R.id.button_start_learning)).setText(R.string.ux_choose_subject);
+    ((TextView) view.findViewById(R.id.dashboard_recent_heading))
+        .setText(R.string.overview_practice_heading);
+    rvRecent.setVisibility(View.GONE);
+    view.findViewById(R.id.button_recent_more).setVisibility(View.GONE);
+    miniProg.setVisibility(View.GONE);
+    view.findViewById(R.id.chart_exp_prog).setVisibility(View.GONE);
+    pbExpProg.setVisibility(View.GONE);
+    TextView status = view.findViewById(R.id.tv_dashboard_status);
+    status.setVisibility(View.VISIBLE);
+    status.setOnClickListener(v -> setupData());
+    int notice =
+        snapshot.needsLogin
+            ? R.string.overview_expired
+            : snapshot.mode
+                    == com.example.asm_final.dashboard.LearningOverviewRepository.Mode.CACHED
+                ? R.string.overview_cached
+                : snapshot.mode
+                        == com.example.asm_final.dashboard.LearningOverviewRepository.Mode.NO_GRADE
+                    ? R.string.overview_choose_grade
+                    : data == null ? R.string.overview_error : R.string.overview_current;
+    status.setText(notice);
+    view.findViewById(R.id.dashboard_subject_grid)
+        .setVisibility(data == null ? View.GONE : View.VISIBLE);
+    TextView practice = view.findViewById(R.id.text_recent_empty);
+    practice.setVisibility(View.VISIBLE);
+    if (data == null) {
+      tvTotalLevel.setText("—");
+      tvLevelTitle.setText(R.string.overview_title);
+      tvExpDetail.setVisibility(View.GONE);
+      pbTotal.setProgress(0);
+      renderChartState(com.example.asm_final.dashboard.DashboardChartState.unavailable(), 0);
+      ((TextView) view.findViewById(R.id.chart_placeholder_title))
+          .setText(R.string.home_chart_error_title);
+      ((TextView) view.findViewById(R.id.tv_chart_summary)).setText(notice);
+      practice.setText(
+          snapshot.mode == com.example.asm_final.dashboard.LearningOverviewRepository.Mode.NO_GRADE
+              ? R.string.overview_choose_grade
+              : R.string.overview_error);
+    } else {
+      tvExpDetail.setVisibility(View.VISIBLE);
+      tvTotalLevel.setText(
+          data.totalLessons == 0
+              ? "—"
+              : getString(R.string.overview_lessons, data.completedLessons, data.totalLessons));
+      boolean hasCurriculum = false;
+      for (com.example.asm_final.dashboard.LearningOverviewData.Subject subject : data.subjects)
+        hasCurriculum |= subject.curriculumAvailable;
+      tvLevelTitle.setText(
+          data.totalLessons > 0
+              ? getString(R.string.overview_daily_xp, data.dailyXp)
+              : getString(
+                  hasCurriculum
+                      ? R.string.overview_no_enrollment
+                      : R.string.overview_no_curriculum));
+      tvExpDetail.setText(getString(R.string.overview_streak, data.streakDays));
+      pbTotal.setProgress(
+          data.totalLessons == 0 ? 0 : (int) (data.completedLessons * 100L / data.totalLessons));
+      List<SimplePieChartView.Slice> slices = new ArrayList<>();
+      View[] cards = {miniMath, miniScience, miniHistory};
+      int[] colors = {R.color.cat_science_text, R.color.cat_math_text, R.color.cat_history_text};
+      int[] legends = {R.id.chart_exp_math, R.id.chart_exp_science, R.id.chart_exp_history};
+      ProgressBar[] bars = {pbExpMath, pbExpScience, pbExpHistory};
+      long maximum = 1;
+      for (com.example.asm_final.dashboard.LearningOverviewData.Subject subject : data.subjects)
+        maximum = Math.max(maximum, subject.experience);
+      for (int i = 0; i < data.subjects.size(); i++) {
+        com.example.asm_final.dashboard.LearningOverviewData.Subject subject = data.subjects.get(i);
+        String name =
+            com.example.mentor.learning.SubjectId.valueOf(
+                    subject.id.toUpperCase(java.util.Locale.ROOT))
+                .label(com.example.asm_final.utils.LocaleHelper.getLanguage(requireContext()));
+        int color = ContextCompat.getColor(requireContext(), colors[i]);
+        slices.add(new SimplePieChartView.Slice(subject.experience, color));
+        ((TextView) cards[i].findViewById(R.id.tv_mini_name)).setText(name);
+        ((ImageView) cards[i].findViewById(R.id.iv_mini_icon))
+            .setImageResource(R.drawable.ic_cat_science);
+        String detail =
+            getString(
+                R.string.overview_subject_progress,
+                subject.completed,
+                subject.total,
+                subject.experience);
+        ((TextView) cards[i].findViewById(R.id.tv_mini_exp)).setText(detail);
+        cards[i].setContentDescription(name + ", " + detail);
+        ((ProgressBar) cards[i].findViewById(R.id.pb_mini_stat))
+            .setProgress(subject.total == 0 ? 0 : (int) (subject.completed * 100L / subject.total));
+        ((TextView) view.findViewById(legends[i]))
+            .setText(getString(R.string.home_chart_subject, name, subject.experience));
+        bars[i].setProgress((int) (subject.experience / (double) maximum * 100));
+        bars[i].setProgressTintList(android.content.res.ColorStateList.valueOf(color));
+      }
+      pieChart.setData(slices);
+      pieChart.setContentDescription(getString(R.string.home_chart_accessibility, data.totalXp));
+      ((TextView) view.findViewById(R.id.tv_chart_center))
+          .setText(
+              data.totalXp == 0
+                  ? getString(R.string.zero_count)
+                  : getString(R.string.home_chart_center));
+      renderChartState(
+          com.example.asm_final.dashboard.DashboardChartState.recorded(
+              data.totalXp > 0,
+              snapshot.mode
+                  != com.example.asm_final.dashboard.LearningOverviewRepository.Mode.LIVE),
+          data.totalXp);
+      if (snapshot.mode != com.example.asm_final.dashboard.LearningOverviewRepository.Mode.LIVE)
+        ((TextView) view.findViewById(R.id.tv_chart_summary)).setText(notice);
+      else if (data.totalXp > 0)
+        ((TextView) view.findViewById(R.id.tv_chart_summary))
+            .setText(
+                getString(R.string.home_chart_total, data.totalXp)
+                    + "\n"
+                    + getString(R.string.overview_source));
+      practice.setText(
+          data.questionCount == 0
+              ? getString(R.string.overview_no_practice)
+              : getString(R.string.overview_practice, data.firstTryCorrect, data.questionCount)
+                  + "\n"
+                  + getString(R.string.overview_assisted, data.assisted));
+    }
+    com.google.android.material.button.MaterialButton action =
+        view.findViewById(R.id.button_chart_action);
+    action.setVisibility(View.VISIBLE);
+    action.setEnabled(true);
+    boolean chooseGrade =
+        snapshot.mode == com.example.asm_final.dashboard.LearningOverviewRepository.Mode.NO_GRADE;
+    boolean start =
+        !snapshot.needsLogin
+            && (chooseGrade
+                || (data != null
+                    && data.totalXp == 0
+                    && snapshot.mode
+                        == com.example.asm_final.dashboard.LearningOverviewRepository.Mode.LIVE));
+    action.setTag(!start);
+    action.setText(
+        snapshot.needsLogin
+            ? R.string.overview_sign_in
+            : start ? R.string.home_chart_start : R.string.overview_reload);
+  }
+
+  private void renderChartState(
+      com.example.asm_final.dashboard.DashboardChartState state, long totalExp) {
+    View view = getView();
+    if (view == null) return;
+    boolean loading =
+        state.phase == com.example.asm_final.dashboard.DashboardChartState.Phase.LOADING;
+    view.findViewById(R.id.chart_data_group)
+        .setVisibility(state.showChart ? View.VISIBLE : View.GONE);
+    view.findViewById(R.id.chart_placeholder)
+        .setVisibility(state.showChart ? View.GONE : View.VISIBLE);
+    view.findViewById(R.id.chart_loading_spinner).setVisibility(loading ? View.VISIBLE : View.GONE);
+    view.findViewById(R.id.chart_placeholder_icon)
+        .setVisibility(loading ? View.GONE : View.VISIBLE);
+    int title, message;
+    switch (state.phase) {
+      case LOADING:
+        title = R.string.home_chart_loading;
+        message = R.string.home_chart_loading_hint;
+        break;
+      case ERROR:
+        title = R.string.home_chart_error_title;
+        message = R.string.home_chart_error;
+        break;
+      case PARTIAL:
+        title = R.string.home_chart_partial_title;
+        message = R.string.home_chart_partial;
+        break;
+      case EMPTY:
+        title = R.string.home_chart_empty_title;
+        message = R.string.home_chart_empty;
+        break;
+      default:
+        title = R.string.home_completion_ratio;
+        message = R.string.home_chart_total;
+    }
+    ((TextView) view.findViewById(R.id.chart_placeholder_title)).setText(title);
+    TextView summary = view.findViewById(R.id.tv_chart_summary);
+    summary.setText(
+        message == R.string.home_chart_total ? getString(message, totalExp) : getString(message));
+    summary.setTextAlignment(
+        state.showChart ? View.TEXT_ALIGNMENT_VIEW_START : View.TEXT_ALIGNMENT_CENTER);
+    com.google.android.material.button.MaterialButton action =
+        view.findViewById(R.id.button_chart_action);
+    action.setVisibility(
+        !loading && (state.retry() || !state.showChart) ? View.VISIBLE : View.GONE);
+    action.setEnabled(!loading);
+    action.setTag(state.retry());
+    action.setText(state.retry() ? R.string.home_chart_retry : R.string.home_chart_start);
   }
 
   /*
