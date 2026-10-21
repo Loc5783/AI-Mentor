@@ -27,7 +27,8 @@ class SubjectHubUi(private val context: Context, private val chooseGrade: Runnab
     fun render(year: Int, subjects: Set<SubjectId>) { grade = year; selected = subjects.toSet(); loading = false; error = false }
     fun failure() { loading = false; error = true }
     fun view(): View = composeHost(context) {
-        val active = setOf(SubjectId.BIOLOGY, SubjectId.CHEMISTRY, SubjectId.PHYSICS)
+        val chosen = listOf(SubjectId.PHYSICS, SubjectId.CHEMISTRY, SubjectId.BIOLOGY)
+            .filter { it in selected }
         LazyColumn(Modifier.fillMaxSize().testTag("subject-list").background(MaterialTheme.colorScheme.background),
             contentPadding = PaddingValues(MentorTokens.PagePadding), verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceMedium)) {
             item {
@@ -44,14 +45,19 @@ class SubjectHubUi(private val context: Context, private val chooseGrade: Runnab
             }
             if (loading) items(3) { MentorSkeleton(stringResource(R.string.course_loading)) }
             if (error) item { Text(stringResource(R.string.chat_storage_error)) }
-            if (!loading && selected.isEmpty()) item { Text(stringResource(R.string.lesson_choose_prompt)) }
-            items(SubjectId.values().filter { it in selected || it !in active }, key = { it.wireId }) { subject ->
+            if (!loading && chosen.isEmpty()) item {
+                MentorCard(Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.lesson_choose_prompt))
+                    MentorButton(stringResource(R.string.lesson_manage), { chooseSubjects.run() })
+                }
+            }
+            items(chosen, key = { it.wireId }) { subject ->
                 MentorCard(Modifier.fillMaxWidth().testTag("subject:${subject.wireId}")) {
                     Text(subject.label(LocaleHelper.getLanguage(context)), style = MaterialTheme.typography.titleLarge)
-                    if (subject in active) {
+                    if (grade == 10) {
                         Text(stringResource(R.string.lesson_path_pending), style = MaterialTheme.typography.bodySmall)
                         MentorButton(stringResource(R.string.course_open), { open.accept(subject) })
-                    } else Text(stringResource(R.string.subject_lessons_soon))
+                    } else Text(stringResource(R.string.subject_grade10_only), style = MaterialTheme.typography.bodySmall)
                     val toolLabel = when (subject) {
                         SubjectId.PHYSICS -> R.string.lesson_circuit
                         SubjectId.CHEMISTRY -> R.string.lesson_periodic

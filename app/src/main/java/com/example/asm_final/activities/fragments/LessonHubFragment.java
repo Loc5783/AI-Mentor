@@ -151,7 +151,7 @@ public final class LessonHubFragment extends Fragment {
       chooseGrade();
       return;
     }
-    SubjectId[] ids = {SubjectId.BIOLOGY, SubjectId.CHEMISTRY, SubjectId.PHYSICS};
+    SubjectId[] ids = {SubjectId.PHYSICS, SubjectId.CHEMISTRY, SubjectId.BIOLOGY};
     String[] labels = new String[3];
     boolean[] checks = new boolean[3];
     for (int i = 0; i < 3; i++) {

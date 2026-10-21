@@ -153,6 +153,21 @@ def test_two_wrong_submissions_give_help_retry_does_not_double_count(api):
     assert not answer(c, s, a)["answers"][0]["firstTryCorrect"]
 
 
+def test_answer_order_varies_by_attempt_and_survives_reload(api):
+    c, _, s, _ = api
+    e = enroll(c, s)
+    placed(c, s, e)
+    orders = set()
+    for _ in range(12):
+        a = start(c, s, e, "physics-10-unit-1")
+        displayed = [[option["id"] for option in q["options"]] for q in a["questions"]]
+        reloaded = c.get("/attempts/" + a["id"], headers=headers(s)).json()
+        assert displayed == [[option["id"] for option in q["options"]] for q in reloaded["questions"]]
+        orders.add(tuple(tuple(ids) for ids in displayed))
+        finish(c, s, answer(c, s, a))
+    assert len(orders) > 1
+
+
 def test_handoff_keeps_newer_progress_owner_and_no_auto_completion(api):
     c, app, s, _ = api
     other = signup(c, "Other")

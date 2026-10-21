@@ -1,6 +1,7 @@
 """Server-owned learning progression. Transport and screen state do not award rewards."""
 from copy import deepcopy
 from datetime import datetime
+import hashlib
 import json
 from pathlib import Path
 import time
@@ -175,6 +176,10 @@ class LearningService:
         visible = []
         for q in questions:
             value = {k: deepcopy(v) for k, v in q.items() if k not in ("correctOptionId", "explanation")}
+            # Keep answer order stable across reloads, but vary it for each attempt.
+            # Grading continues to use option IDs, independent of display position.
+            value["options"].sort(key=lambda option: hashlib.sha256(
+                f"{row['id']}:{q['id']}:{option['id']}".encode()).digest())
             answer = by_id.get(q["id"], {})
             if row["state"] == "COMPLETED" or (row["kind"] != "PLACEMENT" and answer.get("wrongCount", 0) >= 2):
                 value.update(explanation=q["explanation"], correctOptionId=q["correctOptionId"])

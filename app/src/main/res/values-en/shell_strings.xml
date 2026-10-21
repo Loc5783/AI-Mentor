@@ -7,6 +7,7 @@
   <string name="lesson_manage">Add / manage subjects</string>
   <string name="lesson_choose_prompt">Start by choosing your grade and adding Biology, Chemistry or Physics.</string>
   <string name="lesson_path_pending">Follow your path, take an entry assessment and review every five lessons. A server connection saves progress and awards XP.</string>
+  <string name="subject_grade10_only">Grade 10 lessons are available. Grades 11–12 are in preparation; study tools remain available.</string>
   <string name="lesson_open_tools">Open study tools</string>
   <string name="lesson_circuit">Electric circuits</string>
   <string name="lesson_periodic">Periodic table</string>

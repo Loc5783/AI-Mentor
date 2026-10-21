@@ -7,6 +7,7 @@
   <string name="lesson_manage">Thêm / quản lý môn học</string>
   <string name="lesson_choose_prompt">Bắt đầu bằng cách chọn lớp và thêm Sinh học, Hóa học hoặc Vật lý.</string>
   <string name="lesson_path_pending">Học theo lộ trình, kiểm tra đầu vào và ôn tập sau mỗi 5 bài. Cần kết nối máy chủ để lưu tiến độ và nhận EXP.</string>
+  <string name="subject_grade10_only">Hiện có bài học lớp 10. Bài lớp 11–12 đang được biên soạn; công cụ ôn tập vẫn dùng được.</string>
   <string name="lesson_open_tools">Mở công cụ môn học</string>
   <string name="lesson_circuit">Mạch điện</string>
   <string name="lesson_periodic">Bảng tuần hoàn</string>
