@@ -1,7 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="dashboard_connect_notice">Learning server not connected. Choose subjects to prepare your path; statistics will appear after connecting.</string>
-    <string name="dashboard_progress_pending">No synced learning statistics available yet.</string>
-    <string name="dashboard_chart_empty">No XP in your current subjects yet. Finish a lesson or review quiz to see your chart.</string>
-    <string name="dashboard_selected_source">XP from lessons and reviews in your current subjects.</string>
-    <string name="subject_lessons_soon">Lessons are being prepared</string>
+  <string name="dashboard_connect_notice">Learning server not connected. Choose subjects to prepare your path; statistics will appear after connecting.</string>
+  <string name="dashboard_progress_pending">No synced learning statistics available yet.</string>
+  <string name="subject_lessons_soon">Lessons are being prepared</string>
 </resources>

@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <color name="mentor_science_button">#2563EB</color>
+    <color name="mentor_science_container">#DBEAFE</color>
+    <color name="science_background">#F8FAFC</color>
+    <color name="science_bg_header_custom">#1D4ED8</color>
+    <color name="science_border">#D6DEED</color>
+    <color name="science_focus">#2563EB</color>
+    <color name="science_on_primary">#FFFFFF</color>
+    <color name="science_primary">#2563EB</color>
+    <color name="science_surface">#FFFFFF</color>
+    <color name="science_surface_variant">#E2E9F5</color>
+    <color name="science_text_disabled">#5D6C85</color>
+    <color name="science_text_header_light">#FFFFFF</color>
+    <color name="science_text_primary">#0B1220</color>
+    <color name="science_text_secondary">#475569</color>
+    <color name="science_warning">#E98B12</color>
+    <dimen name="science_icon_button_size">48dp</dimen>
+    <string name="science_back">Quay lại</string>
+    <string name="science_circuit_closed_short">Đóng</string>
+    <string name="science_circuit_invalid">Nhập U ≥ 0 và R1, R2 &gt; 0 với giá trị hợp lệ.</string>
+    <string name="science_circuit_model_hint">Nguồn một chiều lý tưởng; đèn được mô hình bằng điện trở R2 không đổi. Không mô phỏng nhiệt hay độ sáng thực tế.</string>
+    <string name="science_circuit_open_short">Mở</string>
+    <string name="science_circuit_parallel">Mạch song song</string>
+    <string name="science_circuit_parallel_desc">Trong mạch song song, mỗi nhánh có cùng hiệu điện thế. Dòng điện có thể chia giữa các nhánh, nên một bóng đèn có thể tiếp tục hoạt động nếu một nhánh khác bị ngắt.</string>
+    <string name="science_circuit_result">R tải = %1$.3f Ω\nI nguồn = %2$.3f A\nI1 = %3$.3f A · I2 = %4$.3f A\nU1 = %5$.3f V · U2 = %6$.3f V\nP = %7$.3f W</string>
+    <string name="science_circuit_series">Mạch nối tiếp</string>
+    <string name="science_circuit_series_desc">Trong mạch nối tiếp, tất cả các linh kiện dùng chung một đường dẫn dòng điện. Cùng một dòng điện đi qua điện trở và bóng đèn, trong khi điện áp nguồn được chia sẻ.</string>
+    <string name="science_circuit_switch_closed">Công tắc đóng (dòng điện chạy qua)</string>
+    <string name="science_circuit_switch_closed_desc"> Công tắc đóng làm kín mạch, nên dòng điện quy ước có thể chạy qua.</string>
+    <string name="science_circuit_switch_open_desc"> Công tắc mở làm ngắt mạch, nên dòng điện không thể chạy qua.</string>
+    <string name="science_circuit_title">Sơ đồ mạch điện Vật lý</string>
+    <string name="science_circuit_touch_hint">Chạm sơ đồ để đóng hoặc mở công tắc</string>
+    <string name="science_circuit_type_label">Loại mạch</string>
+    <style name="MentorScienceButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/mentor_science_button</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="cornerRadius">@dimen/mentor_control_radius</item>
+        <item name="rippleColor">@color/mentor_control_ripple</item>
+        <item name="android:minHeight">@dimen/mentor_control_height</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/mentor_control_text</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="MentorScienceInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">@dimen/mentor_control_radius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/mentor_control_radius</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/mentor_control_radius</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/mentor_control_radius</item>
+    </style>
+    <style name="ScienceBodyText">
+        <item name="android:textColor">@color/science_text_primary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="ScienceHeaderTitle">
+        <item name="android:textColor">@color/science_text_primary</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="ScienceSecondaryText">
+        <item name="android:textColor">@color/science_text_secondary</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+    <style name="ScienceSquareIconButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:layout_width">@dimen/science_icon_button_size</item>
+        <item name="android:layout_height">@dimen/science_icon_button_size</item>
+        <item name="android:minWidth">@dimen/science_icon_button_size</item>
+        <item name="android:minHeight">@dimen/science_icon_button_size</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:textColor">@color/science_text_primary</item>
+        <item name="strokeColor">@color/science_border</item>
+        <item name="backgroundTint">@color/science_surface</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="Theme.PhysicsTools" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/science_primary</item>
+        <item name="colorOnPrimary">@color/science_on_primary</item>
+        <item name="colorPrimaryContainer">@color/mentor_science_container</item>
+        <item name="colorSurface">@color/science_surface</item>
+        <item name="colorOnSurface">@color/science_text_primary</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/science_surface</item>
+        <item name="android:statusBarColor">@color/science_background</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:windowBackground">@color/science_background</item>
+        <item name="android:textColorPrimary">@color/science_text_primary</item>
+        <item name="android:textColorSecondary">@color/science_text_secondary</item>
+        <item name="materialButtonStyle">@style/MentorScienceButton</item>
+        <item name="textInputStyle">@style/MentorScienceInput</item>
+        <item name="android:windowAnimationStyle">@style/MentorWindowAnimation</item>
+        <item name="colorOnPrimaryContainer">@color/science_text_primary</item>
+    </style>
+</resources>

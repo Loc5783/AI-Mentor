@@ -1,7 +1,0 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/nav_home" android:icon="@drawable/ic_home" android:title="@string/nav_dashboard" />
-    <item android:id="@+id/nav_chat" android:icon="@drawable/ic_chat" android:title="@string/chat_nav" />
-    <item android:id="@+id/nav_category" android:icon="@drawable/ic_category" android:title="@string/nav_lesson" />
-    <item android:id="@+id/nav_competition" android:icon="@drawable/ic_competition" android:title="@string/nav_competition" />
-    <item android:id="@+id/nav_profile" android:icon="@drawable/ic_nav_profile" android:title="@string/nav_profile_label" />
-</menu>

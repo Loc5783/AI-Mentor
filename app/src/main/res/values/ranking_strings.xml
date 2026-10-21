@@ -1,16 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="ranking_loading">Đang tải bảng thi đua…</string>
-    <string name="ranking_error">Không tải được bảng thi đua. Kiểm tra kết nối rồi thử lại.</string>
-    <string name="ranking_login">Phiên đăng nhập đã hết hạn. Đăng nhập lại để xem bảng thi đua.</string>
-    <string name="ranking_empty">Chưa có người học trong danh sách này.</string>
-    <string name="ranking_friends_empty">Chưa có bạn bè cùng thi đua. Danh sách này sẽ thêm những người đã chấp nhận kết bạn.</string>
-    <string name="ranking_rules">Người bằng điểm cùng hạng · Hiển thị tối đa 100 người</string>
-    <string name="ranking_day">Ngày học %1$s · UTC+7</string>
-    <string name="ranking_retry">Tải lại</string>
-    <string name="ranking_profile">Hồ sơ học viên</string>
-    <string name="ranking_profile_error">Chưa tải được hồ sơ này. Vui lòng thử lại.</string>
-    <string name="ranking_bio_empty">Chưa có lời giới thiệu.</string>
-    <string name="ranking_avatar_error">Chưa tải được ảnh đại diện.</string>
-    <string name="ranking_open_profile">Xem hồ sơ %1$s, hạng %2$d, %3$s</string>
-    <string name="ranking_close">Đóng</string>
+  <string name="ranking_loading">Đang tải bảng thi đua…</string>
+  <string name="ranking_error">Không tải được bảng thi đua. Kiểm tra kết nối rồi thử lại.</string>
+  <string name="ranking_login">Phiên đăng nhập đã hết hạn. Đăng nhập lại để xem bảng thi đua.</string>
+  <string name="ranking_empty">Chưa có người học trong danh sách này.</string>
+  <string name="ranking_friends_empty">Chưa có bạn bè cùng thi đua. Danh sách này sẽ thêm những người đã chấp nhận kết bạn.</string>
+  <string name="ranking_rules">Người bằng điểm cùng hạng · Hiển thị tối đa 100 người</string>
+  <string name="ranking_day">Ngày học %1$s · UTC+7</string>
+  <string name="ranking_retry">Tải lại</string>
+  <string name="ranking_profile">Hồ sơ học viên</string>
+  <string name="ranking_profile_error">Chưa tải được hồ sơ này. Vui lòng thử lại.</string>
+  <string name="ranking_bio_empty">Chưa có lời giới thiệu.</string>
+  <string name="ranking_avatar_error">Chưa tải được ảnh đại diện.</string>
+  <string name="ranking_close">Đóng</string>
 </resources>

@@ -37,7 +37,6 @@
     <string name="auth_done">Finish and start learning</string>
     <string name="auth_close_guide">Close guide</string>
     <string name="auth_guide">App guide</string>
-    <string name="auth_exit">Sign out</string>
     <string name="onboard_step">Step %1$d / 4</string>
     <string name="onboard_1_title">Welcome to AI Mentor!</string>
     <string name="onboard_1_body">Learn smarter, at your own pace.\n\nExplore your school subjects, with learning paths for Physics, Chemistry and Biology. When a question gets tricky, you have a companion to help you work through it.</string>
@@ -60,7 +59,6 @@
     <string name="profile_goal_1">Improve grades</string>
     <string name="profile_goal_2">Prepare for tests</string>
     <string name="profile_goal_3">Prepare for graduation exams</string>
-    <string name="profile_context">Grade %1$d · %2$s</string>
     <string name="auth_recovery_title">Recover your account</string>
     <string name="auth_recovery_body">Enter your account email to request password reset instructions.</string>
     <string name="auth_recovery_send">Request password reset</string>
@@ -83,7 +81,6 @@
     <string name="auth_resend_wait">You can request another email in about a minute.</string>
     <string name="auth_token_required">Enter a verification code.</string>
     <string name="auth_route_error">Unable to load the account state. Please sign in again.</string>
-    <string name="auth_account_local">On-device account · Email not verified</string>
     <string-array name="learner_goals">
         <item>@string/profile_goal_0</item>
         <item>@string/profile_goal_1</item>

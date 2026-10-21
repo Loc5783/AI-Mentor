@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="design_today">Hello,</string>
+  <string name="design_week">Your last 7 days</string>
+  <string name="design_week_empty">Your week starts here. Complete a lesson to record your first progress.</string>
+  <string name="design_goal">Today’s suggestion: complete one lesson</string>
+  <string name="design_total_xp">Total experience</string>
+  <string name="design_profile">Your learning journey</string>
+  <string name="design_path">Learning path</string>
+  <string name="design_subjects">Your subjects</string>
+  <string name="design_day_xp">%1$s: %2$d XP</string>
+  <string name="design_mentor">Your mentor</string>
+  <string name="design_understood">Got it! Return to lesson</string>
+  <string name="design_chart_hint">Complete a lesson or review to light your streak and update this chart.</string>
+  <string name="design_initial">Discover knowledge, one step at a time</string>
+  <string name="design_tab_home">Home</string>
+  <string name="design_tab_chat">AI Chat</string>
+  <string name="design_tab_lessons">Learn</string>
+  <string name="design_tab_competition">Ranks</string>
+  <string name="design_chart_legend">Blue: XP · Amber: streak day</string>
+</resources>

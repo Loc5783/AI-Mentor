@@ -11,17 +11,14 @@ public final class BackendCompetitionRepository implements CompetitionRepository
   private final Context context;
   private final LearningOverviewRepository overview;
   private final com.example.asm_final.onboarding.LearnerProfileRepository learners;
-  private final LearningStreakRepository streaks;
 
   public BackendCompetitionRepository(
       Context context,
       LearningOverviewRepository overview,
-      com.example.asm_final.onboarding.LearnerProfileRepository learners,
-      LearningStreakRepository streaks) {
+      com.example.asm_final.onboarding.LearnerProfileRepository learners) {
     this.context = context.getApplicationContext();
     this.overview = overview;
     this.learners = learners;
-    this.streaks = streaks;
   }
 
   @Override
@@ -34,22 +31,7 @@ public final class BackendCompetitionRepository implements CompetitionRepository
       LearningOverviewRepository.Snapshot summary =
           overview.load(owner, learner == null ? 0 : learner.grade);
       if (summary.mode == LearningOverviewRepository.Mode.LOCAL) {
-        long now = System.currentTimeMillis();
-        Calendar day = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
-        day.setTimeInMillis(now);
-        day.set(Calendar.HOUR_OF_DAY, 0);
-        day.set(Calendar.MINUTE, 0);
-        day.set(Calendar.SECOND, 0);
-        day.set(Calendar.MILLISECOND, 0);
-        long start = day.getTimeInMillis();
-        day.add(Calendar.DAY_OF_MONTH, 1);
-        return new Snapshot(
-            Source.LOCAL,
-            null,
-            QuizProgressReader.load(context, owner, start, day.getTimeInMillis(), now).xp,
-            streaks.load(owner).current,
-            false,
-            false);
+        return new Snapshot(Source.LOCAL, null, null, null, false, false);
       }
       cached = summary.mode == LearningOverviewRepository.Mode.CACHED;
       needsLogin = summary.needsLogin;

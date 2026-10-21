@@ -21,6 +21,26 @@ public final class LearningOverviewData {
     }
   }
 
+  public static final class Day {
+    public final String day;
+    public final long xp;
+    public final boolean streakLit;
+
+    Day(JSONObject value) throws JSONException {
+      day = value.getString("day");
+      java.text.SimpleDateFormat format =
+          new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.ROOT);
+      format.setLenient(false);
+      java.text.ParsePosition position = new java.text.ParsePosition(0);
+      if (!day.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")
+          || format.parse(day, position) == null
+          || position.getIndex() != day.length()) throw new JSONException("Invalid day");
+      xp = nonnegative(value, "xp");
+      streakLit = value.getBoolean("streakLit");
+    }
+  }
+
+  public final List<Day> week;
   public final long totalXp, dailyXp;
   public final int completedLessons,
       totalLessons,
@@ -66,6 +86,19 @@ public final class LearningOverviewData {
       throw new JSONException("Inconsistent subjects");
     parsed.sort(java.util.Comparator.comparing(s -> s.id));
     subjects = Collections.unmodifiableList(parsed);
+    List<Day> days = new ArrayList<>();
+    JSONArray series = value.optJSONArray("week");
+    if (series != null) {
+      if (series.length() != 7) throw new JSONException("Invalid week length");
+      String previous = "";
+      for (int i = 0; i < series.length(); i++) {
+        Day day = new Day(series.getJSONObject(i));
+        if (day.day.compareTo(previous) <= 0) throw new JSONException("Unordered week");
+        days.add(day);
+        previous = day.day;
+      }
+    }
+    week = Collections.unmodifiableList(days);
   }
 
   private static long nonnegative(JSONObject item, String name) throws JSONException {

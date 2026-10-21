@@ -1,1 +1,0 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"><application><activity android:name="com.example.mentor.chemistry.presentation.PeriodicTableActivity" android:exported="false" android:theme="@style/Theme.ScienceFeature" /></application></manifest>

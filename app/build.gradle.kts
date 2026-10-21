@@ -4,6 +4,8 @@ import java.util.Properties
 import java.net.URI
 
 plugins {
+    alias(libs.plugins.compose.compiler)
+
     alias(libs.plugins.android.application)
 }
 
@@ -57,10 +59,24 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    buildFeatures { buildConfig = true }
+    buildFeatures { buildConfig = true; compose = true }
 }
 
 dependencies {
+    implementation(libs.activity.compose)
+    implementation(libs.compose.livedata)
+    implementation(libs.navigation.compose)
+    implementation(libs.fragment.compose)
+    implementation(libs.coil.compose)
+    implementation(libs.konfetti.compose)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.compose.test)
+    debugImplementation(libs.compose.test.manifest)
+
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.material3)
+
     implementation(project(":learning-core"))
     implementation(project(":chat-core"))
     implementation(project(":literature"))
@@ -73,8 +89,7 @@ dependencies {
     implementation(project(":data-core"))
     implementation(project(":ui-core"))
     implementation(project(":math"))
-    implementation(project(":science-support"))
-        implementation(project(":history"))
+    implementation(project(":history"))
     implementation(libs.activity)
     implementation(libs.appcompat)
     implementation(libs.constraintlayout)

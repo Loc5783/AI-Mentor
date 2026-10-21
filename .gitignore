@@ -24,6 +24,7 @@ local.properties
 
 # Local validation output
 /*-verification.log
+/*-recheck.log
 
 # Backend runtime, databases, uploads and private environment
 **/.venv/

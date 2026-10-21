@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="design_today">Xin chào,</string>
+  <string name="design_week">Nhịp học trong 7 ngày</string>
+  <string name="design_week_empty">Hành trình tuần này đang chờ bạn bắt đầu. Hoàn thành một bài học để ghi lại tiến bộ đầu tiên.</string>
+  <string name="design_goal">Gợi ý hôm nay: hoàn thành một bài học</string>
+  <string name="design_total_xp">Tổng kinh nghiệm</string>
+  <string name="design_profile">Hành trình của bạn</string>
+  <string name="design_path">Lộ trình học tập</string>
+  <string name="design_subjects">Các môn đang học</string>
+  <string name="design_day_xp">%1$s: %2$d XP</string>
+  <string name="design_mentor">Mentor của bạn</string>
+  <string name="design_understood">Đã hiểu! Quay lại bài học</string>
+  <string name="design_chart_hint">Hoàn thành bài học hoặc quiz để thắp streak và cập nhật biểu đồ.</string>
+  <string name="design_initial">Khám phá kiến thức, từng bước một</string>
+  <string name="design_tab_home">Trang chủ</string>
+  <string name="design_tab_chat">Chat AI</string>
+  <string name="design_tab_lessons">Bài học</string>
+  <string name="design_tab_competition">Thi đua</string>
+  <string name="design_chart_legend">Xanh: EXP · Cam: ngày đã thắp streak</string>
+</resources>

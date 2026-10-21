@@ -16,10 +16,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import com.example.asm_final.R;
 
-/*
- * Role: Fragment for App Shell, responsible for a specific functional area of the screen and its user interactions.
- * Purpose: Using Fragments gives each tab or feature a focused responsibility and makes the screen flow easier to explain.
- */
 public class ProfileFragment extends Fragment {
 
   private EditText edtFullName, edtAddress, edtPhone, edtEmail, edtPassword;
@@ -38,10 +34,6 @@ public class ProfileFragment extends Fragment {
 
   private ActivityResultLauncher<Intent> imagePickerLauncher;
 
-  /*
-   * Responsibility: Initializes the Android component, inflates and binds the layout, and prepares initial data and listeners.
-   * Purpose: This is the screen entry point, so the initial state must be prepared before user interaction begins.
-   */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -66,10 +58,6 @@ public class ProfileFragment extends Fragment {
             });
   }
 
-  /*
-   * Responsibility: Handles the Android callback or event `onCreateView` and updates the related state.
-   * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
-   */
   @Override
   public View onCreateView(
       LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -154,10 +142,6 @@ public class ProfileFragment extends Fragment {
     return view;
   }
 
-  /*
-   * Responsibility: Reads or loads data for `load user data` from the appropriate data source.
-   * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
-   */
   private void loadUserData() {
     btnUpdate.setEnabled(false);
     btnChooseAvatar.setEnabled(false);
@@ -197,10 +181,6 @@ public class ProfileFragment extends Fragment {
     super.onDestroyView();
   }
 
-  /*
-   * Responsibility: Validates the conditions or rules handled by `is valid password` and returns the result to the caller.
-   * Purpose: A dedicated validation method keeps rules consistent and easier to test.
-   */
   private boolean isValidPassword(String password) {
     return com.example.asm_final.accounts.PasswordPolicy.isValid(password);
   }

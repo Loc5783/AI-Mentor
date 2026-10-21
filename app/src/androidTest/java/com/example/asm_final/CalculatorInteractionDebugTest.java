@@ -38,7 +38,7 @@ public class CalculatorInteractionDebugTest {
     prefs.edit().clear().apply();
     activity =
         ins.startActivitySync(
-            new Intent(ins.getTargetContext(), com.example.mathmodule.MathDashboardActivity.class)
+            new Intent(ins.getTargetContext(), com.example.mathmodule.MathToolsActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     ins.waitForIdleSync();
   }

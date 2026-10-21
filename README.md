@@ -1,58 +1,68 @@
 # AI Mentor
 
-Android app with five destinations: Dashboard, Chat AI, Lessons, Competition and Profile. Run the `app` module (`com.example.asm_final`).
+Ứng dụng Android mới gồm 5 mục: Dashboard, Chat AI, Bài học, Thi đua và Hồ sơ.
 
-## School subject modules
+## Cấu trúc
+- `app/`: giao diện, điều hướng, tài khoản và AppServices.
+- `subjects/`: 9 môn Toán, Văn, Anh, Sử, Địa, Lý, Hóa, Sinh, GDKT & Pháp luật.
+- `core/`: learning-core, chat-core, data-core, ui-core dùng chung.
+- `backend/`: FastAPI, SQLite, lộ trình, tài khoản, EXP/streak, bảng xếp hạng và SSE.
+- `docs/`: hợp đồng API và nội dung môn học.
+- `tools/`: dọn thư mục build cũ sau khi cập nhật Git.
 
-| Module | Subject | Current scope |
-|---|---|---|
-| `math` | Mathematics | Lesson framework; existing math tools, including its calculator |
-| `literature` | Literature | Framework |
-| `english` | English | Framework |
-| `history` | History | Lesson framework; existing history tools |
-| `geography` | Geography | Framework |
-| `physics` | Physics | Grade-10 lessons and circuit implementation |
-| `chemistry` | Chemistry | Grade-10 lessons, periodic table implementation and element data |
-| `biology` | Biology | Grade-10 lessons |
-| `economics-law` | Economics and Law | Framework |
+Chỉ Lý–Hóa–Sinh có nội dung học hiện tại: mỗi môn 20 bài ngắn lớp 10, 60 câu luyện và 4 quiz ôn 10 câu. Sáu môn còn lại giữ khung; Toán có máy tính bong bóng, Lý có mô phỏng mạch điện, Hóa có bảng tuần hoàn. Lớp 11–12 và toàn bộ chương trình năm học chưa hoàn tất.
 
-Each of Physics, Chemistry and Biology has 20 short lessons, 60 practice questions and four 10-question reviews. Grades 11–12 and complete textbook coverage are not yet authored. See [content coverage](docs/content/CONTENT_PLAN_VI.md).
+Bốn nhóm module cũ và dữ liệu local cũ được loại bỏ theo yêu cầu làm mới. Lần chạy đầu bản này xóa dữ liệu local cũ một lần; các lần mở sau giữ dữ liệu mới. Backend đang phát triển riêng, chưa triển khai Internet.
 
-Dashboard renders selected learning subjects, including when the server is unavailable. It does not fall back to the removed four-category dashboard. Empty charts explain why there is no data. Interests in a profile are distinct from actual Lesson enrollments.
+## Chạy app
+1. Mở thư mục gốc bằng Android Studio; dùng Gradle JDK 21 và Android SDK 36.
+2. Chạy `Start-AIMentor-Backend.cmd`, giữ cửa sổ server mở. Launcher tạo cấu hình debug cục bộ `http://10.0.2.2:8000` cho máy giả lập.
+3. Sync Gradle và Run module `app`.
+4. Key Chat AI điền trong `api.properties`, pool `CHAT_GEMINI_API_KEY_1/2/3`. File trên Git để trống. Sync/rebuild sau khi đổi cấu hình.
+5. Backend public dùng `MENTOR_BACKEND_URL` HTTPS; không đưa đường dẫn máy hoặc key thật lên Git.
 
-Programming has been removed from the build, navigation, configuration and source tree. There is no aggregate Science school subject. `science-support` is a shared compatibility library for supplementary quizzes, existing notes/history, storage and UI resources; it does not register a tenth subject. Existing Java package and SQLite identifiers in this library are retained for compatibility with stored data. Circuit and periodic-table implementations belong to their individual subject modules.
+Tài khoản debug và backend chế độ demo: `student 01`, `student 02`, `student 03`; mật khẩu `123123123`.
 
-## Shared components
+Nếu máy giả lập báo System UI/Launcher không phản hồi hoặc cửa sổ không có focus, hãy Cold Boot máy giả lập rồi thử lại; không cần xóa dữ liệu để kiểm tra bước này. Đây là lỗi đã quan sát trong môi trường QA, chưa phải kết luận cho mọi trường hợp màn hình đen.
 
-- `app`: navigation, account-scoped state and composition in `AppServices`.
-- `learning-core`: subject catalog, grades, review and reward rules.
-- `chat-core`: all-subject, grade-aware Gemini tutor and key rotation.
-- `data-core`: local SQLite migrations, account identity and shared persistence.
-- `ui-core`: shared responsive controls, quiz presentation, safe areas and restrained motion.
-- `backend`: FastAPI/SQLite authentication, lessons, reward ledger, profiles, rankings and SSE events.
+## Quy tắc học tập
+Bài học nhận 200 EXP; quiz ôn sau mỗi 5 bài nhận 400 EXP. Chỉ lần hoàn thành đầu tiên có EXP. Làm lại có thể thắp streak ngày mới nhưng không cộng EXP lần nữa. Ngày học thống nhất UTC+7. Không có đếm ngược quiz, không tạo thống kê giả.
 
-SOLID is the general development criterion. UI must not award XP or unlock lessons. A first completion earns 200 XP per lesson or 400 XP per review; a retake earns no additional XP and can light a new day's streak. Reviews appear after each five lessons. Quizzes have no countdown.
-
-## Build
-
-Open the repository root in Android Studio. Use the included Gradle 9.5.0 wrapper, JDK 21 and Android SDK 36. Local SDK paths go in ignored `local.properties`. Do not commit machine-specific paths.
-
+## Phát triển và kiểm tra
+Áp dụng SOLID: tách giao diện, trạng thái, chính sách, lưu trữ và giao tiếp mạng.
 `./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :app:lintDebug testDebugUnitTest`
 
-## API and backend
+Backend: từ `backend/`, chạy `.venv/Scripts/python.exe -m pytest tests -q`.
+Hợp đồng đang chạy: [runtime-openapi.json](docs/backend/runtime-openapi.json).
+Nội dung môn: [CONTENT_PLAN_VI.md](docs/content/CONTENT_PLAN_VI.md).
+Bàn giao backend: [BAN_GIAO_BACKEND.txt](app/BAN_GIAO_BACKEND.txt).
 
-Root `api.properties` contains blank keys. Math and History tools use their own sections; supplementary quizzes share `QUIZ_GEMINI_API_KEY_1/2/3` and `QUIZ_GEMINI_MODEL`. General chat uses `CHAT_GEMINI_API_KEY_1/2/3` and `CHAT_GEMINI_MODEL`. No Programming configuration remains. After filling local configuration, sync and rebuild; installed apps do not read this source file dynamically. Keys embedded in an APK are extractable.
+Chưa hoàn tất: đồng bộ chat cloud, chỉnh sửa hồ sơ/mật khẩu với server, quản lý lời mời kết bạn, outbox offline và triển khai production.
 
-Set `MENTOR_BACKEND_URL` to a deployed HTTPS base URL to connect the native learning flow. Without it, the app explains that synchronized statistics and learning paths are unavailable; it does not invent progress or rankings. A publicly deployed backend is not included automatically.
+Git: nhánh feature/*, module/* hoặc fix/* → Pull Request integration; trưởng nhóm quản lý main.
 
-For Android Studio's emulator on Windows, run `Start-AIMentor-Backend.cmd`. It starts a local server at port 8000 and creates ignored `backend.local.properties` if missing. Sync Gradle and run the **debug** app again; its emulator URL is `http://10.0.2.2:8000`. An older installed APK must be rebuilt to receive this setting. Sign in again to link a previously local account; existing progress is retained. Keep the backend running while testing. This setup is local to the computer, not an Internet deployment. Release APKs ignore this debug configuration and require HTTPS.
+## Giao diện Compose (21/10/2026)
+- `core/ui-core/.../design`: màu semantic light/dark, typography Material 3, spacing/radius và thành phần dùng chung; skeleton draw-only, nút ripple/scale, progress động.
+- `app/.../ui`: ShellUi (Navigation Compose), LearningUi, OverviewUi, ChatUi, SubjectHubUi, CompetitionUi. Java Fragment tiếp tục sở hữu lifecycle, repository và ViewModel. AndroidFragment là cầu nối; cài đặt, chỉnh hồ sơ, auth và công cụ môn học vẫn có View/XML.
+- Bỏ renderer/layout XML cũ khi đã thay bằng Compose. Không duy trì hai bộ Dashboard/Chat/Path chạy song song.
+- Kotlin/Compose Compiler 2.2.10; Compose BOM 2025.08.00 (Material 3 theo BOM); Navigation Compose 2.9.3; Activity Compose 1.13.0; Fragment Compose 1.8.9; Coil 3.3.0; Konfetti 2.0.5. Đây là bộ phiên bản ổn định đã chọn cho toolchain hiện có. Lottie 6.7.1 chỉ khai báo alias, chưa kéo vào APK vì animation hiện tại không cần asset.
+- UI đọc thêm `week` từ API Dashboard để vẽ bảy ngày thật. Chưa có dữ liệu thì có hướng dẫn, không vẽ thành tích giả. Giờ học, cấp cá nhân và bộ sưu tập huy hiệu cần chính sách/ledger backend trước khi bật.
+- Thưởng và streak vẫn do backend quyết định: bài 200 EXP, quiz ôn 400 EXP ở lần đầu; làm lại không nhận lại EXP. Animation không thay đổi kết quả.
+- SQLite dùng một connection pool có WAL và reference counting cho mỗi file, tránh mở/đóng kết nối độc lập khi các repository đang đọc/ghi đồng thời.
+- Chạy thử: mở project với JDK 21, sync Gradle, chạy cấu hình app. Xem đủ năm mục; đổi Việt/Anh và sáng/tối trong Hồ sơ → Cài đặt; thử giữ bản nháp khi đổi mục/xoay màn hình. Cấu hình backend debug trong `backend.local.properties` để thử bài học và biểu đồ có dữ liệu.
 
-Run backend setup/tests using [backend/README.md](backend/README.md). The implemented contract is [runtime-openapi.json](docs/backend/runtime-openapi.json); `openapi.json` is an older design draft.
+### Thay đổi logic phục vụ giao diện mới
+- `ShellUi.kt`: giữ yêu cầu chuyển trang đến khi Navigation sẵn sàng, tránh bỏ mất thao tác ngay sau đăng nhập.
+- `LearningUi.kt`: chụp trạng thái bất biến từ mỗi lần ViewModel phát dữ liệu để Compose cập nhật đúng câu hỏi, phản hồi và kết quả; không sửa quy tắc chấm điểm.
+- `LearningOverviewData.java`: đọc/kiểm tra chuỗi bảy ngày có sẵn từ backend để biểu đồ dùng dữ liệu thật.
+- `SchoolDatabaseConnections.java` và `ModuleDatabaseHelper.java`: dùng chung kết nối SQLite có WAL và đếm tham chiếu để các repository không đóng kết nối của nhau.
+- `SystemSafeArea.java`: giao phần inset của màn chính cho Compose, tránh cộng padding hai lần và che nội dung bởi bàn phím/thanh hệ thống.
 
-Cloud chat synchronization, server-connected profile editing, friend-request UI, production deployment and full offline synchronization remain unfinished. Existing local chat/project/file functionality and connected learning are separate from those pending features.
-
-## Demo accounts
-
-Debug local accounts: `student 01`, `student 02`, `student 03`; password `123123123`. Backend demo accounts require explicit demo mode; these are not production credentials.
-
-Historical progress reports describe earlier snapshots. See `WORK_IN_PROGRESS.md` for the latest state and verification boundaries.
+### Kiểm tra theo từng phần
+| Phần | Nơi triển khai | Chạy thử |
+| --- | --- | --- |
+| Design system | `core/ui-core/src/main/java/com/example/mentor/ui/design/` | Đổi sáng/tối, tắt animation hệ thống, tăng cỡ chữ |
+| Level | `app/src/main/java/com/example/asm_final/ui/LearningUi.kt` | Khảo sát đầu vào, bài học, giải thích, quay về từ Chat, quiz sau mỗi 5 bài |
+| Profile | `app/src/main/java/com/example/asm_final/ui/OverviewUi.kt` | Mở hồ sơ, sửa hồ sơ, cài đặt; thử có và chưa có dữ liệu |
+| Home | `app/src/main/java/com/example/asm_final/ui/OverviewUi.kt` | Chọn môn, tiếp tục học, biểu đồ theo tuần, mất kết nối |
+| Chat | `app/src/main/java/com/example/asm_final/ui/ChatUi.kt` | Gửi tin, tệp/ảnh, lịch sử/thư mục, đổi mục và xoay màn hình |

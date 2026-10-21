@@ -183,6 +183,9 @@ public class AuthOnboardingTest {
     waitFor(
         a ->
             a instanceof ProfileSetupActivity
+                && a.hasWindowFocus()
+                && a.findViewById(R.id.grade_choices).isShown()
+                && a.findViewById(R.id.grade_choices).getWidth() > 0
                 && a.findViewById(R.id.profile_setup_save).isEnabled()
                 && !((EditText) a.findViewById(R.id.profile_display_name))
                     .getText()
@@ -284,17 +287,8 @@ public class AuthOnboardingTest {
     assertEquals(11, p.grade);
     assertEquals(3, p.goal);
     assertEquals("MATH,BIOLOGY", p.subjects);
-    waitFor(
-        a ->
-            a instanceof HomeActivity
-                && a.findViewById(R.id.tv_learning_context).getVisibility() == View.VISIBLE);
-    main(
-        () ->
-            assertTrue(
-                ((TextView) current().findViewById(R.id.tv_learning_context))
-                    .getText()
-                    .toString()
-                    .contains("11")));
+    // Visible grade and Compose recreation are covered by ComposeRedesignTest.
+    assertEquals(11, services.learners().load(id).grade);
     main(() -> ((HomeActivity) current()).logout());
     await(MainActivity.class);
     login(false);
@@ -327,6 +321,9 @@ public class AuthOnboardingTest {
     waitFor(
         a ->
             a instanceof ProfileSetupActivity
+                && a.hasWindowFocus()
+                && a.findViewById(R.id.grade_choices).isShown()
+                && a.findViewById(R.id.grade_choices).getWidth() > 0
                 && a.findViewById(R.id.profile_setup_save).isEnabled()
                 && ((EditText) a.findViewById(R.id.profile_minutes))
                     .getText()
@@ -479,30 +476,6 @@ public class AuthOnboardingTest {
         assertEquals(0, services.accountLookup().userId(email));
       } finally {
         db.execSQL("DROP TRIGGER auth_profile_failure");
-      }
-    }
-  }
-
-  @Test
-  public void v2MigrationKeepsLegacyPasswordsAndSkipsOnboarding() {
-    try (SQLiteDatabase memory = SQLiteDatabase.create(null);
-        DatabaseHelper helper = new DatabaseHelper(context)) {
-      memory.execSQL(
-          "CREATE TABLE users(id INTEGER PRIMARY KEY,username TEXT,password TEXT,full_name"
-              + " TEXT,address TEXT,phone TEXT,email TEXT,avatar TEXT)");
-      memory.execSQL(
-          "INSERT INTO users(id,username,password,full_name)"
-              + " VALUES(7,'legacy','unchanged-hash','Existing learner')");
-      helper.onUpgrade(memory, 2, 3);
-      try (Cursor c =
-          memory.rawQuery(
-              "SELECT u.password,p.step,p.display_name FROM users u JOIN learner_profiles p ON"
-                  + " p.user_id=u.id WHERE u.id=7",
-              null)) {
-        assertTrue(c.moveToFirst());
-        assertEquals("unchanged-hash", c.getString(0));
-        assertEquals(5, c.getInt(1));
-        assertEquals("Existing learner", c.getString(2));
       }
     }
   }

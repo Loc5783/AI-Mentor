@@ -21,23 +21,30 @@ public final class HomeFragment extends Fragment {
   private View root;
   private int owner, generation;
   private OverviewUpdates.Subscription updates;
-  private DashboardSubjectsView subjectsView;
+  private com.example.asm_final.ui.OverviewUi subjectsView;
   private boolean needsLogin;
+  private int selectedGrade;
+  private boolean retryOverview;
+
+  private void overviewAction() {
+    if (needsLogin) ((com.example.asm_final.activities.HomeActivity) requireActivity()).logout();
+    else if (retryOverview) load(false);
+    else openLessons();
+  }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle state) {
-    root = inflater.inflate(R.layout.fragment_home, parent, false);
     owner = ActiveUser.get(requireContext());
-    subjectsView = new DashboardSubjectsView(root, this::openLesson);
-    root.findViewById(R.id.button_start_learning).setOnClickListener(v -> openLessons());
-    root.findViewById(R.id.button_chart_action)
-        .setOnClickListener(
-            v -> {
-              if (needsLogin)
-                ((com.example.asm_final.activities.HomeActivity) requireActivity()).logout();
-              else if (Boolean.TRUE.equals(v.getTag())) load(false);
-              else openLessons();
-            });
+    subjectsView =
+        new com.example.asm_final.ui.OverviewUi(
+            requireContext(),
+            false,
+            subject -> openLesson(subject, selectedGrade),
+            this::overviewAction,
+            () -> {},
+            () -> {},
+            this::openLessons);
+    root = subjectsView.view();
     return root;
   }
 
@@ -107,17 +114,16 @@ public final class HomeFragment extends Fragment {
                           || request != generation
                           || ActiveUser.get(context) != owner) return;
                       needsLogin = snapshot.needsLogin;
-                      ((TextView) root.findViewById(R.id.txt_home_content))
-                          .setText(
-                              profile == null
-                                  ? getString(R.string.home_default_user)
-                                  : profile.displayName);
-                      TextView contextLabel = root.findViewById(R.id.tv_learning_context);
-                      contextLabel.setVisibility(View.VISIBLE);
-                      contextLabel.setText(
-                          grade >= 10 && grade <= 12
-                              ? getString(R.string.chat_grade, grade)
-                              : getString(R.string.overview_choose_grade));
+                      selectedGrade = grade;
+                      retryOverview =
+                          snapshot.mode != LearningOverviewRepository.Mode.LOCAL
+                              && (snapshot.data == null
+                                  || snapshot.mode == LearningOverviewRepository.Mode.CACHED);
+                      subjectsView.identity(
+                          profile == null
+                              ? getString(R.string.home_default_user)
+                              : profile.displayName,
+                          null);
                       subjectsView.render(snapshot, selected, grade);
                     });
               } catch (RuntimeException failure) {
@@ -125,7 +131,10 @@ public final class HomeFragment extends Fragment {
                     () -> {
                       if (root == viewOwner
                           && request == generation
-                          && ActiveUser.get(context) == owner) subjectsView.failure();
+                          && ActiveUser.get(context) == owner) {
+                        retryOverview = true;
+                        subjectsView.failure();
+                      }
                     });
               }
             });

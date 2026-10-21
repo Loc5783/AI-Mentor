@@ -37,7 +37,6 @@
     <string name="auth_done">Hoàn tất và bắt đầu học</string>
     <string name="auth_close_guide">Đóng hướng dẫn</string>
     <string name="auth_guide">Hướng dẫn sử dụng</string>
-    <string name="auth_exit">Đăng xuất</string>
     <string name="onboard_step">Bước %1$d / 4</string>
     <string name="onboard_1_title">Chào mừng bạn đến với AI Mentor! 🌸</string>
     <string name="onboard_1_body">Học thông minh hơn, theo tốc độ của bạn.\n\nKhám phá các môn học, với lộ trình Lý, Hóa và Sinh. Khi gặp câu hỏi khó, bạn có thêm một người bạn để cùng tìm hiểu.</string>
@@ -60,7 +59,6 @@
     <string name="profile_goal_1">Nâng cao điểm số</string>
     <string name="profile_goal_2">Ôn tập kiểm tra</string>
     <string name="profile_goal_3">Ôn thi tốt nghiệp THPT</string>
-    <string name="profile_context">Lớp %1$d · %2$s</string>
     <string name="auth_recovery_title">Lấy lại quyền truy cập</string>
     <string name="auth_recovery_body">Nhập email tài khoản để yêu cầu hướng dẫn đặt lại mật khẩu.</string>
     <string name="auth_recovery_send">Gửi yêu cầu đặt lại mật khẩu</string>
@@ -83,7 +81,6 @@
     <string name="auth_resend_wait">Bạn có thể gửi lại sau khoảng một phút.</string>
     <string name="auth_token_required">Vui lòng nhập mã xác minh.</string>
     <string name="auth_route_error">Chưa thể tải trạng thái tài khoản. Hãy đăng nhập lại.</string>
-    <string name="auth_account_local">Tài khoản trên thiết bị · Email chưa được xác minh</string>
     <string-array name="learner_goals">
         <item>@string/profile_goal_0</item>
         <item>@string/profile_goal_1</item>

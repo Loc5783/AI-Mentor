@@ -36,6 +36,8 @@ public final class SystemSafeArea implements Application.ActivityLifecycleCallba
     ViewCompat.setOnApplyWindowInsetsListener(
         content,
         (view, insets) -> {
+          // The Compose shell owns system/IME insets; consuming here would apply them twice.
+          if (activity instanceof com.example.asm_final.activities.HomeActivity) return insets;
           Insets bars =
               insets.getInsets(
                   WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());

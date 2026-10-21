@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <color name="mentor_science_button">#2563EB</color>
+    <color name="mentor_science_container">#DBEAFE</color>
+    <color name="science_background">#F8FAFC</color>
+    <color name="science_bg_header_custom">#1D4ED8</color>
+    <color name="science_border">#D6DEED</color>
+    <color name="science_focus">#2563EB</color>
+    <color name="science_on_primary">#FFFFFF</color>
+    <color name="science_primary">#2563EB</color>
+    <color name="science_primary_dark">#1D4ED8</color>
+    <color name="science_surface">#FFFFFF</color>
+    <color name="science_text_header_light">#FFFFFF</color>
+    <color name="science_text_primary">#0B1220</color>
+    <color name="science_text_secondary">#475569</color>
+    <dimen name="science_icon_button_size">48dp</dimen>
+    <string name="science_back">Quay lại</string>
+    <string name="science_element_details">Số hiệu nguyên tử: %1$d\nKý hiệu: %2$s\nKhối lượng nguyên tử: %3$s\nNhóm: %4$d\nChu kỳ: %5$d\nLoại: %6$s\n\n%7$s\n\nỨng dụng phổ biến: %8$s</string>
+    <string name="science_elements_count">Đang hiển thị %1$d nguyên tố</string>
+    <string name="science_periodic_btn_search">Tìm kiếm nguyên tố</string>
+    <string name="science_periodic_search_hint">Tìm theo tên, ký hiệu, số hiệu hoặc nhóm</string>
+    <string name="science_periodic_table">Bảng tuần hoàn</string>
+    <string name="science_tool_close">Đóng</string>
+    <string name="science_tool_periodic_table_data_could_not_be_loaded">Không thể tải dữ liệu bảng tuần hoàn.</string>
+    <string name="science_tool_unable_to_load_the_periodic_table">Không thể tải bảng tuần hoàn.</string>
+    <style name="MentorScienceButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/mentor_science_button</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="cornerRadius">@dimen/mentor_control_radius</item>
+        <item name="rippleColor">@color/mentor_control_ripple</item>
+        <item name="android:minHeight">@dimen/mentor_control_height</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/mentor_control_text</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="MentorScienceInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">@dimen/mentor_control_radius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/mentor_control_radius</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/mentor_control_radius</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/mentor_control_radius</item>
+    </style>
+    <style name="ScienceHeaderTitle">
+        <item name="android:textColor">@color/science_text_primary</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="SciencePrimaryButton" parent="Widget.Material3.Button">
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textColor">@color/science_on_primary</item>
+        <item name="backgroundTint">@color/science_primary</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+    <style name="ScienceSecondaryText">
+        <item name="android:textColor">@color/science_text_secondary</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+    <style name="ScienceSquareIconButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:layout_width">@dimen/science_icon_button_size</item>
+        <item name="android:layout_height">@dimen/science_icon_button_size</item>
+        <item name="android:minWidth">@dimen/science_icon_button_size</item>
+        <item name="android:minHeight">@dimen/science_icon_button_size</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:textColor">@color/science_text_primary</item>
+        <item name="strokeColor">@color/science_border</item>
+        <item name="backgroundTint">@color/science_surface</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="Theme.ChemistryTools" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/science_primary</item>
+        <item name="colorOnPrimary">@color/science_on_primary</item>
+        <item name="colorPrimaryContainer">@color/mentor_science_container</item>
+        <item name="colorSurface">@color/science_surface</item>
+        <item name="colorOnSurface">@color/science_text_primary</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/science_surface</item>
+        <item name="android:statusBarColor">@color/science_background</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:windowBackground">@color/science_background</item>
+        <item name="android:textColorPrimary">@color/science_text_primary</item>
+        <item name="android:textColorSecondary">@color/science_text_secondary</item>
+        <item name="materialButtonStyle">@style/MentorScienceButton</item>
+        <item name="textInputStyle">@style/MentorScienceInput</item>
+        <item name="android:windowAnimationStyle">@style/MentorWindowAnimation</item>
+        <item name="colorOnPrimaryContainer">@color/science_text_primary</item>
+    </style>
+</resources>

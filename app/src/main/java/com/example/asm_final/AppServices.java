@@ -21,8 +21,6 @@ public final class AppServices {
   private final com.example.asm_final.chat.ChatStore chats;
   private final com.example.asm_final.onboarding.LearnerProfileRepository learners;
   private final RecoveryService recovery = new UnavailableRecoveryService();
-  private final LearningStreakRepository streaks;
-  private final WeeklyQuizRepository weeklyQuizzes;
   private final UserProfileRepository profiles;
   private final ExecutorService io = Executors.newFixedThreadPool(2);
 
@@ -36,17 +34,15 @@ public final class AppServices {
         new LiveOverviewUpdates(
             context, owner -> new com.example.asm_final.backend.BackendEventStream(context, owner));
     profiles = new LocalUserProfileRepository(context);
-    streaks = new LocalLearningStreakRepository(context);
     competition =
         new com.example.asm_final.competition.BackendCompetitionRepository(
-            context, overview, learners, streaks);
+            context, overview, learners);
     publicProfiles = new com.example.asm_final.competition.BackendPublicProfiles(context);
     rankingUpdates =
         new LiveOverviewUpdates(
             context,
             owner -> new com.example.asm_final.backend.BackendEventStream(context, owner),
             com.example.asm_final.competition.RankingEventPolicy::affects);
-    weeklyQuizzes = new LocalWeeklyQuizRepository(context);
   }
 
   public com.example.asm_final.onboarding.LearnerProfileRepository learners() {
@@ -107,15 +103,6 @@ public final class AppServices {
   public UserProfileRepository profiles() {
     return profiles;
   }
-
-  public LearningStreakRepository streaks() {
-    return streaks;
-  }
-
-  public WeeklyQuizRepository weeklyQuizzes() {
-    return weeklyQuizzes;
-  }
-
 
   public ExecutorService io() {
     return io;

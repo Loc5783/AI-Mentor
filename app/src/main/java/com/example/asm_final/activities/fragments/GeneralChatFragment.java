@@ -24,14 +24,9 @@ import java.util.*;
 
 public final class GeneralChatFragment extends Fragment {
   private ChatViewModel model;
-  private ChatMessagesAdapter adapter;
-  private EditText input;
-  private RecyclerView messages;
-  private ChipGroup draftFiles;
   private View root;
-  private boolean rendering;
   private boolean initialChatApplied;
-  private String renderedThread, cameraName, cameraThread, filesSignature = "";
+  private String cameraName, cameraThread;
   private ArrayList<Uri> pendingUris = new ArrayList<>();
   private boolean pendingCamera;
   private final ActivityResultLauncher<String[]> documents =
@@ -78,83 +73,56 @@ public final class GeneralChatFragment extends Fragment {
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
-    return inflater.inflate(R.layout.fragment_general_chat, container, false);
-  }
-
-  @Override
-  public void onViewCreated(View view, Bundle state) {
-    root = view;
     model = new ViewModelProvider(requireActivity()).get(ChatViewModel.class);
-    input = view.findViewById(R.id.chat_input);
-    input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(30000)});
-    messages = view.findViewById(R.id.chat_messages);
-    messages.setLayoutManager(new LinearLayoutManager(requireContext()));
-    draftFiles = view.findViewById(R.id.chat_draft_files);
-    adapter =
-        new ChatMessagesAdapter(
-            ActiveUser.get(requireContext()),
-            new ChatMessagesAdapter.Actions() {
-              public void retry(String id) {
-                model.retry(id);
+    root =
+        com.example.asm_final.ui.ChatUi.view(
+            requireContext(),
+            model,
+            new com.example.asm_final.ui.ChatUi.Actions() {
+              public void history() {
+                if (getChildFragmentManager().findFragmentByTag("chat_history") == null)
+                  new ChatHistoryDialog().show(getChildFragmentManager(), "chat_history");
+              }
+
+              public void options() {
+                if (model.snapshot != null)
+                  ChatMenus.thread(requireContext(), root, model, model.snapshot.thread);
+              }
+
+              public void grade() {
+                chooseGrade();
+              }
+
+              public void attach() {
+                attachments();
               }
 
               public void file(ChatRecords.FileItem file) {
                 openFile(file);
               }
 
-              public boolean retryablePending(String id) {
-                return model.hasUnsavedReply(id);
+              public void copy(String text) {
+                ((android.content.ClipboardManager)
+                        requireContext().getSystemService(Context.CLIPBOARD_SERVICE))
+                    .setPrimaryClip(ClipData.newPlainText("AI Mentor", text));
+                toast(R.string.chat_copied);
               }
-            });
-    messages.setAdapter(adapter);
-    input.addTextChangedListener(
-        new TextWatcher() {
-          public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-          public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (!rendering) model.setDraft(s.toString());
-          }
+              public void formula(String text) {
+                showFormula(text);
+              }
 
-          public void afterTextChanged(Editable editable) {}
-        });
-    view.findViewById(R.id.chat_history)
-        .setOnClickListener(
-            v -> {
-              if (getChildFragmentManager().findFragmentByTag("chat_history") == null)
-                new ChatHistoryDialog().show(getChildFragmentManager(), "chat_history");
-            });
-    view.findViewById(R.id.chat_new).setOnClickListener(v -> model.newChat());
-    view.findViewById(R.id.chat_grade).setOnClickListener(v -> chooseGrade());
-    view.findViewById(R.id.chat_options)
-        .setOnClickListener(
-            v -> {
-              if (model.snapshot != null)
-                ChatMenus.thread(requireContext(), v, model, model.snapshot.thread);
-            });
-    view.findViewById(R.id.chat_attach).setOnClickListener(v -> attachments());
-    view.findViewById(R.id.chat_send)
-        .setOnClickListener(
-            v -> {
-              if (model.requesting) model.cancel();
-              else if (model.grade < 10 || model.grade > 12) chooseGrade();
-              else model.send();
-            });
-    for (int id :
-        new int[] {
-          R.id.chat_suggest_physics, R.id.chat_suggest_chemistry, R.id.chat_suggest_biology
-        })
-      view.findViewById(id)
-          .setOnClickListener(
-              v -> {
-                input.setText(
-                    v.getId() == R.id.chat_suggest_physics
-                        ? R.string.chat_suggest_physics
-                        : v.getId() == R.id.chat_suggest_chemistry
-                            ? R.string.chat_suggest_chemistry
-                            : R.string.chat_suggest_biology);
-                input.setSelection(input.length());
-                input.requestFocus();
-              });
+              public void returnToLesson() {
+                model.flush();
+                requireActivity().finish();
+              }
+            },
+            requireActivity().getIntent().getBooleanExtra("LESSON_RETURN", false));
+    return root;
+  }
+
+  @Override
+  public void onViewCreated(View view, Bundle state) {
     model
         .changes()
         .observe(
@@ -168,19 +136,25 @@ public final class GeneralChatFragment extends Fragment {
                   return;
                 }
               }
-              render();
+              drainImports();
             });
-    View backToLesson = view.findViewById(R.id.chat_return_lesson);
-    backToLesson.setVisibility(
-        requireActivity().getIntent().getBooleanExtra("LESSON_RETURN", false)
-            ? View.VISIBLE
-            : View.GONE);
-    backToLesson.setOnClickListener(
-        v -> {
-          model.flush();
-          requireActivity().finish();
-        });
     model.bind(ActiveUser.get(requireContext()));
+  }
+
+  private void showFormula(String text) {
+    android.webkit.WebView web = new android.webkit.WebView(requireContext());
+    com.example.mentor.ui.MathTextRenderer.render(
+        web,
+        text.replace("\\(", "$").replace("\\)", "$").replace("\\[", "$$").replace("\\]", "$$"),
+        16);
+    androidx.appcompat.app.AlertDialog dialog =
+        new MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.chat_formula)
+            .setView(web)
+            .setPositiveButton(android.R.string.ok, null)
+            .create();
+    dialog.setOnDismissListener(d -> web.destroy());
+    dialog.show();
   }
 
   @Override
@@ -193,104 +167,6 @@ public final class GeneralChatFragment extends Fragment {
   public void onPause() {
     if (model != null) model.flush();
     super.onPause();
-  }
-
-  private void render() {
-    if (root == null) return;
-    rendering = true;
-    try {
-      if (!input.getText().toString().equals(model.draft)) {
-        int caret = input.length() == 0 ? model.draft.length() : input.getSelectionStart();
-        input.setText(model.draft);
-        input.setSelection(
-            Math.max(0, Math.min(caret < 0 ? model.draft.length() : caret, model.draft.length())));
-      }
-      input.setEnabled(!model.loading && !model.importing);
-      boolean ready = model.snapshot != null && !model.loading && !model.importing;
-      for (int id :
-          new int[] {
-            R.id.chat_new,
-            R.id.chat_history,
-            R.id.chat_attach,
-            R.id.chat_options,
-            R.id.chat_grade,
-            R.id.chat_suggest_physics,
-            R.id.chat_suggest_chemistry,
-            R.id.chat_suggest_biology
-          }) root.findViewById(id).setEnabled(ready);
-      TextView grade = root.findViewById(R.id.chat_grade);
-      grade.setText(
-          model.grade >= 10 && model.grade <= 12
-              ? getString(R.string.chat_grade, model.grade)
-              : getString(R.string.chat_choose_grade));
-      ((TextView) root.findViewById(R.id.chat_title))
-          .setText(
-              model.snapshot == null || model.snapshot.thread.title.isEmpty()
-                  ? getString(R.string.chat_title)
-                  : model.snapshot.thread.title);
-      root.findViewById(R.id.chat_empty)
-          .setVisibility(
-              model.snapshot != null && model.snapshot.messages.isEmpty()
-                  ? View.VISIBLE
-                  : View.GONE);
-      root.findViewById(R.id.chat_loading)
-          .setVisibility(model.loading || model.importing ? View.VISIBLE : View.GONE);
-      int status =
-          model.status != 0
-              ? model.status
-              : model.importing
-                  ? R.string.chat_importing
-                  : model.requesting
-                      ? model.busyHere() ? R.string.chat_thinking : R.string.chat_thinking_other
-                      : 0;
-      TextView statusView = root.findViewById(R.id.chat_status);
-      statusView.setVisibility(status == 0 ? View.GONE : View.VISIBLE);
-      if (status != 0) statusView.setText(status);
-      ImageButton send = root.findViewById(R.id.chat_send);
-      send.setImageResource(model.requesting ? R.drawable.ic_chat_stop : R.drawable.ic_chat_send);
-      send.setContentDescription(
-          getString(model.requesting ? R.string.chat_stop : R.string.chat_send));
-      send.setEnabled(ready);
-      List<ChatRecords.Message> rows =
-          model.snapshot == null ? Collections.emptyList() : model.snapshot.messages;
-      LinearLayoutManager layout = (LinearLayoutManager) messages.getLayoutManager();
-      boolean switched = !Objects.equals(renderedThread, model.threadId());
-      boolean atBottom = layout.findLastVisibleItemPosition() >= adapter.getItemCount() - 3;
-      renderedThread = model.threadId();
-      adapter.setRequesting(model.requesting);
-      adapter.submitList(
-          rows,
-          () -> {
-            if (root != null && !rows.isEmpty() && (switched || atBottom))
-              messages.scrollToPosition(rows.size() - 1);
-          });
-      StringBuilder signature = new StringBuilder();
-      if (model.snapshot != null)
-        for (ChatRecords.FileItem f : model.snapshot.draftFiles) signature.append(f.id);
-      String key = signature.toString() + ":" + model.importing + ":" + model.loading;
-      if (!key.equals(filesSignature)) {
-        filesSignature = key;
-        draftFiles.removeAllViews();
-        if (model.snapshot != null)
-          for (ChatRecords.FileItem file : model.snapshot.draftFiles) {
-            Chip chip = new Chip(requireContext());
-            chip.setText(file.name);
-            chip.setMaxWidth(dp(250));
-            chip.setEllipsize(TextUtils.TruncateAt.END);
-            chip.setCloseIconVisible(true);
-            chip.setCloseIconContentDescription(getString(R.string.chat_remove_file, file.name));
-            chip.setEnsureMinTouchTargetSize(true);
-            chip.setOnClickListener(v -> openFile(file));
-            chip.setOnCloseIconClickListener(v -> model.removeFile(file.id));
-            chip.setEnabled(ready);
-            draftFiles.addView(chip);
-          }
-        draftFiles.setVisibility(draftFiles.getChildCount() == 0 ? View.GONE : View.VISIBLE);
-      }
-    } finally {
-      rendering = false;
-    }
-    drainImports();
   }
 
   private void receiveUris(List<Uri> uris) {
@@ -425,15 +301,7 @@ public final class GeneralChatFragment extends Fragment {
 
   @Override
   public void onDestroyView() {
-    if (messages != null) messages.setAdapter(null);
-    if (adapter != null) adapter.close();
     root = null;
-    input = null;
-    messages = null;
-    draftFiles = null;
-    adapter = null;
-    filesSignature = "";
-    renderedThread = null;
     super.onDestroyView();
   }
 }

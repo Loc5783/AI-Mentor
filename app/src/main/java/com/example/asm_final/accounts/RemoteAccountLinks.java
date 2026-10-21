@@ -15,11 +15,6 @@ public final class RemoteAccountLinks extends ModuleDatabaseHelper {
   }
 
   @Override
-  protected Map<String, String> legacyTables() {
-    return Collections.emptyMap();
-  }
-
-  @Override
   public void onCreate(SQLiteDatabase db) {
     db.execSQL(
         "CREATE TABLE remote_account_links(endpoint TEXT NOT NULL,remote_id TEXT NOT NULL,"

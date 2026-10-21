@@ -16,11 +16,6 @@ public final class LearningSetupStore extends ModuleDatabaseHelper {
   }
 
   @Override
-  protected Map<String, String> legacyTables() {
-    return Collections.emptyMap();
-  }
-
-  @Override
   public void onCreate(SQLiteDatabase db) {
     db.execSQL(
         "CREATE TABLE mentor_enrollments(id TEXT PRIMARY KEY,user_id INTEGER NOT NULL REFERENCES"

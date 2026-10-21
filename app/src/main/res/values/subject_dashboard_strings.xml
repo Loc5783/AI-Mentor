@@ -1,7 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="dashboard_connect_notice">Chưa kết nối máy chủ học tập. Chọn môn để chuẩn bị lộ trình; thống kê sẽ xuất hiện sau khi kết nối.</string>
-    <string name="dashboard_progress_pending">Chưa có thống kê đồng bộ để hiển thị.</string>
-    <string name="dashboard_chart_empty">Chưa có EXP trong các môn đang học. Hoàn thành một bài hoặc quiz ôn tập để xem biểu đồ.</string>
-    <string name="dashboard_selected_source">EXP của các môn đang học, từ bài học và quiz ôn tập.</string>
-    <string name="subject_lessons_soon">Bài học đang được chuẩn bị</string>
+  <string name="dashboard_connect_notice">Chưa kết nối máy chủ học tập. Chọn môn để chuẩn bị lộ trình; thống kê sẽ xuất hiện sau khi kết nối.</string>
+  <string name="dashboard_progress_pending">Chưa có thống kê đồng bộ để hiển thị.</string>
+  <string name="subject_lessons_soon">Bài học đang được chuẩn bị</string>
 </resources>

@@ -1,4 +1,11 @@
 [versions]
+kotlin = "2.2.10"
+composeBom = "2025.08.00"
+navigationCompose = "2.9.3"
+coil = "3.3.0"
+konfetti = "2.0.5"
+lottie = "6.7.1"
+fragment = "1.8.9"
 agp = "9.3.1"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -9,6 +16,20 @@ activity = "1.13.0"
 constraintlayout = "2.2.1"
 
 [libraries]
+fragment-compose = { module = "androidx.fragment:fragment-compose", version.ref = "fragment" }
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+compose-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
+compose-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-test = { module = "androidx.compose.ui:ui-test-junit4" }
+compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+konfetti-compose = { module = "nl.dionsegijn:konfetti-compose", version.ref = "konfetti" }
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
+
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -18,6 +39,7 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
 [plugins]
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 

@@ -7,14 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.example.mentor.data.ModuleDatabaseHelper;
 
-/*
- * Role: Local data-layer class for App Shell, responsible for SQLite and data read/write operations.
- * Purpose: Separating the database from the UI centralizes queries, improves maintainability, and reduces direct SQL dependencies in Activities and Fragments.
- */
 public class DatabaseHelper extends ModuleDatabaseHelper {
 
-  private static final String DB_NAME = "user_db";
-  private static final int DB_VERSION = 3;
+  private static final String DB_NAME = "accounts";
+  private static final int DB_VERSION = 1;
   private static final int BCRYPT_COST = 12;
 
   private static final String TABLE_USERS = "users";
@@ -28,10 +24,6 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
   public static final String COL_EMAIL = "email";
   public static final String COL_AVATAR = "avatar";
 
-  /*
-   * Responsibility: Initializes the `DatabaseHelper` object and sets up the required dependencies and initial data.
-   * Purpose: The constructor ensures the object starts in a valid state immediately after creation.
-   */
   public DatabaseHelper(Context context) {
     super(context.getApplicationContext(), DB_NAME, null, DB_VERSION);
   }
@@ -62,25 +54,9 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
     createLearnerProfiles(db);
   }
 
-  /*
-   * Responsibility: Handles the Android callback or event `onUpgrade` and updates the related state.
-   * Purpose: Keeping callbacks separate makes event flow clearer and follows the Android lifecycle cleanly.
-   */
   @Override
   public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    if (oldVersion < 2) {
-      db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_FULLNAME + " TEXT");
-      db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_ADDRESS + " TEXT");
-      db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_PHONE + " TEXT");
-      db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_EMAIL + " TEXT");
-      db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_AVATAR + " TEXT");
-    }
-    if (oldVersion < 3) {
-      createLearnerProfiles(db);
-      db.execSQL(
-          "INSERT OR IGNORE INTO learner_profiles(user_id,step,display_name) SELECT"
-              + " id,5,COALESCE(NULLIF(full_name,''),username,'') FROM users");
-    }
+    throw new android.database.sqlite.SQLiteException("Missing account schema upgrade");
   }
 
   private void createLearnerProfiles(SQLiteDatabase db) {
@@ -169,10 +145,6 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
     }
   }
 
-  /*
-   * Responsibility: Saves or adds data for `add user` to the appropriate storage or collection.
-   * Purpose: Centralizing write operations helps maintain data consistency and handle storage errors.
-   */
   public long addUser(String username, String password, String email, String phone) {
     if (isBlank(username) || isBlank(password)) return -1;
 
@@ -214,10 +186,6 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
     }
   }
 
-  /*
-   * Responsibility: Validates the conditions or rules handled by `check login` and returns the result to the caller.
-   * Purpose: A dedicated validation method keeps rules consistent and easier to test.
-   */
   public boolean checkLogin(String username, String password) {
     if (isBlank(username) || password == null) return false;
 
@@ -248,23 +216,10 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
         }
       }
 
-      // Repairs accounts affected by the old profile-update bug, which stored
-      // the edited password as plaintext. A successful legacy login is
-      // immediately migrated back to BCrypt.
-      if (password.equals(storedPassword)) {
-        ContentValues migrated = new ContentValues();
-        migrated.put(COL_PASSWORD, hashPassword(password));
-        db.update(TABLE_USERS, migrated, COL_USERNAME + "=?", new String[] {username.trim()});
-        return true;
-      }
       return false;
     }
   }
 
-  /*
-   * Responsibility: Reads or loads data for `get user id` from the appropriate data source.
-   * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
-   */
   public int getUserId(String username) {
     if (isBlank(username)) return 0;
 
@@ -285,10 +240,6 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
     }
   }
 
-  /*
-   * Responsibility: Reads or loads data for `get user data` from the appropriate data source.
-   * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
-   */
   public Cursor getUserData(String username) {
     return getReadableDatabase()
         .query(
@@ -302,10 +253,6 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
             "1");
   }
 
-  /*
-   * Responsibility: Updates or synchronizes `update user` with the latest data or state.
-   * Purpose: Keeps the UI and data synchronized after user actions.
-   */
   public boolean updateUser(
       String username,
       String fullName,
@@ -351,10 +298,6 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
   }
 
   /** Debug helper retained for compatibility, but it no longer exposes password hashes. */
-  /*
-   * Responsibility: Reads or loads data for `get all users string` from the appropriate data source.
-   * Purpose: Centralizing read operations makes null handling, error handling, and data sources clearer.
-   */
   public String getAllUsersString() {
     StringBuilder output = new StringBuilder();
     try (Cursor cursor =
@@ -377,10 +320,6 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
     return output.toString();
   }
 
-  /*
-   * Responsibility: Validates the conditions or rules handled by `hash password` and returns the result to the caller.
-   * Purpose: A dedicated validation method keeps rules consistent and easier to test.
-   */
   private static String hashPassword(String password) {
     return BCrypt.withDefaults().hashToString(BCRYPT_COST, password.toCharArray());
   }
@@ -389,10 +328,6 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
     return value != null && value.startsWith("$2");
   }
 
-  /*
-   * Responsibility: Validates the conditions or rules handled by `is blank` and returns the result to the caller.
-   * Purpose: A dedicated validation method keeps rules consistent and easier to test.
-   */
   private static boolean isBlank(String value) {
     return value == null || value.trim().isEmpty();
   }

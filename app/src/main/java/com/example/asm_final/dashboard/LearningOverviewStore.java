@@ -14,11 +14,6 @@ public final class LearningOverviewStore extends ModuleDatabaseHelper {
   }
 
   @Override
-  protected Map<String, String> legacyTables() {
-    return Collections.emptyMap();
-  }
-
-  @Override
   public void onCreate(SQLiteDatabase db) {
     db.execSQL(
         "CREATE TABLE learning_overview_cache(user_id INTEGER NOT NULL REFERENCES users(id) ON"

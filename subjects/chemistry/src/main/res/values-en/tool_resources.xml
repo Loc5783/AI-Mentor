@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="science_back">Back</string>
+    <string name="science_element_details">Atomic number: %1$d\nSymbol: %2$s\nAtomic mass: %3$s\nGroup: %4$d\nPeriod: %5$d\nCategory: %6$s\n\n%7$s\n\nCommon use: %8$s</string>
+    <string name="science_elements_count">%1$d elements shown</string>
+    <string name="science_periodic_btn_search">Search elements</string>
+    <string name="science_periodic_search_hint">Search by name, symbol, number or category</string>
+    <string name="science_periodic_table">Periodic Table</string>
+    <string name="science_tool_close">Close</string>
+    <string name="science_tool_periodic_table_data_could_not_be_loaded">Periodic-table data could not be loaded.</string>
+    <string name="science_tool_unable_to_load_the_periodic_table">Unable to load the periodic table.</string>
+</resources>

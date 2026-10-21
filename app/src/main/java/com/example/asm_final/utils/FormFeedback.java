@@ -2,8 +2,8 @@ package com.example.asm_final.utils;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.ViewParent;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.EditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -48,7 +48,9 @@ public final class FormFeedback {
   public static void focus(EditText field) {
     field.requestFocus();
     View target = container(field) == null ? field : container(field);
-    target.post(() -> target.requestRectangleOnScreen(
-        new android.graphics.Rect(0, 0, target.getWidth(), target.getHeight()), false));
+    target.post(
+        () ->
+            target.requestRectangleOnScreen(
+                new android.graphics.Rect(0, 0, target.getWidth(), target.getHeight()), false));
   }
 }

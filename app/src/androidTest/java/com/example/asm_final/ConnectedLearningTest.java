@@ -2,7 +2,6 @@ package com.example.asm_final;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.*;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.*;
 
@@ -29,6 +28,7 @@ import org.junit.runner.RunWith;
 /** Opt-in local backend test. Does not use any AI provider or paid API key. */
 @RunWith(AndroidJUnit4.class)
 public final class ConnectedLearningTest {
+  @Rule public final androidx.compose.ui.test.junit4.ComposeTestRule compose = ComposeProbe.rule();
   private final Instrumentation ins = InstrumentationRegistry.getInstrumentation();
   private final Context context = ins.getTargetContext();
   private int owner, original;
@@ -124,14 +124,8 @@ public final class ConnectedLearningTest {
               .setText("Mentor01!2026");
           login.findViewById(R.id.btnLogin).performClick();
         });
-    await(
-        () ->
-            current() instanceof HomeActivity
-                && current().findViewById(R.id.tv_total_level_label) != null
-                && ((android.widget.TextView) current().findViewById(R.id.tv_total_level_label))
-                    .getText()
-                    .toString()
-                    .equals(current().getString(R.string.overview_title)));
+    await(() -> current() instanceof HomeActivity);
+    ComposeProbe.text(compose, context.getString(R.string.design_today));
     assertEquals(owner, ActiveUser.get(context));
     try (com.example.asm_final.accounts.RemoteAccountLinks links =
         new com.example.asm_final.accounts.RemoteAccountLinks(context)) {
@@ -210,14 +204,7 @@ public final class ConnectedLearningTest {
       JSONObject summary = otherClient.request("GET", "/me/dashboard?grade=10", null, null, null);
       int total = summary.getInt("totalLessons");
       assertTrue(total > 0);
-      await(
-          () ->
-              current() instanceof HomeActivity
-                  && current().findViewById(R.id.tv_total_level_value) != null
-                  && ((android.widget.TextView) current().findViewById(R.id.tv_total_level_value))
-                      .getText()
-                      .toString()
-                      .equals(context.getString(R.string.overview_lessons, 0, total)));
+      ComposeProbe.text(compose, context.getString(R.string.overview_lessons, 0, total));
     }
   }
 
@@ -257,8 +244,13 @@ public final class ConnectedLearningTest {
   private com.example.asm_final.competition.CompetitionViewModel competitionModel() {
     androidx.fragment.app.Fragment screen =
         ((HomeActivity) current())
-            .getSupportFragmentManager()
-            .findFragmentById(R.id.fragment_container);
+            .getSupportFragmentManager().getFragments().stream()
+                .filter(
+                    f ->
+                        f instanceof com.example.asm_final.activities.fragments.CompetitionFragment
+                            && f.isResumed())
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Competition screen not active"));
     return new ViewModelProvider(screen)
         .get(com.example.asm_final.competition.CompetitionViewModel.class);
   }
@@ -311,8 +303,13 @@ public final class ConnectedLearningTest {
   private com.example.asm_final.competition.PublicLearnerDialog learnerDialog() {
     androidx.fragment.app.Fragment screen =
         ((HomeActivity) current())
-            .getSupportFragmentManager()
-            .findFragmentById(R.id.fragment_container);
+            .getSupportFragmentManager().getFragments().stream()
+                .filter(
+                    f ->
+                        f instanceof com.example.asm_final.activities.fragments.CompetitionFragment
+                            && f.isResumed())
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Competition screen not active"));
     return (com.example.asm_final.competition.PublicLearnerDialog)
         screen.getChildFragmentManager().findFragmentByTag("public_learner");
   }
@@ -340,6 +337,7 @@ public final class ConnectedLearningTest {
             UUID.randomUUID().toString(),
             null);
     main(() -> ((HomeActivity) current()).navigateTo(R.id.nav_competition, false));
+    ComposeProbe.text(compose, context.getString(R.string.competition_title));
     await(
         () -> {
           com.example.asm_final.competition.CompetitionViewModel.State state =
@@ -350,7 +348,7 @@ public final class ConnectedLearningTest {
               && state.snapshot.board != null
               && state.snapshot.board.entries.size() == 1;
         });
-    onView(withId(R.id.ranking_scope_global)).perform(click());
+    ComposeProbe.click(compose, context.getString(R.string.competition_everyone));
     await(
         () -> {
           com.example.asm_final.competition.CompetitionViewModel.State state =
@@ -361,8 +359,8 @@ public final class ConnectedLearningTest {
               && state.query.scope
                   == com.example.asm_final.competition.CompetitionQuery.Scope.GLOBAL;
         });
-    onView(withId(R.id.ranking_metric_xp)).perform(click());
-    onView(withId(R.id.ranking_scope_friends)).perform(click());
+    ComposeProbe.click(compose, context.getString(R.string.competition_daily));
+    ComposeProbe.click(compose, context.getString(R.string.competition_friends));
     await(
         () -> {
           com.example.asm_final.competition.CompetitionViewModel.State state =
@@ -391,12 +389,7 @@ public final class ConnectedLearningTest {
               && state.snapshot.board != null
               && state.snapshot.board.entries.size() == 2;
         });
-    main(
-        () ->
-            ((androidx.recyclerview.widget.RecyclerView) current().findViewById(R.id.ranking_list))
-                .scrollToPosition(2));
-    ins.waitForIdleSync();
-    onView(withText(nickname)).perform(click());
+    ComposeProbe.listClick(compose, "ranking-list", "ranking:" + other.getString("userId"));
     await(
         () ->
             learnerDialog() != null
@@ -451,7 +444,6 @@ public final class ConnectedLearningTest {
     await(
         () ->
             current() instanceof HomeActivity
-                && current().findViewById(R.id.ranking_list) != null
                 && competitionModel().query().metric
                     == com.example.asm_final.competition.CompetitionQuery.Metric.DAILY_XP
                 && competitionModel().query().scope
@@ -464,16 +456,7 @@ public final class ConnectedLearningTest {
         () ->
             competitionModel().state().getValue().snapshot != null
                 && competitionModel().state().getValue().snapshot.needsLogin);
-    main(
-        () -> {
-          androidx.recyclerview.widget.RecyclerView list =
-              current().findViewById(R.id.ranking_list);
-          ((androidx.recyclerview.widget.LinearLayoutManager) list.getLayoutManager())
-              .scrollToPositionWithOffset(
-                  0, -com.example.asm_final.utils.ScreenViews.dp(context, 260));
-        });
-    ins.waitForIdleSync();
-    onView(withId(R.id.ranking_refresh)).perform(click());
+    ComposeProbe.click(compose, context.getString(R.string.login_btn));
     await(() -> current() instanceof MainActivity);
   }
 
@@ -623,13 +606,12 @@ public final class ConnectedLearningTest {
     assertFalse(model.completion.getBoolean("streakLit"));
     main(model::backToPath);
     settled();
-    main(
-        () -> {
-          android.widget.ProgressBar progress = current().findViewById(R.id.course_path_progress);
-          assertNotNull(progress);
-          assertEquals(curriculumLessonCount, progress.getMax());
-          assertEquals(0, progress.getProgress());
-        });
+    assertEquals(
+        curriculumLessonCount,
+        new com.example.asm_final.learning.LessonPathData(model.path.getJSONArray("units"))
+            .totalLessons);
+    ComposeProbe.text(
+        compose, context.getString(R.string.course_path_count, 0, curriculumLessonCount));
     String unit = model.path.getJSONArray("units").getJSONObject(0).getString("id");
     main(() -> model.start(unit, false));
     settled();
@@ -650,13 +632,10 @@ public final class ConnectedLearningTest {
     main(
         () -> model = new ViewModelProvider((LessonActivity) current()).get(LessonViewModel.class));
     assertEquals(2, model.attempt.getInt("step"));
-    onView(withText(R.string.course_ask_ai)).perform(scrollTo(), click());
-    await(
-        () ->
-            current() instanceof HomeActivity
-                && current().findViewById(R.id.chat_return_lesson) != null);
-    await(() -> ((android.widget.EditText) current().findViewById(R.id.chat_input)).length() > 0);
-    onView(withId(R.id.chat_return_lesson)).perform(click());
+    ComposeProbe.click(compose, context.getString(R.string.course_ask_ai));
+    await(() -> current() instanceof HomeActivity);
+    ComposeProbe.tag(compose, "chat-input");
+    ComposeProbe.click(compose, context.getString(R.string.design_understood));
     await(() -> current() instanceof LessonActivity && !model.busy);
     assertEquals(2, model.attempt.getInt("step"));
     JSONArray practice = model.attempt.getJSONArray("questions");
@@ -676,17 +655,10 @@ public final class ConnectedLearningTest {
           completedActivity[0] = (LessonActivity) current();
           completedActivity[0].recreate();
         });
-    await(
-        () ->
-            current() instanceof LessonActivity
-                && current() != completedActivity[0]
-                && current().findViewById(R.id.course_completion_card) != null);
+    await(() -> current() instanceof LessonActivity && current() != completedActivity[0]);
     main(
         () -> {
           model = new ViewModelProvider((LessonActivity) current()).get(LessonViewModel.class);
-          android.view.View card = current().findViewById(R.id.course_completion_card);
-          assertEquals(1f, card.getScaleX(), 0f);
-          assertEquals(1f, card.getAlpha(), 0f);
           assertFalse(model.animateCompletion());
         });
     drawn();
@@ -697,6 +669,7 @@ public final class ConnectedLearningTest {
           .takeScreenshot()
           .compress(android.graphics.Bitmap.CompressFormat.PNG, 100, out);
     }
+    exportScreenshot("soft-learning-completion.png");
     String completion = model.completion.getString("id");
     main(model::complete);
     settled();
@@ -707,18 +680,8 @@ public final class ConnectedLearningTest {
     assertEquals(1, profile.getInt("streakDays"));
     main(model::backToPath);
     settled();
-    main(
-        () -> {
-          android.widget.ProgressBar progress = current().findViewById(R.id.course_path_progress);
-          assertEquals(curriculumLessonCount, progress.getMax());
-          assertEquals(1, progress.getProgress());
-          android.view.View path = (android.view.View) progress.getParent().getParent();
-          android.widget.ScrollView scroll =
-              (android.widget.ScrollView)
-                  ((android.view.ViewGroup) current().findViewById(android.R.id.content))
-                      .getChildAt(0);
-          scroll.scrollTo(0, path.getTop());
-        });
+    ComposeProbe.text(
+        compose, context.getString(R.string.course_path_count, 1, curriculumLessonCount));
     drawn();
     try (FileOutputStream out =
         new FileOutputStream(
@@ -727,59 +690,33 @@ public final class ConnectedLearningTest {
           .takeScreenshot()
           .compress(android.graphics.Bitmap.CompressFormat.PNG, 100, out);
     }
+    exportScreenshot("soft-learning-path.png");
     main(() -> current().finish());
-    await(
-        () ->
-            current() instanceof HomeActivity
-                && ((android.widget.TextView) current().findViewById(R.id.tv_level_title))
-                    .getText()
-                    .toString()
-                    .equals(current().getString(R.string.overview_daily_xp, 200L)));
-    main(
-        () -> {
-          assertEquals(
-              current().getString(R.string.overview_lessons, 1, curriculumLessonCount),
-              ((android.widget.TextView) current().findViewById(R.id.tv_total_level_value))
-                  .getText()
-                  .toString());
-          ((HomeActivity) current()).navigateTo(R.id.nav_profile, false);
-        });
-    await(
-        () ->
-            current().findViewById(R.id.hub_learning_stats) != null
-                && ((android.widget.TextView) current().findViewById(R.id.hub_learning_stats))
-                    .getText()
-                    .toString()
-                    .contains("200"));
-    onView(withId(R.id.button_learning_progress)).perform(click());
-    onView(withText(R.string.overview_legacy_title)).perform(click());
-    onView(withText(R.string.overview_legacy_note))
-        .check(
-            androidx.test.espresso.assertion.ViewAssertions.matches(
-                androidx.test.espresso.matcher.ViewMatchers.isDisplayed()));
-    onView(withText(android.R.string.ok)).perform(click());
+    await(() -> current() instanceof HomeActivity);
+    ComposeProbe.text(compose, context.getString(R.string.overview_daily_xp, 200L));
+    ComposeProbe.text(
+        compose, context.getString(R.string.overview_lessons, 1, curriculumLessonCount));
+    main(() -> ((HomeActivity) current()).navigateTo(R.id.nav_profile, false));
+    ComposeProbe.text(compose, context.getString(R.string.overview_daily_xp, 200L));
     main(() -> ((HomeActivity) current()).navigateTo(R.id.nav_competition, false));
-    await(
-        () ->
-            current().findViewById(R.id.competition_own_value) != null
-                && ((android.widget.TextView) current().findViewById(R.id.competition_own_value))
-                    .getText()
-                    .toString()
-                    .equals(current().getString(R.string.competition_streak_value, 1L)));
-    onView(withText(R.string.competition_daily)).perform(click());
-    main(
-        () ->
-            assertEquals(
-                current().getString(R.string.competition_xp_value, 200L),
-                ((android.widget.TextView) current().findViewById(R.id.competition_own_value))
-                    .getText()
-                    .toString()));
+    ComposeProbe.text(compose, context.getString(R.string.competition_streak_value, 1L));
+    ComposeProbe.click(compose, context.getString(R.string.competition_daily));
+    ComposeProbe.text(compose, context.getString(R.string.competition_xp_value, 200L));
     try (FileOutputStream out =
         new FileOutputStream(
             new File(context.getExternalFilesDir(null), "connected-learning-completion.png"))) {
       ins.getUiAutomation()
           .takeScreenshot()
           .compress(android.graphics.Bitmap.CompressFormat.PNG, 100, out);
+    }
+  }
+
+  private void exportScreenshot(String name) throws Exception {
+    if (!name.matches("[a-z-]+\\.png")) throw new IllegalArgumentException("Invalid QA screenshot");
+    File source = new File(context.getExternalFilesDir(null), name);
+    try (InputStream result = new android.os.ParcelFileDescriptor.AutoCloseInputStream(
+        ins.getUiAutomation().executeShellCommand("cp " + source.getAbsolutePath() + " /data/local/tmp/" + name))) {
+      while (result.read() != -1) {}
     }
   }
 

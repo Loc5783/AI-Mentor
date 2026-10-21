@@ -18,10 +18,6 @@ import com.example.asm_final.utils.ReminderHelper;
 import com.example.asm_final.utils.ThemeHelper;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-/*
- * Role: Fragment for App Shell, responsible for a specific functional area of the screen and its user interactions.
- * Purpose: Using Fragments gives each tab or feature a focused responsibility and makes the screen flow easier to explain.
- */
 public class SettingsFragment extends Fragment {
 
   private String username;
@@ -92,10 +88,6 @@ public class SettingsFragment extends Fragment {
     return view;
   }
 
-  /*
-   * Responsibility: Configures `setup edit profile` with the required Views, listeners, or dependencies.
-   * Purpose: Separating configuration from the main flow keeps initialization concise and easier to verify.
-   */
   private void setupEditProfile(View view) {
     LinearLayout layoutEditProfile = view.findViewById(R.id.setting_edit_profile);
     layoutEditProfile.setOnClickListener(
@@ -105,10 +97,6 @@ public class SettingsFragment extends Fragment {
         });
   }
 
-  /*
-   * Responsibility: Configures `setup reminders` with the required Views, listeners, or dependencies.
-   * Purpose: Separating configuration from the main flow keeps initialization concise and easier to verify.
-   */
   private void setupReminders(View view) {
     reminderSwitch = view.findViewById(R.id.switch_reminders);
     reminderSwitch.setChecked(ReminderHelper.isReminderEnabled(requireContext()));
@@ -164,10 +152,6 @@ public class SettingsFragment extends Fragment {
     super.onDestroyView();
   }
 
-  /*
-   * Responsibility: Configures `setup theme switch` with the required Views, listeners, or dependencies.
-   * Purpose: Separating configuration from the main flow keeps initialization concise and easier to verify.
-   */
   private void setupThemeSwitch(View view) {
     SwitchMaterial switchDarkMode = view.findViewById(R.id.switch_dark_mode);
 
@@ -177,10 +161,6 @@ public class SettingsFragment extends Fragment {
         (buttonView, isChecked) -> ThemeHelper.setDarkMode(requireContext(), isChecked));
   }
 
-  /*
-   * Responsibility: Configures `setup language picker` with the required Views, listeners, or dependencies.
-   * Purpose: Separating configuration from the main flow keeps initialization concise and easier to verify.
-   */
   private void setupLanguagePicker(View view) {
     LinearLayout layoutLanguage = view.findViewById(R.id.setting_language);
     TextView txtCurrentLang = view.findViewById(R.id.txt_current_language);
@@ -211,10 +191,6 @@ public class SettingsFragment extends Fragment {
         });
   }
 
-  /*
-   * Responsibility: Updates or synchronizes `update language label` with the latest data or state.
-   * Purpose: Keeps the UI and data synchronized after user actions.
-   */
   private void updateLanguageLabel(TextView textView) {
     textView.setText(
         LocaleHelper.isEnglish(requireContext())
@@ -222,10 +198,6 @@ public class SettingsFragment extends Fragment {
             : R.string.language_vietnamese);
   }
 
-  /*
-   * Responsibility: Configures `setup share` with the required Views, listeners, or dependencies.
-   * Purpose: Separating configuration from the main flow keeps initialization concise and easier to verify.
-   */
   private void setupShare(View view) {
     LinearLayout layoutShare = view.findViewById(R.id.setting_share);
     layoutShare.setOnClickListener(
@@ -238,10 +210,6 @@ public class SettingsFragment extends Fragment {
         });
   }
 
-  /*
-   * Responsibility: Configures `setup about` with the required Views, listeners, or dependencies.
-   * Purpose: Separating configuration from the main flow keeps initialization concise and easier to verify.
-   */
   private void setupAbout(View view) {
     LinearLayout layoutAbout = view.findViewById(R.id.setting_about);
     layoutAbout.setOnClickListener(
@@ -253,10 +221,6 @@ public class SettingsFragment extends Fragment {
                 .show());
   }
 
-  /*
-   * Responsibility: Configures `setup logout` with the required Views, listeners, or dependencies.
-   * Purpose: Separating configuration from the main flow keeps initialization concise and easier to verify.
-   */
   private void setupLogout(View view) {
     Button btnLogout = view.findViewById(R.id.btn_logout);
     btnLogout.setOnClickListener(

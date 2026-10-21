@@ -42,7 +42,7 @@ Android có màn lộ trình/làm bài mới dùng API; cấu hình `MENTOR_BACK
 - `GET /me/dashboard?grade=10|11|12`: snapshot nhất quán của ledger, EXP tổng/ngày, streak, bài/review đã hoàn thành, thống kê từng môn, bảy ngày gần nhất, câu đúng lần đầu và câu có hướng dẫn.
 - Completion, Dashboard, public profile và ranking dùng chung `learning_stats.reward_summary`, UTC+7 và learning clock. Ranking chốt một mốc giờ/snapshot cho toàn bộ danh sách, tránh trộn ngày khi đi qua nửa đêm.
 - Dashboard, số liệu cá nhân trong Profile và Thi đua đọc cùng nguồn. Có cache theo local user/endpoint/remote ID/grade; mất kết nối hiển thị rõ bản đã lưu, không quay về EXP legacy hoặc dựng số 0.
-- Dữ liệu legacy được giữ riêng, có đường xem trong Profile; không cộng lặp vào EXP lộ trình mới/bảng thi đua. Đây chưa phải migration toàn bộ chat/bank cũ.
+- App mới dùng chín môn học; dữ liệu bốn module cũ trên thiết bị bị xóa một lần theo yêu cầu. Không nhập hoặc cộng EXP cũ vào backend.
 - Android đã nối SSE để làm mới summary, bảng thi đua và hồ sơ công khai đang xem: cursor trước refresh, reconnect/backoff, gộp sự kiện và hủy theo lifecycle/account. Bảng dùng rank server và hai trục STREAK/DAILY_XP × FRIENDS/GLOBAL; chỉ bạn ACCEPTED được đưa vào FRIENDS. Ảnh công khai tải qua endpoint cùng origin có xác thực và giới hạn dung lượng/kích thước decode. Đây chưa phải sync toàn bộ app; UI quản lý lời mời, profile editor/onboarding, lesson state trên thiết bị khác, chat cloud và outbox offline còn phải nối.
 
 Sáu môn ngoài Sinh/Hóa/Lý chỉ là khung. /health phân biệt engine đã triển khai với publishedCourses (hiện chỉ ba gói lớp 10, mỗi gói 20 bài); không đồng nghĩa Android đã nối realtime hay đủ nội dung lớp 11–12.

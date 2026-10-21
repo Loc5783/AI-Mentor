@@ -58,76 +58,9 @@
         <activity android:name=".activities.OnboardingActivity" android:exported="false" android:theme="@style/Theme.AIMentor.Auth"/>
         <activity android:name=".activities.ProfileSetupActivity" android:exported="false" android:theme="@style/Theme.AIMentor.Auth"/>
         <activity android:name=".activities.AuthRecoveryActivity" android:exported="false" android:theme="@style/Theme.AIMentor.Auth"/>
-
-        <!-- ===== SHARED LEGACY SCIENCE INFRASTRUCTURE ===== -->
-        <activity
-            android:name="com.brightpath.science.presentation.ScienceMainActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ScienceFeature" />
-        <activity
-            android:name="com.brightpath.science.presentation.ScienceActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ScienceFeature" />
-        <activity
-            android:name="com.brightpath.science.presentation.ScienceHistoryActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ScienceFeature" />
-        <activity
-            android:name="com.brightpath.science.presentation.ScienceBookmarksActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ScienceFeature" />
-        <activity
-            android:name="com.brightpath.science.presentation.ScienceQuizActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ScienceFeature" />
-        <activity
-            android:name="com.example.mentor.chemistry.presentation.PeriodicTableActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ScienceFeature" />
-        <activity
-            android:name="com.example.mentor.physics.presentation.CircuitDiagramActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ScienceFeature" />
-        <activity
-            android:name="com.brightpath.science.presentation.ScienceProgressActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ScienceFeature" />
-        <activity
-            android:name="com.brightpath.science.presentation.ScienceSettingsActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ScienceFeature" />
-        <activity
-            android:name="com.brightpath.science.presentation.ScienceStudyPlannerActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ScienceFeature" />
-
-        <!-- ===== MODULE MATH ===== -->
-        <activity
-            android:name="com.example.mathmodule.MathDashboardActivity"
-            android:exported="false"
-            android:theme="@style/Theme.MathModule" />
-        <activity
-            android:name="com.example.mathmodule.MathChatActivity"
-            android:exported="false"
-            android:theme="@style/Theme.MathModule" />
-        <activity
-            android:name="com.example.mathmodule.QuizPlayActivity"
-            android:exported="false"
-            android:theme="@style/Theme.MathModule" />
+<!-- ===== MODULE MATH ===== -->
 
         <!-- ===== MODULE HISTORY ===== -->
-        <activity
-            android:name="com.example.historymodule.HistoryDashboardActivity"
-            android:exported="false"
-            android:theme="@style/Theme.HistoryModule" />
-        <activity
-            android:name="com.example.historymodule.HistoryChatActivity"
-            android:exported="false"
-            android:theme="@style/Theme.HistoryModule" />
-        <activity
-            android:name="com.example.historymodule.HistoryQuizActivity"
-            android:exported="false"
-            android:theme="@style/Theme.HistoryModule" />
 
         <!-- FileProvider duy nhất -->
         <provider

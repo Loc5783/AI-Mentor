@@ -41,7 +41,7 @@ public final class LocalLearnerProfiles implements LearnerProfileRepository {
               c.getInt(1),
               c.getString(2),
               c.getInt(3),
-              SubjectPreferenceMigration.clean(c.getString(4)),
+              c.getString(4),
               c.getInt(5),
               c.getInt(6),
               c.getLong(7))

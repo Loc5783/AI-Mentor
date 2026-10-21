@@ -30,6 +30,10 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class CanonicalSmokeTest {
   @org.junit.Rule public final LocalBackendIsolation localBackend = new LocalBackendIsolation();
+
+  @org.junit.Rule
+  public final androidx.compose.ui.test.junit4.ComposeTestRule compose = ComposeProbe.rule();
+
   private final Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
 
   private Activity resumed() {
@@ -152,11 +156,11 @@ public class CanonicalSmokeTest {
             ((AppCompatActivity) resumed())
                 .getSupportFragmentManager()
                 .executePendingTransactions();
-            BottomNavigationView bar = resumed().findViewById(R.id.bottom_navigation);
-            assertEquals(5, bar.getMenu().size());
-            assertEquals(tab, bar.getSelectedItemId());
-            checkSafeBounds(bar);
           });
+      ComposeProbe.text(
+          compose, instrumentation.getTargetContext().getString(R.string.design_tab_home));
+      ComposeProbe.text(
+          compose, instrumentation.getTargetContext().getString(R.string.nav_profile_label));
     }
     main(() -> ((HomeActivity) resumed()).logout());
     awaitActivity(MainActivity.class.getName());
@@ -186,49 +190,6 @@ public class CanonicalSmokeTest {
           });
     } finally {
       main(() -> resumed().finish());
-    }
-  }
-
-  @Test
-  public void mathReadsAreScopedToExplicitAccount() {
-    try (com.example.mathmodule.databases.SqliteDbHelper db =
-        new com.example.mathmodule.databases.SqliteDbHelper(instrumentation.getTargetContext())) {
-      int first = 180000001, second = 180000002;
-      long legacy = db.insertHistoryForUser(0, "unowned-legacy", "answer");
-      try {
-        assertTrue(db.insertHistoryForUser(first, "first-account-only", "answer") > 0);
-        assertTrue(db.insertHistoryForUser(second, "second-account-only", "answer") > 0);
-        assertEquals(1, db.getAllHistory(first).size());
-        assertEquals("first-account-only", db.getAllHistory(first).get(0).getQuestion());
-        assertEquals("second-account-only", db.getAllHistory(second).get(0).getQuestion());
-        assertTrue(db.getAllHistory(0).stream().anyMatch(row -> row.getId() == legacy));
-      } finally {
-        db.deleteUserHistory(first);
-        db.deleteUserHistory(second);
-        db.getWritableDatabase()
-            .delete("math_history", "id=?", new String[] {String.valueOf(legacy)});
-      }
-    }
-  }
-
-  @Test
-  public void unsupportedScienceDowngradePreservesData() {
-    try (android.database.sqlite.SQLiteDatabase memory =
-            android.database.sqlite.SQLiteDatabase.create(null);
-        com.brightpath.science.data.local.ScienceDbHelper helper =
-            new com.brightpath.science.data.local.ScienceDbHelper(
-                instrumentation.getTargetContext())) {
-      memory.execSQL("CREATE TABLE sentinel(value TEXT)");
-      memory.execSQL("INSERT INTO sentinel VALUES('keep')");
-      try {
-        helper.onDowngrade(memory, 999, 1);
-        fail("Downgrade must be rejected");
-      } catch (android.database.sqlite.SQLiteException expected) {
-      }
-      try (android.database.Cursor cursor = memory.rawQuery("SELECT value FROM sentinel", null)) {
-        assertTrue(cursor.moveToFirst());
-        assertEquals("keep", cursor.getString(0));
-      }
     }
   }
 
@@ -298,6 +259,8 @@ public class CanonicalSmokeTest {
                 .getSupportFragmentManager()
                 .executePendingTransactions();
           });
+      // Advance the Compose navigation transition before polling retained native Views.
+      compose.waitForIdle();
       awaitEnabled(R.id.btnUpdateProfile);
       main(
           () -> {

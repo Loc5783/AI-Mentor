@@ -5,15 +5,10 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.mentor.data.ModuleDatabaseHelper;
 import java.util.*;
 
-/** Adds namespaced tables to AImentor.db without replacing legacy subject tables. */
+/** Owns general chat tables in the fresh shared school database. */
 public final class ChatDatabase extends ModuleDatabaseHelper {
   public ChatDatabase(Context context) {
     super(context, "general_chat", null, 1);
-  }
-
-  @Override
-  protected Map<String, String> legacyTables() {
-    return Collections.emptyMap();
   }
 
   @Override

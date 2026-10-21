@@ -14,25 +14,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.*;
 
 public final class LessonHubFragment extends Fragment {
-  private LinearLayout content, courses;
-  private TextView level;
+  private View content;
+  private com.example.asm_final.ui.SubjectHubUi presenter;
   private int grade, owner, version;
   private Set<SubjectId> selected = EnumSet.noneOf(SubjectId.class);
-  private final Set<SubjectId> toolsExpanded = EnumSet.noneOf(SubjectId.class);
-
-  @Override
-  public void onCreate(Bundle saved) {
-    super.onCreate(saved);
-    if (saved != null)
-      for (SubjectId id : SubjectId.values())
-        if (saved.getBoolean("tools:" + id.name())) toolsExpanded.add(id);
-  }
-
-  @Override
-  public void onSaveInstanceState(Bundle saved) {
-    super.onSaveInstanceState(saved);
-    for (SubjectId id : toolsExpanded) saved.putBoolean("tools:" + id.name(), true);
-  }
 
   private AppServices services() {
     return ((AiMentorApplication) requireActivity().getApplication()).services();
@@ -45,21 +30,36 @@ public final class LessonHubFragment extends Fragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle state) {
     owner = ActiveUser.get(requireContext());
-    content = ScreenViews.column(requireContext());
-    content.addView(ScreenViews.text(requireContext(), getString(R.string.lesson_title), 28, true));
-    content.addView(
-        ScreenViews.text(requireContext(), getString(R.string.lesson_description), 15, false));
-    level = ScreenViews.text(requireContext(), "", 17, true);
-    content.addView(level);
-    content.addView(ScreenViews.button(requireContext(), R.string.lesson_grade, this::chooseGrade));
-    content.addView(
-        ScreenViews.button(requireContext(), R.string.lesson_manage, this::chooseSubjects));
-    content.addView(
-        ScreenViews.text(requireContext(), getString(R.string.lesson_path_pending), 13, false));
-    courses = new LinearLayout(requireContext());
-    courses.setOrientation(LinearLayout.VERTICAL);
-    content.addView(courses);
-    return ScreenViews.scroll(requireContext(), content);
+    presenter =
+        new com.example.asm_final.ui.SubjectHubUi(
+            requireContext(),
+            this::chooseGrade,
+            this::chooseSubjects,
+            this::openSubject,
+            this::openTools);
+    content = presenter.view();
+    return content;
+  }
+
+  private void openSubject(SubjectId id) {
+    startActivity(
+        new android.content.Intent(
+                requireContext(), com.example.asm_final.activities.LessonActivity.class)
+            .putExtra("SUBJECT", id.wireId)
+            .putExtra("GRADE", grade)
+            .putExtra(
+                "USERNAME",
+                getArguments() == null ? "" : getArguments().getString("USERNAME", "")));
+  }
+
+  private void openTools(SubjectId id) {
+    Class<?> target =
+        id == SubjectId.PHYSICS
+            ? com.example.mentor.physics.presentation.CircuitDiagramActivity.class
+            : id == SubjectId.CHEMISTRY
+                ? com.example.mentor.chemistry.presentation.PeriodicTableActivity.class
+                : com.example.mathmodule.MathToolsActivity.class;
+    startActivity(new android.content.Intent(requireContext(), target));
   }
 
   @Override
@@ -87,7 +87,7 @@ public final class LessonHubFragment extends Fragment {
                 new android.os.Handler(android.os.Looper.getMainLooper())
                     .post(
                         () -> {
-                          if (content != null && request == version) {
+                          if (content != null && request == version && ActiveUser.get(c) == owner) {
                             grade = chosen;
                             selected = subjects;
                             render();
@@ -97,135 +97,15 @@ public final class LessonHubFragment extends Fragment {
                 new android.os.Handler(android.os.Looper.getMainLooper())
                     .post(
                         () -> {
-                          if (content != null && request == version)
-                            level.setText(R.string.chat_storage_error);
+                          if (content != null && request == version && ActiveUser.get(c) == owner)
+                            presenter.failure();
                         });
               }
             });
   }
 
   private void render() {
-    level.setText(
-        grade >= 10 && grade <= 12
-            ? getString(R.string.chat_grade, grade)
-            : getString(R.string.chat_choose_grade));
-    courses.removeAllViews();
-    if (selected.isEmpty()) {
-      courses.addView(
-          ScreenViews.text(requireContext(), getString(R.string.lesson_choose_prompt), 16, false));
-    }
-    for (SubjectId id : new SubjectId[] {SubjectId.BIOLOGY, SubjectId.CHEMISTRY, SubjectId.PHYSICS})
-      if (selected.contains(id)) {
-        LinearLayout card = ScreenViews.card(requireContext());
-        card.addView(ScreenViews.text(requireContext(), id.label(language()), 21, true));
-        card.addView(
-            ScreenViews.button(
-                requireContext(),
-                R.string.course_open,
-                () ->
-                    startActivity(
-                        new android.content.Intent(
-                                requireContext(),
-                                com.example.asm_final.activities.LessonActivity.class)
-                            .putExtra("SUBJECT", id.name().toLowerCase(java.util.Locale.ROOT))
-                            .putExtra("GRADE", grade)
-                            .putExtra(
-                                "USERNAME",
-                                getArguments() == null
-                                    ? ""
-                                    : getArguments().getString("USERNAME", "")))));
-        LinearLayout extras = new LinearLayout(requireContext());
-        extras.setOrientation(LinearLayout.VERTICAL);
-        extras.addView(
-            ScreenViews.text(
-                requireContext(), getString(R.string.lesson_supplement_note), 13, false));
-        extras.addView(
-            ScreenViews.button(
-                requireContext(), R.string.lesson_open_tools, () -> openSubject(id)));
-        if (id == SubjectId.PHYSICS)
-          extras.addView(
-              ScreenViews.button(
-                  requireContext(),
-                  R.string.lesson_circuit,
-                  () ->
-                      startActivity(
-                          new android.content.Intent(
-                              requireContext(),
-                              com.example.mentor.physics.presentation.CircuitDiagramActivity
-                                  .class))));
-        if (id == SubjectId.CHEMISTRY)
-          extras.addView(
-              ScreenViews.button(
-                  requireContext(),
-                  R.string.lesson_periodic,
-                  () ->
-                      startActivity(
-                          new android.content.Intent(
-                              requireContext(),
-                              com.example.mentor.chemistry.presentation.PeriodicTableActivity
-                                  .class))));
-        Button toggle =
-            ScreenViews.button(
-                requireContext(),
-                toolsExpanded.contains(id)
-                    ? R.string.lesson_tools_less
-                    : R.string.lesson_tools_more,
-                () -> {});
-        toggle.setOnClickListener(
-            v -> {
-              boolean open = !toolsExpanded.contains(id);
-              if (open) toolsExpanded.add(id);
-              else toolsExpanded.remove(id);
-              toggle.setText(open ? R.string.lesson_tools_less : R.string.lesson_tools_more);
-              extras.setVisibility(open ? View.VISIBLE : View.GONE);
-              if (open) SoftMotion.enter(extras);
-            });
-        toggle.setBackgroundTintList(
-            android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT));
-        toggle.setTextColor(
-            androidx.core.content.ContextCompat.getColor(
-                requireContext(), R.color.neumorphic_accent));
-        toggle.setElevation(0f);
-        card.addView(toggle);
-        card.addView(extras);
-        extras.setVisibility(toolsExpanded.contains(id) ? View.VISIBLE : View.GONE);
-        courses.addView(card);
-      }
-    for (SubjectId id : SubjectId.values()) {
-      if (services().subjects().hasLessonScope(id)) continue;
-      LinearLayout card = ScreenViews.card(requireContext());
-      card.setTag("subject-framework:" + id.wireId);
-      card.addView(ScreenViews.text(requireContext(), id.label(language()), 20, true));
-      card.addView(
-          ScreenViews.text(requireContext(), getString(R.string.subject_lessons_soon), 14, false));
-      if (id == SubjectId.MATH || id == SubjectId.HISTORY)
-        card.addView(
-            ScreenViews.button(
-                requireContext(),
-                R.string.lesson_open_tools,
-                () -> {
-                  if (id == SubjectId.MATH)
-                    com.example.mathmodule.api.MathFeature.open(requireContext(), owner);
-                  else com.example.historymodule.api.HistoryFeature.open(requireContext(), owner);
-                }));
-      courses.addView(card);
-    }
-  }
-
-  private void openSubject(SubjectId id) {
-    com.brightpath.science.util.ScienceUserSession.setUserId(requireContext(), owner);
-    com.brightpath.science.util.SciencePreferenceStore preferences =
-        new com.brightpath.science.util.SciencePreferenceStore(requireContext());
-    com.brightpath.science.domain.model.ScienceSubject subject =
-        com.brightpath.science.domain.model.ScienceSubject.valueOf(id.name());
-    preferences.save(
-        subject,
-        com.brightpath.science.domain.model.EducationLevel.HIGH_SCHOOL.ordinal(),
-        preferences.getStylePosition());
-    startActivity(
-        new android.content.Intent(
-                requireContext(), com.brightpath.science.presentation.ScienceQuizActivity.class)
-            .putExtra("SUBJECT", id.name()));
+    presenter.render(grade, selected);
   }
 
   private void chooseGrade() {
@@ -257,7 +137,7 @@ public final class LessonHubFragment extends Fragment {
                           new android.os.Handler(android.os.Looper.getMainLooper())
                               .post(
                                   () -> {
-                                    if (content != null) level.setText(R.string.chat_storage_error);
+                                    if (content != null) presenter.failure();
                                   });
                         }
                       });
@@ -303,7 +183,7 @@ public final class LessonHubFragment extends Fragment {
                           new android.os.Handler(android.os.Looper.getMainLooper())
                               .post(
                                   () -> {
-                                    if (content != null) level.setText(R.string.chat_storage_error);
+                                    if (content != null) presenter.failure();
                                   });
                         }
                       });
@@ -315,8 +195,7 @@ public final class LessonHubFragment extends Fragment {
   @Override
   public void onDestroyView() {
     content = null;
-    courses = null;
-    level = null;
+    presenter = null;
     version++;
     super.onDestroyView();
   }

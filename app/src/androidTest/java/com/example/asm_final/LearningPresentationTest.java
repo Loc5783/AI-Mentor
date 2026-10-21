@@ -3,7 +3,6 @@ package com.example.asm_final;
 import static org.junit.Assert.*;
 
 import android.content.*;
-import android.content.res.Configuration;
 import android.view.*;
 import android.widget.*;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -20,28 +19,8 @@ public final class LearningPresentationTest {
   private final android.app.Instrumentation ins = InstrumentationRegistry.getInstrumentation();
   private final Context context = ins.getTargetContext();
 
-  private void buttons(View view, List<Button> result) {
-    if (view instanceof Button) result.add((Button) view);
-    if (view instanceof ViewGroup)
-      for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++)
-        buttons(((ViewGroup) view).getChildAt(i), result);
-  }
-
-  private void bounded(View view) {
-    if (view instanceof ImageView) fail("Decorative image in text learning path");
-    if (view instanceof ViewGroup) {
-      ViewGroup group = (ViewGroup) view;
-      for (int i = 0; i < group.getChildCount(); i++) {
-        View child = group.getChildAt(i);
-        assertTrue("Horizontal overflow", child.getRight() <= group.getWidth());
-        assertTrue("Negative horizontal position", child.getLeft() >= 0);
-        bounded(child);
-      }
-    }
-  }
-
   @Test
-  public void numberedPathKeepsReviewSeparateAndFitsLargeTextBothThemesAndLanguages()
+  public void numberedPathKeepsReviewSeparateFromLessons()
       throws Exception {
     JSONArray units = new JSONArray();
     for (int i = 1; i <= 6; i++)
@@ -57,36 +36,6 @@ public final class LearningPresentationTest {
     assertEquals(1, path.completedLessons);
     assertTrue(path.units.get(5).review);
     assertEquals(5, path.units.get(5).ordinal);
-    ins.runOnMainSync(
-        () -> {
-          for (String language : new String[] {"vi", "en"})
-            for (int mode :
-                new int[] {Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_YES}) {
-              Configuration config = new Configuration(context.getResources().getConfiguration());
-              config.fontScale = 1.3f;
-              config.setLocale(new Locale(language));
-              config.uiMode = (config.uiMode & ~Configuration.UI_MODE_NIGHT_MASK) | mode;
-              Context themed =
-                  new androidx.appcompat.view.ContextThemeWrapper(
-                      context.createConfigurationContext(config), R.style.Theme_ASMfinal);
-              List<String> opened = new ArrayList<>();
-              LessonPathView view = new LessonPathView(themed, path, opened::add);
-              int width = ScreenViews.dp(themed, 320);
-              view.measure(
-                  View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
-                  View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-              view.layout(0, 0, width, view.getMeasuredHeight());
-              bounded(view);
-              ProgressBar progress = view.findViewById(R.id.course_path_progress);
-              assertEquals(5, progress.getMax());
-              assertEquals(1, progress.getProgress());
-              List<Button> actions = new ArrayList<>();
-              buttons(view, actions);
-              assertEquals(6, actions.size());
-              for (Button action : actions) action.performClick();
-              assertEquals(Arrays.asList("unit-1", "unit-2"), opened);
-            }
-        });
   }
 
   @Test

@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 
 import android.app.*;
 import android.content.*;
-import android.os.SystemClock;
-import android.widget.TextView;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import com.example.asm_final.accounts.AuthTicket;
@@ -24,6 +22,8 @@ import org.junit.runner.RunWith;
 /** Opt-in smoke test of the compiled emulator URL, using demo 03 without awarding fake XP. */
 @RunWith(AndroidJUnit4.class)
 public final class LocalBackendConnectionTest {
+  @Rule public final androidx.compose.ui.test.junit4.ComposeTestRule compose = ComposeProbe.rule();
+
   @Test
   public void configuredEmulatorCanSignInLoadSixtyLessonsAndShowLiveDashboard() throws Exception {
     Assume.assumeTrue(
@@ -78,33 +78,9 @@ public final class LocalBackendConnectionTest {
                       .putExtra("USERNAME", ticket.username)
                       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
       final HomeActivity home = activity;
-      boolean ready = false;
-      long end = SystemClock.uptimeMillis() + 20000;
-      while (SystemClock.uptimeMillis() < end) {
-        boolean[] loaded = {false};
-        ins.runOnMainSync(
-            () -> {
-              TextView status = home.findViewById(R.id.tv_dashboard_status);
-              loaded[0] =
-                  status != null
-                      && status
-                          .getText()
-                          .toString()
-                          .equals(home.getString(R.string.overview_current));
-            });
-        if (loaded[0]) {
-          ready = true;
-          break;
-        }
-        SystemClock.sleep(50);
-      }
-      assertTrue("Configured emulator did not load live backend data", ready);
-      ins.runOnMainSync(
-          () ->
-              assertEquals(
-                  3,
-                  ((android.view.ViewGroup) home.findViewById(R.id.dashboard_subject_grid))
-                      .getChildCount()));
+      ComposeProbe.text(compose, context.getString(R.string.overview_current));
+      for (String subject : new String[] {"biology", "chemistry", "physics"})
+        ComposeProbe.tag(compose, "dashboard-subject:" + subject);
       CountDownLatch drawn = new CountDownLatch(1);
       ins.runOnMainSync(
           () ->
