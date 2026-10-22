@@ -1,3 +1,3 @@
 # Copy to backend.local.properties for Android Studio emulator development.
 # Only debug builds read this local file; release uses HTTPS in api.properties.
-MENTOR_DEBUG_BACKEND_URL=http://10.0.2.2:8000
+MENTOR_DEBUG_BACKEND_URL=http://10.0.2.2:18080
