@@ -119,11 +119,10 @@ def test_event_ownership_never_broadcasts_private_chat_content(api):
         assert project["id"] not in [r[0] for r in other_visible]
         assert set(private[0].keys())=={"seq","owner","resource_type","resource_id","revision","operation","created_at"}
 
-def test_health_does_not_claim_unimplemented_learning_or_six_other_subjects(api):
+def test_health_reports_active_subjects(api):
     client,_=api
     result=client.get("/health").json()
     assert result["learningEngineReady"] is True
-    assert len(result["publishedCourses"]) == 3
-    assert set(result["activeLessonSubjects"])=={"biology","chemistry","physics"}
-    assert len(result["frameworkOnlySubjects"])==6
+    assert set(result["activeLessonSubjects"])=={"math","physics","chemistry","biology","literature","english","geography","history","economics_law"}
+    assert len(result["frameworkOnlySubjects"])==0
 

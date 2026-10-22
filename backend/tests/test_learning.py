@@ -227,4 +227,4 @@ def test_catalog_rejects_duplicate_question_and_framework_course():
     with pytest.raises(ValueError):
         Catalog.validate(course)
     with pytest.raises(ValueError):
-        Catalog.validate(content("math"))
+        Catalog.validate(content("invalid_subject"))

@@ -107,6 +107,26 @@ class Database:
               PRIMARY KEY(bucket,slot));
             PRAGMA user_version=1;
             """)
+            cols = [r[1] for r in db.execute("PRAGMA table_info(users)").fetchall()]
+            if "rank_tier" not in cols:
+                db.execute("ALTER TABLE users ADD COLUMN rank_tier TEXT NOT NULL DEFAULT 'BRONZE'")
+            if "qr_code_token" not in cols:
+                db.execute("ALTER TABLE users ADD COLUMN qr_code_token TEXT")
+
+            db.executescript("""
+            CREATE TABLE IF NOT EXISTS badges(
+              id TEXT PRIMARY KEY, code TEXT NOT NULL UNIQUE, title TEXT NOT NULL,
+              description TEXT NOT NULL, icon_url TEXT NOT NULL, month_period TEXT NOT NULL, created_at REAL NOT NULL);
+            CREATE TABLE IF NOT EXISTS user_badges(
+              user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+              badge_id TEXT NOT NULL REFERENCES badges(id),
+              unlocked_at REAL NOT NULL, PRIMARY KEY(user_id,badge_id));
+            CREATE TABLE IF NOT EXISTS friend_streaks(
+              id TEXT PRIMARY KEY, user1_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+              user2_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+              streak_days INTEGER NOT NULL DEFAULT 0, last_shared_day TEXT NOT NULL,
+              updated_at REAL NOT NULL, UNIQUE(user1_id,user2_id));
+            """)
             db.commit()
 
     @staticmethod

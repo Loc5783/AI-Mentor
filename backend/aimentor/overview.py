@@ -45,9 +45,13 @@ class LearningOverview:
         for offset in range(6, -1, -1):
             date = (today - timedelta(days=offset)).isoformat()
             week.append({"day": date, "xp": sum(a["xp"] for a in awards if a["day"] == date), "streakLit": date in days})
+
+        total_xp = rewards.get("totalXp", 0)
+        rank_tier = "DIAMOND" if total_xp>=10000 else "PLATINUM" if total_xp>=5000 else "GOLD" if total_xp>=2000 else "SILVER" if total_xp>=500 else "BRONZE"
+
         return {"profileId": str(owner), "grade": grade, "learningDay": today.isoformat(),
                 "timezone": "Asia/Ho_Chi_Minh", "asOf": iso(now), "eventCursor": str(cursor),
-                **rewards, "subjects": subjects, "week": week,
+                **rewards, "rankTier": rank_tier, "subjects": subjects, "week": week,
                 "completedLessons": sum(s["completedLessons"] for s in subjects),
                 "totalLessons": sum(s["totalLessons"] for s in subjects),
                 "completedReviews": sum(r["kind"] == "FIVE_LESSON_REVIEW" for r in unique.values()),

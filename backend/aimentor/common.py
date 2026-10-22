@@ -5,8 +5,8 @@ import unicodedata
 from fastapi import HTTPException
 from .database import dump
 
-ACTIVE_SUBJECTS=("biology","chemistry","physics")
 ALL_SUBJECTS=("math","literature","english","history","geography","chemistry","physics","biology","economics_law")
+ACTIVE_SUBJECTS=ALL_SUBJECTS
 
 def error(code: str,status=400):
     raise HTTPException(status,detail={"code":code})

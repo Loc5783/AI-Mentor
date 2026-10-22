@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="profile_eyebrow">HỒ SƠ HỌC TẬP</string>
+    <string name="profile_eyebrow">HỒ SƠ</string>
     <string name="profile_premium_grade">Học viên lớp %1$d</string>
     <string name="profile_grade_missing">Chưa chọn lớp học</string>
-    <string name="profile_focus_title">Hướng học của bạn</string>
+    <string name="profile_focus_title">Hướng học &amp; Tiến độ</string>
     <string name="profile_subjects_empty">Bạn chưa chọn môn học nào.</string>
     <string name="profile_choose_subjects">Chọn môn học</string>
     <string name="profile_progress_offline">Chưa kết nối dữ liệu tiến độ. Bạn vẫn có thể mở bài học.</string>
@@ -21,4 +21,22 @@
     <string name="profile_friends_title">Bạn bè học cùng</string>
     <string name="profile_friends_empty">Chưa có dữ liệu bạn bè để hiển thị chuỗi học cùng nhau.</string>
     <string name="profile_editor_details">Thông tin tài khoản</string>
+    <string name="profile_joined_date">THAM GIA TỪ %1$s</string>
+    <string name="profile_quick_subjects">%1$d Môn học</string>
+    <string name="profile_following_label">Đang theo dõi</string>
+    <string name="profile_followers_label">Người theo dõi</string>
+    <string name="profile_add_friends">Thêm bạn bè</string>
+    <string name="profile_qr_code">Mã QR hồ sơ</string>
+    <string name="profile_overview_title">TỔNG QUAN</string>
+    <string name="profile_streak_stat">%1$d ngày</string>
+    <string name="profile_xp_stat">%1$d KN</string>
+    <string name="profile_rank_diamond">Kim Cương</string>
+    <string name="profile_rank_platinum">Bạch Kim</string>
+    <string name="profile_rank_gold">Vàng</string>
+    <string name="profile_rank_silver">Bạc</string>
+    <string name="profile_rank_bronze">Đồng</string>
+    <string name="profile_lead_stat">%1$d lần dẫn đầu</string>
+    <string name="profile_friends_streak_title">STREAK BẠN BÈ</string>
+    <string name="profile_challenge_title">HUY HIỆU THỬ THÁCH THÁNG</string>
+    <string name="profile_feature_coming_soon">Tính năng đang được kết nối với máy chủ</string>
 </resources>

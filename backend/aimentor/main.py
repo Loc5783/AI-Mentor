@@ -65,12 +65,15 @@ def create_app(settings=None):
     def public(owner,at=None,connection=None):
         now=learning.clock() if at is None else at
         def read(db):
-            row=db.execute("SELECT id,nickname,bio,avatar_id,revision,updated_at FROM users WHERE id=?",(owner,)).fetchone()
+            row=db.execute("SELECT id,nickname,bio,avatar_id,revision,updated_at,rank_tier,qr_code_token FROM users WHERE id=?",(owner,)).fetchone()
             if not row:error("PROFILE_NOT_FOUND",404)
             rewards=reward_summary(db.execute("SELECT xp,day FROM awards WHERE user_id=?",(owner,)).fetchall(),
                 {r[0] for r in db.execute("SELECT day FROM learning_days WHERE user_id=?",(owner,))},now)
+            total_xp=rewards.get("totalXp",0)
+            rank_tier=row["rank_tier"] or ("DIAMOND" if total_xp>=10000 else "PLATINUM" if total_xp>=5000 else "GOLD" if total_xp>=2000 else "SILVER" if total_xp>=500 else "BRONZE")
             return {"id":str(row["id"]),"nickname":row["nickname"],"bio":row["bio"],
                 "avatarUrl":f"/profiles/{owner}/avatar" if row["avatar_id"] else None,
+                "rankTier":rank_tier,"qrCodeToken":row["qr_code_token"],
                 "streakDays":rewards["streakDays"],"dailyXp":rewards["dailyXp"],"learningDay":rewards["learningDay"],"timezone":settings.learning_timezone,
                 "revision":row["revision"],"updatedAt":iso(row["updated_at"])}
         if connection is not None:return read(connection)
@@ -307,6 +310,58 @@ def create_app(settings=None):
             if profile[field]!=last:rank=index+1;last=profile[field]
             entries.append({"rank":rank,"profile":profile,"value":profile[field]})
         return {"metric":metric,"scope":scope,"learningDay":learning_day(now).isoformat(),"timezone":settings.learning_timezone,"asOf":iso(now),"entries":entries[:100],"nextCursor":None}
+
+    @app.get("/me/qr-code")
+    def own_qr_code(user=Depends(current)):
+        with database.transaction() as db:
+            row=db.execute("SELECT qr_code_token FROM users WHERE id=?",(user["id"],)).fetchone()
+            token=row["qr_code_token"] if row else None
+            if not token:
+                token="qr_"+uuid.uuid4().hex
+                db.execute("UPDATE users SET qr_code_token=? WHERE id=?",(token,user["id"]))
+        return {"qrCodeToken":token}
+
+    @app.post("/friends/qr-connect",status_code=201)
+    def friend_qr_connect(body:models.QrConnect,user=Depends(current),key:str|None=Header(None,alias="Idempotency-Key")):
+        with database.transaction() as db:
+            from .common import idem
+            def action():
+                target=db.execute("SELECT id FROM users WHERE qr_code_token=?",(body.qrToken,)).fetchone()
+                if not target:error("INVALID_QR_TOKEN",404)
+                recipient=target["id"]
+                if recipient==user["id"]:error("CANNOT_FRIEND_SELF")
+                existing=db.execute("SELECT * FROM friendships WHERE (requester=? AND recipient=?) OR (requester=? AND recipient=?)",(user["id"],recipient,recipient,user["id"])).fetchone()
+                if existing:return friendship(existing)
+                item=identifier()
+                db.execute("INSERT INTO friendships(id,requester,recipient,state,updated_at) VALUES(?,?,?,'ACCEPTED',?)",(item,user["id"],recipient,time.time()))
+                for owner in (user["id"],recipient):Database.event(db,owner,"FRIENDSHIP",item)
+                return friendship(db.execute("SELECT * FROM friendships WHERE id=?",(item,)).fetchone())
+            return idem(db,user["id"],"qr_friendship",key,body.model_dump(),action)
+
+    @app.get("/me/badges")
+    def own_badges(user=Depends(current)):
+        with database.read() as db:
+            rows=db.execute("""SELECT b.*,ub.unlocked_at FROM badges b
+                JOIN user_badges ub ON b.id=ub.badge_id
+                WHERE ub.user_id=? ORDER BY ub.unlocked_at DESC""",(user["id"],)).fetchall()
+        return {"badges":[{"id":r["id"],"code":r["code"],"title":r["title"],"description":r["description"],"iconUrl":r["icon_url"],"unlockedAt":iso(r["unlocked_at"])} for r in rows]}
+
+    @app.get("/friends/streaks")
+    def friend_streaks(user=Depends(current)):
+        with database.read() as db:
+            rows=db.execute("""SELECT fs.*,
+                u1.id as u1_id, u1.nickname as u1_name,
+                u2.id as u2_id, u2.nickname as u2_name
+                FROM friend_streaks fs
+                JOIN users u1 ON fs.user1_id=u1.id
+                JOIN users u2 ON fs.user2_id=u2.id
+                WHERE fs.user1_id=? OR fs.user2_id=?""",(user["id"],user["id"])).fetchall()
+        streaks=[]
+        for r in rows:
+            friend_id = r["u2_id"] if r["user1_id"]==user["id"] else r["u1_id"]
+            friend_name = r["u2_name"] if r["user1_id"]==user["id"] else r["u1_name"]
+            streaks.append({"id":r["id"],"friendId":str(friend_id),"friendName":friend_name,"streakDays":r["streak_days"],"lastSharedDay":r["last_shared_day"]})
+        return {"streaks":streaks}
 
     def friendship(row):
         return {"id":row["id"],"requesterProfileId":str(row["requester"]),"recipientProfileId":str(row["recipient"]),"state":row["state"],"revision":row["revision"],"updatedAt":iso(row["updated_at"])}

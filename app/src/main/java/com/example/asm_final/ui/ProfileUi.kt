@@ -2,24 +2,30 @@ package com.example.asm_final.ui
 
 import android.content.Context
 import android.view.View
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -30,7 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.Dp
 import coil3.compose.AsyncImage
 import com.example.asm_final.R
 import com.example.asm_final.dashboard.LearningOverviewData
@@ -43,7 +48,13 @@ import com.example.mentor.ui.design.MentorSkeleton
 import com.example.mentor.ui.design.MentorTokens
 import com.example.mentor.ui.design.motionEnabled
 
-/** Profile-only presentation state; account reads and navigation remain with the Fragment. */
+/**
+ * Level 4 — Premium EdTech Profile Presentation.
+ * Designed after modern Duolingo profile architecture:
+ * Clean pastel hero, large centered avatar, user identity, quick statistics,
+ * primary/secondary action buttons, 2x2 overview grid, dashed friends streak slots,
+ * and monthly challenge badges.
+ */
 class ProfileUi(
     private val context: Context,
     private val refresh: Runnable,
@@ -62,8 +73,10 @@ class ProfileUi(
     private var failed by mutableStateOf(false)
 
     fun view(): View = composeHost(context) {
-        ProfileScreen(displayName, username, avatar, grade, goal, subjects, snapshot, loading, failed,
-            { refresh.run() }, { edit.run() }, { settings.run() }, { learn.run() })
+        ProfileScreen(
+            displayName, username, avatar, grade, goal, subjects, snapshot, loading, failed,
+            { refresh.run() }, { edit.run() }, { settings.run() }, { learn.run() }
+        )
     }
 
     fun identity(name: String, handle: String, image: String?) {
@@ -92,146 +105,698 @@ class ProfileUi(
 
 @Composable
 private fun ProfileScreen(
-    name: String, username: String, avatar: String?, grade: Int, goal: Int,
-    subjects: Set<SubjectId>, snapshot: LearningOverviewRepository.Snapshot?,
-    loading: Boolean, failed: Boolean,
-    refresh: () -> Unit, edit: () -> Unit, settings: () -> Unit, learn: () -> Unit,
+    name: String,
+    username: String,
+    avatar: String?,
+    grade: Int,
+    goal: Int,
+    subjects: Set<SubjectId>,
+    snapshot: LearningOverviewRepository.Snapshot?,
+    loading: Boolean,
+    failed: Boolean,
+    refresh: () -> Unit,
+    edit: () -> Unit,
+    settings: () -> Unit,
+    learn: () -> Unit,
 ) {
     val data = snapshot?.data
     val motion = motionEnabled()
     var entered by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { entered = true }
+
     Column(
-        Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState()).testTag("profile-screen"),
+        Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState())
+            .testTag("profile-screen"),
     ) {
-        AnimatedVisibility(visible = entered || !motion,
-            enter = fadeIn() + slideInVertically { -it / 12 }) {
-            ProfileHero(name, username, avatar, grade, settings, edit)
+        // Hero Section with pastel brand styling
+        AnimatedVisibility(
+            visible = entered || !motion,
+            enter = fadeIn() + slideInVertically { -it / 12 }
+        ) {
+            ProfileHero(name, avatar, settings)
         }
+
+        // Main Profile Body
         Column(
-            Modifier.fillMaxWidth().padding(horizontal = MentorTokens.PagePadding)
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = MentorTokens.PagePadding)
                 .padding(bottom = MentorTokens.SpaceLarge),
             verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceLarge),
         ) {
-            ProfileFocus(grade, goal, subjects, learn)
+            // Identity and Action Buttons
+            ProfileIdentitySection(
+                name = name,
+                username = username,
+                grade = grade,
+                subjectsCount = subjects.size,
+                edit = edit
+            )
+
             if (loading) {
                 repeat(2) { MentorSkeleton(stringResource(R.string.course_loading)) }
             } else {
-                ProfileStats(data, snapshot?.mode)
+                // Section TỔNG QUAN (2x2 Grid)
+                ProfileOverviewGrid(data)
+
+                // Error / Offline / Cache notice if applicable
                 if (failed || data == null || snapshot?.mode != LearningOverviewRepository.Mode.LIVE) {
                     ProfileNotice(snapshot, failed, refresh, learn)
                 }
+
+                // Section STREAK BẠN BÈ (Dashed circular slots)
+                ProfileFriendsStreak()
+
+                // Section HUY HIỆU THỬ THÁCH THÁNG
+                ProfileMonthlyChallenge(data)
+
+                // Section HƯỚNG HỌC & TIẾN ĐỘ TUẦN
+                ProfileFocus(grade, goal, subjects, learn)
                 ProfileWeek(data)
             }
-            ProfileEmptySection(
-                stringResource(R.string.profile_badges_title),
-                stringResource(R.string.profile_badges_empty),
-                "profile-badges-empty",
-            )
-            ProfileEmptySection(
-                stringResource(R.string.profile_friends_title),
-                stringResource(R.string.profile_friends_empty),
-                "profile-friends-empty",
-            )
         }
     }
 }
 
+/**
+ * Top Hero Section:
+ * Features top bar with Display Name on the left, Settings icon on the right,
+ * and a large centered prominent avatar.
+ */
 @Composable
 private fun ProfileHero(
-    name: String, username: String, avatar: String?, grade: Int,
-    settings: () -> Unit, edit: () -> Unit,
+    name: String,
+    avatar: String?,
+    settings: () -> Unit,
 ) {
     val dark = androidx.compose.foundation.isSystemInDarkTheme()
-    val compact = LocalConfiguration.current.screenWidthDp <= 360
-    val first = if (dark) MentorTokens.PrimaryDark else MentorTokens.Primary
-    val second = if (dark) MentorTokens.DarkHeroEnd else MentorTokens.HeroEnd
-    Box(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(first, second)))
-        .testTag("profile-hero")) {
-        // Abstract circles add depth without external artwork or distracting perpetual motion.
-        Box(Modifier.align(Alignment.TopStart).offset(x = (-46).dp, y = (-68).dp).size(190.dp)
-            .background(Color.White.copy(alpha = .08f), CircleShape))
-        Box(Modifier.align(Alignment.BottomEnd).offset(x = 44.dp, y = 76.dp).size(180.dp)
-            .background(MentorTokens.Peach.copy(alpha = .13f), CircleShape))
-        Column(Modifier.fillMaxWidth().padding(horizontal = MentorTokens.PagePadding)
-            .padding(top = 16.dp, bottom = if (compact) 20.dp else 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.profile_eyebrow), Modifier.weight(1f), color = Color.White,
-                    style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
-                IconButton(settings, modifier = Modifier.size(48.dp).testTag("profile-settings")) {
-                    Icon(painterResource(R.drawable.ic_settings),
+    val heroBg = if (dark) {
+        Color(0xFF2C192E)
+    } else {
+        Color(0xFFFDE8F1)
+    }
+
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .background(heroBg)
+            .testTag("profile-hero")
+    ) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = MentorTokens.PagePadding)
+                .padding(top = 16.dp, bottom = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Top Bar: Display Name / Eyebrow on left, Settings on right
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = name.ifBlank { stringResource(R.string.profile_eyebrow) },
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(
+                    onClick = settings,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .testTag("profile-settings")
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_settings),
                         contentDescription = stringResource(R.string.settings_title),
-                        tint = Color.White)
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
-            if (compact) {
-                Spacer(Modifier.height(10.dp))
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    ProfileAvatar(name, avatar, 72.dp)
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(name.ifBlank { stringResource(R.string.home_default_user) },
-                            color = Color.White, style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                        if (username.isNotBlank()) Text("@$username", color = Color.White.copy(alpha = .9f),
-                            style = MaterialTheme.typography.bodySmall, maxLines = 1,
-                            overflow = TextOverflow.Ellipsis)
-                        Text(if (grade in 10..12) stringResource(R.string.profile_premium_grade, grade)
-                            else stringResource(R.string.profile_grade_missing), color = Color.White,
-                            style = MaterialTheme.typography.bodySmall)
-                    }
-                }
-                Spacer(Modifier.height(12.dp))
-                ProfileEditButton(edit, Modifier.fillMaxWidth())
-            } else {
-                Spacer(Modifier.height(6.dp))
-                ProfileAvatar(name, avatar, 88.dp)
-                Spacer(Modifier.height(12.dp))
-                Text(name.ifBlank { stringResource(R.string.home_default_user) }, color = Color.White,
-                    style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold,
-                    maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
-                if (username.isNotBlank()) Text("@$username", color = Color.White.copy(alpha = .9f),
-                    style = MaterialTheme.typography.bodyMedium, maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
-                Spacer(Modifier.height(10.dp))
-                Text(if (grade in 10..12) stringResource(R.string.profile_premium_grade, grade)
-                    else stringResource(R.string.profile_grade_missing), color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium)
-                Spacer(Modifier.height(16.dp))
-                ProfileEditButton(edit)
-            }
+
+            Spacer(Modifier.height(14.dp))
+
+            // Prominent Centered Avatar (96dp)
+            ProfileAvatar(name, avatar, 96.dp)
         }
     }
 }
 
 @Composable
-private fun ProfileAvatar(name: String, avatar: String?, size: Dp) {
-    Box(Modifier.size(size).shadow(8.dp, CircleShape)
-        .border(3.dp, Color.White, CircleShape).clip(CircleShape)
-        .background(MentorTokens.PrimaryContainer), contentAlignment = Alignment.Center) {
-        Text(name.trim().firstOrNull()?.uppercase() ?: "A", color = MentorTokens.PrimaryDark,
-            style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
-        if (!avatar.isNullOrBlank()) AsyncImage(avatar, null, Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop)
+private fun ProfileAvatar(name: String, avatar: String?, size: androidx.compose.ui.unit.Dp) {
+    val dark = androidx.compose.foundation.isSystemInDarkTheme()
+    val borderColor = if (dark) Color(0xFF3B273D) else Color.White
+
+    Box(
+        Modifier
+            .size(size)
+            .shadow(6.dp, CircleShape)
+            .border(3.5.dp, borderColor, CircleShape)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primaryContainer),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = name.trim().firstOrNull()?.uppercase() ?: "A",
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold
+        )
+        if (!avatar.isNullOrBlank()) {
+            AsyncImage(
+                model = avatar,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
     }
 }
 
+/**
+ * User Identity & Quick Stats:
+ * - Subtitle: @username · THAM GIA TỪ 2026
+ * - Quick stats: Môn học, Đang theo dõi, Người theo dõi
+ * - Action buttons: Primary [CHỈNH SỬA HỒ SƠ], Secondary [QR]
+ */
 @Composable
-private fun ProfileEditButton(edit: () -> Unit, modifier: Modifier = Modifier) {
-    Button(edit, colors = ButtonDefaults.buttonColors(
-        containerColor = Color.White, contentColor = MentorTokens.PrimaryDark),
-        modifier = modifier.heightIn(min = 48.dp).testTag("profile-edit")) {
-        Text(stringResource(R.string.profile_edit))
+private fun ProfileIdentitySection(
+    name: String,
+    username: String,
+    grade: Int,
+    subjectsCount: Int,
+    edit: () -> Unit,
+) {
+    val context = LocalContext.current
+    val handleText = if (username.isNotBlank()) "@${username.uppercase()}" else "@STUDENT"
+    val gradeText = if (grade in 10..12) " · LỚP $grade" else ""
+    val joinedText = stringResource(R.string.profile_joined_date, "2026")
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        // Handle & Joined Date info
+        Text(
+            text = "$handleText · $joinedText$gradeText",
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        // Quick Stats Row: Môn học | Đang theo dõi | Người theo dõi
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Stat 1: Subjects
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_book_course),
+                    contentDescription = null,
+                    tint = Color(0xFF10B981),
+                    modifier = Modifier.size(20.dp)
+                )
+                Text(
+                    text = stringResource(R.string.profile_quick_subjects, subjectsCount),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            Box(
+                Modifier
+                    .width(1.dp)
+                    .height(20.dp)
+                    .background(MaterialTheme.colorScheme.outlineVariant)
+            )
+
+            // Stat 2: Following
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "0",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = stringResource(R.string.profile_following_label),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Box(
+                Modifier
+                    .width(1.dp)
+                    .height(20.dp)
+                    .background(MaterialTheme.colorScheme.outlineVariant)
+            )
+
+            // Stat 3: Followers
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "0",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = stringResource(R.string.profile_followers_label),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        // Action Buttons Row: Big Primary Button + Square QR OutlinedButton
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(
+                onClick = edit,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(min = 48.dp)
+                    .testTag("profile-edit")
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_nav_profile),
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.profile_edit),
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+            }
+
+            OutlinedButton(
+                onClick = {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.profile_qr_code),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                },
+                shape = RoundedCornerShape(14.dp),
+                border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.outlineVariant),
+                contentPadding = PaddingValues(0.dp),
+                modifier = Modifier
+                    .size(48.dp)
+                    .testTag("profile-qr")
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_qr_code),
+                    contentDescription = stringResource(R.string.profile_qr_code),
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(22.dp)
+                )
+            }
+        }
     }
 }
 
+/**
+ * Section TỔNG QUAN:
+ * 2x2 Clean Gamified Grid matching Image A:
+ * - Streak 🔥 (e.g. 272 ngày)
+ * - EXP ⚡ (e.g. 25964 KN)
+ * - Rank 💎 (e.g. Kim Cương)
+ * - Lead 🥇 (e.g. 8 lần dẫn đầu)
+ */
+@Composable
+private fun ProfileOverviewGrid(data: LearningOverviewData?) {
+    val streakDays = data?.streakDays ?: 0
+    val totalXp = data?.totalXp ?: 0
+    val rankRes = when {
+        totalXp >= 10000 -> R.string.profile_rank_diamond
+        totalXp >= 3000 -> R.string.profile_rank_platinum
+        totalXp >= 1000 -> R.string.profile_rank_gold
+        totalXp >= 200 -> R.string.profile_rank_silver
+        else -> R.string.profile_rank_bronze
+    }
+    val leadCount = data?.firstTryCorrect ?: 0
+
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        ProfileSectionTitle(stringResource(R.string.profile_overview_title))
+
+        Surface(
+            Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            shadowElevation = 1.dp
+        ) {
+            Column(
+                Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Row 1: Streak + Total EXP
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Cell 1: Streak
+                    Row(
+                        Modifier
+                            .weight(1f)
+                            .testTag("profile-streak"),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_flame),
+                            contentDescription = null,
+                            tint = Color(0xFFEA580C),
+                            modifier = Modifier.size(28.dp)
+                        )
+                        Column {
+                            Text(
+                                text = stringResource(R.string.profile_streak_stat, streakDays),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = stringResource(R.string.profile_streak_label),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+
+                    // Cell 2: Total EXP
+                    Row(
+                        Modifier
+                            .weight(1f)
+                            .testTag("profile-total-xp"),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_lightning),
+                            contentDescription = null,
+                            tint = Color(0xFFEAB308),
+                            modifier = Modifier.size(28.dp)
+                        )
+                        Column {
+                            Text(
+                                text = stringResource(R.string.profile_xp_stat, totalXp),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = stringResource(R.string.profile_xp_label),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+
+                // Row 2: Rank + Lead / First try correct
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Cell 3: Rank
+                    Row(
+                        Modifier
+                            .weight(1f)
+                            .testTag("profile-rank"),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_diamond),
+                            contentDescription = null,
+                            tint = Color(0xFF06B6D4),
+                            modifier = Modifier.size(28.dp)
+                        )
+                        Column {
+                            Text(
+                                text = stringResource(rankRes),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = stringResource(R.string.competition_title),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+
+                    // Cell 4: Lead
+                    Row(
+                        Modifier
+                            .weight(1f)
+                            .testTag("profile-lead"),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_trophy),
+                            contentDescription = null,
+                            tint = Color(0xFFF59E0B),
+                            modifier = Modifier.size(28.dp)
+                        )
+                        Column {
+                            Text(
+                                text = stringResource(R.string.profile_lead_stat, leadCount),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = stringResource(R.string.profile_stats_title),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Section STREAK BẠN BÈ:
+ * Features 5 circular dashed slots with (+) symbol exactly matching Image A.
+ */
+@Composable
+private fun ProfileFriendsStreak() {
+    val context = LocalContext.current
+    val outlineColor = MaterialTheme.colorScheme.outlineVariant
+
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        ProfileSectionTitle(stringResource(R.string.profile_friends_streak_title))
+
+        Surface(
+            Modifier
+                .fillMaxWidth()
+                .testTag("profile-friends-empty"),
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, outlineColor)
+        ) {
+            Column(
+                Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                // 5 Dashed Circular Slots
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    repeat(5) {
+                        Box(
+                            Modifier
+                                .size(52.dp)
+                                .drawBehind {
+                                    drawCircle(
+                                        color = outlineColor,
+                                        style = Stroke(
+                                            width = 2.dp.toPx(),
+                                            pathEffect = PathEffect.dashPathEffect(
+                                                floatArrayOf(12f, 10f),
+                                                0f
+                                            )
+                                        )
+                                    )
+                                }
+                                .clickable {
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.profile_feature_coming_soon),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_add),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                }
+
+                Text(
+                    text = stringResource(R.string.profile_friends_empty),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Section HUY HIỆU THỬ THÁCH THÁNG:
+ * Shows monthly challenge with progress and chevron.
+ */
+@Composable
+private fun ProfileMonthlyChallenge(data: LearningOverviewData?) {
+    val context = LocalContext.current
+    val progress = ((data?.completedLessons ?: 0) * 10).coerceAtMost(100)
+
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .clickable {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.profile_feature_coming_soon),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                },
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ProfileSectionTitle(stringResource(R.string.profile_challenge_title))
+            Icon(
+                painter = painterResource(R.drawable.ic_chevron_right),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+
+        Surface(
+            Modifier
+                .fillMaxWidth()
+                .testTag("profile-badges-empty"),
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+        ) {
+            Row(
+                Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Box(
+                    Modifier
+                        .size(52.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_badge_challenge),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+
+                Column(
+                    Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = "Thử thách tháng 10",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    LinearProgressIndicator(
+                        progress = { progress / 100f },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(8.dp)
+                            .clip(RoundedCornerShape(4.dp)),
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                    Text(
+                        text = "$progress% hoàn thành",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Section HƯỚNG HỌC (Grade, Target, Enrolled subjects)
+ */
 @Composable
 private fun ProfileFocus(grade: Int, goal: Int, subjects: Set<SubjectId>, learn: () -> Unit) {
-    MentorCard(Modifier.fillMaxWidth().padding(top = 16.dp)) {
-        Text(stringResource(R.string.profile_focus_title), style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold)
+    MentorCard(Modifier.fillMaxWidth()) {
+        Text(
+            stringResource(R.string.profile_focus_title),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
         val goalId = when (goal) {
             0 -> R.string.profile_goal_0
             1 -> R.string.profile_goal_1
@@ -239,13 +804,25 @@ private fun ProfileFocus(grade: Int, goal: Int, subjects: Set<SubjectId>, learn:
             3 -> R.string.profile_goal_3
             else -> null
         }
-        if (goalId != null) Text(stringResource(goalId), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (goalId != null) {
+            Text(
+                stringResource(goalId),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
         val language = LocaleHelper.getLanguage(LocalContext.current)
         if (subjects.isEmpty()) {
-            Text(stringResource(R.string.profile_subjects_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                stringResource(R.string.profile_subjects_empty),
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         } else {
-            Text(subjects.joinToString("  ·  ") { it.label(language) },
-                color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                subjects.joinToString("  ·  ") { it.label(language) },
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
         if (grade !in 10..12 || subjects.isEmpty()) {
             MentorButton(stringResource(R.string.profile_choose_subjects), learn)
@@ -254,8 +831,12 @@ private fun ProfileFocus(grade: Int, goal: Int, subjects: Set<SubjectId>, learn:
 }
 
 @Composable
-private fun ProfileNotice(snapshot: LearningOverviewRepository.Snapshot?, failed: Boolean,
-                          refresh: () -> Unit, learn: () -> Unit) {
+private fun ProfileNotice(
+    snapshot: LearningOverviewRepository.Snapshot?,
+    failed: Boolean,
+    refresh: () -> Unit,
+    learn: () -> Unit,
+) {
     val message = when {
         snapshot?.needsLogin == true -> R.string.overview_expired
         failed -> R.string.overview_error
@@ -264,80 +845,31 @@ private fun ProfileNotice(snapshot: LearningOverviewRepository.Snapshot?, failed
         snapshot?.mode == LearningOverviewRepository.Mode.NO_GRADE -> R.string.profile_grade_missing
         else -> R.string.overview_error
     }
-    Surface(Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.surfaceVariant,
-        shape = MaterialTheme.shapes.medium) {
+    Surface(
+        Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shape = MaterialTheme.shapes.medium
+    ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(stringResource(message), color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.bodyMedium)
+            Text(
+                stringResource(message),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodyMedium
+            )
             val local = snapshot?.mode == LearningOverviewRepository.Mode.LOCAL
             TextButton(if (local) learn else refresh) {
-                Text(stringResource(when {
-                    snapshot?.needsLogin == true -> R.string.login_btn
-                    local -> R.string.course_open
-                    else -> R.string.overview_reload
-                }))
+                Text(
+                    stringResource(
+                        when {
+                            snapshot?.needsLogin == true -> R.string.login_btn
+                            local -> R.string.course_open
+                            else -> R.string.overview_reload
+                        }
+                    )
+                )
             }
         }
     }
-}
-
-@Composable
-private fun ProfileStats(data: LearningOverviewData?, mode: LearningOverviewRepository.Mode?) {
-    val dark = androidx.compose.foundation.isSystemInDarkTheme()
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        ProfileSectionTitle(stringResource(R.string.profile_stats_title))
-        if (data != null) Text(stringResource(if (mode == LearningOverviewRepository.Mode.CACHED)
-            R.string.profile_saved_data else R.string.overview_current),
-            style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        else Text(stringResource(R.string.profile_stats_pending),
-            style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Surface(Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.surface,
-            shape = MaterialTheme.shapes.medium, shadowElevation = 2.dp) {
-            Column(Modifier.padding(horizontal = 4.dp, vertical = 4.dp)) {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    ProfileStat(stringResource(R.string.profile_streak_label), data?.streakDays?.toString() ?: "—",
-                        stringResource(R.string.profile_days_unit), if (dark) MentorTokens.WarmAccent else MentorTokens.Warning,
-                        "profile-streak", Modifier.weight(1f))
-                    ProfileStatDivider()
-                    ProfileStat(stringResource(R.string.profile_xp_label), data?.totalXp?.toString() ?: "—",
-                        "XP", MaterialTheme.colorScheme.primary, "profile-total-xp", Modifier.weight(1f))
-                }
-                HorizontalDivider(Modifier.padding(horizontal = 12.dp),
-                    color = MaterialTheme.colorScheme.outline.copy(alpha = .2f))
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    ProfileStat(stringResource(R.string.profile_lessons_label),
-                        data?.completedLessons?.toString() ?: "—", stringResource(R.string.profile_lessons_unit),
-                        if (dark) MentorTokens.DarkSuccess else MentorTokens.Success,
-                        "profile-lessons", Modifier.weight(1f))
-                    ProfileStatDivider()
-                    ProfileStat(stringResource(R.string.profile_today_label), data?.dailyXp?.toString() ?: "—",
-                        "XP", MaterialTheme.colorScheme.primary, "profile-daily-xp", Modifier.weight(1f))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ProfileStat(label: String, value: String, unit: String, tint: Color,
-                        tag: String, modifier: Modifier = Modifier) {
-    Column(modifier.testTag(tag).heightIn(min = 88.dp).padding(12.dp),
-        verticalArrangement = Arrangement.SpaceBetween) {
-        Text(label, style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
-        Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold,
-                color = tint, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (value != "—") Text(unit, style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-    }
-}
-
-@Composable
-private fun ProfileStatDivider() {
-    Box(Modifier.width(1.dp).height(64.dp)
-        .background(MaterialTheme.colorScheme.outline.copy(alpha = .2f)))
 }
 
 @Composable
@@ -346,8 +878,10 @@ private fun ProfileWeek(data: LearningOverviewData?) {
         ProfileSectionTitle(stringResource(R.string.design_week))
         if (data == null || data.week.isEmpty() || data.week.none { it.xp > 0 || it.streakLit }) {
             MentorCard(Modifier.fillMaxWidth().testTag("profile-week-empty")) {
-                Text(stringResource(R.string.design_week_empty),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    stringResource(R.string.design_week_empty),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         } else {
             WeekChart(data)
@@ -356,26 +890,11 @@ private fun ProfileWeek(data: LearningOverviewData?) {
 }
 
 @Composable
-private fun ProfileEmptySection(title: String, detail: String, tag: String) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        ProfileSectionTitle(title)
-        Surface(Modifier.fillMaxWidth().testTag(tag), color = MaterialTheme.colorScheme.surface,
-            shape = MaterialTheme.shapes.medium, border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = .3f))) {
-            Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Box(Modifier.size(44.dp).border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = .5f),
-                    CircleShape), contentAlignment = Alignment.Center) {
-                    Box(Modifier.size(12.dp).background(MaterialTheme.colorScheme.primary.copy(alpha = .3f), CircleShape))
-                }
-                Text(detail, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-        }
-    }
-}
-
-@Composable
 private fun ProfileSectionTitle(title: String) {
-    Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.onBackground)
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onBackground
+    )
 }

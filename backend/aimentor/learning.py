@@ -30,7 +30,7 @@ class Catalog:
     @staticmethod
     def validate(course):
         if course["subjectId"] not in ACTIVE_SUBJECTS or course["grade"] not in (10, 11, 12):
-            raise ValueError("Only Biology, Chemistry, Physics in grades 10–12 can publish")
+            raise ValueError("Only supported active subjects in grades 10–12 can publish")
         if not course.get("version") or not course.get("title") or not course.get("sourceNote"):
             raise ValueError("A course needs a version, title and source note")
         lessons = course["lessons"]

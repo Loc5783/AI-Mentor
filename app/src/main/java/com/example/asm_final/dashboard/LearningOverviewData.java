@@ -48,6 +48,7 @@ public final class LearningOverviewData {
       firstTryCorrect,
       questionCount,
       assisted;
+  public final String rankTier;
   public final List<Subject> subjects;
 
   public LearningOverviewData(JSONObject value) throws JSONException {
@@ -56,6 +57,7 @@ public final class LearningOverviewData {
     completedLessons = count(value, "completedLessons");
     totalLessons = count(value, "totalLessons");
     streakDays = count(value, "streakDays");
+    rankTier = value.optString("rankTier", "BRONZE");
     JSONObject practice = value.getJSONObject("practice");
     firstTryCorrect = count(practice, "firstTryCorrect");
     questionCount = count(practice, "questionCount");
@@ -71,8 +73,13 @@ public final class LearningOverviewData {
     int completed = 0, total = 0;
     for (int i = 0; i < items.length(); i++) {
       Subject subject = new Subject(items.getJSONObject(i));
-      if (!Arrays.asList("biology", "chemistry", "physics").contains(subject.id)
-          || !ids.add(subject.id)) throw new JSONException("Invalid subject");
+      boolean isValidSubject = true;
+      try {
+        com.example.mentor.learning.SubjectId.fromWireId(subject.id);
+      } catch (Exception e) {
+        isValidSubject = false;
+      }
+      if (!isValidSubject || !ids.add(subject.id)) throw new JSONException("Invalid subject");
       try {
         xp = Math.addExact(xp, subject.experience);
         completed = Math.addExact(completed, subject.completed);
@@ -82,7 +89,7 @@ public final class LearningOverviewData {
       }
       parsed.add(subject);
     }
-    if (ids.size() != 3 || xp != totalXp || completed != completedLessons || total != totalLessons)
+    if (ids.size() != items.length() || xp != totalXp || completed != completedLessons || total != totalLessons)
       throw new JSONException("Inconsistent subjects");
     parsed.sort(java.util.Comparator.comparing(s -> s.id));
     subjects = Collections.unmodifiableList(parsed);

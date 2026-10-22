@@ -68,7 +68,7 @@ class MessageCreate(Input):
     truncated: bool=False
 
 class EnrollmentCreate(Input):
-    subjectId: Literal["biology","chemistry","physics"]
+    subjectId: Literal["math","physics","chemistry","biology","literature","english","geography","history","economics_law"]
     grade: Literal[10,11,12]
 
 class AttemptCreate(Input):
@@ -97,6 +97,9 @@ class HandoffCreate(Input):
 
 class FriendCreate(Input):
     recipientProfileId: str
+
+class QrConnect(Input):
+    qrToken: str=Field(min_length=8,max_length=128)
 
 class FriendPatch(Input):
     decision: Literal["ACCEPT","DECLINE"]
