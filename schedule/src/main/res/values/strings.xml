@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="schedule_title">Schedule</string>
+    <string name="schedule_empty">No classes yet, press + to add</string>
+    <string name="schedule_add">Add Class</string>
+    <string name="schedule_edit">Edit Class</string>
+    <string name="schedule_subject">Subject Name (e.g., Math, Science)</string>
+    <string name="schedule_room">Room (optional)</string>
+    <string name="schedule_teacher">Teacher (optional)</string>
+    <string name="schedule_notes">Notes (optional)</string>
+    <string name="schedule_start_time">Start Time</string>
+    <string name="schedule_end_time">End Time</string>
+    <string name="schedule_delete">Delete</string>
+    <string name="schedule_undo">Undo</string>
+    <string name="schedule_deleted">Class deleted</string>
+    <string name="schedule_save">Save</string>
+    <string name="schedule_cancel">Cancel</string>
+    <string name="schedule_error_time">End time must be after start time</string>
+    <string name="schedule_warning_overlap">Warning: Overlaps with another class</string>
+    <string name="schedule_confirm_delete">Delete this class?</string>
+    <string name="schedule_error_empty_title">Subject name is required</string>
+    <string name="schedule_days">Mon,Tue,Wed,Thu,Fri,Sat,Sun</string>
+</resources>

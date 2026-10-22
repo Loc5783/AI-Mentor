@@ -10,32 +10,90 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 
 /** Semantic tokens shared by every Compose screen. XML aliases use the same palette. */
 object MentorTokens {
-    val OnBrand = Color.White
-    val Primary = Color(0xFFBE185D)
-    val PrimaryDark = Color(0xFF9D174D)
-    val PrimaryLight = Color(0xFFF9A8D4)
-    val PrimaryContainer = Color(0xFFFFD9EC)
-    val DarkPrimaryContainer = Color(0xFF5B2543)
-    val HeroEnd = Color(0xFFD94D87)
-    val DarkHeroEnd = Color(0xFF512147)
-    val Peach = Color(0xFFFFD9BB)
-    val WarmAccent = Color(0xFFFFC57E)
-    val TextPrimary = Color(0xFF25152A)
-    val TextSecondary = Color(0xFF6E6071)
-    val LightBackground = Color(0xFFFFF7FB)
-    val DarkBackground = Color(0xFF18111F)
-    val DarkSurface = Color(0xFF241B2B)
-    val Success = Color(0xFF19734F)
-    val DarkSuccess = Color(0xFF84DEB2)
-    val Warning = Color(0xFF9A5B00)
-    val Error = Color(0xFFB42342)
-    val Info = Color(0xFF2459A5)
+    val OnBrand = Color(0xFF0B2545)
+    
+    // Primary Blue Palette
+    val Blue50 = Color(0xFFF2F7FE)
+    val Blue100 = Color(0xFFE3EDFD)
+    val Blue200 = Color(0xFFD6E4FB)
+    val Blue300 = Color(0xFF8DB6F7)
+    val Blue400 = Color(0xFF6A9BEF)
+    val Blue500 = Color(0xFF4A80E0)
+    val Blue600 = Color(0xFF2F5FB3)
+    val Blue700 = Color(0xFF3A5A94)
+    val Blue800 = Color(0xFF2E3D61)
+    val Blue900 = Color(0xFF1F2A44)
+
+    // Pink Palette (Light background & Tertiary)
+    val Pink50 = Color(0xFFFFF7FA)
+    val Pink100 = Color(0xFFFCEFF5)
+    val Pink200 = Color(0xFFFBDCE8)
+    val Pink300 = Color(0xFFF4A9C4)
+    val Pink700 = Color(0xFF6B1F3D)
+    val PinkOutline = Color(0xFFEBD5E0)
+
+    // Dark Surface & Navy Palette
+    val NavyBackground = Color(0xFF1F2A44)
+    val NavySurface = Color(0xFF263352)
+    val NavyCard = Color(0xFF2E3D61)
+    val NavyElevated = Color(0xFF364770)
+    val NavyOutline = Color(0xFF43557E)
+    val NavyOnSurface = Color(0xFFF1F4FB)
+    val NavyOnSurfaceVariant = Color(0xFFC3CCE0)
+
+    // Yellow-Orange Palette
+    val Orange50 = Color(0xFFFFF8EC)
+    val Orange100 = Color(0xFFFDEFD6)
+    val Orange200 = Color(0xFFFAE1B4)
+    val Orange300 = Color(0xFFF7CE8D)
+    val Orange400 = Color(0xFFF0B964)
+    val Orange500 = Color(0xFFE8A33D)
+    val Orange600 = Color(0xFFC98420)
+    val Orange700 = Color(0xFFA0661A)
+    val Orange800 = Color(0xFF764B15)
+    val Orange900 = Color(0xFF4D3110)
+
+    // Status colors - Light
+    val SuccessLightText = Color(0xFF1E7F5C)
+    val SuccessLightBg = Color(0xFFDDF5EA)
+    val WarningLightText = Color(0xFFB3433A)
+    val WarningLightBg = Color(0xFFFDE4E0)
+    val ErrorLightText = Color(0xFFC62828)
+    val ErrorLightBg = Color(0xFFFDE7E7)
+
+    // Status colors - Dark
+    val SuccessDarkText = Color(0xFF8EE0BC)
+    val SuccessDarkBg = Color(0xFF1F4A3C)
+    val WarningDarkText = Color(0xFFF7A99E)
+    val WarningDarkBg = Color(0xFF55302F)
+    val ErrorDarkText = Color(0xFFFF9AA0)
+    val ErrorDarkBg = Color(0xFF54272D)
+
+    val Primary = Blue300
+    val PrimaryDark = Blue700
+    val PrimaryLight = Blue200
+    val PrimaryContainer = Blue200
+    val DarkPrimaryContainer = Blue700
+    val LightBackground = Pink50
+    val DarkBackground = NavyBackground
+    val DarkSurface = NavySurface
+    val WarmAccent = Orange300
+    val Success = SuccessLightText
+    val DarkSuccess = SuccessDarkText
+    val Warning = WarningLightText
+    val Error = ErrorLightText
+    val Info = Blue600
     val Locked = Color(0xFF94A3B8)
     val Completed = Success
     val Current = Primary
-    val Disabled = Color(0xFFB6A9B5)
-    val Divider = Color(0xFFE6D9E2)
-    val ProgressTrack = Color(0xFFF3DDE9)
+    val Disabled = Color(0xFFC3CCE0)
+    val Divider = PinkOutline
+    val ProgressTrack = Blue100
+
+    val RewardStreakLight = Orange500
+    val RewardStreakDark = Orange400
+    val RewardXpBar = Orange300
+
     val SpaceTiny = 4.dp
     val SpaceCompact = 12.dp
     val PagePadding = 20.dp
@@ -52,27 +110,99 @@ object MentorTokens {
     const val MotionMillis = 220
 }
 
+object SubjectPalette {
+    val Math = Color(0xFF8DB6F7)
+    val Physics = Color(0xFFB6A6F2)
+    val Chemistry = Color(0xFF7FD8B0)
+    val Biology = Color(0xFFA9D98B)
+    val History = Color(0xFFF7CE8D)
+    val Geography = Color(0xFF6FCFC4)
+    val Literature = Color(0xFFF7998D)
+    val English = Color(0xFFF2A6C8)
+    val Programming = Color(0xFFA3B4CC)
+    val Economics = Color(0xFFE8B08A)
+
+    fun getAccent(subjectId: String): Color {
+        return when (subjectId.lowercase()) {
+            "math" -> Math
+            "physics" -> Physics
+            "chemistry" -> Chemistry
+            "biology" -> Biology
+            "history" -> History
+            "geography" -> Geography
+            "literature" -> Literature
+            "english" -> English
+            "programming" -> Programming
+            "economics_law", "economics" -> Economics
+            else -> MentorTokens.Blue300
+        }
+    }
+
+    fun getContainer(subjectId: String, isDark: Boolean): Color {
+        val accent = getAccent(subjectId)
+        val bg = if (isDark) MentorTokens.NavyCard else Color.White
+        val alpha = if (isDark) 0.24f else 0.18f
+        return blendColor(accent, bg, alpha)
+    }
+
+    fun getOnContainer(isDark: Boolean): Color {
+        return if (isDark) Color(0xFFF1F4FB) else Color(0xFF24203A)
+    }
+
+    private fun blendColor(fg: Color, bg: Color, alpha: Float): Color {
+        val r = fg.red * alpha + bg.red * (1 - alpha)
+        val g = fg.green * alpha + bg.green * (1 - alpha)
+        val b = fg.blue * alpha + bg.blue * (1 - alpha)
+        return Color(r, g, b, 1f)
+    }
+}
+
 private val LightColors = lightColorScheme(
-    primary = MentorTokens.Primary, onPrimary = MentorTokens.OnBrand,
-    primaryContainer = MentorTokens.PrimaryContainer, onPrimaryContainer = MentorTokens.PrimaryDark,
-    secondary = MentorTokens.Warning, onSecondary = Color.White,
-    secondaryContainer = Color(0xFFFFE8C7), onSecondaryContainer = Color(0xFF5B3A00),
-    background = MentorTokens.LightBackground, onBackground = MentorTokens.TextPrimary,
-    surface = Color.White, onSurface = MentorTokens.TextPrimary,
-    surfaceVariant = Color(0xFFFFEAF3), onSurfaceVariant = MentorTokens.TextSecondary,
-    outline = Color(0xFF8E687A), outlineVariant = MentorTokens.Divider,
-    error = MentorTokens.Error,
+    primary = MentorTokens.Blue300, 
+    onPrimary = MentorTokens.OnBrand,
+    primaryContainer = MentorTokens.Blue200, 
+    onPrimaryContainer = MentorTokens.OnBrand,
+    secondary = MentorTokens.Orange300, 
+    onSecondary = MentorTokens.Orange900,
+    secondaryContainer = MentorTokens.Orange100, 
+    onSecondaryContainer = MentorTokens.Orange800,
+    tertiary = MentorTokens.Pink300,
+    tertiaryContainer = MentorTokens.Pink200,
+    onTertiaryContainer = MentorTokens.Pink700,
+    background = MentorTokens.Pink50, 
+    onBackground = Color(0xFF24203A),
+    surface = Color.White, 
+    onSurface = Color(0xFF24203A),
+    surfaceVariant = MentorTokens.Pink100, // Card/SurfaceContainer
+    onSurfaceVariant = Color(0xFF6B5B78),
+    outline = MentorTokens.PinkOutline, 
+    outlineVariant = MentorTokens.PinkOutline.copy(alpha = 0.5f),
+    error = MentorTokens.ErrorLightBg,
+    onError = MentorTokens.ErrorLightText
 )
+
 private val DarkColors = darkColorScheme(
-    primary = MentorTokens.PrimaryLight, onPrimary = MentorTokens.DarkBackground,
-    primaryContainer = MentorTokens.DarkPrimaryContainer, onPrimaryContainer = MentorTokens.PrimaryContainer,
-    secondary = MentorTokens.WarmAccent, onSecondary = Color(0xFF3B2500),
-    secondaryContainer = Color(0xFF62431F), onSecondaryContainer = Color(0xFFFFE8C7),
-    background = MentorTokens.DarkBackground, onBackground = Color(0xFFF8EEF7),
-    surface = MentorTokens.DarkSurface, onSurface = Color(0xFFF8EEF7),
-    surfaceVariant = Color(0xFF3B2C40), onSurfaceVariant = Color(0xFFE0C9D9),
-    outline = Color(0xFFB69AAB), outlineVariant = Color(0xFF63485B),
-    error = Color(0xFFFFB4C0),
+    primary = MentorTokens.Blue300, 
+    onPrimary = MentorTokens.OnBrand,
+    primaryContainer = MentorTokens.Blue700, 
+    onPrimaryContainer = Color(0xFFEAF2FF),
+    secondary = MentorTokens.Orange400, 
+    onSecondary = MentorTokens.Orange900,
+    secondaryContainer = Color(0xFF5A4220), 
+    onSecondaryContainer = MentorTokens.Orange100,
+    tertiary = MentorTokens.Pink300,
+    tertiaryContainer = Color(0xFF5A3B58),
+    onTertiaryContainer = Color(0xFFFCE4EE),
+    background = MentorTokens.NavyBackground, 
+    onBackground = MentorTokens.NavyOnSurface,
+    surface = MentorTokens.NavySurface, 
+    onSurface = MentorTokens.NavyOnSurface,
+    surfaceVariant = MentorTokens.NavyCard, // Card/SurfaceContainer
+    onSurfaceVariant = MentorTokens.NavyOnSurfaceVariant,
+    outline = MentorTokens.NavyOutline, 
+    outlineVariant = MentorTokens.NavyOutline.copy(alpha = 0.5f),
+    error = MentorTokens.ErrorDarkBg,
+    onError = MentorTokens.ErrorDarkText
 )
 
 @Composable

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -35,7 +36,7 @@ import java.util.function.Consumer
 /** A view-only bridge: lifecycle, identity checks and repository work remain in the Fragment. */
 class OverviewUi(private val context: Context, private val profile: Boolean,
     private val open: Consumer<SubjectId>, private val action: Runnable,
-    private val edit: Runnable, private val settings: Runnable, private val learn: Runnable) {
+    private val edit: Runnable, private val settings: Runnable, private val learn: Runnable, private val schedule: Runnable = Runnable{}) {
     private var snapshot by mutableStateOf<LearningOverviewRepository.Snapshot?>(null)
     private var selected by mutableStateOf<Set<SubjectId>>(emptySet())
     private var name by mutableStateOf("")
@@ -46,7 +47,7 @@ class OverviewUi(private val context: Context, private val profile: Boolean,
 
     fun view(): View = composeHost(context) {
         OverviewScreen(profile, name, avatar, grade, snapshot, selected, loading, failed,
-            { open.accept(it) }, { action.run() }, { edit.run() }, { settings.run() }, { learn.run() })
+            { open.accept(it) }, { action.run() }, { edit.run() }, { settings.run() }, { learn.run() }, { schedule.run() })
     }
     fun loading() { loading = true; failed = false }
     fun failure() { loading = false; failed = true }
@@ -59,11 +60,11 @@ class OverviewUi(private val context: Context, private val profile: Boolean,
 @Composable
 private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grade: Int,
     snapshot: LearningOverviewRepository.Snapshot?, selected: Set<SubjectId>, loading: Boolean, failed: Boolean,
-    open: (SubjectId) -> Unit, action: () -> Unit, edit: () -> Unit, settings: () -> Unit, learn: () -> Unit) {
+    open: (SubjectId) -> Unit, action: () -> Unit, edit: () -> Unit, settings: () -> Unit, learn: () -> Unit, schedule: () -> Unit = {}) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val data = snapshot?.data
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(context)
-    val heroBg = if (dark) Color(0xFF2C192E) else Color(0xFFFDE8F1)
+    val heroBg = if (dark) MentorTokens.DarkPrimaryContainer else MentorTokens.PrimaryContainer
 
     Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
         .verticalScroll(rememberScrollState())) {
@@ -141,6 +142,25 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                         }
                     }
                 }
+                
+                if (!profile) {
+                    Surface(
+                        shape = RoundedCornerShape(20.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                        modifier = Modifier.fillMaxWidth().clickable { schedule() }
+                    ) {
+                        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(painter = painterResource(R.drawable.ic_book_course), contentDescription = null, tint = MentorTokens.Info, modifier = Modifier.size(28.dp))
+                            Spacer(Modifier.width(16.dp))
+                            Column {
+                                Text("Thời khóa biểu", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                                Text("Xem lịch học", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                        }
+                    }
+                }
+
                 if (data != null) {
                     if (snapshot?.mode == LearningOverviewRepository.Mode.LIVE)
                         Text(stringResource(R.string.overview_current), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -155,14 +175,14 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                    Icon(painter = painterResource(R.drawable.ic_flame), contentDescription = null, tint = Color(0xFFEA580C), modifier = Modifier.size(26.dp))
+                                    Icon(painter = painterResource(R.drawable.ic_flame), contentDescription = null, tint = MentorTokens.RewardStreakLight, modifier = Modifier.size(26.dp))
                                     Column {
                                         Text(stringResource(R.string.overview_streak, data.streakDays), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                                         Text(stringResource(R.string.profile_streak_label), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                     }
                                 }
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                    Icon(painter = painterResource(R.drawable.ic_lightning), contentDescription = null, tint = Color(0xFFEAB308), modifier = Modifier.size(26.dp))
+                                    Icon(painter = painterResource(R.drawable.ic_lightning), contentDescription = null, tint = MentorTokens.RewardXpBar, modifier = Modifier.size(26.dp))
                                     Column {
                                         Text(stringResource(R.string.overview_daily_xp, data.dailyXp), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                                         Text(stringResource(R.string.profile_xp_label), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

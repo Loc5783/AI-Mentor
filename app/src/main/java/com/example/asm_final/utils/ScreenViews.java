@@ -19,7 +19,7 @@ public final class ScreenViews {
     LinearLayout v = new LinearLayout(c);
     v.setOrientation(LinearLayout.VERTICAL);
     v.setPadding(dp(c, 20), dp(c, 16), dp(c, 20), dp(c, 24));
-    v.setBackgroundColor(ContextCompat.getColor(c, R.color.backgroundColor));
+    v.setBackgroundColor(ContextCompat.getColor(c, com.example.mentor.ui.R.color.backgroundColor));
     return v;
   }
 
@@ -35,7 +35,7 @@ public final class ScreenViews {
     v.setText(value);
     v.setTextSize(size);
     v.setTextColor(
-        ContextCompat.getColor(c, bold ? R.color.textColorPrimary : R.color.textColorSecondary));
+        ContextCompat.getColor(c, bold ? com.example.mentor.ui.R.color.textColorPrimary : com.example.mentor.ui.R.color.textColorSecondary));
     if (bold) v.setTypeface(null, android.graphics.Typeface.BOLD);
     v.setPadding(0, dp(c, 6), 0, dp(c, 10));
     return v;
@@ -44,7 +44,7 @@ public final class ScreenViews {
   public static LinearLayout card(Context c) {
     LinearLayout v = column(c);
     GradientDrawable bg = new GradientDrawable();
-    bg.setColor(ContextCompat.getColor(c, R.color.surfaceColor));
+    bg.setColor(ContextCompat.getColor(c, com.example.mentor.ui.R.color.surfaceColor));
     bg.setCornerRadius(dp(c, 20));
     v.setBackground(bg);
     LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(-1, -2);

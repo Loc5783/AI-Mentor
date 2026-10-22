@@ -194,9 +194,9 @@ private fun ProfileHero(
 ) {
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
     val heroBg = if (dark) {
-        Color(0xFF2C192E)
+        MentorTokens.DarkPrimaryContainer
     } else {
-        Color(0xFFFDE8F1)
+        MentorTokens.PrimaryContainer
     }
 
     Box(
@@ -251,7 +251,7 @@ private fun ProfileHero(
 @Composable
 private fun ProfileAvatar(name: String, avatar: String?, size: androidx.compose.ui.unit.Dp) {
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
-    val borderColor = if (dark) Color(0xFF3B273D) else Color.White
+    val borderColor = if (dark) MentorTokens.DarkSurface else Color.White
 
     Box(
         Modifier
@@ -331,7 +331,7 @@ private fun ProfileIdentitySection(
                 Icon(
                     painter = painterResource(R.drawable.ic_book_course),
                     contentDescription = null,
-                    tint = Color(0xFF10B981),
+                    tint = MentorTokens.SuccessLightText,
                     modifier = Modifier.size(20.dp)
                 )
                 Text(
@@ -565,7 +565,7 @@ private fun ProfileQrDialog(onDismiss: () -> Unit) {
                     Surface(
                         shape = RoundedCornerShape(16.dp),
                         color = Color.White,
-                        border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                         modifier = Modifier
                             .size(200.dp)
                             .shadow(4.dp, RoundedCornerShape(16.dp))
@@ -640,7 +640,7 @@ private fun QrCodeCanvas(seedToken: String, modifier: Modifier = Modifier) {
 
         drawRect(color = Color.White)
 
-        val darkColor = Color(0xFF1E293B)
+        val darkColor = MentorTokens.Blue800
         for (x in 0 until width) {
             for (y in 0 until height) {
                 if (matrix.get(x, y)) {
@@ -698,7 +698,7 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
                         Icon(
                             painter = painterResource(R.drawable.ic_flame),
                             contentDescription = null,
-                            tint = Color(0xFFEA580C),
+                            tint = MentorTokens.RewardStreakLight,
                             modifier = Modifier.size(28.dp)
                         )
                         Column {
@@ -727,7 +727,7 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
                         Icon(
                             painter = painterResource(R.drawable.ic_lightning),
                             contentDescription = null,
-                            tint = Color(0xFFEAB308),
+                            tint = MentorTokens.RewardXpBar,
                             modifier = Modifier.size(28.dp)
                         )
                         Column {
@@ -765,7 +765,7 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
                         Icon(
                             painter = painterResource(R.drawable.ic_diamond),
                             contentDescription = null,
-                            tint = Color(0xFF06B6D4),
+                            tint = MentorTokens.Blue600,
                             modifier = Modifier.size(28.dp)
                         )
                         Column {
@@ -794,7 +794,7 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
                         Icon(
                             painter = painterResource(R.drawable.ic_trophy),
                             contentDescription = null,
-                            tint = Color(0xFFF59E0B),
+                            tint = MentorTokens.Orange500,
                             modifier = Modifier.size(28.dp)
                         )
                         Column {

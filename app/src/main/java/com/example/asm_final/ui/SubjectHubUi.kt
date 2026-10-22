@@ -39,7 +39,7 @@ class SubjectHubUi(private val context: Context, private val chooseGrade: Runnab
         val chosen = listOf(SubjectId.PHYSICS, SubjectId.CHEMISTRY, SubjectId.BIOLOGY)
             .filter { it in selected }
         val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(context)
-        val heroBg = if (dark) Color(0xFF2C192E) else Color(0xFFFDE8F1)
+        val heroBg = if (dark) MentorTokens.DarkPrimaryContainer else MentorTokens.PrimaryContainer
 
         Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
             // Hero Header matching Profile & Competition UI
@@ -61,7 +61,7 @@ class SubjectHubUi(private val context: Context, private val chooseGrade: Runnab
                         Icon(
                             painter = painterResource(R.drawable.ic_book_course),
                             contentDescription = null,
-                            tint = Color(0xFF10B981),
+                            tint = MentorTokens.SuccessLightText,
                             modifier = Modifier.size(32.dp)
                         )
                     }
