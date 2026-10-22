@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="profile_editor_background">@color/backgroundColor</color>
+    <color name="profile_editor_surface">@color/surfaceColor</color>
+    <color name="profile_editor_primary">@color/primaryColor</color>
+    <color name="profile_editor_primary_dark">@color/primaryDarkColor</color>
+    <color name="profile_editor_hero_end">@color/heroEndColor</color>
+    <color name="profile_editor_on_primary">@color/onPrimaryColor</color>
+    <color name="profile_editor_text">@color/textColorPrimary</color>
+    <color name="profile_editor_hint">@color/textColorSecondary</color>
+    <color name="profile_editor_border">@color/dividerColor</color>
+</resources>

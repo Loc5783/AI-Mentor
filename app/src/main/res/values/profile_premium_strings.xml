@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_eyebrow">HỒ SƠ HỌC TẬP</string>
+    <string name="profile_premium_grade">Học viên lớp %1$d</string>
+    <string name="profile_grade_missing">Chưa chọn lớp học</string>
+    <string name="profile_focus_title">Hướng học của bạn</string>
+    <string name="profile_subjects_empty">Bạn chưa chọn môn học nào.</string>
+    <string name="profile_choose_subjects">Chọn môn học</string>
+    <string name="profile_progress_offline">Chưa kết nối dữ liệu tiến độ. Bạn vẫn có thể mở bài học.</string>
+    <string name="profile_stats_title">Tiến bộ của bạn</string>
+    <string name="profile_stats_pending">Chưa có số liệu tiến độ để hiển thị.</string>
+    <string name="profile_saved_data">Số liệu đã lưu trên thiết bị</string>
+    <string name="profile_streak_label">Chuỗi học</string>
+    <string name="profile_xp_label">Tổng kinh nghiệm</string>
+    <string name="profile_lessons_label">Bài hoàn thành</string>
+    <string name="profile_today_label">Kinh nghiệm hôm nay</string>
+    <string name="profile_days_unit">ngày</string>
+    <string name="profile_lessons_unit">bài</string>
+    <string name="profile_badges_title">Huy hiệu</string>
+    <string name="profile_badges_empty">Chưa có dữ liệu huy hiệu. Thành tích sẽ hiện ở đây khi hệ thống hỗ trợ.</string>
+    <string name="profile_friends_title">Bạn bè học cùng</string>
+    <string name="profile_friends_empty">Chưa có dữ liệu bạn bè để hiển thị chuỗi học cùng nhau.</string>
+    <string name="profile_editor_details">Thông tin tài khoản</string>
+</resources>

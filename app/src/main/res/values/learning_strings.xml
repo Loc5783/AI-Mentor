@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
   <string name="course_path_count">Đã hoàn thành %1$d / %2$d bài học</string>
+  <string name="course_stage_title">Chặng %1$d</string>
+  <string name="course_stage_count">%1$d / %2$d bài</string>
   <string name="course_path_note">Sau mỗi 5 bài là một chặng ôn tập. EXP chỉ tính ở lần hoàn thành đầu tiên.</string>
   <string name="course_stage_reward">Lần đầu +%1$d EXP</string>
   <string name="course_review_badge">Ôn</string>

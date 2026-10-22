@@ -108,9 +108,42 @@ class ComposeRedesignTest {
         navigate(R.id.nav_competition)
         compose.onNodeWithText(label(R.string.competition_title)).assertExists()
         navigate(R.id.nav_profile)
-        compose.onNodeWithText(label(R.string.settings_title)).assertExists()
+        waitForTag("profile-hero")
+        compose.onNodeWithTag("profile-screen").assertExists()
+        compose.onNodeWithTag("profile-total-xp").assertExists()
+        compose.onNodeWithTag("profile-week-empty").assertExists()
+        compose.onNodeWithTag("profile-badges-empty").assertExists()
+        compose.onNodeWithTag("profile-friends-empty").assertExists()
+        compose.onNodeWithContentDescription(label(R.string.settings_title)).assertExists()
         compose.onNodeWithText(label(R.string.profile_edit)).assertExists()
         capture("profile")
+        compose.onNodeWithTag("profile-screen").performTouchInput { swipeUp() }
+        capture("profile-lower")
+    }
+
+    @Test(timeout = 60000) fun profileSupportsDarkModeWithoutInventedProgress() {
+        navigate(R.id.nav_settings)
+        scenario.onActivity { it.findViewById<android.view.View>(R.id.switch_dark_mode).performClick() }
+        waitForNativeSetting(R.id.setting_language)
+        navigate(R.id.nav_profile)
+        waitForTag("profile-week-empty")
+        compose.onNodeWithTag("profile-total-xp").assertExists()
+        compose.onNodeWithTag("profile-badges-empty").assertExists()
+        capture("profile-dark")
+        compose.onNodeWithTag("profile-settings").performClick()
+        compose.onNodeWithText(label(R.string.course_back)).assertExists()
+        androidx.test.espresso.Espresso.onView(
+            androidx.test.espresso.matcher.ViewMatchers.withId(R.id.setting_language))
+            .check(androidx.test.espresso.assertion.ViewAssertions.matches(
+                androidx.test.espresso.matcher.ViewMatchers.isDisplayed()))
+        navigate(R.id.nav_profile)
+        waitForTag("profile-edit")
+        compose.onNodeWithTag("profile-edit").performClick()
+        androidx.test.espresso.Espresso.onView(
+            androidx.test.espresso.matcher.ViewMatchers.withId(R.id.btnUpdateProfile))
+            .check(androidx.test.espresso.assertion.ViewAssertions.matches(
+                androidx.test.espresso.matcher.ViewMatchers.isDisplayed()))
+        capture("profile-editor")
     }
 
     @Test(timeout = 60000) fun chatDraftSurvivesTabsAndRecreation() {

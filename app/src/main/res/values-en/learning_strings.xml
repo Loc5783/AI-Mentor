@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
   <string name="course_path_count">%1$d / %2$d lessons completed</string>
+  <string name="course_stage_title">Stage %1$d</string>
+  <string name="course_stage_count">%1$d / %2$d lessons</string>
   <string name="course_path_note">Review after every five lessons. EXP is awarded on the first completion only.</string>
   <string name="course_stage_reward">First completion +%1$d EXP</string>
   <string name="course_review_badge">Quiz</string>

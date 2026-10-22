@@ -6,24 +6,25 @@ import androidx.fragment.app.Fragment;
 import com.example.asm_final.*;
 import com.example.asm_final.activities.HomeActivity;
 import com.example.asm_final.dashboard.*;
-import com.example.asm_final.ui.OverviewUi;
+import com.example.asm_final.learning.LearningSetupStore;
+import com.example.asm_final.ui.ProfileUi;
 import com.example.mentor.data.ActiveUser;
+import com.example.mentor.learning.SubjectId;
 import java.util.Collections;
+import java.util.Set;
 
-/** Owns lifecycle and account-scoped loading; Compose renders repository results only. */
+/** Owns account-scoped loading; the Profile UI only renders repository results. */
 public final class ProfileHubFragment extends Fragment {
   private OverviewUpdates.Subscription updates;
-  private OverviewUi presenter;
+  private ProfileUi presenter;
   private int generation;
   private boolean needsLogin;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle state) {
     presenter =
-        new OverviewUi(
+        new ProfileUi(
             requireContext(),
-            true,
-            subject -> {},
             () -> {
               if (needsLogin) shell().logout();
               else load();
@@ -31,8 +32,8 @@ public final class ProfileHubFragment extends Fragment {
             () -> shell().navigateTo(R.id.nav_edit_profile, true),
             () -> shell().navigateTo(R.id.nav_settings, true),
             () -> shell().navigateTo(R.id.nav_category, false));
-    presenter.identity(
-        getArguments() == null ? "" : getArguments().getString("USERNAME", ""), null);
+    String username = getArguments() == null ? "" : getArguments().getString("USERNAME", "");
+    presenter.identity(username, username, null);
     return presenter.view();
   }
 
@@ -71,6 +72,13 @@ public final class ProfileHubFragment extends Fragment {
                 var learning = services.learners().load(owner);
                 var profile = services.profiles().load(username);
                 int grade = learning == null ? 0 : learning.grade;
+                Set<SubjectId> subjects = Collections.emptySet();
+                if (grade >= 10 && grade <= 12) {
+                  try (LearningSetupStore enrollment = new LearningSetupStore(context)) {
+                    subjects = enrollment.selected(owner, grade);
+                  }
+                }
+                Set<SubjectId> chosen = subjects;
                 var result = services.overview().load(owner, grade);
                 new Handler(Looper.getMainLooper())
                     .post(
@@ -82,11 +90,13 @@ public final class ProfileHubFragment extends Fragment {
                           presenter.identity(
                               profile != null
                                       && profile.fullName != null
-                                      && !profile.fullName.isEmpty()
+                                      && !profile.fullName.isBlank()
                                   ? profile.fullName
                                   : username,
+                              username,
                               profile == null ? null : profile.avatar);
-                          presenter.render(result, Collections.emptySet(), grade);
+                          presenter.learning(grade, learning == null ? -1 : learning.goal, chosen);
+                          presenter.render(result);
                         });
               } catch (RuntimeException unavailable) {
                 new Handler(Looper.getMainLooper())

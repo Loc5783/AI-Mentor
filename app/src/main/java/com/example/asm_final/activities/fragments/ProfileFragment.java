@@ -164,7 +164,7 @@ public class ProfileFragment extends Fragment {
             try {
               imgAvatar.setImageURI(Uri.parse(avatarUri));
             } catch (RuntimeException error) {
-              imgAvatar.setImageResource(R.mipmap.ic_launcher_round);
+              imgAvatar.setImageResource(R.drawable.ic_profile_avatar_placeholder);
             }
           }
         },

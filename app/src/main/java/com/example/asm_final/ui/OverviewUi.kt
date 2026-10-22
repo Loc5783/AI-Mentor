@@ -59,8 +59,8 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
     Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
         .verticalScroll(rememberScrollState()).padding(MentorTokens.PagePadding), verticalArrangement = Arrangement.spacedBy(MentorTokens.PagePadding)) {
         if (profile) TextButton(settings) { Text(stringResource(R.string.settings_title)) }
-        Surface(shape = MaterialTheme.shapes.large, color = MentorTokens.Blue, contentColor = MentorTokens.OnBrand) {
-            Column(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(MentorTokens.Blue, MentorTokens.Indigo))).padding(MentorTokens.SpaceLarge), verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceSmall)) {
+        Surface(shape = MaterialTheme.shapes.large, color = MentorTokens.Primary, contentColor = MentorTokens.OnBrand) {
+            Column(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(MentorTokens.Primary, MentorTokens.HeroEnd))).padding(MentorTokens.SpaceLarge), verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceSmall)) {
                 if (profile) Box(Modifier.size(MentorTokens.AvatarSize).clip(MaterialTheme.shapes.large)
                     .background(MaterialTheme.colorScheme.primaryContainer), contentAlignment = Alignment.Center) {
                     Text(name.trim().take(2).uppercase(), color = MaterialTheme.colorScheme.onPrimaryContainer,

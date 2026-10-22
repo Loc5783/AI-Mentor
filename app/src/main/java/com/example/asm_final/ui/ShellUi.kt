@@ -5,6 +5,7 @@ import android.view.View
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -35,6 +36,10 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
             return
         }
         if (navigation?.currentDestination?.route == route) return
+        // Settings and editing sit above Profile; return to that screen instead of restoring
+        // a saved tab stack that may bring the subpage back to the top.
+        if (route == "profile" && navigation?.currentDestination?.route in listOf("settings", "edit-profile")
+            && navigation?.popBackStack("profile", false) == true) return
         navigation?.navigate(route) {
             launchSingleTop = true
             if (!remember) {
@@ -70,6 +75,7 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
                 tabs.forEach { tab ->
                     NavigationBarItem(selected = selectedRoute == tab.route,
                         onClick = { navigate(tab.id, false) },
+                        colors = NavigationBarItemDefaults.colors(),
                         icon = { Icon(painterResource(tab.icon), null, Modifier.size(22.dp)) },
                         label = { Text(stringResource(tab.label), maxLines = 2, style = MaterialTheme.typography.labelSmall, overflow = TextOverflow.Ellipsis) })
                 }
@@ -77,8 +83,11 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
           }
         }) { padding ->
             Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
-                if (top != null && top !in tabs) Row(Modifier.fillMaxWidth()) {
-                    TextButton({ nav.popBackStack() }) { Text(stringResource(R.string.course_back)) }
+                if (top != null && top !in tabs) Row(Modifier.fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)) {
+                    TextButton({ nav.popBackStack() }) {
+                        Text(stringResource(R.string.course_back))
+                    }
                 }
                 NavHost(nav, startDestination = destinations.first { it.id == initial }.route,
                     modifier = Modifier.weight(1f),

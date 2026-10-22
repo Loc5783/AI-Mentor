@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_eyebrow">LEARNING PROFILE</string>
+    <string name="profile_premium_grade">Grade %1$d learner</string>
+    <string name="profile_grade_missing">No grade selected yet</string>
+    <string name="profile_focus_title">Your learning focus</string>
+    <string name="profile_subjects_empty">You have not selected any subjects yet.</string>
+    <string name="profile_choose_subjects">Choose subjects</string>
+    <string name="profile_progress_offline">Progress data is not connected yet. You can still open lessons.</string>
+    <string name="profile_stats_title">Your progress</string>
+    <string name="profile_stats_pending">Progress figures are not available yet.</string>
+    <string name="profile_saved_data">Saved progress on this device</string>
+    <string name="profile_streak_label">Learning streak</string>
+    <string name="profile_xp_label">Total experience</string>
+    <string name="profile_lessons_label">Lessons completed</string>
+    <string name="profile_today_label">Experience today</string>
+    <string name="profile_days_unit">days</string>
+    <string name="profile_lessons_unit">lessons</string>
+    <string name="profile_badges_title">Badges</string>
+    <string name="profile_badges_empty">No badge data yet. Achievements will appear here when supported.</string>
+    <string name="profile_friends_title">Learning with friends</string>
+    <string name="profile_friends_empty">No friend data is available to show shared streaks yet.</string>
+    <string name="profile_editor_details">Account details</string>
+</resources>

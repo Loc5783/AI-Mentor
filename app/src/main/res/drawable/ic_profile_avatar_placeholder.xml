@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <path android:fillColor="@color/profile_editor_primary"
+        android:pathData="M50,0 A50,50 0,1 0,50 100 A50,50 0,1 0,50 0 Z" />
+    <path android:fillColor="@color/profile_editor_on_primary"
+        android:pathData="M50,25 A16,16 0,1 0,50 57 A16,16 0,1 0,50 25 Z" />
+    <path android:fillColor="@color/profile_editor_on_primary"
+        android:pathData="M18,87 C18,69 32,62 50,62 C68,62 82,69 82,87 L82,93 L18,93 Z" />
+</vector>
