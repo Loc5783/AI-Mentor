@@ -73,7 +73,7 @@ def create_app(settings=None):
             rank_tier=row["rank_tier"] or ("DIAMOND" if total_xp>=10000 else "PLATINUM" if total_xp>=5000 else "GOLD" if total_xp>=2000 else "SILVER" if total_xp>=500 else "BRONZE")
             return {"id":str(row["id"]),"nickname":row["nickname"],"bio":row["bio"],
                 "avatarUrl":f"/profiles/{owner}/avatar" if row["avatar_id"] else None,
-                "rankTier":rank_tier,"qrCodeToken":row["qr_code_token"],
+                "rankTier":rank_tier,
                 "streakDays":rewards["streakDays"],"dailyXp":rewards["dailyXp"],"learningDay":rewards["learningDay"],"timezone":settings.learning_timezone,
                 "revision":row["revision"],"updatedAt":iso(row["updated_at"])}
         if connection is not None:return read(connection)
@@ -321,19 +321,28 @@ def create_app(settings=None):
                 db.execute("UPDATE users SET qr_code_token=? WHERE id=?",(token,user["id"]))
         return {"qrCodeToken":token}
 
+    @app.post("/me/qr-code/revoke")
+    def revoke_qr_code(user=Depends(current)):
+        new_token="qr_"+uuid.uuid4().hex
+        with database.transaction() as db:
+            db.execute("UPDATE users SET qr_code_token=? WHERE id=?",(new_token,user["id"]))
+        return {"qrCodeToken":new_token}
+
     @app.post("/friends/qr-connect",status_code=201)
     def friend_qr_connect(body:models.QrConnect,user=Depends(current),key:str|None=Header(None,alias="Idempotency-Key")):
+        if not body.qrToken or not body.qrToken.strip():
+            error("INVALID_QR_TOKEN",400)
         with database.transaction() as db:
             from .common import idem
             def action():
-                target=db.execute("SELECT id FROM users WHERE qr_code_token=?",(body.qrToken,)).fetchone()
+                target=db.execute("SELECT id FROM users WHERE qr_code_token=?",(body.qrToken.strip(),)).fetchone()
                 if not target:error("INVALID_QR_TOKEN",404)
                 recipient=target["id"]
-                if recipient==user["id"]:error("CANNOT_FRIEND_SELF")
+                if recipient==user["id"]:error("CANNOT_FRIEND_SELF",400)
                 existing=db.execute("SELECT * FROM friendships WHERE (requester=? AND recipient=?) OR (requester=? AND recipient=?)",(user["id"],recipient,recipient,user["id"])).fetchone()
                 if existing:return friendship(existing)
                 item=identifier()
-                db.execute("INSERT INTO friendships(id,requester,recipient,state,updated_at) VALUES(?,?,?,'ACCEPTED',?)",(item,user["id"],recipient,time.time()))
+                db.execute("INSERT INTO friendships(id,requester,recipient,state,updated_at) VALUES(?,?,?,'PENDING',?)",(item,user["id"],recipient,time.time()))
                 for owner in (user["id"],recipient):Database.event(db,owner,"FRIENDSHIP",item)
                 return friendship(db.execute("SELECT * FROM friendships WHERE id=?",(item,)).fetchone())
             return idem(db,user["id"],"qr_friendship",key,body.model_dump(),action)

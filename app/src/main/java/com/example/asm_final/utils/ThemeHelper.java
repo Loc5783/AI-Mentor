@@ -13,7 +13,14 @@ public final class ThemeHelper {
   }
 
   public static boolean isDarkMode(Context context) {
-    return preferences(context).getBoolean(KEY_DARK_MODE, false);
+    SharedPreferences prefs = preferences(context);
+    if (prefs.contains(KEY_DARK_MODE)) {
+      return prefs.getBoolean(KEY_DARK_MODE, false);
+    }
+    int nightMode =
+        context.getResources().getConfiguration().uiMode
+            & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
+    return nightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES;
   }
 
   public static void setDarkMode(Context context, boolean enabled) {
@@ -24,8 +31,14 @@ public final class ThemeHelper {
   }
 
   public static void applySavedTheme(Context context) {
-    AppCompatDelegate.setDefaultNightMode(
-        isDarkMode(context) ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+    SharedPreferences prefs = preferences(context);
+    if (prefs.contains(KEY_DARK_MODE)) {
+      boolean dark = prefs.getBoolean(KEY_DARK_MODE, false);
+      AppCompatDelegate.setDefaultNightMode(
+          dark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+    } else {
+      AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+    }
   }
 
   private static SharedPreferences preferences(Context context) {

@@ -95,6 +95,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.material)
     implementation("at.favre.lib:bcrypt:0.10.2")
+    implementation("com.google.zxing:core:3.5.3")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.drawerlayout:drawerlayout:1.2.0")

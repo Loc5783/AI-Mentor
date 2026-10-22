@@ -19,7 +19,7 @@ internal fun composeHost(context: Context, content: @Composable () -> Unit): Com
     ComposeView(context).apply {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         setContent {
-            val isDark = ThemeHelper.isDarkMode(context) || isSystemInDarkTheme()
+            val isDark = ThemeHelper.isDarkMode(context)
             MentorTheme(dark = isDark) {
                 Box(
                     Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),

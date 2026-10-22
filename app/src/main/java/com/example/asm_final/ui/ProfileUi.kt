@@ -192,7 +192,7 @@ private fun ProfileHero(
     avatar: String?,
     settings: () -> Unit,
 ) {
-    val dark = androidx.compose.foundation.isSystemInDarkTheme()
+    val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
     val heroBg = if (dark) {
         Color(0xFF2C192E)
     } else {
@@ -250,7 +250,7 @@ private fun ProfileHero(
 
 @Composable
 private fun ProfileAvatar(name: String, avatar: String?, size: androidx.compose.ui.unit.Dp) {
-    val dark = androidx.compose.foundation.isSystemInDarkTheme()
+    val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
     val borderColor = if (dark) Color(0xFF3B273D) else Color.White
 
     Box(
@@ -424,14 +424,10 @@ private fun ProfileIdentitySection(
                 }
             }
 
+            var showQrDialog by remember { mutableStateOf(false) }
+
             OutlinedButton(
-                onClick = {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.profile_qr_code),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                },
+                onClick = { showQrDialog = true },
                 shape = RoundedCornerShape(14.dp),
                 border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.outlineVariant),
                 contentPadding = PaddingValues(0.dp),
@@ -446,30 +442,228 @@ private fun ProfileIdentitySection(
                     modifier = Modifier.size(22.dp)
                 )
             }
+
+            if (showQrDialog) {
+                ProfileQrDialog(onDismiss = { showQrDialog = false })
+            }
         }
     }
 }
 
-/**
- * Section TỔNG QUAN:
- * 2x2 Clean Gamified Grid matching Image A:
- * - Streak 🔥 (e.g. 272 ngày)
- * - EXP ⚡ (e.g. 25964 KN)
- * - Rank 💎 (e.g. Kim Cương)
- * - Lead 🥇 (e.g. 8 lần dẫn đầu)
- */
+@Composable
+private fun ProfileQrDialog(onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    var token by remember { mutableStateOf<String?>(null) }
+    var loading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf(false) }
+
+    fun loadQrToken() {
+        loading = true
+        error = false
+        val owner = com.example.mentor.data.ActiveUser.get(context)
+        Thread {
+            try {
+                val ep = com.example.asm_final.backend.BackendClient.endpoint(context)
+                if (ep.isBlank()) {
+                    android.os.Handler(android.os.Looper.getMainLooper()).post {
+                        error = true
+                        loading = false
+                    }
+                    return@Thread
+                }
+                val transport = com.example.asm_final.backend.BackendClient(context, owner)
+                val result = transport.request("GET", "/me/qr-code", null, null, null)
+                val qrToken = result.optString("qrCodeToken", "")
+                android.os.Handler(android.os.Looper.getMainLooper()).post {
+                    if (qrToken.isNotBlank()) {
+                        token = qrToken
+                        loading = false
+                    } else {
+                        error = true
+                        loading = false
+                    }
+                }
+            } catch (e: Exception) {
+                android.os.Handler(android.os.Looper.getMainLooper()).post {
+                    error = true
+                    loading = false
+                }
+            }
+        }.start()
+    }
+
+    fun revokeQrToken() {
+        loading = true
+        val owner = com.example.mentor.data.ActiveUser.get(context)
+        Thread {
+            try {
+                val transport = com.example.asm_final.backend.BackendClient(context, owner)
+                val result = transport.request("POST", "/me/qr-code/revoke", org.json.JSONObject(), null, null)
+                val qrToken = result.optString("qrCodeToken", "")
+                android.os.Handler(android.os.Looper.getMainLooper()).post {
+                    if (qrToken.isNotBlank()) {
+                        token = qrToken
+                        loading = false
+                        Toast.makeText(context, "Đã tạo mã QR mới", Toast.LENGTH_SHORT).show()
+                    } else {
+                        error = true
+                        loading = false
+                    }
+                }
+            } catch (e: Exception) {
+                android.os.Handler(android.os.Looper.getMainLooper()).post {
+                    error = true
+                    loading = false
+                }
+            }
+        }.start()
+    }
+
+    LaunchedEffect(Unit) {
+        loadQrToken()
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.ranking_close))
+            }
+        },
+        title = {
+            Text(
+                stringResource(R.string.profile_qr_code),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium
+            )
+        },
+        text = {
+            Column(
+                Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                if (loading) {
+                    CircularProgressIndicator(modifier = Modifier.padding(24.dp))
+                    Text(
+                        stringResource(R.string.course_loading),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } else if (error || token == null) {
+                    Text(
+                        stringResource(R.string.profile_progress_offline),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center
+                    )
+                    Button(onClick = { loadQrToken() }) {
+                        Text(stringResource(R.string.ranking_retry))
+                    }
+                } else {
+                    val activeToken = token!!
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        color = Color.White,
+                        border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                        modifier = Modifier
+                            .size(200.dp)
+                            .shadow(4.dp, RoundedCornerShape(16.dp))
+                    ) {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            QrCodeCanvas(activeToken, Modifier.size(170.dp))
+                        }
+                    }
+
+                    Text(
+                        text = "Mã mời: ${activeToken.take(16)}...",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = {
+                                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                                val clip = android.content.ClipData.newPlainText("QR Token", activeToken)
+                                clipboard.setPrimaryClip(clip)
+                                Toast.makeText(context, "Đã sao chép mã QR", Toast.LENGTH_SHORT).show()
+                            }
+                        ) {
+                            Text("Sao chép mã")
+                        }
+
+                        OutlinedButton(
+                            onClick = { revokeQrToken() }
+                        ) {
+                            Text("Tạo mã mới")
+                        }
+                    }
+                }
+            }
+        }
+    )
+}
+
+@Composable
+private fun QrCodeCanvas(seedToken: String, modifier: Modifier = Modifier) {
+    androidx.compose.foundation.Canvas(modifier = modifier) {
+        val sizePx = size.minDimension
+        val gridCount = 15
+        val cellSize = sizePx / gridCount
+        val darkColor = Color(0xFF1E293B)
+        val lightColor = Color.White
+
+        drawRect(color = lightColor)
+
+        val hash = seedToken.hashCode()
+        for (r in 0 until gridCount) {
+            for (c in 0 until gridCount) {
+                val isFinderTopLeft = r in 0..4 && c in 0..4
+                val isFinderTopRight = r in 0..4 && c in (gridCount - 5) until gridCount
+                val isFinderBottomLeft = r in (gridCount - 5) until gridCount && c in 0..4
+
+                if (isFinderTopLeft || isFinderTopRight || isFinderBottomLeft) {
+                    val lr = if (r in 0..4) r else r - (gridCount - 5)
+                    val lc = if (c in 0..4) c else c - (gridCount - 5)
+                    val isBorder = lr == 0 || lr == 4 || lc == 0 || lc == 4
+                    val isCenter = lr in 1..3 && lc in 1..3 && (lr == 2 || lc == 2)
+                    if (isBorder || isCenter) {
+                        drawRect(
+                            color = darkColor,
+                            topLeft = androidx.compose.ui.geometry.Offset(c * cellSize, r * cellSize),
+                            size = androidx.compose.ui.geometry.Size(cellSize, cellSize)
+                        )
+                    }
+                } else {
+                    val bit = ((hash xor (r * 31 + c * 17)) and (1 shl ((r + c) % 30))) != 0
+                    if (bit) {
+                        drawRect(
+                            color = darkColor,
+                            topLeft = androidx.compose.ui.geometry.Offset(c * cellSize, r * cellSize),
+                            size = androidx.compose.ui.geometry.Size(cellSize, cellSize)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Composable
 private fun ProfileOverviewGrid(data: LearningOverviewData?) {
     val streakDays = data?.streakDays ?: 0
     val totalXp = data?.totalXp ?: 0
-    val rankRes = when {
-        totalXp >= 10000 -> R.string.profile_rank_diamond
-        totalXp >= 3000 -> R.string.profile_rank_platinum
-        totalXp >= 1000 -> R.string.profile_rank_gold
-        totalXp >= 200 -> R.string.profile_rank_silver
+    val rankRes = when (data?.rankTier?.uppercase()) {
+        "DIAMOND" -> R.string.profile_rank_diamond
+        "PLATINUM" -> R.string.profile_rank_platinum
+        "GOLD" -> R.string.profile_rank_gold
+        "SILVER" -> R.string.profile_rank_silver
         else -> R.string.profile_rank_bronze
     }
-    val leadCount = data?.firstTryCorrect ?: 0
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         ProfileSectionTitle(stringResource(R.string.profile_overview_title))
@@ -552,7 +746,7 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
 
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
-                // Row 2: Rank + Lead / First try correct
+                // Row 2: Rank + Lead / Pending stat
                 Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -603,7 +797,7 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
                         )
                         Column {
                             Text(
-                                text = stringResource(R.string.profile_lead_stat, leadCount),
+                                text = stringResource(R.string.profile_stats_pending),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface
@@ -623,7 +817,7 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
 
 /**
  * Section STREAK BẠN BÈ:
- * Features 5 circular dashed slots with (+) symbol exactly matching Image A.
+ * Features 5 circular dashed slots with (+) symbol matching Image A.
  */
 @Composable
 private fun ProfileFriendsStreak() {
@@ -645,7 +839,6 @@ private fun ProfileFriendsStreak() {
                 Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
-                // 5 Dashed Circular Slots
                 Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -697,13 +890,18 @@ private fun ProfileFriendsStreak() {
 }
 
 /**
- * Section HUY HIỆU THỬ THÁCH THÁNG:
+ * Section HUY HIỆU THỬ THÁC THÁNG:
  * Shows monthly challenge with progress and chevron.
  */
 @Composable
 private fun ProfileMonthlyChallenge(data: LearningOverviewData?) {
     val context = LocalContext.current
-    val progress = ((data?.completedLessons ?: 0) * 10).coerceAtMost(100)
+    val cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("Asia/Ho_Chi_Minh"))
+    val currentMonth = cal.get(java.util.Calendar.MONTH) + 1
+    val currentYear = cal.get(java.util.Calendar.YEAR)
+    val totalLessons = data?.totalLessons ?: 0
+    val completedLessons = data?.completedLessons ?: 0
+    val progressPct = if (totalLessons > 0) ((completedLessons * 100) / totalLessons).coerceIn(0, 100) else 0
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(
@@ -761,13 +959,13 @@ private fun ProfileMonthlyChallenge(data: LearningOverviewData?) {
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "Thử thách tháng 10",
+                        text = "Thử thách tháng $currentMonth/$currentYear",
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     LinearProgressIndicator(
-                        progress = { progress / 100f },
+                        progress = { progressPct / 100f },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(8.dp)
@@ -776,7 +974,7 @@ private fun ProfileMonthlyChallenge(data: LearningOverviewData?) {
                         trackColor = MaterialTheme.colorScheme.surfaceVariant
                     )
                     Text(
-                        text = "$progress% hoàn thành",
+                        text = "$progressPct% hoàn thành",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
