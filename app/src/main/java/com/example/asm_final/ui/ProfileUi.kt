@@ -610,43 +610,45 @@ private fun ProfileQrDialog(onDismiss: () -> Unit) {
 
 @Composable
 private fun QrCodeCanvas(seedToken: String, modifier: Modifier = Modifier) {
+    val bitMatrix = remember(seedToken) {
+        try {
+            val hints = java.util.EnumMap<com.google.zxing.EncodeHintType, Any>(com.google.zxing.EncodeHintType::class.java)
+            hints[com.google.zxing.EncodeHintType.ERROR_CORRECTION] = com.google.zxing.qrcode.decoder.ErrorCorrectionLevel.M
+            hints[com.google.zxing.EncodeHintType.MARGIN] = 2
+            com.google.zxing.qrcode.QRCodeWriter().encode(
+                seedToken,
+                com.google.zxing.BarcodeFormat.QR_CODE,
+                256,
+                256,
+                hints
+            )
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     androidx.compose.foundation.Canvas(modifier = modifier) {
-        val sizePx = size.minDimension
-        val gridCount = 15
-        val cellSize = sizePx / gridCount
+        val matrix = bitMatrix
+        if (matrix == null) {
+            drawRect(color = Color.LightGray)
+            return@Canvas
+        }
+        val width = matrix.width
+        val height = matrix.height
+        val cellWidth = size.width / width
+        val cellHeight = size.height / height
+
+        drawRect(color = Color.White)
+
         val darkColor = Color(0xFF1E293B)
-        val lightColor = Color.White
-
-        drawRect(color = lightColor)
-
-        val hash = seedToken.hashCode()
-        for (r in 0 until gridCount) {
-            for (c in 0 until gridCount) {
-                val isFinderTopLeft = r in 0..4 && c in 0..4
-                val isFinderTopRight = r in 0..4 && c in (gridCount - 5) until gridCount
-                val isFinderBottomLeft = r in (gridCount - 5) until gridCount && c in 0..4
-
-                if (isFinderTopLeft || isFinderTopRight || isFinderBottomLeft) {
-                    val lr = if (r in 0..4) r else r - (gridCount - 5)
-                    val lc = if (c in 0..4) c else c - (gridCount - 5)
-                    val isBorder = lr == 0 || lr == 4 || lc == 0 || lc == 4
-                    val isCenter = lr in 1..3 && lc in 1..3 && (lr == 2 || lc == 2)
-                    if (isBorder || isCenter) {
-                        drawRect(
-                            color = darkColor,
-                            topLeft = androidx.compose.ui.geometry.Offset(c * cellSize, r * cellSize),
-                            size = androidx.compose.ui.geometry.Size(cellSize, cellSize)
-                        )
-                    }
-                } else {
-                    val bit = ((hash xor (r * 31 + c * 17)) and (1 shl ((r + c) % 30))) != 0
-                    if (bit) {
-                        drawRect(
-                            color = darkColor,
-                            topLeft = androidx.compose.ui.geometry.Offset(c * cellSize, r * cellSize),
-                            size = androidx.compose.ui.geometry.Size(cellSize, cellSize)
-                        )
-                    }
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                if (matrix.get(x, y)) {
+                    drawRect(
+                        color = darkColor,
+                        topLeft = androidx.compose.ui.geometry.Offset(x * cellWidth, y * cellHeight),
+                        size = androidx.compose.ui.geometry.Size(cellWidth + 0.5f, cellHeight + 0.5f)
+                    )
                 }
             }
         }
