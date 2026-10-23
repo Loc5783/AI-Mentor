@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 import time
 import uuid
-from fastapi import FastAPI, Depends, Header, HTTPException, Request, UploadFile, File, Form, Query
-from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
+from fastapi import FastAPI, Depends, Header, HTTPException, Request, UploadFile, File, Form, Query, Response
+from fastapi.responses import JSONResponse, StreamingResponse, FileResponse, HTMLResponse
 from .config import Settings
 from .database import Database, identifier, dump
 from .auth import AuthService
@@ -14,6 +14,8 @@ from .learning import Catalog, LearningService
 from .learning_routes import learning_router
 from .overview import LearningOverview
 from .learning_stats import reward_summary, learning_day
+from .library import LibraryService
+from .admin_web import ADMIN_HTML
 from . import models
 from .common import error, iso, check_revision, owned_resource, resource, ACTIVE_SUBJECTS, ALL_SUBJECTS
 
@@ -28,6 +30,8 @@ def create_app(settings=None):
     catalog=Catalog(settings.curriculum_dir or Path(__file__).resolve().parents[1]/"curriculum")
     learning=LearningService(database,catalog)
     overview=LearningOverview(database,catalog,lambda:learning.clock())
+    library=LibraryService(database)
+    library.seed_sample_physics()
     app=FastAPI(title="AI Mentor API",version="0.2.0",
         description="Working account/chat/profile/event backend. Learning engine integration is in progress; six other subject modules remain framework-only.")
     app.state.db=database
@@ -251,13 +255,16 @@ def create_app(settings=None):
                 mime="text/plain"
             except (UnicodeError,ValueError):error("UNSUPPORTED_FILE_TYPE",415)
         if mime.startswith("image/"):
-            from PIL import Image
-            import io
             try:
-                with Image.open(io.BytesIO(content)) as decoded:
-                    if decoded.width*decoded.height>60000000:raise ValueError("Image dimensions exceed limit")
-                    decoded.verify()
-            except Exception:error("CORRUPT_IMAGE",415)
+                from PIL import Image
+                import io
+                try:
+                    with Image.open(io.BytesIO(content)) as decoded:
+                        if decoded.width*decoded.height>60000000:raise ValueError("Image dimensions exceed limit")
+                        decoded.verify()
+                except Exception:error("CORRUPT_IMAGE",415)
+            except ImportError:
+                pass # Pillow not installed; skip image verification in offline/lightweight mode
         if purpose=="AVATAR" and not mime.startswith("image/"):error("INVALID_AVATAR")
         name=Path(file.filename or "attachment").name
         name="".join(c for c in name if ord(c)>=32)[:120] or "attachment"
@@ -442,7 +449,74 @@ def create_app(settings=None):
                 if not rows:yield ": heartbeat\n\n"
                 await asyncio.sleep(1)
         return StreamingResponse(stream(),media_type="text/event-stream",headers={"X-Accel-Buffering":"no"})
+
+    # --- LIBRARY & PRACTICE ENDPOINTS ---
+    @app.get("/library/quizzes", tags=["Library"])
+    def list_library_quizzes(subject_id: str = Query("physics"), grade: int = Query(10, ge=10, le=12), difficulty: str | None = None, chapter: str | None = None, topic: str | None = None, user=Depends(current)):
+        return library.list_quizzes(subject_id, grade, difficulty, chapter, topic)
+
+    @app.get("/library/quizzes/{quiz_id}", tags=["Library"])
+    def get_library_quiz(quiz_id: str, user=Depends(current)):
+        return library.get_quiz_for_student(quiz_id)
+
+    @app.post("/library/sessions", status_code=201, tags=["Library"])
+    def start_practice_session(body: models.SessionCreate, user=Depends(current)):
+        return library.start_session(user["id"], body.quizId)
+
+    @app.get("/library/sessions/{session_id}", tags=["Library"])
+    def get_practice_session(session_id: str, user=Depends(current)):
+        return library.get_session(user["id"], session_id)
+
+    @app.post("/library/sessions/{session_id}/answers", tags=["Library"])
+    def submit_practice_answer(session_id: str, body: models.PracticeAnswerSubmit, user=Depends(current)):
+        return library.submit_answer(user["id"], session_id, body.questionId, body.selectedOption)
+
+    @app.post("/library/sessions/{session_id}/complete", tags=["Library"])
+    def complete_practice_session(session_id: str, user=Depends(current)):
+        return library.complete_session(user["id"], session_id)
+
+    @app.get("/me/wrong-questions", tags=["Library"])
+    def wrong_questions(subject_id: str | None = None, grade: int | None = None, user=Depends(current)):
+        return library.get_wrong_questions(user["id"], subject_id, grade)
+
+    # --- ADMIN ENDPOINTS ---
+    def admin_user(user=Depends(current)):
+        if user.get("role") not in ("ADMIN", "TEACHER"):
+            error("ADMIN_REQUIRED", 403)
+        return user
+
+    @app.get("/admin", response_class=HTMLResponse, tags=["Admin"])
+    def admin_page():
+        return HTMLResponse(content=ADMIN_HTML)
+
+    @app.get("/admin/questions", tags=["Admin"])
+    def admin_list_questions(subject_id: str | None = None, grade: int | None = None, status: str | None = None, admin=Depends(admin_user)):
+        return library.list_questions_admin(subject_id, grade, status)
+
+    @app.post("/admin/questions", tags=["Admin"])
+    def admin_upsert_question(body: models.AdminQuestionCreate, admin=Depends(admin_user)):
+        return library.create_or_update_question_admin(admin["id"], body.model_dump())
+
+    @app.post("/admin/questions/{qid}/publish", tags=["Admin"])
+    def admin_publish_question(qid: str, publish: bool = True, admin=Depends(admin_user)):
+        return library.publish_question_admin(qid, publish)
+
+    @app.get("/admin/template/excel", tags=["Admin"])
+    def admin_excel_template():
+        content = library.generate_excel_template()
+        return Response(content=content, media_type="text/csv", headers={"Content-Disposition": "attachment; filename=Mau_Cau_Hoi_AI_Mentor.csv"})
+
+    @app.post("/admin/import/preview", tags=["Admin"])
+    async def admin_import_preview(request: Request, admin=Depends(admin_user)):
+        body_bytes = await request.body()
+        return library.parse_import_file(body_bytes)
+
+    @app.post("/admin/import/confirm", tags=["Admin"])
+    def admin_import_confirm(body: models.AdminImportConfirm, admin=Depends(admin_user)):
+        return library.confirm_import(admin["id"], body.validRows, body.publish)
+
     return app
+
 
 app=create_app()
 

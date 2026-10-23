@@ -112,6 +112,8 @@ class Database:
                 db.execute("ALTER TABLE users ADD COLUMN rank_tier TEXT NOT NULL DEFAULT 'BRONZE'")
             if "qr_code_token" not in cols:
                 db.execute("ALTER TABLE users ADD COLUMN qr_code_token TEXT")
+            if "role" not in cols:
+                db.execute("ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'STUDENT'")
 
             db.executescript("""
             CREATE TABLE IF NOT EXISTS badges(
@@ -126,6 +128,46 @@ class Database:
               user2_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
               streak_days INTEGER NOT NULL DEFAULT 0, last_shared_day TEXT NOT NULL,
               updated_at REAL NOT NULL, UNIQUE(user1_id,user2_id));
+
+            CREATE TABLE IF NOT EXISTS questions(
+              id TEXT PRIMARY KEY, code TEXT UNIQUE, version INTEGER NOT NULL DEFAULT 1,
+              subject_id TEXT NOT NULL, grade INTEGER NOT NULL CHECK(grade BETWEEN 10 AND 12),
+              chapter TEXT NOT NULL, topic TEXT NOT NULL, textbook TEXT,
+              prompt TEXT NOT NULL, option_a TEXT NOT NULL, option_b TEXT NOT NULL,
+              option_c TEXT NOT NULL, option_d TEXT NOT NULL, correct_option TEXT NOT NULL,
+              explanation TEXT NOT NULL, difficulty TEXT NOT NULL DEFAULT 'MEDIUM',
+              points INTEGER NOT NULL DEFAULT 10, image_url TEXT,
+              source TEXT, author TEXT, license TEXT, status TEXT NOT NULL DEFAULT 'PUBLISHED',
+              created_by INTEGER REFERENCES users(id), created_at REAL NOT NULL, updated_at REAL NOT NULL);
+
+            CREATE TABLE IF NOT EXISTS library_quizzes(
+              id TEXT PRIMARY KEY, title TEXT NOT NULL, subject_id TEXT NOT NULL,
+              grade INTEGER NOT NULL CHECK(grade BETWEEN 10 AND 12),
+              chapter TEXT, topic TEXT, difficulty TEXT NOT NULL DEFAULT 'MEDIUM',
+              question_ids TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'PUBLISHED',
+              created_at REAL NOT NULL);
+
+            CREATE TABLE IF NOT EXISTS practice_sessions(
+              id TEXT PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+              quiz_id TEXT NOT NULL, subject_id TEXT NOT NULL, grade INTEGER NOT NULL,
+              question_snapshots TEXT NOT NULL, step INTEGER NOT NULL DEFAULT 0,
+              answers TEXT NOT NULL DEFAULT '{}', state TEXT NOT NULL DEFAULT 'IN_PROGRESS',
+              score INTEGER NOT NULL DEFAULT 0, correct_count INTEGER NOT NULL DEFAULT 0,
+              total_count INTEGER NOT NULL DEFAULT 0, created_at REAL NOT NULL, updated_at REAL NOT NULL);
+
+            CREATE TABLE IF NOT EXISTS wrong_questions_notebook(
+              id TEXT PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+              question_id TEXT NOT NULL, subject_id TEXT NOT NULL, grade INTEGER NOT NULL,
+              selected_option TEXT NOT NULL, correct_option TEXT NOT NULL,
+              explanation TEXT NOT NULL, created_at REAL NOT NULL, UNIQUE(user_id, question_id));
+
+            CREATE TABLE IF NOT EXISTS role_audit_logs(
+              id TEXT PRIMARY KEY,
+              user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+              previous_role TEXT NOT NULL,
+              new_role TEXT NOT NULL,
+              source TEXT NOT NULL DEFAULT 'CLI_MANAGE_ROLES',
+              changed_at REAL NOT NULL);
             """)
             db.commit()
 

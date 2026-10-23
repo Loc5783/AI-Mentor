@@ -17,25 +17,34 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 public final class LessonActivity extends AppCompatActivity {
   private LessonViewModel model;
   private boolean returning;
+  private SubjectId subjectId;
+  private int grade;
 
   @Override
   protected void onCreate(Bundle state) {
     super.onCreate(state);
-    int owner = ActiveUser.get(this), grade = getIntent().getIntExtra("GRADE", 0);
-    String subject = getIntent().getStringExtra("SUBJECT");
-    if (owner <= 0
-        || grade < 10
-        || grade > 12
-        || !("biology".equals(subject)
-            || "chemistry".equals(subject)
-            || "physics".equals(subject))) {
+    int owner = ActiveUser.get(this);
+    grade = getIntent().getIntExtra("GRADE", 0);
+    String subjectStr = getIntent().getStringExtra("SUBJECT");
+    try {
+      subjectId = SubjectId.fromWireId(subjectStr);
+    } catch (IllegalArgumentException e) {
       finish();
       return;
     }
+    if (owner <= 0 || grade < 10 || grade > 12) {
+      finish();
+      return;
+    }
+    boolean hasLessons = com.example.asm_final.learning.SubjectModules.create().hasLessonScope(subjectId);
+    Runnable openTool = getToolRunnable(subjectId);
+
     model = new ViewModelProvider(this).get(LessonViewModel.class);
     setContentView(
-        com.example.asm_final.ui.LearningUi.screen(this, model, this::leave, this::askAi));
-    model.bind(owner, subject, grade);
+        com.example.asm_final.ui.LearningUi.screen(this, model, subjectId, grade, hasLessons, this::leave, openTool, this::askAi));
+    if (hasLessons) {
+      model.bind(owner, subjectStr, grade);
+    }
     getOnBackPressedDispatcher()
         .addCallback(
             this,
@@ -45,6 +54,19 @@ public final class LessonActivity extends AppCompatActivity {
                 leave();
               }
             });
+  }
+
+  private Runnable getToolRunnable(SubjectId id) {
+    Class<?> target =
+        id == SubjectId.PHYSICS
+            ? com.example.mentor.physics.presentation.CircuitDiagramActivity.class
+            : id == SubjectId.CHEMISTRY
+                ? com.example.mentor.chemistry.presentation.PeriodicTableActivity.class
+                : id == SubjectId.MATH
+                    ? com.example.mathmodule.MathToolsActivity.class
+                    : null;
+    if (target == null) return null;
+    return () -> startActivity(new Intent(this, target));
   }
 
   @Override
@@ -61,7 +83,7 @@ public final class LessonActivity extends AppCompatActivity {
   }
 
   private void leave() {
-    if (model.busy || model.hasPending())
+    if (model != null && (model.busy || model.hasPending()))
       new MaterialAlertDialogBuilder(this)
           .setTitle(R.string.course_safe_exit)
           .setMessage(R.string.course_safe_exit_pending)
@@ -72,11 +94,8 @@ public final class LessonActivity extends AppCompatActivity {
   }
 
   private void askAi(String question) {
-    String subject = getIntent().getStringExtra("SUBJECT");
-    String label =
-        SubjectId.valueOf(subject.toUpperCase(java.util.Locale.ROOT))
-            .label(com.example.asm_final.utils.LocaleHelper.getLanguage(this));
-    String prompt = getString(R.string.course_ai_prompt, label, model.grade(), question);
+    String label = subjectId.label(com.example.asm_final.utils.LocaleHelper.getLanguage(this));
+    String prompt = getString(R.string.course_ai_prompt, label, grade, question);
     AppServices services = ((AiMentorApplication) getApplication()).services();
     services
         .io()

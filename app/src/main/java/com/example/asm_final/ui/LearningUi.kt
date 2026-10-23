@@ -37,6 +37,8 @@ import androidx.compose.ui.unit.dp
 import com.example.asm_final.R
 import com.example.asm_final.learning.LessonPathData
 import com.example.asm_final.learning.LessonViewModel
+import com.example.asm_final.utils.LocaleHelper
+import com.example.mentor.learning.SubjectId
 import com.example.mentor.ui.design.*
 import androidx.compose.ui.graphics.toArgb
 import kotlinx.coroutines.delay
@@ -49,14 +51,21 @@ import java.util.function.Consumer
 import org.json.JSONObject
 
 object LearningUi {
-    @JvmStatic fun screen(context: Context, model: LessonViewModel, leave: Runnable, ask: Consumer<String>): View =
-        composeHost(context) {
-            val revision by model.changes().observeAsState(0)
-            // Snapshot Java fields on each emission; passing the mutable model alone can be skipped by Compose.
-            val state = remember(revision) { LessonUiState(model.busy, model.needsLogin, model.hasPending(),
-                model.error, model.path, model.attempt, model.completion, model.grade()) }
-            LessonScreen(model, state, { leave.run() }, { ask.accept(it) })
-        }
+    @JvmStatic fun screen(
+        context: Context,
+        model: LessonViewModel,
+        subjectId: SubjectId,
+        grade: Int,
+        hasLessons: Boolean,
+        leave: Runnable,
+        openTool: Runnable?,
+        ask: Consumer<String>
+    ): View = composeHost(context) {
+        val revision by model.changes().observeAsState(0)
+        val state = remember(revision) { LessonUiState(model.busy, model.needsLogin, model.hasPending(),
+            model.error, model.path, model.attempt, model.completion, model.grade()) }
+        LessonScreen(model, state, subjectId, grade, hasLessons, { leave.run() }, openTool, { ask.accept(it) })
+    }
 }
 
 @Composable
@@ -215,8 +224,16 @@ private data class LessonUiState(val busy: Boolean, val needsLogin: Boolean, val
     val error: String?, val path: JSONObject?, val attempt: JSONObject?, val completion: JSONObject?, val grade: Int)
 
 @Composable
-private fun LessonScreen(model: LessonViewModel, state: LessonUiState, leave: () -> Unit, ask: (String) -> Unit) {
-    // Do not key the whole tree on revision: selection, scroll and text must survive updates.
+private fun LessonScreen(
+    model: LessonViewModel,
+    state: LessonUiState,
+    subjectId: SubjectId,
+    grade: Int,
+    hasLessons: Boolean,
+    leave: () -> Unit,
+    openTool: Runnable?,
+    ask: (String) -> Unit
+) {
     val configuration = LocalConfiguration.current
     val attemptId = state.attempt?.optString("id").orEmpty()
     val scroll = rememberScrollState()
@@ -227,51 +244,110 @@ private fun LessonScreen(model: LessonViewModel, state: LessonUiState, leave: ()
         else -> "initial"
     }
     LaunchedEffect(stage) { scroll.scrollTo(0) }
+
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val subjectLabel = subjectId.label(LocaleHelper.getLanguage(context))
+
     Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
         .verticalScroll(scroll).padding(MentorTokens.PagePadding), verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceMedium)) {
-        TextButton(leave) { Text(stringResource(R.string.course_back)) }
-        if (state.busy && (state.path != null || state.attempt != null))
-            MentorSkeleton(stringResource(R.string.course_loading))
-        when {
-            state.busy && state.path == null && state.attempt == null -> {
-                Text(stringResource(R.string.course_loading))
-                repeat(3) { MentorSkeleton(stringResource(R.string.course_loading)) }
-            }
-            state.error != null -> {
-                val code = state.error
-                val label = when {
-                    code == "BACKEND_NOT_CONFIGURED" -> R.string.course_no_server
-                    code == "CURRICULUM_NOT_PUBLISHED" -> R.string.course_not_published
-                    state.needsLogin -> if (code == "ACCOUNT_LINK_REQUIRED") R.string.course_account_mismatch else R.string.course_connect_description
-                    state.pending -> R.string.course_sync_error
-                    else -> R.string.course_network_error
+        
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            TextButton(leave) { Text(stringResource(R.string.course_back)) }
+            Text("$subjectLabel • Lớp $grade", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+        }
+
+        // Supporting Tools Section if available
+        if (openTool != null) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            ) {
+                Row(
+                    Modifier.fillMaxWidth().padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Text("Công cụ hỗ trợ", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = when (subjectId) {
+                                SubjectId.MATH -> "Máy tính giải toán nhanh"
+                                SubjectId.PHYSICS -> "Mô phỏng mạch điện tương tác"
+                                SubjectId.CHEMISTRY -> "Bảng tuần hoàn nguyên tố"
+                                else -> "Công cụ chuyên môn"
+                            },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Button(onClick = { openTool.run() }, shape = RoundedCornerShape(12.dp)) {
+                        Text("Mở công cụ")
+                    }
                 }
-                MentorCard { Text(stringResource(label)) }
-                if (state.needsLogin) LoginContent(model)
-                else if (code != "BACKEND_NOT_CONFIGURED" && code != "CURRICULUM_NOT_PUBLISHED")
+            }
+        }
+
+        if (!hasLessons) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            ) {
+                Box(Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "Nội dung lớp này đang được cập nhật",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        } else {
+            if (state.busy && (state.path != null || state.attempt != null))
+                MentorSkeleton(stringResource(R.string.course_loading))
+            when {
+                state.busy && state.path == null && state.attempt == null -> {
+                    Text(stringResource(R.string.course_loading))
+                    repeat(3) { MentorSkeleton(stringResource(R.string.course_loading)) }
+                }
+                state.error != null -> {
+                    val code = state.error
+                    val label = when {
+                        code == "BACKEND_NOT_CONFIGURED" -> R.string.course_no_server
+                        code == "CURRICULUM_NOT_PUBLISHED" -> R.string.course_not_published
+                        state.needsLogin -> if (code == "ACCOUNT_LINK_REQUIRED") R.string.course_account_mismatch else R.string.course_connect_description
+                        state.pending -> R.string.course_sync_error
+                        else -> R.string.course_network_error
+                    }
+                    MentorCard { Text(stringResource(label)) }
+                    if (state.needsLogin) LoginContent(model)
+                    else if (code != "BACKEND_NOT_CONFIGURED" && code != "CURRICULUM_NOT_PUBLISHED")
+                        MentorButton(stringResource(R.string.course_retry), model::retry)
+                }
+                state.pending -> {
+                    Text(stringResource(R.string.course_sync_error))
                     MentorButton(stringResource(R.string.course_retry), model::retry)
-            }
-            state.pending -> {
-                Text(stringResource(R.string.course_sync_error))
-                MentorButton(stringResource(R.string.course_retry), model::retry)
-            }
-            state.completion != null -> CompletionContent(model, state.completion!!)
-            state.attempt != null -> key(attemptId) { PracticeContent(state.attempt!!, model, state.busy, ask) }
-            state.path != null -> {
-                val path = state.path!!
-                Text(path.optString("title"), style = MaterialTheme.typography.headlineMedium)
-                Text(stringResource(R.string.chat_grade, state.grade))
-                Text(path.optString("sourceNote"), style = MaterialTheme.typography.bodySmall)
-                if (configuration.locales[0].language == "en") Text(stringResource(R.string.course_content_language))
-                val pending = path.optJSONArray("pendingAttempts")
-                if (pending != null && pending.length() > 0)
-                    MentorButton(stringResource(R.string.course_continue), { model.resume(pending.getJSONObject(0).getString("id")) })
-                if (path.optJSONObject("enrollment")?.optString("placementStatus") != "COMPLETED") {
-                    Text(stringResource(R.string.course_placement_note))
-                    MentorButton(stringResource(R.string.course_placement), { model.start("placement", true) })
                 }
-                val units = path.optJSONArray("units")
-                if (units != null) PathContent(LessonPathData(units)) { model.start(it, false) }
+                state.completion != null -> CompletionContent(model, state.completion!!)
+                state.attempt != null -> key(attemptId) { PracticeContent(state.attempt!!, model, state.busy, ask) }
+                state.path != null -> {
+                    val path = state.path!!
+                    Text(path.optString("title"), style = MaterialTheme.typography.headlineMedium)
+                    Text(stringResource(R.string.chat_grade, state.grade))
+                    Text(path.optString("sourceNote"), style = MaterialTheme.typography.bodySmall)
+                    if (configuration.locales[0].language == "en") Text(stringResource(R.string.course_content_language))
+                    val pending = path.optJSONArray("pendingAttempts")
+                    if (pending != null && pending.length() > 0)
+                        MentorButton(stringResource(R.string.course_continue), { model.resume(pending.getJSONObject(0).getString("id")) })
+                    if (path.optJSONObject("enrollment")?.optString("placementStatus") != "COMPLETED") {
+                        Text(stringResource(R.string.course_placement_note))
+                        MentorButton(stringResource(R.string.course_placement), { model.start("placement", true) })
+                    }
+                    val units = path.optJSONArray("units")
+                    if (units != null) PathContent(LessonPathData(units)) { model.start(it, false) }
+                }
             }
         }
     }

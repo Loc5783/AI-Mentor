@@ -11,6 +11,19 @@ Từ thư mục backend:
 
 Dữ liệu mặc định trong backend/data, bị loại khỏi Git. MENTOR_DATA_DIR chọn thư mục dữ liệu khác. MENTOR_DEMO_MODE=1 tạo ba tài khoản mẫu student 01 / student 02 / student 03, mật khẩu 123123123. Mặc định không tạo demo.
 
+## Quản trị phân quyền tài khoản (Local Role Management)
+Mặc định mọi tài khoản đăng ký mới luôn là `STUDENT`. Không cho phép tự nâng quyền qua API.
+
+Để nâng quyền Quản trị / Biên soạn (`ADMIN` hoặc `TEACHER`) cho tài khoản local:
+1. Xem trước thay đổi (Dry-run):
+   `.\.venv\Scripts\python.exe -m aimentor.manage_roles --data-dir data --user admin@example.com --role ADMIN`
+2. Áp dụng thay đổi vào cơ sở dữ liệu:
+   `.\.venv\Scripts\python.exe -m aimentor.manage_roles --data-dir data --user admin@example.com --role ADMIN --apply`
+3. Hạ quyền tài khoản về `STUDENT`:
+   `.\.venv\Scripts\python.exe -m aimentor.manage_roles --data-dir data --user admin@example.com --role STUDENT --apply`
+
+*Lưu ý*: Lệnh đổi quyền sẽ tự động thu hồi các phiên làm việc đang chạy của tài khoản đó. Người dùng cần đăng nhập lại từ giao diện Web Admin (`/admin`) để nhận token với quyền hạn mới.
+
 ## Đã triển khai ở bước nền tảng
 - Đăng ký/đăng nhập, hash scrypt có salt; token ngẫu nhiên chỉ lưu hash, access hết hạn, refresh quay vòng, đăng xuất và đổi mật khẩu thu hồi phiên.
 - Hồ sơ riêng/công khai tách biệt; lớp 10/11/12, biệt danh/ghi chú/ảnh.

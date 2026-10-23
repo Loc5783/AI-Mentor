@@ -108,3 +108,36 @@ class ChangePassword(Input):
     currentPassword: str=Field(min_length=1,max_length=128)
     newPassword: str=Field(min_length=8,max_length=128)
 
+class SessionCreate(Input):
+    quizId: str
+
+class PracticeAnswerSubmit(Input):
+    questionId: str
+    selectedOption: str
+
+class AdminQuestionCreate(Input):
+    id: str|None=None
+    code: str|None=None
+    subjectId: str="physics"
+    grade: int=10
+    chapter: str="Tổng hợp"
+    topic: str="Chủ đề chung"
+    textbook: str|None="Chưa xác định"
+    prompt: str
+    optionA: str
+    optionB: str
+    optionC: str
+    optionD: str
+    correctOption: str
+    explanation: str=""
+    difficulty: str="MEDIUM"
+    points: int=10
+    imageUrl: str|None=None
+    source: str|None="Admin"
+    author: str|None="Biên soạn"
+    license: str|None="Nội bộ"
+    status: str="DRAFT"
+
+class AdminImportConfirm(Input):
+    validRows: list[dict]
+    publish: bool=False
