@@ -38,7 +38,7 @@ object CompetitionUi {
         val xp = query.metric == CompetitionQuery.Metric.DAILY_XP
         val board = snapshot?.board
         val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(context)
-        val heroBg = if (dark) Color(0xFF2C192E) else Color(0xFFFDE8F1)
+        val heroBg = if (dark) MentorTokens.DarkPrimaryContainer else MentorTokens.PrimaryContainer
 
         Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
             // Hero Header matching Profile UI
@@ -60,7 +60,7 @@ object CompetitionUi {
                         Icon(
                             painter = painterResource(R.drawable.ic_trophy),
                             contentDescription = null,
-                            tint = Color(0xFFF59E0B),
+                            tint = MentorTokens.RewardXpBar,
                             modifier = Modifier.size(32.dp)
                         )
                     }
@@ -149,7 +149,7 @@ object CompetitionUi {
                                 Icon(
                                     painter = painterResource(if (xp) R.drawable.ic_lightning else R.drawable.ic_flame),
                                     contentDescription = null,
-                                    tint = if (xp) Color(0xFFCA8A04) else Color(0xFFEA580C),
+                                    tint = if (xp) MentorTokens.Orange600 else MentorTokens.RewardStreakDark,
                                     modifier = Modifier.size(26.dp)
                                 )
                             }
@@ -205,15 +205,15 @@ object CompetitionUi {
                 } else {
                     items(board.entries, key = { it.learner.id }) { entry ->
                         val rankBg = when (entry.rank) {
-                            1 -> Color(0xFFFEF08A) // Gold
-                            2 -> Color(0xFFF1F5F9) // Silver
-                            3 -> Color(0xFFFFEDD5) // Bronze
+                            1 -> MentorTokens.Orange200 // Gold
+                            2 -> MentorTokens.Blue100 // Silver
+                            3 -> MentorTokens.Orange100 // Bronze
                             else -> MaterialTheme.colorScheme.surfaceVariant
                         }
                         val rankTint = when (entry.rank) {
-                            1 -> Color(0xFFCA8A04)
-                            2 -> Color(0xFF64748B)
-                            3 -> Color(0xFFC2410C)
+                            1 -> MentorTokens.Orange600
+                            2 -> MentorTokens.Blue600
+                            3 -> MentorTokens.RewardStreakDark
                             else -> MaterialTheme.colorScheme.onSurfaceVariant
                         }
 
@@ -289,7 +289,7 @@ object CompetitionUi {
                                     Icon(
                                         painter = painterResource(if (xp) R.drawable.ic_lightning else R.drawable.ic_flame),
                                         contentDescription = null,
-                                        tint = if (xp) Color(0xFFEAB308) else Color(0xFFEA580C),
+                                        tint = if (xp) MentorTokens.RewardXpBar else MentorTokens.RewardStreakLight,
                                         modifier = Modifier.size(18.dp)
                                     )
                                     Text(

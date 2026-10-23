@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="neumorphic_background">#1F2A44</color>
+    <color name="neumorphic_shadow_light">#263352</color>
+    <color name="neumorphic_shadow_dark">#1F2A44</color>
+
+    <color name="primaryColor">#8DB6F7</color>
+    <color name="primaryDarkColor">#3A5A94</color>
+    <color name="primaryContainerColor">#3A5A94</color>
+    <color name="accentColor">#8DB6F7</color>
+
+    <color name="backgroundColor">#1F2A44</color>
+    <color name="surfaceColor">#263352</color>
+    <color name="surfaceVariantColor">#2E3D61</color>
+
+    <color name="textColorPrimary">#F1F4FB</color>
+    <color name="textColorSecondary">#C3CCE0</color>
+
+    <color name="dividerColor">#43557E</color>
+    <color name="arrowTintColor">#8DB6F7</color>
+    <color name="buttonShadowColor">#1F2A44</color>
+
+    <color name="reminderAccentColor">#F0B964</color>
+    <color name="themeAccentColor">#8DB6F7</color>
+    <color name="heroEndColor">#3A5A94</color>
+
+    <color name="onPrimaryColor">#0B2545</color>
+
+    <color name="secondaryColor">#F0B964</color>
+    <color name="onSecondaryColor">#4D3110</color>
+    <color name="secondaryContainerColor">#5A4220</color>
+    <color name="onSecondaryContainerColor">#FDEFD6</color>
+
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="errorColor">#FF9AA0</color>
+
+    <color name="auth_background">#1F2A44</color>
+    <color name="auth_background_end">#2E3D61</color>
+    <color name="auth_surface">#263352</color>
+    <color name="auth_surface_soft">#2E3D61</color>
+    <color name="auth_primary">#8DB6F7</color>
+    <color name="auth_on_primary">#0B2545</color>
+    <color name="auth_border">#43557E</color>
+    <color name="auth_text">#F1F4FB</color>
+    <color name="auth_muted">#C3CCE0</color>
+    <color name="auth_success">#8EE0BC</color>
+    <color name="auth_error">#FF9AA0</color>
+    <color name="auth_pressed">#6A9BEF</color>
+
+    <color name="mentor_quiz_surface">#263352</color>
+    <color name="mentor_quiz_text">#F1F4FB</color>
+    <color name="mentor_quiz_secondary">#C3CCE0</color>
+    <color name="mentor_quiz_background">#1F2A44</color>
+    <color name="mentor_quiz_accent">#8DB6F7</color>
+    <color name="mentor_quiz_on_accent">#0B2545</color>
+    <color name="mentor_quiz_border">#43557E</color>
+</resources>

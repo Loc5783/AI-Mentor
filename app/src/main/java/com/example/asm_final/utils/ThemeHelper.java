@@ -7,9 +7,18 @@ import androidx.appcompat.app.AppCompatDelegate;
 public final class ThemeHelper {
   private static final String SETTINGS_PREFERENCES = "settings";
   private static final String KEY_DARK_MODE = "dark_mode_enabled";
+  private static final String KEY_CUSTOM_BACKGROUND = "custom_background_path";
 
   private ThemeHelper() {
     // Utility class.
+  }
+
+  public static String getCustomBackground(Context context) {
+    return preferences(context).getString(KEY_CUSTOM_BACKGROUND, null);
+  }
+
+  public static void setCustomBackground(Context context, String path) {
+    preferences(context).edit().putString(KEY_CUSTOM_BACKGROUND, path).apply();
   }
 
   public static boolean isDarkMode(Context context) {

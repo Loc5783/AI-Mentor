@@ -42,7 +42,7 @@ public final class AuthFields {
           box.setHelperTextColor(
               android.content.res.ColorStateList.valueOf(
                   ContextCompat.getColor(
-                      field.getContext(), success ? R.color.auth_success : R.color.auth_muted)));
+                      field.getContext(), success ? com.example.mentor.ui.R.color.auth_success : com.example.mentor.ui.R.color.auth_muted)));
           box.setHelperText(
               helper == 0
                   ? null
@@ -52,9 +52,9 @@ public final class AuthFields {
           box.setBoxStrokeColorStateList(
               success
                   ? android.content.res.ColorStateList.valueOf(
-                      ContextCompat.getColor(field.getContext(), R.color.auth_success))
+                      ContextCompat.getColor(field.getContext(), com.example.mentor.ui.R.color.auth_success))
                   : androidx.appcompat.content.res.AppCompatResources.getColorStateList(
-                      field.getContext(), R.color.auth_field_outline));
+                      field.getContext(), com.example.mentor.ui.R.color.auth_border));
           if (success || text.isEmpty()) box.setError(null);
           else if (!field.hasFocus() || box.getError() != null)
             box.setError(field.getContext().getString(error));

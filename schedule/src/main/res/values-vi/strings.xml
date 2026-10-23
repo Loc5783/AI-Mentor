@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="schedule_title">Thời khóa biểu</string>
+    <string name="schedule_empty">Chưa có tiết học nào, nhấn + để thêm</string>
+    <string name="schedule_add">Thêm tiết học</string>
+    <string name="schedule_edit">Sửa tiết học</string>
+    <string name="schedule_subject">Tên môn (vd: Toán, Lý, Hóa)</string>
+    <string name="schedule_room">Phòng học (tùy chọn)</string>
+    <string name="schedule_teacher">Giáo viên (tùy chọn)</string>
+    <string name="schedule_notes">Ghi chú (tùy chọn)</string>
+    <string name="schedule_start_time">Giờ bắt đầu</string>
+    <string name="schedule_end_time">Giờ kết thúc</string>
+    <string name="schedule_delete">Xóa</string>
+    <string name="schedule_undo">Hoàn tác</string>
+    <string name="schedule_deleted">Đã xóa tiết học</string>
+    <string name="schedule_save">Lưu</string>
+    <string name="schedule_cancel">Hủy</string>
+    <string name="schedule_error_time">Giờ kết thúc phải sau giờ bắt đầu</string>
+    <string name="schedule_warning_overlap">Cảnh báo: Trùng giờ với tiết học khác</string>
+    <string name="schedule_confirm_delete">Bạn có chắc muốn xóa tiết học này?</string>
+    <string name="schedule_error_empty_title">Tên môn học là bắt buộc</string>
+    <string name="schedule_days">T2,T3,T4,T5,T6,T7,CN</string>
+</resources>

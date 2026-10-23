@@ -22,7 +22,7 @@ public final class MathTextRenderer {
             "#%06X",
             0xFFFFFF
                 & web.getResources()
-                    .getColor(R.color.mentor_quiz_text, web.getContext().getTheme()));
+                    .getColor(R.color.textColorPrimary, web.getContext().getTheme()));
     web.loadDataWithBaseURL(
         "file:///android_asset/katex/",
         "<!DOCTYPE html><html><head><meta charset='UTF-8'><meta name='viewport'"

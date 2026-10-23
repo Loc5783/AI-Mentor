@@ -32,6 +32,12 @@ public final class HomeFragment extends Fragment {
     else openLessons();
   }
 
+  private void openSchedule() {
+    if (requireActivity() instanceof com.example.asm_final.activities.HomeActivity) {
+      ((com.example.asm_final.activities.HomeActivity) requireActivity()).navigateTo(0, false);
+    }
+  }
+
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle state) {
     owner = ActiveUser.get(requireContext());
@@ -43,7 +49,8 @@ public final class HomeFragment extends Fragment {
             this::overviewAction,
             () -> {},
             () -> {},
-            this::openLessons);
+            this::openLessons,
+            this::openSchedule);
     root = subjectsView.view();
     return root;
   }

@@ -88,6 +88,7 @@ dependencies {
     implementation(project(":economics-law"))
     implementation(project(":data-core"))
     implementation(project(":ui-core"))
+    implementation(project(":schedule"))
     implementation(project(":math"))
     implementation(project(":history"))
     implementation(libs.activity)

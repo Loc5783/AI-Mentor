@@ -26,6 +26,7 @@ rootProject.name = "AI-Mentor"
 include(":app", ":math", ":history")
 
 include(":ui-core")
+include(":schedule")
 
 include(":data-core")
 

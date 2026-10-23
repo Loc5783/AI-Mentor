@@ -54,7 +54,7 @@ public final class ChatHistoryDialog extends BottomSheetDialogFragment {
     create.setBackgroundTintList(
         android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT));
     create.setTextColor(
-        androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primaryColor));
+        androidx.core.content.ContextCompat.getColor(requireContext(), com.example.mentor.ui.R.color.primaryColor));
     create.setText(R.string.chat_folder_new);
     create.setOnClickListener(
         v ->
@@ -73,7 +73,7 @@ public final class ChatHistoryDialog extends BottomSheetDialogFragment {
     breadcrumb.setBackgroundTintList(
         android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT));
     breadcrumb.setTextColor(
-        androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primaryColor));
+        androidx.core.content.ContextCompat.getColor(requireContext(), com.example.mentor.ui.R.color.primaryColor));
     breadcrumb.setOnClickListener(
         v -> {
           folderId = null;
@@ -180,7 +180,7 @@ public final class ChatHistoryDialog extends BottomSheetDialogFragment {
       more.setImageResource(R.drawable.ic_chat_more);
       more.setColorFilter(
           androidx.core.content.ContextCompat.getColor(
-              parent.getContext(), R.color.textColorPrimary));
+              parent.getContext(), com.example.mentor.ui.R.color.textColorPrimary));
       more.setBackgroundResource(android.R.color.transparent);
       more.setPadding(dp(12), dp(12), dp(12), dp(12));
       row.addView(more, new LinearLayout.LayoutParams(dp(48), dp(48)));

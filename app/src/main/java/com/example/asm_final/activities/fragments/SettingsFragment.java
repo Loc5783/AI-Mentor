@@ -17,6 +17,10 @@ import com.example.asm_final.utils.LocaleHelper;
 import com.example.asm_final.utils.ReminderHelper;
 import com.example.asm_final.utils.ThemeHelper;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class SettingsFragment extends Fragment {
 
@@ -33,6 +37,32 @@ public class SettingsFragment extends Fragment {
                 Toast.makeText(
                         requireContext(), R.string.reminder_permission_needed, Toast.LENGTH_LONG)
                     .show();
+            }
+          });
+
+  private final androidx.activity.result.ActivityResultLauncher<String> imagePicker =
+      registerForActivityResult(
+          new androidx.activity.result.contract.ActivityResultContracts.GetContent(),
+          uri -> {
+            if (uri != null) {
+              try {
+                InputStream in = requireContext().getContentResolver().openInputStream(uri);
+                File outDir = new File(requireContext().getFilesDir(), "backgrounds");
+                if (!outDir.exists()) outDir.mkdirs();
+                File outFile = new File(outDir, "custom_bg.jpg");
+                OutputStream out = new FileOutputStream(outFile);
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+                out.close();
+                in.close();
+                ThemeHelper.setCustomBackground(requireContext(), outFile.getAbsolutePath());
+                updateBackgroundStatus();
+                // Request activity recreation to apply global background
+                requireActivity().recreate();
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
             }
           });
 
@@ -159,6 +189,42 @@ public class SettingsFragment extends Fragment {
     switchDarkMode.setChecked(ThemeHelper.isDarkMode(requireContext()));
     switchDarkMode.setOnCheckedChangeListener(
         (buttonView, isChecked) -> ThemeHelper.setDarkMode(requireContext(), isChecked));
+
+    LinearLayout customBgLayout = view.findViewById(R.id.setting_custom_background);
+    if (customBgLayout != null) {
+      customBgLayout.setOnClickListener(v -> {
+         String currentBg = ThemeHelper.getCustomBackground(requireContext());
+         if (currentBg != null) {
+             new AlertDialog.Builder(requireContext())
+                 .setTitle("Hình nền")
+                 .setItems(new String[]{"Chọn ảnh mới", "Xóa hình nền"}, (d, w) -> {
+                     if (w == 0) {
+                         imagePicker.launch("image/*");
+                     } else {
+                         ThemeHelper.setCustomBackground(requireContext(), null);
+                         updateBackgroundStatus();
+                         requireActivity().recreate();
+                     }
+                 }).show();
+         } else {
+             imagePicker.launch("image/*");
+         }
+      });
+      updateBackgroundStatus(view);
+    }
+  }
+
+  private void updateBackgroundStatus() {
+      View view = getView();
+      if (view != null) updateBackgroundStatus(view);
+  }
+
+  private void updateBackgroundStatus(View view) {
+      TextView status = view.findViewById(R.id.txt_custom_background_status);
+      if (status != null) {
+          boolean hasCustom = ThemeHelper.getCustomBackground(requireContext()) != null;
+          status.setText(hasCustom ? "Tùy chỉnh" : "Mặc định");
+      }
   }
 
   private void setupLanguagePicker(View view) {

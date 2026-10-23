@@ -41,9 +41,18 @@ Chưa hoàn tất: đồng bộ chat cloud, chỉnh sửa hồ sơ/mật khẩu 
 
 Git: nhánh feature/*, module/* hoặc fix/* → Pull Request integration; trưởng nhóm quản lý main.
 
+## Bảng màu & Hệ thống Design System (22/10/2026)
+- **Quy tắc 60-30-10**: Nền trung tính (~60%), màu xanh chủ đạo `#8DB6F7` (~30%), nhấn hồng & vàng cam phần thưởng `#F7CE8D` (~10%).
+- **Light Theme**: Nền ngả hồng nhẹ ấm `#FFF7FA`, Card `#FCEFF5`, chữ `#24203A` tương phản **14.18:1**.
+- **Dark Theme**: Nền Navy trung bình ngả tím nhẹ `#1F2A44`, Surface `#263352`, Card `#2E3D61`, chữ chính `#F1F4FB` tương phản vượt trội **11.71:1** (dễ đọc, dịu mắt).
+- **Tương phản WCAG AA**: Chữ `#0B2545` đặt trên nền `#8DB6F7` đạt tỉ lệ tương phản **7.55:1** ở cả chế độ sáng và tối (không dùng chữ trắng trên nền chủ đạo).
+- **Màu môn học (SubjectPalette)**: Palette 10 màu pastel/muted thống nhất tại `ui-core`, container màu tự động tính toán với độ tương phản đạt chuẩn.
+- Chi tiết thiết kế và bảng kiểm tra WCAG: xem tại [COLOR_SYSTEM_2026-10-22.md](COLOR_SYSTEM_2026-10-22.md).
+
 ## Giao diện Compose (21/10/2026)
-- `core/ui-core/.../design`: màu semantic light/dark, typography Material 3, spacing/radius và thành phần dùng chung; skeleton draw-only, nút ripple/scale, progress động.
-- `app/.../ui`: ShellUi (Navigation Compose), LearningUi, OverviewUi, ChatUi, SubjectHubUi, CompetitionUi. Java Fragment tiếp tục sở hữu lifecycle, repository và ViewModel. AndroidFragment là cầu nối; cài đặt, chỉnh hồ sơ, auth và công cụ môn học vẫn có View/XML.
+- `core/ui-core/.../design`: màu semantic light/dark, typography Material 3, spacing/radius và thành phần dùng chung. Bảng màu chủ đạo (#8db6f7 xanh dương pastel) hỗ trợ WCAG AA với màu chữ navy đậm.
+- `app/.../ui`: ShellUi (Navigation Compose), LearningUi, OverviewUi, ChatUi, SubjectHubUi, CompetitionUi. Java Fragment tiếp tục sở hữu lifecycle.
+- Module `:schedule`: Quản lý Thời khóa biểu cá nhân, thêm/sửa/xóa lịch học hàng tuần. Cấu trúc độc lập host-independent, gọi từ HomeFragment. Dữ liệu lưu trong `AIMentorSchool.db` phân quyền theo account.
 - Bỏ renderer/layout XML cũ khi đã thay bằng Compose. Không duy trì hai bộ Dashboard/Chat/Path chạy song song.
 - Kotlin/Compose Compiler 2.2.10; Compose BOM 2025.08.00 (Material 3 theo BOM); Navigation Compose 2.9.3; Activity Compose 1.13.0; Fragment Compose 1.8.9; Coil 3.3.0; Konfetti 2.0.5. Đây là bộ phiên bản ổn định đã chọn cho toolchain hiện có. Lottie 6.7.1 chỉ khai báo alias, chưa kéo vào APK vì animation hiện tại không cần asset.
 - UI đọc thêm `week` từ API Dashboard để vẽ bảy ngày thật. Chưa có dữ liệu thì có hướng dẫn, không vẽ thành tích giả. Giờ học, cấp cá nhân và bộ sưu tập huy hiệu cần chính sách/ledger backend trước khi bật.
