@@ -5,8 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.mentor.schedule.domain.ScheduleActivityLog
 import com.example.mentor.schedule.domain.ScheduleEntry
 import com.example.mentor.schedule.domain.ScheduleRepository
+import com.example.mentor.schedule.domain.TodoTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,12 +33,17 @@ class ScheduleViewModel(
 ) : ViewModel() {
 
     val entries = mutableStateListOf<ScheduleEntry>()
+    val todos = mutableStateListOf<TodoTask>()
+    val logs = mutableStateListOf<ScheduleActivityLog>()
     val selectedDay = mutableStateOf(getCurrentDayOfWeek())
     
+    val todoProgress = mutableStateOf(0f)
+    
     private var lastDeletedEntry: ScheduleEntry? = null
+    private var lastDeletedTodo: TodoTask? = null
 
     init {
-        loadEntries()
+        loadData()
     }
 
     private fun getCurrentDayOfWeek(): Int {
@@ -46,23 +53,44 @@ class ScheduleViewModel(
         return day
     }
 
-    fun loadEntries() {
+    fun loadData() {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = repository.getEntries(accountId, selectedDay.value)
+            val entryList = repository.getEntries(accountId, selectedDay.value)
+            val todoList = repository.getTodos(accountId, selectedDay.value)
+            val logList = repository.getLogs(accountId, 20)
+            
             withContext(Dispatchers.Main) {
                 entries.clear()
-                entries.addAll(list)
+                entries.addAll(entryList)
+                
+                todos.clear()
+                todos.addAll(todoList)
+                
+                logs.clear()
+                logs.addAll(logList)
+                
+                calculateTodoProgress()
             }
+        }
+    }
+
+    private fun calculateTodoProgress() {
+        if (todos.isEmpty()) {
+            todoProgress.value = 0f
+        } else {
+            val completedCount = todos.count { it.isCompleted }
+            todoProgress.value = completedCount.toFloat() / todos.size
         }
     }
 
     fun selectDay(day: Int) {
         selectedDay.value = day
-        loadEntries()
+        loadData()
     }
 
     fun saveEntries(entriesToSave: List<ScheduleEntry>, isEdit: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
+            val titles = entriesToSave.joinToString { it.title }
             entriesToSave.forEach { entry ->
                 if (isEdit) {
                     repository.updateEntry(entry)
@@ -70,7 +98,13 @@ class ScheduleViewModel(
                     repository.insertEntry(entry.copy(accountId = accountId))
                 }
             }
-            loadEntries()
+            
+            logAction(
+                actionType = if (isEdit) "UPDATE" else "CREATE",
+                entityType = "SCHEDULE",
+                description = if (isEdit) "Đã cập nhật môn: $titles" else "Đã thêm môn: $titles"
+            )
+            loadData()
         }
     }
 
@@ -78,17 +112,90 @@ class ScheduleViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteEntry(entry.id, accountId)
             lastDeletedEntry = entry
-            loadEntries()
+            logAction("DELETE", "SCHEDULE", "Đã xóa môn: ${entry.title}")
+            loadData()
         }
     }
 
-    fun undoDelete() {
+    fun undoDeleteEntry() {
         lastDeletedEntry?.let { entry ->
             viewModelScope.launch(Dispatchers.IO) {
                 repository.insertEntry(entry)
                 lastDeletedEntry = null
-                loadEntries()
+                logAction("CREATE", "SCHEDULE", "Đã khôi phục môn: ${entry.title}")
+                loadData()
             }
+        }
+    }
+    
+    // --- TODO LOGIC ---
+    
+    fun saveTodo(title: String, priority: Int, linkedSubject: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val task = TodoTask(
+                accountId = accountId,
+                title = title,
+                dayOfWeek = selectedDay.value,
+                priority = priority,
+                linkedSubject = linkedSubject
+            )
+            repository.insertTodo(task)
+            logAction("CREATE", "TODO", "Đã thêm nhiệm vụ: $title")
+            loadData()
+        }
+    }
+    
+    fun toggleTodo(todo: TodoTask) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val newState = !todo.isCompleted
+            val completedTime = if (newState) System.currentTimeMillis() else null
+            repository.updateTodoStatus(todo.id, accountId, newState, completedTime)
+            
+            val action = if (newState) "COMPLETE" else "UNCOMPLETE"
+            val text = if (newState) "Hoàn thành" else "Đánh dấu chưa xong"
+            logAction(action, "TODO", "$text: ${todo.title}")
+            
+            loadData()
+        }
+    }
+    
+    fun deleteTodo(todo: TodoTask) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteTodo(todo.id, accountId)
+            lastDeletedTodo = todo
+            logAction("DELETE", "TODO", "Đã xóa nhiệm vụ: ${todo.title}")
+            loadData()
+        }
+    }
+    
+    fun undoDeleteTodo() {
+        lastDeletedTodo?.let { todo ->
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.insertTodo(todo)
+                lastDeletedTodo = null
+                logAction("CREATE", "TODO", "Đã khôi phục nhiệm vụ: ${todo.title}")
+                loadData()
+            }
+        }
+    }
+    
+    // --- LOG LOGIC ---
+    
+    private fun logAction(actionType: String, entityType: String, description: String) {
+        repository.insertLog(
+            ScheduleActivityLog(
+                accountId = accountId,
+                actionType = actionType,
+                entityType = entityType,
+                description = description
+            )
+        )
+    }
+    
+    fun clearLogs() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.clearLogs(accountId)
+            loadData()
         }
     }
 

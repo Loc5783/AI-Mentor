@@ -1,24 +1,17 @@
 package com.example.mentor.schedule.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -36,178 +29,177 @@ fun ScheduleScreen(
 ) {
     val factory = remember { ScheduleViewModelFactory(accountId, repository) }
     val viewModel: ScheduleViewModel = viewModel(factory = factory)
+    
     val daysArray = stringResource(R.string.schedule_days).split(",")
     val selectedDay by viewModel.selectedDay
     
-    var showForm by remember { mutableStateOf(false) }
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    var showScheduleForm by remember { mutableStateOf(false) }
+    var showTodoForm by remember { mutableStateOf(false) }
+    var showHistory by remember { mutableStateOf(false) }
     var entryToEdit by remember { mutableStateOf<ScheduleEntry?>(null) }
+    
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     
-    val undoMsg = stringResource(R.string.schedule_undo)
-    val deletedMsg = stringResource(R.string.schedule_deleted)
-
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.schedule_title)) },
+                title = { Text(if (selectedTabIndex == 0) "Lịch học" else "Nhiệm vụ") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { showHistory = true }) {
+                        Icon(Icons.Default.DateRange, contentDescription = "Lịch sử")
                     }
                 }
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { entryToEdit = null; showForm = true },
+                onClick = { 
+                    if (selectedTabIndex == 0) {
+                        entryToEdit = null
+                        showScheduleForm = true
+                    } else {
+                        showTodoForm = true
+                    }
+                },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_add))
+                Icon(Icons.Default.Add, contentDescription = "Thêm")
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
-            ScrollableTabRow(
-                selectedTabIndex = selectedDay - 1,
-                edgePadding = 16.dp,
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.primary
-            ) {
-                daysArray.forEachIndexed { index, dayName ->
-                    val isSelected = (index + 1) == selectedDay
-                    Tab(
-                        selected = isSelected,
-                        onClick = { viewModel.selectDay(index + 1) },
-                        text = { 
-                            Text(
-                                dayName, 
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                            ) 
-                        }
-                    )
-                }
+            // Tabs cho Lịch học vs Nhiệm vụ
+            TabRow(selectedTabIndex = selectedTabIndex) {
+                Tab(
+                    selected = selectedTabIndex == 0,
+                    onClick = { selectedTabIndex = 0 },
+                    text = { Text("Lịch học") }
+                )
+                Tab(
+                    selected = selectedTabIndex == 1,
+                    onClick = { selectedTabIndex = 1 },
+                    text = { Text("Việc cần làm") }
+                )
             }
             
-            if (viewModel.entries.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.schedule_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
+            // Thanh chọn ngày dùng chung
+            DaySelectorStrip(
+                days = daysArray,
+                selectedDay = selectedDay,
+                onDaySelected = { viewModel.selectDay(it) }
+            )
+            
+            if (selectedTabIndex == 0) {
+                ScheduleTimelineList(
+                    entries = viewModel.entries,
+                    onItemClick = { entry ->
+                        entryToEdit = entry
+                        showScheduleForm = true
+                    }
+                )
             } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(viewModel.entries.sortedBy { it.period }, key = { it.id }) { entry ->
-                        ScheduleTimelineItem(entry) {
-                            entryToEdit = entry
-                            showForm = true
+                DailyTodoList(
+                    todos = viewModel.todos,
+                    progress = viewModel.todoProgress.value,
+                    onToggle = { viewModel.toggleTodo(it) },
+                    onDelete = { task ->
+                        viewModel.deleteTodo(task)
+                        scope.launch {
+                            val res = snackbarHostState.showSnackbar("Đã xóa nhiệm vụ", "Hoàn tác", duration = SnackbarDuration.Short)
+                            if (res == SnackbarResult.ActionPerformed) viewModel.undoDeleteTodo()
                         }
                     }
-                }
+                )
             }
         }
     }
     
-    if (showForm) {
+    if (showScheduleForm) {
         ScheduleFormDialog(
             initialEntry = entryToEdit,
             accountId = accountId,
             selectedDay = selectedDay,
             viewModel = viewModel,
-            onDismiss = { showForm = false },
+            onDismiss = { showScheduleForm = false },
             onSave = { entries, isEdit ->
                 viewModel.saveEntries(entries, isEdit)
-                showForm = false
+                showScheduleForm = false
             },
             onDelete = { entry ->
                 viewModel.deleteEntry(entry)
-                showForm = false
+                showScheduleForm = false
                 scope.launch {
-                    val result = snackbarHostState.showSnackbar(
-                        message = deletedMsg,
-                        actionLabel = undoMsg,
-                        duration = SnackbarDuration.Short
-                    )
-                    if (result == SnackbarResult.ActionPerformed) {
-                        viewModel.undoDelete()
-                    }
+                    val result = snackbarHostState.showSnackbar("Đã xóa môn học", "Hoàn tác", duration = SnackbarDuration.Short)
+                    if (result == SnackbarResult.ActionPerformed) viewModel.undoDeleteEntry()
                 }
             }
+        )
+    }
+    
+    if (showTodoForm) {
+        TodoQuickAddDialog(
+            onDismiss = { showTodoForm = false },
+            onSave = { title, priority ->
+                viewModel.saveTodo(title, priority, null)
+                showTodoForm = false
+            }
+        )
+    }
+    
+    if (showHistory) {
+        ActivityLogSheet(
+            logs = viewModel.logs,
+            onDismiss = { showHistory = false },
+            onClearLogs = { viewModel.clearLogs() }
         )
     }
 }
 
 @Composable
-fun ScheduleTimelineItem(entry: ScheduleEntry, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier.width(60.dp),
-            horizontalAlignment = Alignment.End
-        ) {
-            Text(
-                entry.getFormattedStartTime(),
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(Modifier.height(2.dp))
-            Text(
-                entry.getFormattedEndTime(),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        
-        Spacer(Modifier.width(16.dp))
-        
-        Box(
-            Modifier
-                .width(4.dp)
-                .height(48.dp)
-                .background(MaterialTheme.colorScheme.primary, CircleShape)
-        )
-        
-        Spacer(Modifier.width(16.dp))
-        
-        Surface(
-            modifier = Modifier.weight(1f),
-            shape = RoundedCornerShape(12.dp),
-            color = MaterialTheme.colorScheme.primaryContainer,
-            shadowElevation = 0.dp
-        ) {
-            Column(Modifier.padding(12.dp)) {
-                Text(
-                    text = entry.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+fun TodoQuickAddDialog(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
+    var title by remember { mutableStateOf("") }
+    var priority by remember { mutableStateOf(1) } // 0=Low, 1=Normal, 2=High
+    
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Thêm việc cần làm") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Tên nhiệm vụ") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
                 )
-                if (!entry.teacher.isNullOrBlank()) {
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        text = "GV: ${entry.teacher}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                Text("Mức độ ưu tiên:")
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                    FilterChip(selected = priority == 0, onClick = { priority = 0 }, label = { Text("Thấp") })
+                    FilterChip(selected = priority == 1, onClick = { priority = 1 }, label = { Text("Bình thường") })
+                    FilterChip(selected = priority == 2, onClick = { priority = 2 }, label = { Text("Gấp", color = MaterialTheme.colorScheme.error) })
                 }
             }
+        },
+        confirmButton = {
+            Button(
+                onClick = { if (title.isNotBlank()) onSave(title.trim(), priority) },
+                enabled = title.isNotBlank()
+            ) { Text("Lưu") }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Hủy") }
         }
-    }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
