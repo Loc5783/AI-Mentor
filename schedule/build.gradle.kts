@@ -33,4 +33,6 @@ dependencies {
     implementation(libs.compose.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.navigation.compose)
+    
+    testImplementation(libs.junit)
 }

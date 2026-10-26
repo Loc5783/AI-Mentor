@@ -25,5 +25,5 @@ $env:MENTOR_DEMO_MODE = if ($Demo) { '1' } else { '0' }
 Write-Host "AI Mentor backend: http://127.0.0.1:$Port"
 Write-Host "Android Emulator: http://10.0.2.2:$Port"
 Write-Host 'Keep this window open while using the local app. Press Ctrl+C to stop.'
-& $pythonPath -m uvicorn aimentor.main:app --app-dir $backendRoot --host 127.0.0.1 --port $Port
+& $pythonPath -m uvicorn aimentor.main:app --app-dir $backendRoot --host 0.0.0.0 --port $Port
 exit $LASTEXITCODE

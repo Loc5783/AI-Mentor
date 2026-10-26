@@ -7,7 +7,7 @@ import com.example.mentor.data.ModuleDatabaseHelper
 import com.example.mentor.schedule.domain.ScheduleEntry
 import com.example.mentor.schedule.domain.ScheduleRepository
 
-class ScheduleDatabaseHelper(context: Context) : ModuleDatabaseHelper(context, "schedule_schema", null, 2) {
+class ScheduleDatabaseHelper(context: Context) : ModuleDatabaseHelper(context, "schedule_schema", null, 1) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             """
@@ -16,7 +16,7 @@ class ScheduleDatabaseHelper(context: Context) : ModuleDatabaseHelper(context, "
                 account_id TEXT NOT NULL,
                 title TEXT NOT NULL,
                 day_of_week INTEGER NOT NULL,
-                start_time INTEGER NOT NULL,
+                period INTEGER NOT NULL,
                 teacher TEXT,
                 notes TEXT
             )
@@ -25,12 +25,7 @@ class ScheduleDatabaseHelper(context: Context) : ModuleDatabaseHelper(context, "
         db.execSQL("CREATE INDEX IF NOT EXISTS idx_schedule_account_day ON schedule_entries(account_id, day_of_week)")
     }
 
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        if (oldVersion == 1) {
-            db.execSQL("DROP TABLE IF EXISTS schedule_entries")
-            onCreate(db)
-        }
-    }
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
 }
 
 class ScheduleRepositoryImpl(context: Context) : ScheduleRepository {
@@ -41,7 +36,7 @@ class ScheduleRepositoryImpl(context: Context) : ScheduleRepository {
         val list = mutableListOf<ScheduleEntry>()
         val db = dbHelper.readableDatabase
         db.rawQuery(
-            "SELECT * FROM schedule_entries WHERE account_id = ? AND day_of_week = ? ORDER BY start_time ASC",
+            "SELECT * FROM schedule_entries WHERE account_id = ? AND day_of_week = ? ORDER BY period ASC",
             arrayOf(accountId, dayOfWeek.toString())
         ).use { cursor ->
             while (cursor.moveToNext()) {
@@ -51,7 +46,7 @@ class ScheduleRepositoryImpl(context: Context) : ScheduleRepository {
                         accountId = cursor.getString(cursor.getColumnIndexOrThrow("account_id")),
                         title = cursor.getString(cursor.getColumnIndexOrThrow("title")),
                         dayOfWeek = cursor.getInt(cursor.getColumnIndexOrThrow("day_of_week")),
-                        startTimeMin = cursor.getInt(cursor.getColumnIndexOrThrow("start_time")),
+                        period = cursor.getInt(cursor.getColumnIndexOrThrow("period")),
                         teacher = cursor.getString(cursor.getColumnIndexOrThrow("teacher")),
                         notes = cursor.getString(cursor.getColumnIndexOrThrow("notes"))
                     )
@@ -67,7 +62,7 @@ class ScheduleRepositoryImpl(context: Context) : ScheduleRepository {
             put("account_id", entry.accountId)
             put("title", entry.title)
             put("day_of_week", entry.dayOfWeek)
-            put("start_time", entry.startTimeMin)
+            put("period", entry.period)
             put("teacher", entry.teacher)
             put("notes", entry.notes)
         }
@@ -79,7 +74,7 @@ class ScheduleRepositoryImpl(context: Context) : ScheduleRepository {
         val cv = ContentValues().apply {
             put("title", entry.title)
             put("day_of_week", entry.dayOfWeek)
-            put("start_time", entry.startTimeMin)
+            put("period", entry.period)
             put("teacher", entry.teacher)
             put("notes", entry.notes)
         }

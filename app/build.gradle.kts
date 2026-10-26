@@ -24,7 +24,7 @@ val localBackendConfig = Properties().apply {
 val debugBackendUrl = localBackendConfig.getProperty("MENTOR_DEBUG_BACKEND_URL", backendUrl).trim()
 require(debugBackendUrl.isEmpty() || runCatching {
     val uri = URI(debugBackendUrl)
-    val local = uri.scheme == "http" && uri.host in listOf("127.0.0.1", "10.0.2.2") && uri.port in 1..65535
+    val local = uri.scheme == "http" && (uri.host in listOf("127.0.0.1", "10.0.2.2") || uri.host.matches(Regex("^192\\.168\\.\\d+\\.\\d+$")) || uri.host.matches(Regex("^10\\.\\d+\\.\\d+\\.\\d+$"))) && uri.port in 1..65535
     (uri.scheme == "https" || local) && uri.host != null && uri.userInfo == null && uri.query == null && uri.fragment == null && (uri.port == -1 || uri.port in 1..65535)
 }.getOrDefault(false)) { "Debug backend must use HTTPS or the explicit local emulator host with a port" }
 
@@ -88,6 +88,7 @@ dependencies {
     implementation(project(":economics-law"))
     implementation(project(":data-core"))
     implementation(project(":ui-core"))
+    implementation(project(":schedule"))
     implementation(project(":schedule"))
     implementation(project(":math"))
     implementation(project(":history"))

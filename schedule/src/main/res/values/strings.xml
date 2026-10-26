@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="schedule_title">Thời khóa biểu</string>
-    <string name="schedule_empty">Chưa có tiết học nào hôm nay, nhấn + để thêm</string>
-    <string name="schedule_add">Thêm tiết học</string>
-    <string name="schedule_edit">Sửa tiết học</string>
-    <string name="schedule_subject">Tên môn (vd: Toán, Lý, Hóa)</string>
-    <string name="schedule_teacher">Giáo viên (tùy chọn)</string>
-    <string name="schedule_notes">Ghi chú (tùy chọn)</string>
-    <string name="schedule_delete">Xóa</string>
-    <string name="schedule_undo">Hoàn tác</string>
-    <string name="schedule_deleted">Đã xóa tiết học</string>
-    <string name="schedule_save">Lưu</string>
-    <string name="schedule_cancel">Hủy</string>
-    <string name="schedule_warning_overlap">Cảnh báo: Tiết này đã có môn học khác</string>
-    <string name="schedule_days">T2,T3,T4,T5,T6,T7,CN</string>
+    <string name="schedule_title">Schedule</string>
+    <string name="schedule_empty">No classes scheduled for this day, tap + to add</string>
+    <string name="schedule_add">Add Class</string>
+    <string name="schedule_edit">Edit Class</string>
+    <string name="schedule_subject">Subject Name (e.g. Math, Physics)</string>
+    <string name="schedule_teacher">Teacher (optional)</string>
+    <string name="schedule_notes">Notes (optional)</string>
+    <string name="schedule_delete">Delete</string>
+    <string name="schedule_undo">Undo</string>
+    <string name="schedule_deleted">Class deleted</string>
+    <string name="schedule_save">Save</string>
+    <string name="schedule_cancel">Cancel</string>
+    <string name="schedule_warning_overlap">Warning: Overlaps with another class</string>
+    <string name="schedule_days">Mon,Tue,Wed,Thu,Fri,Sat,Sun</string>
 </resources>

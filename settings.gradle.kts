@@ -27,6 +27,7 @@ include(":app", ":math", ":history")
 
 include(":ui-core")
 include(":schedule")
+include(":schedule")
 
 include(":data-core")
 

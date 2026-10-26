@@ -16,7 +16,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,7 +25,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mentor.schedule.R
 import com.example.mentor.schedule.domain.ScheduleEntry
 import com.example.mentor.schedule.domain.ScheduleRepository
-
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,7 +102,7 @@ fun ScheduleScreen(
                     contentPadding = PaddingValues(16.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(viewModel.entries.sortedBy { it.startTimeMin }, key = { it.id }) { entry ->
+                    items(viewModel.entries.sortedBy { it.period }, key = { it.id }) { entry ->
                         ScheduleTimelineItem(entry) {
                             entryToEdit = entry
                             showForm = true
@@ -146,12 +144,6 @@ fun ScheduleScreen(
 
 @Composable
 fun ScheduleTimelineItem(entry: ScheduleEntry, onClick: () -> Unit) {
-    val context = LocalContext.current
-    val isDark = false
-    val accentColor = MaterialTheme.colorScheme.primary
-    val containerColor = MaterialTheme.colorScheme.primaryContainer
-    val onContainerColor = MaterialTheme.colorScheme.onPrimaryContainer
-    
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -183,7 +175,7 @@ fun ScheduleTimelineItem(entry: ScheduleEntry, onClick: () -> Unit) {
             Modifier
                 .width(4.dp)
                 .height(48.dp)
-                .background(accentColor, CircleShape)
+                .background(MaterialTheme.colorScheme.primary, CircleShape)
         )
         
         Spacer(Modifier.width(16.dp))
@@ -191,7 +183,7 @@ fun ScheduleTimelineItem(entry: ScheduleEntry, onClick: () -> Unit) {
         Surface(
             modifier = Modifier.weight(1f),
             shape = RoundedCornerShape(12.dp),
-            color = containerColor,
+            color = MaterialTheme.colorScheme.primaryContainer,
             shadowElevation = 0.dp
         ) {
             Column(Modifier.padding(12.dp)) {
@@ -199,7 +191,7 @@ fun ScheduleTimelineItem(entry: ScheduleEntry, onClick: () -> Unit) {
                     text = entry.title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = onContainerColor,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -208,7 +200,7 @@ fun ScheduleTimelineItem(entry: ScheduleEntry, onClick: () -> Unit) {
                     Text(
                         text = "GV: ${entry.teacher}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = onContainerColor.copy(alpha = 0.8f),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -234,7 +226,7 @@ fun ScheduleFormDialog(
     var teacher by remember { mutableStateOf(initialEntry?.teacher ?: "") }
     var notes by remember { mutableStateOf(initialEntry?.notes ?: "") }
     
-    var period by remember { mutableStateOf(initialEntry?.startTimeMin ?: 1) }
+    var period by remember { mutableStateOf(initialEntry?.period ?: 1) }
     var expanded by remember { mutableStateOf(false) }
     
     val daysArray = stringResource(R.string.schedule_days).split(",")
@@ -345,7 +337,7 @@ fun ScheduleFormDialog(
                             accountId = accountId,
                             title = title.trim(),
                             dayOfWeek = d,
-                            startTimeMin = period,
+                            period = period,
                             teacher = teacher.trim().takeIf { it.isNotBlank() },
                             notes = notes.trim().takeIf { it.isNotBlank() }
                         )

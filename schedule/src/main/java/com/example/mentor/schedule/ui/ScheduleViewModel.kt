@@ -41,8 +41,8 @@ class ScheduleViewModel(
 
     private fun getCurrentDayOfWeek(): Int {
         val cal = Calendar.getInstance()
-        var day = cal.get(Calendar.DAY_OF_WEEK) - 1
-        if (day == 0) day = 7
+        var day = cal.get(Calendar.DAY_OF_WEEK) - 1 // 0 (Sun) to 6 (Sat)
+        if (day == 0) day = 7 // Map Sun to 7, Mon to 1
         return day
     }
 
@@ -96,7 +96,7 @@ class ScheduleViewModel(
         return withContext(Dispatchers.IO) {
             val listToCheck = repository.getEntries(accountId, day)
             listToCheck.any { 
-                it.id != ignoreId && it.startTimeMin == period
+                it.id != ignoreId && it.period == period
             }
         }
     }

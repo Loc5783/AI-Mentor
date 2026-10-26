@@ -115,6 +115,7 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
             Destination(R.id.nav_profile, "profile", R.string.nav_profile_label, R.drawable.ic_nav_profile, ProfileHubFragment::class.java),
             Destination(R.id.nav_settings, "settings", R.string.settings_title, R.drawable.ic_nav_profile, SettingsFragment::class.java),
             Destination(R.id.nav_edit_profile, "edit-profile", R.string.profile_edit, R.drawable.ic_nav_profile, ProfileFragment::class.java),
+            Destination(0, "schedule", 0, 0, com.example.mentor.schedule.ui.ScheduleFragment::class.java)
         )
         val tabs = destinations.take(5)
     }
