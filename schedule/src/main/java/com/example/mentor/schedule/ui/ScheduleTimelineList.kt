@@ -28,7 +28,7 @@ fun ScheduleTimelineList(
 ) {
     if (entries.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Không có lịch học nào.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.schedule_empty_list), color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     } else {
         LazyColumn(
@@ -134,7 +134,7 @@ private fun ScheduleTimelineItemV2(entry: ScheduleEntry, onClick: (ScheduleEntry
                             shape = RoundedCornerShape(4.dp)
                         ) {
                             Text(
-                                "Đang diễn ra",
+                                androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.schedule_status_ongoing),
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                 fontSize = 10.sp,
                                 color = MaterialTheme.colorScheme.onPrimary,
@@ -147,7 +147,7 @@ private fun ScheduleTimelineItemV2(entry: ScheduleEntry, onClick: (ScheduleEntry
                 if (!entry.teacher.isNullOrBlank()) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "GV: ${entry.teacher}",
+                        text = "${androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.schedule_teacher_prefix)}${entry.teacher}",
                         style = MaterialTheme.typography.bodySmall,
                         color = onContainerColor.copy(alpha = 0.8f * alphaFactor),
                         maxLines = 1,

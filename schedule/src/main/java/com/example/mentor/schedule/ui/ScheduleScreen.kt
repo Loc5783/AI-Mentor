@@ -42,10 +42,14 @@ fun ScheduleScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     
+    val undoMsg = stringResource(R.string.schedule_undo)
+    val deletedMsgSchedule = stringResource(R.string.schedule_deleted)
+    val deletedMsgTodo = stringResource(R.string.todo_deleted)
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (selectedTabIndex == 0) "Lịch học" else "Nhiệm vụ") },
+                title = { Text(if (selectedTabIndex == 0) stringResource(R.string.schedule_tab_schedule) else stringResource(R.string.schedule_tab_todo)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -53,7 +57,7 @@ fun ScheduleScreen(
                 },
                 actions = {
                     IconButton(onClick = { showHistory = true }) {
-                        Icon(Icons.Default.DateRange, contentDescription = "Lịch sử")
+                        Icon(Icons.Default.DateRange, contentDescription = stringResource(R.string.schedule_history))
                     }
                 }
             )
@@ -71,7 +75,7 @@ fun ScheduleScreen(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Thêm")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_add_button))
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -83,12 +87,12 @@ fun ScheduleScreen(
                 Tab(
                     selected = selectedTabIndex == 0,
                     onClick = { selectedTabIndex = 0 },
-                    text = { Text("Lịch học") }
+                    text = { Text(stringResource(R.string.schedule_tab_schedule)) }
                 )
                 Tab(
                     selected = selectedTabIndex == 1,
                     onClick = { selectedTabIndex = 1 },
-                    text = { Text("Việc cần làm") }
+                    text = { Text(stringResource(R.string.schedule_tab_todo)) }
                 )
             }
             
@@ -115,7 +119,11 @@ fun ScheduleScreen(
                     onDelete = { task ->
                         viewModel.deleteTodo(task)
                         scope.launch {
-                            val res = snackbarHostState.showSnackbar("Đã xóa nhiệm vụ", "Hoàn tác", duration = SnackbarDuration.Short)
+                            val res = snackbarHostState.showSnackbar(
+                                message = deletedMsgTodo, 
+                                actionLabel = undoMsg, 
+                                duration = SnackbarDuration.Short
+                            )
                             if (res == SnackbarResult.ActionPerformed) viewModel.undoDeleteTodo()
                         }
                     }
@@ -139,7 +147,7 @@ fun ScheduleScreen(
                 viewModel.deleteEntry(entry)
                 showScheduleForm = false
                 scope.launch {
-                    val result = snackbarHostState.showSnackbar("Đã xóa môn học", "Hoàn tác", duration = SnackbarDuration.Short)
+                    val result = snackbarHostState.showSnackbar(deletedMsgSchedule, undoMsg, duration = SnackbarDuration.Short)
                     if (result == SnackbarResult.ActionPerformed) viewModel.undoDeleteEntry()
                 }
             }
@@ -172,21 +180,21 @@ fun TodoQuickAddDialog(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
     
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Thêm việc cần làm") },
+        title = { Text(stringResource(R.string.todo_add_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Tên nhiệm vụ") },
+                    label = { Text(stringResource(R.string.todo_task_name)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
-                Text("Mức độ ưu tiên:")
+                Text(stringResource(R.string.todo_priority))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                    FilterChip(selected = priority == 0, onClick = { priority = 0 }, label = { Text("Thấp") })
-                    FilterChip(selected = priority == 1, onClick = { priority = 1 }, label = { Text("Bình thường") })
-                    FilterChip(selected = priority == 2, onClick = { priority = 2 }, label = { Text("Gấp", color = MaterialTheme.colorScheme.error) })
+                    FilterChip(selected = priority == 0, onClick = { priority = 0 }, label = { Text(stringResource(R.string.todo_priority_low)) })
+                    FilterChip(selected = priority == 1, onClick = { priority = 1 }, label = { Text(stringResource(R.string.todo_priority_normal)) })
+                    FilterChip(selected = priority == 2, onClick = { priority = 2 }, label = { Text(stringResource(R.string.todo_priority_high), color = MaterialTheme.colorScheme.error) })
                 }
             }
         },
@@ -194,10 +202,10 @@ fun TodoQuickAddDialog(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
             Button(
                 onClick = { if (title.isNotBlank()) onSave(title.trim(), priority) },
                 enabled = title.isNotBlank()
-            ) { Text("Lưu") }
+            ) { Text(stringResource(R.string.schedule_save)) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Hủy") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.schedule_cancel)) }
         }
     )
 }
@@ -269,10 +277,10 @@ fun ScheduleFormDialog(
                     onExpandedChange = { expanded = !expanded }
                 ) {
                     OutlinedTextField(
-                        value = "Tiết $period",
+                        value = stringResource(R.string.schedule_period, period),
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Chọn tiết") },
+                        label = { Text(stringResource(R.string.schedule_period_select)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                         colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
                         modifier = Modifier.fillMaxWidth().menuAnchor(MenuAnchorType.PrimaryEditable)
@@ -282,9 +290,9 @@ fun ScheduleFormDialog(
                         onDismissRequest = { expanded = false }
                     ) {
                         for (i in 1..10) {
-                            val timeHint = if (i <= 5) "(Sáng)" else "(Chiều)"
+                            val timeHint = if (i <= 5) stringResource(R.string.schedule_period_morning) else stringResource(R.string.schedule_period_afternoon)
                             DropdownMenuItem(
-                                text = { Text("Tiết $i $timeHint") },
+                                text = { Text(stringResource(R.string.schedule_period, i) + " " + timeHint) },
                                 onClick = {
                                     period = i
                                     expanded = false
@@ -297,7 +305,7 @@ fun ScheduleFormDialog(
                 if (overlapWarning != null) Text(overlapWarning!!, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
                 
                 if (!isEdit) {
-                    Text("Lặp lại các ngày:", style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(R.string.schedule_repeat_days), style = MaterialTheme.typography.bodySmall)
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         daysArray.forEachIndexed { index, day ->
                             val d = index + 1

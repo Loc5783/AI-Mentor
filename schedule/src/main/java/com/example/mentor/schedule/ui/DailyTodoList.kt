@@ -26,7 +26,7 @@ fun DailyTodoList(
 ) {
     if (todos.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Không có nhiệm vụ nào cho ngày này.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.todo_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     } else {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -39,7 +39,7 @@ fun DailyTodoList(
                 Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     val completed = todos.count { it.isCompleted }
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Tiến độ trong ngày", fontWeight = FontWeight.Bold)
+                        Text(androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.todo_daily_progress), fontWeight = FontWeight.Bold)
                         Text("$completed/${todos.size}", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                     }
                     LinearProgressIndicator(
@@ -68,7 +68,7 @@ fun DailyTodoList(
                 if (complete.isNotEmpty()) {
                     item {
                         Text(
-                            "Đã hoàn thành",
+                            androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.todo_completed_section),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
@@ -114,14 +114,14 @@ private fun TodoCard(task: TodoTask, onToggle: (TodoTask) -> Unit, onDelete: (To
                     overflow = TextOverflow.Ellipsis
                 )
                 if (task.priority == 2 && !task.isCompleted) {
-                    Text("Gấp", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
+                    Text(androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.todo_priority_high), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
                 }
             }
             
             IconButton(onClick = { onDelete(task) }) {
                 Icon(
                     androidx.compose.material.icons.Icons.Default.Delete,
-                    contentDescription = "Xóa nhiệm vụ",
+                    contentDescription = androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.todo_delete_desc),
                     tint = MaterialTheme.colorScheme.error.copy(alpha = alphaFactor)
                 )
             }

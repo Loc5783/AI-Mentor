@@ -33,17 +33,17 @@ fun ActivityLogSheet(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Lịch sử hoạt động", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.log_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 if (logs.isNotEmpty()) {
                     TextButton(onClick = onClearLogs) {
-                        Text("Dọn dẹp", color = MaterialTheme.colorScheme.error)
+                        Text(androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.log_clear), color = MaterialTheme.colorScheme.error)
                     }
                 }
             }
             
             if (logs.isEmpty()) {
                 Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
-                    Text("Chưa có ghi nhận nào.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.log_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             } else {
                 LazyColumn(
