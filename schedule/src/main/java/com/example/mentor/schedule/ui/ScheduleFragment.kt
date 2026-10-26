@@ -1,0 +1,31 @@
+package com.example.mentor.schedule.ui
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.Fragment
+import com.example.mentor.data.ActiveUser
+import com.example.mentor.schedule.data.ScheduleRepositoryImpl
+import com.example.mentor.ui.design.MentorTheme
+
+class ScheduleFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val accountId = ActiveUser.get(requireContext()).toString()
+        val repository = ScheduleRepositoryImpl(requireContext())
+        
+        return ComposeView(requireContext()).apply {
+            setContent {
+                MentorTheme {
+                    ScheduleScreen(accountId, repository, onBack = {
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                    })
+                }
+            }
+        }
+    }
+}
