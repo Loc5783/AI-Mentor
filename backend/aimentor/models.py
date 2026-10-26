@@ -115,29 +115,43 @@ class PracticeAnswerSubmit(Input):
     questionId: str
     selectedOption: str
 
+class WrongQuestionRetrySubmit(Input):
+    selectedOption: str
+
 class AdminQuestionCreate(Input):
     id: str|None=None
     code: str|None=None
-    subjectId: str="physics"
-    grade: int=10
-    chapter: str="Tổng hợp"
-    topic: str="Chủ đề chung"
-    textbook: str|None="Chưa xác định"
-    prompt: str
-    optionA: str
-    optionB: str
-    optionC: str
-    optionD: str
-    correctOption: str
-    explanation: str=""
-    difficulty: str="MEDIUM"
-    points: int=10
+    subjectId: str|None=None
+    grade: int|None=None
+    chapter: str|None=None
+    topic: str|None=None
+    textbook: str|None=None
+    prompt: str=""
+    optionA: str=""
+    optionB: str=""
+    optionC: str=""
+    optionD: str=""
+    correctOption: str=""
+    explanation: str|None=None
+    difficulty: str|None=None
+    points: int|None=None
     imageUrl: str|None=None
-    source: str|None="Admin"
-    author: str|None="Biên soạn"
-    license: str|None="Nội bộ"
+    source: str|None=None
+    author: str|None=None
+    license: str|None=None
+    status: str|None=None
+
+class AdminQuizCreate(Input):
+    id: str|None=None
+    title: str=Field(min_length=1, max_length=200)
+    subjectId: str="physics"
+    grade: int=Field(10, ge=10, le=12)
+    chapter: str|None=None
+    topic: str|None=None
+    difficulty: str="MEDIUM"
+    questionIds: list[str]=Field(min_length=1, max_length=500)
     status: str="DRAFT"
 
 class AdminImportConfirm(Input):
-    validRows: list[dict]
+    validRows: list[dict]=Field(min_length=1,max_length=2000)
     publish: bool=False

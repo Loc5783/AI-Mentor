@@ -84,7 +84,16 @@ def test_library_and_practice_flow(tmp_path):
     assert res2.status_code == 200
     assert res2.json()["answers"][qid]["selectedOption"] == "B"
 
-    # Complete practice session
+    # Early complete attempt must be rejected because questions 1..4 are unanswered
+    res_early = client.post(f"/library/sessions/{session_id}/complete", headers=h)
+    assert res_early.status_code == 400
+    assert res_early.json()["code"] == "SESSION_INCOMPLETE"
+
+    # Answer remaining questions (1 to 4)
+    for q in session["questions"][1:]:
+        client.post(f"/library/sessions/{session_id}/answers", headers=h, json={"questionId": q["id"], "selectedOption": "A"})
+
+    # Complete practice session after all questions are answered
     res = client.post(f"/library/sessions/{session_id}/complete", headers=h)
     assert res.status_code == 200
     completed = res.json()

@@ -186,6 +186,7 @@ class LearningService:
             visible.append(value)
         lesson = next((x for x in course["lessons"] if x["id"] == row["unit_id"]), None)
         return {"id": row["id"], "enrollmentId": row["enrollment_id"], "lessonId": row["unit_id"],
+                "subjectId": enrollment["subject_id"], "grade": enrollment["grade"],
                 "rewardUnitId": row["unit_id"], "curriculumVersion": row["curriculum_version"],
                 "kind": row["kind"], "step": row["step"], "answers": answers,
                 "questions": visible, "sourceLessonIds": sources,

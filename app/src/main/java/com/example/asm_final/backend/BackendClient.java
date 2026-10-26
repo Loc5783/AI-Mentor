@@ -7,12 +7,13 @@ import com.example.mentor.data.ActiveUser;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
  * Bounded transport. Caller owns mutation keys; uncertain network failures are never auto-retried.
  */
-public final class BackendClient {
+public final class BackendClient implements com.example.asm_final.learning.LessonViewModel.LessonApiClient {
   private static final java.util.concurrent.ConcurrentHashMap<String, Object> LOCKS =
       new java.util.concurrent.ConcurrentHashMap<>();
   private final Object sessionLock;
@@ -297,7 +298,16 @@ public final class BackendClient {
         }
       JSONObject value;
       try {
-        value = bytes.size() == 0 ? new JSONObject() : new JSONObject(bytes.toString("UTF-8"));
+        if (bytes.size() == 0) {
+          value = new JSONObject();
+        } else {
+          String text = bytes.toString("UTF-8").trim();
+          if (text.startsWith("[")) {
+            value = new JSONObject().put("items", new JSONArray(text));
+          } else {
+            value = new JSONObject(text);
+          }
+        }
       } catch (org.json.JSONException invalid) {
         throw new Failure("INVALID_SERVER_RESPONSE", status);
       }

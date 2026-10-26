@@ -57,14 +57,7 @@ public final class LessonActivity extends AppCompatActivity {
   }
 
   private Runnable getToolRunnable(SubjectId id) {
-    Class<?> target =
-        id == SubjectId.PHYSICS
-            ? com.example.mentor.physics.presentation.CircuitDiagramActivity.class
-            : id == SubjectId.CHEMISTRY
-                ? com.example.mentor.chemistry.presentation.PeriodicTableActivity.class
-                : id == SubjectId.MATH
-                    ? com.example.mathmodule.MathToolsActivity.class
-                    : null;
+    Class<?> target = com.example.asm_final.learning.SubjectToolResolver.resolveToolActivity(id);
     if (target == null) return null;
     return () -> startActivity(new Intent(this, target));
   }
@@ -111,10 +104,10 @@ public final class LessonActivity extends AppCompatActivity {
                       if (isFinishing() || ActiveUser.get(this) != model.owner()) return;
                       returning = true;
                       startActivity(
-                          new Intent(this, HomeActivity.class)
-                              .putExtra("USERNAME", getIntent().getStringExtra("USERNAME"))
-                              .putExtra("CHAT_THREAD_ID", thread.id)
-                              .putExtra("LESSON_RETURN", true));
+                          com.example.asm_final.learning.LessonChatHandoff.createHandoffIntent(
+                              this,
+                              getIntent().getStringExtra(com.example.asm_final.learning.LessonChatHandoff.EXTRA_USERNAME),
+                              thread.id));
                     });
               } catch (RuntimeException failed) {
                 runOnUiThread(

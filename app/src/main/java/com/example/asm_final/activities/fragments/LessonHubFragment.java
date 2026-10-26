@@ -21,6 +21,15 @@ public final class LessonHubFragment extends Fragment {
   }
 
   @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    if (savedInstanceState != null) {
+      int restored = savedInstanceState.getInt("SELECTED_GRADE", 0);
+      if (restored >= 10 && restored <= 12) grade = restored;
+    }
+  }
+
+  @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle state) {
     owner = ActiveUser.get(requireContext());
     presenter =
@@ -29,8 +38,17 @@ public final class LessonHubFragment extends Fragment {
             this::chooseGrade,
             this::openSubject,
             this::openAiChat);
+    if (grade >= 10 && grade <= 12) {
+      presenter.render(grade);
+    }
     content = presenter.view();
     return content;
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putInt("SELECTED_GRADE", grade);
   }
 
   private void openSubject(SubjectId id) {
@@ -45,8 +63,9 @@ public final class LessonHubFragment extends Fragment {
   }
 
   private void openAiChat() {
-    // Navigates to AI Chat in Home shell if applicable
-    Toast.makeText(requireContext(), "Đang mở Trợ lý Gia sư AI...", Toast.LENGTH_SHORT).show();
+    if (getActivity() instanceof com.example.asm_final.activities.HomeActivity) {
+      ((com.example.asm_final.activities.HomeActivity) getActivity()).navigateTo(R.id.nav_chat, false);
+    }
   }
 
   @Override

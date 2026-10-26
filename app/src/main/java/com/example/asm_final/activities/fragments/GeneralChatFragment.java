@@ -117,7 +117,7 @@ public final class GeneralChatFragment extends Fragment {
                 requireActivity().finish();
               }
             },
-            requireActivity().getIntent().getBooleanExtra("LESSON_RETURN", false));
+            com.example.asm_final.learning.LessonChatHandoff.isLessonReturn(requireActivity().getIntent()));
     return root;
   }
 
@@ -129,7 +129,7 @@ public final class GeneralChatFragment extends Fragment {
             getViewLifecycleOwner(),
             ignored -> {
               if (!initialChatApplied && !model.loading && model.snapshot != null) {
-                String target = requireActivity().getIntent().getStringExtra("CHAT_THREAD_ID");
+                String target = com.example.asm_final.learning.LessonChatHandoff.extractThreadId(requireActivity().getIntent());
                 initialChatApplied = true;
                 if (target != null && !target.equals(model.threadId())) {
                   model.select(target);

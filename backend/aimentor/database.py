@@ -159,7 +159,9 @@ class Database:
               id TEXT PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
               question_id TEXT NOT NULL, subject_id TEXT NOT NULL, grade INTEGER NOT NULL,
               selected_option TEXT NOT NULL, correct_option TEXT NOT NULL,
-              explanation TEXT NOT NULL, created_at REAL NOT NULL, UNIQUE(user_id, question_id));
+              explanation TEXT NOT NULL, question_snapshot TEXT,
+              state TEXT NOT NULL DEFAULT 'NEEDS_REVIEW',
+              created_at REAL NOT NULL, updated_at REAL, UNIQUE(user_id, question_id));
 
             CREATE TABLE IF NOT EXISTS role_audit_logs(
               id TEXT PRIMARY KEY,
@@ -169,6 +171,16 @@ class Database:
               source TEXT NOT NULL DEFAULT 'CLI_MANAGE_ROLES',
               changed_at REAL NOT NULL);
             """)
+            # --- STEP 4 MIGRATIONS & INDEXES ---
+            cols = {col["name"] for col in db.execute("PRAGMA table_info(wrong_questions_notebook)").fetchall()}
+            if "question_snapshot" not in cols:
+                db.execute("ALTER TABLE wrong_questions_notebook ADD COLUMN question_snapshot TEXT")
+            if "state" not in cols:
+                db.execute("ALTER TABLE wrong_questions_notebook ADD COLUMN state TEXT NOT NULL DEFAULT 'NEEDS_REVIEW'")
+            if "updated_at" not in cols:
+                db.execute("ALTER TABLE wrong_questions_notebook ADD COLUMN updated_at REAL")
+            db.execute("CREATE INDEX IF NOT EXISTS idx_wrong_questions_user_subj ON wrong_questions_notebook(user_id, subject_id, grade, state)")
+            db.execute("CREATE INDEX IF NOT EXISTS idx_practice_sessions_user_quiz ON practice_sessions(user_id, quiz_id, state, updated_at)")
             db.commit()
 
     @staticmethod

@@ -21,10 +21,12 @@ public final class AppServices {
   private final com.example.asm_final.chat.ChatStore chats;
   private final com.example.asm_final.onboarding.LearnerProfileRepository learners;
   private final RecoveryService recovery = new UnavailableRecoveryService();
+  private final Context context;
   private final UserProfileRepository profiles;
   private final ExecutorService io = Executors.newFixedThreadPool(2);
 
   public AppServices(Context context) {
+    this.context = context.getApplicationContext();
     accounts = new LocalAccountRepository(context);
     chats = new com.example.asm_final.chat.LocalChatStore(context);
     learners = new com.example.asm_final.onboarding.LocalLearnerProfiles(context);
@@ -118,5 +120,9 @@ public final class AppServices {
 
   public com.example.asm_final.chat.ChatStore chats() {
     return chats;
+  }
+
+  public com.example.asm_final.learning.LibraryRepository library(int owner) {
+    return new com.example.asm_final.learning.BackendLibraryRepository(context, owner);
   }
 }

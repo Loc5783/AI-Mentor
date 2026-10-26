@@ -228,3 +228,35 @@ def test_catalog_rejects_duplicate_question_and_framework_course():
         Catalog.validate(course)
     with pytest.raises(ValueError):
         Catalog.validate(content("invalid_subject"))
+
+
+def test_attempt_dto_contains_verified_scope_metadata(api):
+    c, _, s, _ = api
+    e_phys = enroll(c, s, grade=10)
+    placed(c, s, e_phys)
+    a_phys = start(c, s, e_phys, "physics-10-unit-1")
+    # Verify POST /attempts returns verified scope metadata
+    assert a_phys["subjectId"] == "physics"
+    assert a_phys["grade"] == 10
+    assert a_phys["enrollmentId"] == e_phys["id"]
+
+    # Verify GET /attempts/{id} returns verified scope metadata
+    get_res = ok(c.get(f"/attempts/{a_phys['id']}", headers=headers(s)), 200)
+    assert get_res["subjectId"] == "physics"
+    assert get_res["grade"] == 10
+    assert get_res["enrollmentId"] == e_phys["id"]
+
+    # Verify PATCH /attempts/{id} returns verified scope metadata
+    patched = answer(c, s, a_phys, step=1)
+    assert patched["subjectId"] == "physics"
+    assert patched["grade"] == 10
+
+    # Enroll in Chemistry 11 and start an attempt: metadata must reflect Chemistry 11
+    e_chem = ok(post(c, s, "/enrollments", {"subjectId": "chemistry", "grade": 11}))
+    placed(c, s, e_chem)
+    a_chem = start(c, s, e_chem, "chemistry-11-unit-1")
+    assert a_chem["subjectId"] == "chemistry"
+    assert a_chem["grade"] == 11
+    assert a_chem["enrollmentId"] == e_chem["id"]
+    assert a_chem["enrollmentId"] != a_phys["enrollmentId"]
+
