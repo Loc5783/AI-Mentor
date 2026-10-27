@@ -8,6 +8,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import com.example.mentor.data.ActiveUser
 import com.example.mentor.schedule.data.ScheduleRepositoryImpl
+import com.example.mentor.ui.design.MentorTheme
 
 class ScheduleFragment : Fragment() {
     override fun onCreateView(
@@ -19,9 +20,11 @@ class ScheduleFragment : Fragment() {
         
         return ComposeView(requireContext()).apply {
             setContent {
-                ScheduleScreen(accountId, repository, onBack = {
-                    requireActivity().onBackPressedDispatcher.onBackPressed()
-                })
+                MentorTheme {
+                    ScheduleScreen(accountId, repository, onBack = {
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                    })
+                }
             }
         }
     }

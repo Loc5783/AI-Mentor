@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
@@ -142,7 +141,7 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                         }
                     }
                 }
-                
+
                 if (!profile) {
                     Surface(
                         shape = RoundedCornerShape(20.dp),
@@ -155,7 +154,7 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                             Spacer(Modifier.width(16.dp))
                             Column {
                                 Text("Thời khóa biểu", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                                Text("Xem lịch học", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text("Xem lịch học cá nhân", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
                     }

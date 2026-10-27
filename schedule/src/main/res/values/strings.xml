@@ -1,23 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="schedule_title">Schedule</string>
-    <string name="schedule_empty">No classes yet, press + to add</string>
+    <string name="schedule_empty">No classes scheduled for this day, tap + to add</string>
     <string name="schedule_add">Add Class</string>
     <string name="schedule_edit">Edit Class</string>
-    <string name="schedule_subject">Subject Name (e.g., Math, Science)</string>
-    <string name="schedule_room">Room (optional)</string>
+    <string name="schedule_subject">Subject Name (e.g. Math, Physics)</string>
     <string name="schedule_teacher">Teacher (optional)</string>
     <string name="schedule_notes">Notes (optional)</string>
-    <string name="schedule_start_time">Start Time</string>
-    <string name="schedule_end_time">End Time</string>
     <string name="schedule_delete">Delete</string>
     <string name="schedule_undo">Undo</string>
     <string name="schedule_deleted">Class deleted</string>
     <string name="schedule_save">Save</string>
     <string name="schedule_cancel">Cancel</string>
-    <string name="schedule_error_time">End time must be after start time</string>
     <string name="schedule_warning_overlap">Warning: Overlaps with another class</string>
-    <string name="schedule_confirm_delete">Delete this class?</string>
-    <string name="schedule_error_empty_title">Subject name is required</string>
     <string name="schedule_days">Mon,Tue,Wed,Thu,Fri,Sat,Sun</string>
+
+    <string name="schedule_tab_schedule">Schedule</string>
+    <string name="schedule_tab_todo">To-Do List</string>
+    <string name="schedule_history">History</string>
+    <string name="schedule_add_button">Add</string>
+    <string name="todo_deleted">Task deleted</string>
+
+    <string name="todo_add_title">Add To-Do Task</string>
+    <string name="todo_task_name">Task Name</string>
+    <string name="todo_priority">Priority:</string>
+    <string name="todo_priority_low">Low</string>
+    <string name="todo_priority_normal">Normal</string>
+    <string name="todo_priority_high">High</string>
+
+    <string name="schedule_empty_list">No classes scheduled.</string>
+    <string name="schedule_status_ongoing">Ongoing</string>
+    <string name="schedule_teacher_prefix">Teacher: </string>
+
+    <string name="todo_empty">No tasks for this day.</string>
+    <string name="todo_daily_progress">Daily Progress</string>
+    <string name="todo_completed_section">Completed</string>
+    <string name="todo_delete_desc">Delete Task</string>
+
+    <string name="log_title">Activity Log</string>
+    <string name="log_clear">Clear</string>
+    <string name="log_empty">No recent activity.</string>
+
+    <string name="schedule_period_select">Select period</string>
+    <string name="schedule_period">Period %1$d</string>
+    <string name="schedule_period_morning">(Morning)</string>
+    <string name="schedule_period_afternoon">(Afternoon)</string>
+    <string name="schedule_repeat_days">Repeat on days:</string>
 </resources>

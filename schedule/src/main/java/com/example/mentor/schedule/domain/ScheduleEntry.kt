@@ -5,24 +5,32 @@ data class ScheduleEntry(
     val accountId: String,
     val title: String,
     val dayOfWeek: Int, // 1 = Mon, ..., 7 = Sun
-    val startTimeMin: Int, // 0 to 1439
-    val endTimeMin: Int,   // 0 to 1439, must be > startTimeMin
-    val room: String? = null,
+    val period: Int, // 1 to 10
     val teacher: String? = null,
-    val notes: String? = null,
-    val colorLabel: Int = 0 // Some index mapping to predefined colors
+    val notes: String? = null
 ) {
     fun getFormattedStartTime(): String {
-        return formatTime(startTimeMin)
+        return formatTime(period, isEnd = false)
     }
 
     fun getFormattedEndTime(): String {
-        return formatTime(endTimeMin)
+        return formatTime(period, isEnd = true)
     }
 
-    private fun formatTime(minutes: Int): String {
-        val h = minutes / 60
-        val m = minutes % 60
-        return String.format("%02d:%02d", h, m)
+    private fun formatTime(periodIdx: Int, isEnd: Boolean): String {
+        val mapping = mapOf(
+            1 to Pair("07:00", "07:45"),
+            2 to Pair("07:50", "08:35"),
+            3 to Pair("08:40", "09:25"),
+            4 to Pair("09:35", "10:20"),
+            5 to Pair("10:25", "11:10"),
+            6 to Pair("13:00", "13:45"),
+            7 to Pair("13:50", "14:35"),
+            8 to Pair("14:40", "15:25"),
+            9 to Pair("15:35", "16:20"),
+            10 to Pair("16:25", "17:10")
+        )
+        val pair = mapping[periodIdx] ?: Pair("00:00", "00:00")
+        return if (isEnd) pair.second else pair.first
     }
 }

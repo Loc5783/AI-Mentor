@@ -1,23 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="schedule_title">Thời khóa biểu</string>
-    <string name="schedule_empty">Chưa có tiết học nào, nhấn + để thêm</string>
+    <string name="schedule_empty">Chưa có tiết học nào hôm nay, nhấn + để thêm</string>
     <string name="schedule_add">Thêm tiết học</string>
     <string name="schedule_edit">Sửa tiết học</string>
     <string name="schedule_subject">Tên môn (vd: Toán, Lý, Hóa)</string>
-    <string name="schedule_room">Phòng học (tùy chọn)</string>
     <string name="schedule_teacher">Giáo viên (tùy chọn)</string>
     <string name="schedule_notes">Ghi chú (tùy chọn)</string>
-    <string name="schedule_start_time">Giờ bắt đầu</string>
-    <string name="schedule_end_time">Giờ kết thúc</string>
     <string name="schedule_delete">Xóa</string>
     <string name="schedule_undo">Hoàn tác</string>
     <string name="schedule_deleted">Đã xóa tiết học</string>
     <string name="schedule_save">Lưu</string>
     <string name="schedule_cancel">Hủy</string>
-    <string name="schedule_error_time">Giờ kết thúc phải sau giờ bắt đầu</string>
-    <string name="schedule_warning_overlap">Cảnh báo: Trùng giờ với tiết học khác</string>
-    <string name="schedule_confirm_delete">Bạn có chắc muốn xóa tiết học này?</string>
-    <string name="schedule_error_empty_title">Tên môn học là bắt buộc</string>
+    <string name="schedule_warning_overlap">Cảnh báo: Tiết này đã có môn học khác</string>
     <string name="schedule_days">T2,T3,T4,T5,T6,T7,CN</string>
+
+    <string name="schedule_tab_schedule">Lịch học</string>
+    <string name="schedule_tab_todo">Việc cần làm</string>
+    <string name="schedule_history">Lịch sử</string>
+    <string name="schedule_add_button">Thêm</string>
+    <string name="todo_deleted">Đã xóa nhiệm vụ</string>
+
+    <string name="todo_add_title">Thêm việc cần làm</string>
+    <string name="todo_task_name">Tên nhiệm vụ</string>
+    <string name="todo_priority">Mức độ ưu tiên:</string>
+    <string name="todo_priority_low">Thấp</string>
+    <string name="todo_priority_normal">Bình thường</string>
+    <string name="todo_priority_high">Gấp</string>
+
+    <string name="schedule_empty_list">Không có lịch học nào.</string>
+    <string name="schedule_status_ongoing">Đang diễn ra</string>
+    <string name="schedule_teacher_prefix">GV: </string>
+
+    <string name="todo_empty">Không có nhiệm vụ nào cho ngày này.</string>
+    <string name="todo_daily_progress">Tiến độ trong ngày</string>
+    <string name="todo_completed_section">Đã hoàn thành</string>
+    <string name="todo_delete_desc">Xóa nhiệm vụ</string>
+
+    <string name="log_title">Lịch sử hoạt động</string>
+    <string name="log_clear">Dọn dẹp</string>
+    <string name="log_empty">Chưa có ghi nhận nào.</string>
+
+    <string name="schedule_period_select">Chọn tiết</string>
+    <string name="schedule_period">Tiết %1$d</string>
+    <string name="schedule_period_morning">(Sáng)</string>
+    <string name="schedule_period_afternoon">(Chiều)</string>
+    <string name="schedule_repeat_days">Lặp lại các ngày:</string>
 </resources>
