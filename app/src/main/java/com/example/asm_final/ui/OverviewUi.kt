@@ -21,7 +21,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -62,7 +64,7 @@ class OverviewUi(private val context: Context, private val profile: Boolean,
 private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grade: Int,
     snapshot: LearningOverviewRepository.Snapshot?, selected: Set<SubjectId>, loading: Boolean, failed: Boolean,
     open: (SubjectId) -> Unit, action: () -> Unit, edit: () -> Unit, settings: () -> Unit, learn: () -> Unit, schedule: () -> Unit = {}) {
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
     val data = snapshot?.data
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(context)
     val palette = premiumDashboardPalette(dark)
@@ -180,6 +182,7 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                         MentorProgress(if (data.totalLessons == 0) 0f else data.completedLessons.toFloat() / data.totalLessons)
                     }
                     HomeWeekChart(data, palette)
+                    SubjectPieChart(data.subjects, palette)
                 } else if (!failed) PremiumDashboardCard(palette) {
                     Text(stringResource(R.string.design_week), style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold, color = palette.title)
@@ -316,4 +319,116 @@ internal fun WeekChart(data: LearningOverviewData) {
             }
         }
     }
+}
+
+@Composable
+private fun SubjectPieChart(subjects: List<LearningOverviewData.Subject>, palette: PremiumDashboardPalette) {
+    val context = LocalContext.current
+    val totalXp = subjects.sumOf { it.experience }
+    val activeSubjects = subjects.filter { it.experience > 0 }
+
+    PremiumDashboardCard(palette) {
+        Text(
+            text = "Phân tích EXP theo môn học",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = palette.title
+        )
+
+        if (totalXp <= 0 || activeSubjects.isEmpty()) {
+            Text(
+                text = "Chưa có dữ liệu kinh nghiệm (EXP) để phân tích. Hãy hoàn thành các bài học để xem biểu đồ!",
+                style = MaterialTheme.typography.bodyMedium,
+                color = palette.secondary
+            )
+        } else {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Box(
+                    modifier = Modifier.size(130.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+                        val strokeWidth = 32f
+                        var startAngle = -90f
+
+                        activeSubjects.forEach { sub ->
+                            val sweepAngle = (sub.experience.toFloat() / totalXp.toFloat()) * 360f
+                            val color = subjectColor(sub.id)
+                            drawArc(
+                                color = color,
+                                startAngle = startAngle,
+                                sweepAngle = sweepAngle.coerceAtLeast(2f),
+                                useCenter = false,
+                                style = androidx.compose.ui.graphics.drawscope.Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                            )
+                            startAngle += sweepAngle
+                        }
+                    }
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "$totalXp",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = palette.title
+                        )
+                        Text(
+                            text = "Tổng EXP",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = palette.secondary
+                        )
+                    }
+                }
+
+                Column(
+                    Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    activeSubjects.forEach { sub ->
+                        val percent = if (totalXp > 0) (sub.experience * 100) / totalXp else 0
+                        val label = try {
+                            SubjectId.fromWireId(sub.id).label(LocaleHelper.getLanguage(context))
+                        } catch (e: Exception) {
+                            sub.id.replaceFirstChar { it.uppercase() }
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Box(
+                                Modifier
+                                    .size(10.dp)
+                                    .clip(CircleShape)
+                                    .background(subjectColor(sub.id))
+                            )
+                            Text(
+                                text = "$label: ${sub.experience} XP ($percent%)",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = palette.title,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun subjectColor(wireId: String): Color = when (wireId) {
+    "math" -> Color(0xFF3B82F6)
+    "physics" -> Color(0xFF8B5CF6)
+    "chemistry" -> Color(0xFF06B6D4)
+    "biology" -> Color(0xFF10B981)
+    "literature" -> Color(0xFFF59E0B)
+    "english" -> Color(0xFF6366F1)
+    "history" -> Color(0xFFEF4444)
+    "geography" -> Color(0xFF14B8A6)
+    "economics_law", "economics-law" -> Color(0xFFEC4899)
+    else -> Color(0xFF64748B)
 }
