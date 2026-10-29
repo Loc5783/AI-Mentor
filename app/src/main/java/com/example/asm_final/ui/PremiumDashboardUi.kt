@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
@@ -114,17 +115,12 @@ internal fun PremiumDashboardHeader(
     content: @Composable RowScope.() -> Unit,
 ) {
     Box(
-        modifier.fillMaxWidth().background(Brush.horizontalGradient(listOf(palette.heroStart, palette.heroEnd)))
+        modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp).clip(RoundedCornerShape(24.dp)).background(Brush.horizontalGradient(listOf(palette.heroStart, palette.heroEnd))).drawBehind {
+            val x = size.width - 24.dp.toPx()
+            drawCircle(palette.streak.copy(alpha = .5f), size.height * .42f, androidx.compose.ui.geometry.Offset(x, size.height * .5f), style = androidx.compose.ui.graphics.drawscope.Stroke(1.dp.toPx()))
+            drawLine(palette.accent.copy(alpha = .35f), androidx.compose.ui.geometry.Offset(x - 44.dp.toPx(), size.height), androidx.compose.ui.geometry.Offset(x + 12.dp.toPx(), 0f), 2.dp.toPx())
+        }
     ) {
-        // Draw-only decoration, clipped so narrow screens never overflow.
-        Box(
-            Modifier.align(Alignment.TopEnd).offset(x = 46.dp, y = (-38).dp)
-                .size(148.dp).clip(CircleShape).background(palette.accent.copy(alpha = .09f))
-        )
-        Box(
-            Modifier.align(Alignment.BottomEnd).offset(x = (-24).dp, y = 58.dp)
-                .size(104.dp).clip(CircleShape).background(palette.accent.copy(alpha = .07f))
-        )
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 20.dp),
             verticalAlignment = Alignment.CenterVertically,

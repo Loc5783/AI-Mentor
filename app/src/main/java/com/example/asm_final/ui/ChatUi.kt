@@ -130,10 +130,18 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
                         TextButton({ model.removeFile(file.id) }, enabled = ready) { Text(stringResource(R.string.chat_remove_file, file.name)) }
                     }
                 }
-                OutlinedTextField(draft, {
+                TextField(draft, {
                     if (it.length <= 30000) { draft = it; model.setDraft(it) }
                 }, Modifier.fillMaxWidth().testTag("chat-input"), placeholder = { Text(stringResource(R.string.chat_hint)) },
-                    enabled = !model.loading && !model.importing, maxLines = 5)
+                    enabled = !model.loading && !model.importing, maxLines = 5,
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(22.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
+                        unfocusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
+                        disabledContainerColor = androidx.compose.ui.graphics.Color.Transparent,
+                        focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                        unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                        disabledIndicatorColor = androidx.compose.ui.graphics.Color.Transparent))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     ChatIcon(R.drawable.ic_chat_attach, R.string.chat_attach, ready, actions::attach)
                     ChatIcon(if (model.requesting) R.drawable.ic_chat_stop else R.drawable.ic_chat_send,
