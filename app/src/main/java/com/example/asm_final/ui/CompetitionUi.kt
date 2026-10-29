@@ -42,7 +42,7 @@ object CompetitionUi {
         val palette = premiumDashboardPalette(dark)
 
         Column(Modifier.fillMaxSize()) {
-            PremiumDashboardHeader(palette, artwork = com.example.mentor.ui.design.MentorArtwork.GOALS) {
+            PremiumDashboardHeader(artwork = com.example.mentor.ui.design.MentorArtwork.GOALS) {
                     Box(
                         Modifier
                             .size(56.dp)

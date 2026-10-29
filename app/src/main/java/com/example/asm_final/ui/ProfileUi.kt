@@ -196,11 +196,6 @@ private fun ProfileHero(
     avatar: String?,
     settings: () -> Unit,
 ) {
-    val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
-    val heroBg = if (dark) Brush.linearGradient(
-        listOf(Color(0xFF21365D), Color(0xFF312D59), Color(0xFF17253F))
-    ) else Brush.linearGradient(listOf(MentorTokens.PrimaryContainer, MentorTokens.PrimaryContainer))
-
     Box(
         Modifier
             .fillMaxWidth()

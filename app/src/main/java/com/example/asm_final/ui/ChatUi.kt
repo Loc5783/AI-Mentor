@@ -225,18 +225,6 @@ private fun TypingDots() {
     }
 }
 
-@Composable
-private fun MentorPresence() {
-    val scale = if (motionEnabled()) {
-        val animation = rememberInfiniteTransition(label = "mentor-presence")
-        animation.animateFloat(1f, 1.035f, infiniteRepeatable(tween(1800), RepeatMode.Reverse), label = "breathe")
-    } else remember { mutableFloatStateOf(1f) }
-    Surface(Modifier.size(MentorTokens.AvatarSize).graphicsLayer { scaleX = scale.value; scaleY = scale.value },
-        shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.primaryContainer) {
-        Box(contentAlignment = Alignment.Center) { Text("AI", style = MaterialTheme.typography.titleLarge) }
-    }
-}
-
 private fun readableMessage(source: String) = buildAnnotatedString {
     val pattern = Regex("""\*\*(.+?)\*\*|`([^`]+)`""")
     var position = 0

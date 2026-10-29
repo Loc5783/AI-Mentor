@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -38,7 +37,7 @@ fun TechGraffitiBackground(dark: Boolean) {
                 (if(i == 1) Color(0xFF38BDF8) else Color(0xFF3B82F6)).copy(alpha = if(dark) .18f else .16f),
                 Color.Transparent), center = center, radius = radius), radius, center)
         }
-        // Fade the supplied photograph on an isolated layer, so the sky blends into the canvas.
+        // Fade the bundled Pexels photograph on an isolated layer, so the sky blends into the canvas.
         // Fixed-size, draw-only accents have no animation, touch targets or layout cost.
         fun cloudAt(left: Float, top: Float, width: Float, opacity: Float) {
             val height = width * cloudImage.height / cloudImage.width

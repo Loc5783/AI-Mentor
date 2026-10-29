@@ -69,7 +69,7 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
 
     Column(Modifier.fillMaxSize()
         .verticalScroll(rememberScrollState())) {
-        PremiumDashboardHeader(palette) {
+        PremiumDashboardHeader {
                 Box(
                     Modifier
                         .size(60.dp)

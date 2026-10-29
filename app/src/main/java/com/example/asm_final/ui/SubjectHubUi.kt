@@ -204,14 +204,6 @@ fun LessonHubMainView(
 
 ) {
 
-    val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(androidx.compose.ui.platform.LocalContext.current)
-
-    val heroBg = Brush.horizontalGradient(if (dark)
-        listOf(MentorTokens.DarkPrimaryContainer, Color(0xFF312D59))
-        else listOf(MentorTokens.PrimaryContainer, Color(0xFFEDE7FF)))
-
-
-
     Column(Modifier.fillMaxSize()) {
 
         // Hero Header
