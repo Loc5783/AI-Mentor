@@ -9,9 +9,35 @@ import java.util.Calendar;
 public final class ReminderHelper {
   private static final String PREFS_NAME = "settings";
   private static final String KEY_REMINDERS_ENABLED = "reminders_enabled";
+  public static final String KEY_HAS_PROMPTED_NOTIFICATION = "has_prompted_notification";
   private static final int REQUEST_CODE = 1001;
 
   private ReminderHelper() {}
+
+  public static boolean hasPromptedNotification(Context context) {
+    return context
+        .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        .getBoolean(KEY_HAS_PROMPTED_NOTIFICATION, false);
+  }
+
+  public static void setHasPromptedNotification(Context context, boolean prompted) {
+    context
+        .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        .edit()
+        .putBoolean(KEY_HAS_PROMPTED_NOTIFICATION, prompted)
+        .apply();
+  }
+
+  public static boolean shouldPromptPolicy(boolean hasPrompted, boolean isReminderEnabled) {
+    if (hasPrompted) {
+      return false;
+    }
+    return !isReminderEnabled;
+  }
+
+  public static boolean shouldPromptNotification(Context context) {
+    return shouldPromptPolicy(hasPromptedNotification(context), isReminderEnabled(context));
+  }
 
   public static boolean isReminderEnabled(Context context) {
     return context
@@ -25,6 +51,7 @@ public final class ReminderHelper {
         .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         .edit()
         .putBoolean(KEY_REMINDERS_ENABLED, enabled)
+        .putBoolean(KEY_HAS_PROMPTED_NOTIFICATION, true)
         .apply();
 
     if (enabled) {
