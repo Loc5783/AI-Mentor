@@ -96,7 +96,7 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
                     Text(stringResource(R.string.design_mentor), style = MaterialTheme.typography.labelLarge)
                     Text(stringResource(R.string.chat_empty_title), style = MaterialTheme.typography.titleLarge)
                     Text(stringResource(R.string.chat_empty_body))
-                    listOf(R.string.chat_suggest_physics, R.string.chat_suggest_chemistry, R.string.chat_suggest_biology).forEach { id ->
+                    listOf(R.string.chat_suggest_physics, R.string.chat_suggest_chemistry, R.string.chat_suggest_biology, R.string.chat_suggest_schedule).forEach { id ->
                         val suggestion = stringResource(id)
                         OutlinedButton({ draft = suggestion; model.setDraft(suggestion) }, enabled = ready) { Text(suggestion) }
                     }
@@ -177,7 +177,8 @@ private fun MessageBubble(message: ChatRecords.Message, owner: Int, requesting: 
                 color = if (user) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface) {
                 Column(Modifier.widthIn(max = 480.dp).padding(horizontal = 12.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(if (user) R.string.chat_user else R.string.chat_assistant), style = MaterialTheme.typography.labelMedium)
-                    if (message.text.isNotBlank()) SelectionContainer { Text(remember(message.text) { readableMessage(message.text) }, style = MaterialTheme.typography.bodyMedium) }
+                    if (message.text.isNotBlank()) SelectionContainer { Text(remember(message.text) { readableMessage(if (user) message.text else ScheduleProposal.displayText(message.text)) }, style = MaterialTheme.typography.bodyMedium) }
+                    if (!user) ScheduleImportAction(message.text, owner)
                     message.files.forEach { file ->
                         if (file.mime.startsWith("image/")) {
                             val context = LocalContext.current

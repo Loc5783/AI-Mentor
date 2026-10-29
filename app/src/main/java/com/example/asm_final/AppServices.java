@@ -125,4 +125,7 @@ public final class AppServices {
   public com.example.asm_final.learning.LibraryRepository library(int owner) {
     return new com.example.asm_final.learning.BackendLibraryRepository(context, owner);
   }
+  public com.example.mentor.schedule.domain.ScheduleImportRepository scheduleImport() {
+    return new com.example.mentor.schedule.data.ScheduleRepositoryImpl(context);
+  }
 }

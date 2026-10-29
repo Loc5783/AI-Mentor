@@ -1,0 +1,13 @@
+<resources>
+    <string name="schedule_import_preview">Xem trước thời khóa biểu</string>
+    <string name="schedule_import_note">Kiểm tra các tiết đã nhận diện, bỏ chọn mục sai. Chỉ thêm vào ô trống; lịch đã có sẽ được giữ. Tiết chiều dùng số 6–10.</string>
+    <string name="schedule_import_result">Đã thêm %1$d tiết; bỏ qua %2$d ô đã có lịch.</string>
+    <string name="schedule_import_slot">%1$s · Tiết %2$d — %3$s</string>
+    <string name="schedule_import_sunday">Chủ nhật</string>
+    <string name="schedule_import_weekday">Thứ %1$d</string>
+    <string name="schedule_import_error">Chưa lưu được. Hãy thử lại; lịch cũ vẫn được giữ.</string>
+    <string name="schedule_import_saving">Đang lưu…</string>
+    <string name="schedule_import_save">Thêm vào lịch</string>
+    <string name="chat_suggest_schedule">Đọc ảnh và điền thời khóa biểu giúp tôi</string>
+    <string name="schedule_import_invalid">Chưa đọc được lịch hợp lệ. Hãy gửi ảnh rõ hơn hoặc xác nhận lại thứ và tiết học.</string>
+</resources>

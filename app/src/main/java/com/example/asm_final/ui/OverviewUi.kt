@@ -111,26 +111,6 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
         }
 
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 18.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            if (loading) {
-                repeat(3) { MentorSkeleton(stringResource(R.string.course_loading)) }
-            } else {
-                if (failed || data == null || snapshot?.mode != LearningOverviewRepository.Mode.LIVE) {
-                    PremiumDashboardCard(palette, highlighted = true) {
-                            Text(stringResource(R.string.home_status_title), style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold, color = palette.title)
-                            Text(stringResource(when {
-                                snapshot?.needsLogin == true -> R.string.overview_expired
-                                failed -> R.string.overview_error
-                                snapshot?.mode == LearningOverviewRepository.Mode.CACHED -> R.string.overview_cached
-                                snapshot?.mode == LearningOverviewRepository.Mode.LOCAL -> R.string.dashboard_connect_notice
-                                else -> R.string.overview_error
-                            }), style = MaterialTheme.typography.bodyMedium, color = palette.secondary)
-                            PremiumDashboardAction(stringResource(if (snapshot?.needsLogin == true) R.string.login_btn
-                                else if (snapshot?.mode == LearningOverviewRepository.Mode.LOCAL) R.string.course_open else R.string.overview_reload),
-                                palette, if (snapshot?.mode == LearningOverviewRepository.Mode.LOCAL) learn else action)
-                    }
-                }
-
                 if (!profile) {
                     val scheduleLabel = stringResource(R.string.home_schedule_title)
                     PremiumDashboardCard(palette, modifier = Modifier.clickable(
@@ -151,6 +131,27 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                         }
                     }
                 }
+
+            if (loading) {
+                repeat(3) { MentorSkeleton(stringResource(R.string.course_loading)) }
+            } else {
+                if (failed || data == null || snapshot?.mode != LearningOverviewRepository.Mode.LIVE) {
+                    PremiumDashboardCard(palette, highlighted = true) {
+                            Text(stringResource(R.string.home_status_title), style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold, color = palette.title)
+                            Text(stringResource(when {
+                                snapshot?.needsLogin == true -> R.string.overview_expired
+                                failed -> R.string.overview_error
+                                snapshot?.mode == LearningOverviewRepository.Mode.CACHED -> R.string.overview_cached
+                                snapshot?.mode == LearningOverviewRepository.Mode.LOCAL -> R.string.dashboard_connect_notice
+                                else -> R.string.overview_error
+                            }), style = MaterialTheme.typography.bodyMedium, color = palette.secondary)
+                            PremiumDashboardAction(stringResource(if (snapshot?.needsLogin == true) R.string.login_btn
+                                else if (snapshot?.mode == LearningOverviewRepository.Mode.LOCAL) R.string.course_open else R.string.overview_reload),
+                                palette, if (snapshot?.mode == LearningOverviewRepository.Mode.LOCAL) learn else action)
+                    }
+                }
+
 
                 if (data != null) {
                     if (snapshot?.mode == LearningOverviewRepository.Mode.LIVE)

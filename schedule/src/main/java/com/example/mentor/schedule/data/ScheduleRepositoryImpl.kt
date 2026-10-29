@@ -96,7 +96,7 @@ class ScheduleDatabaseHelper(context: Context) : ModuleDatabaseHelper(context, "
     }
 }
 
-class ScheduleRepositoryImpl(context: Context) : ScheduleRepository {
+class ScheduleRepositoryImpl(context: Context) : ScheduleRepository, com.example.mentor.schedule.domain.ScheduleImportRepository {
     
     private val dbHelper = ScheduleDatabaseHelper(context)
     
@@ -123,6 +123,34 @@ class ScheduleRepositoryImpl(context: Context) : ScheduleRepository {
         }
         return list
     }
+
+    /** Atomic additive import. Existing occupied slots are never overwritten. */
+    override fun importVacantEntries(accountId: String, entries: List<ScheduleEntry>): Int {
+        require(accountId.toIntOrNull()?.let { it > 0 } == true)
+        require(entries.isNotEmpty() && entries.size <= 70)
+        require(entries.all { it.accountId == accountId && it.dayOfWeek in 1..7 && it.period in 1..10 && it.title.isNotBlank() && it.title.length <= 120 })
+        val db = dbHelper.writableDatabase
+        db.beginTransaction()
+        try {
+            var inserted = 0
+            entries.distinctBy { it.dayOfWeek to it.period }.forEach { entry ->
+                val occupied = db.rawQuery("SELECT 1 FROM schedule_entries WHERE account_id=? AND day_of_week=? AND period=? LIMIT 1",
+                    arrayOf(accountId, entry.dayOfWeek.toString(), entry.period.toString())).use { it.moveToFirst() }
+                if (!occupied) {
+                    val values = ContentValues().apply {
+                        put("account_id", accountId); put("title", entry.title)
+                        put("day_of_week", entry.dayOfWeek); put("period", entry.period)
+                    }
+                    db.insertOrThrow("schedule_entries", null, values)
+                    inserted++
+                }
+            }
+            db.setTransactionSuccessful()
+            return inserted
+        } finally { db.endTransaction() }
+    }
+
+    override fun close() { dbHelper.close() }
 
     override fun insertEntry(entry: ScheduleEntry): Long {
         val db = dbHelper.writableDatabase
