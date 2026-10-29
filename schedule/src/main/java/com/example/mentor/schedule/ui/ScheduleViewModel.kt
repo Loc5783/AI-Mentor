@@ -14,23 +14,29 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 
+import android.content.Context
+import androidx.lifecycle.AndroidViewModel
+import android.app.Application
+
 class ScheduleViewModelFactory(
+    private val app: Application,
     private val accountId: String,
     private val repository: ScheduleRepository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ScheduleViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return ScheduleViewModel(accountId, repository) as T
+            return ScheduleViewModel(app, accountId, repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
 
 class ScheduleViewModel(
+    app: Application,
     private val accountId: String,
     private val repository: ScheduleRepository
-) : ViewModel() {
+) : AndroidViewModel(app) {
 
     val entries = mutableStateListOf<ScheduleEntry>()
     val todos = mutableStateListOf<TodoTask>()
@@ -104,6 +110,14 @@ class ScheduleViewModel(
                 entityType = "SCHEDULE",
                 description = if (isEdit) "Đã cập nhật môn: $titles" else "Đã thêm môn: $titles"
             )
+            
+            // Auto-reschedule notifications if changed
+            try {
+                val helperClass = Class.forName("com.example.asm_final.utils.ReminderHelper")
+                val method = helperClass.getMethod("reschedule", android.content.Context::class.java)
+                method.invoke(null, getApplication<Application>())
+            } catch (e: Exception) {}
+            
             loadData()
         }
     }
@@ -113,6 +127,13 @@ class ScheduleViewModel(
             repository.deleteEntry(entry.id, accountId)
             lastDeletedEntry = entry
             logAction("DELETE", "SCHEDULE", "Đã xóa môn: ${entry.title}")
+            
+            try {
+                val helperClass = Class.forName("com.example.asm_final.utils.ReminderHelper")
+                val method = helperClass.getMethod("reschedule", android.content.Context::class.java)
+                method.invoke(null, getApplication<Application>())
+            } catch (e: Exception) {}
+            
             loadData()
         }
     }
@@ -123,6 +144,13 @@ class ScheduleViewModel(
                 repository.insertEntry(entry)
                 lastDeletedEntry = null
                 logAction("CREATE", "SCHEDULE", "Đã khôi phục môn: ${entry.title}")
+                
+                try {
+                    val helperClass = Class.forName("com.example.asm_final.utils.ReminderHelper")
+                    val method = helperClass.getMethod("reschedule", android.content.Context::class.java)
+                    method.invoke(null, getApplication<Application>())
+                } catch (e: Exception) {}
+                
                 loadData()
             }
         }

@@ -22,6 +22,9 @@ import com.example.mentor.schedule.domain.ScheduleEntry
 import com.example.mentor.schedule.domain.ScheduleRepository
 import kotlinx.coroutines.launch
 
+import android.app.Application
+import androidx.compose.ui.platform.LocalContext
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleScreen(
@@ -29,7 +32,8 @@ fun ScheduleScreen(
     repository: ScheduleRepository,
     onBack: () -> Unit
 ) {
-    val factory = remember { ScheduleViewModelFactory(accountId, repository) }
+    val context = LocalContext.current
+    val factory = remember { ScheduleViewModelFactory(context.applicationContext as Application, accountId, repository) }
     val viewModel: ScheduleViewModel = viewModel(factory = factory)
     
     val daysArray = stringResource(R.string.schedule_days).split(",")

@@ -62,6 +62,13 @@ internal fun ScheduleImportAction(text: String, owner: Int) {
                         try { repository.importVacantEntries(owner.toString(), chosen.map { ScheduleEntry(accountId = owner.toString(), title = it.subject, dayOfWeek = it.day, period = it.period) }) }
                         finally { repository.close() }
                     }
+                    
+                    try {
+                        val helperClass = Class.forName("com.example.asm_final.utils.ReminderHelper")
+                        val method = helperClass.getMethod("reschedule", android.content.Context::class.java)
+                        method.invoke(null, context.applicationContext)
+                    } catch (e: Exception) {}
+                    
                     saved = count; skipped = chosen.size - count; preview = false
                 } catch (cancelled: kotlinx.coroutines.CancellationException) { throw cancelled }
                 catch (_: Exception) { failed = true }

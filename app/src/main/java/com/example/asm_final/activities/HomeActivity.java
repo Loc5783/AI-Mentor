@@ -62,6 +62,10 @@ public class HomeActivity extends AppCompatActivity
             this, username, getIntent().hasExtra("CHAT_THREAD_ID") ? R.id.nav_chat : R.id.nav_home);
     setContentView(composeShell.view());
 
+    if (getIntent() != null && getIntent().getBooleanExtra("NAVIGATE_TO_SCHEDULE", false)) {
+        navigateTo(0, false);
+    }
+
     checkNotificationPrompt();
   }
 
@@ -115,6 +119,14 @@ public class HomeActivity extends AppCompatActivity
 
   public void navigateTo(int id, boolean remember) {
     if (composeShell != null) composeShell.navigate(id, remember);
+  }
+
+  @Override
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    if (intent != null && intent.getBooleanExtra("NAVIGATE_TO_SCHEDULE", false)) {
+        navigateTo(0, false); // nav_schedule corresponds to id 0 in ShellUi
+    }
   }
 
   @Override
