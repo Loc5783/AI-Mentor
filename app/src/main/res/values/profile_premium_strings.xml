@@ -35,6 +35,7 @@
     <string name="profile_rank_gold">Vàng</string>
     <string name="profile_rank_silver">Bạc</string>
     <string name="profile_rank_bronze">Đồng</string>
+    <string name="profile_rank_pending">Chưa xếp hạng</string>
     <string name="profile_lead_stat">%1$d lần dẫn đầu</string>
     <string name="profile_friends_streak_title">STREAK BẠN BÈ</string>
     <string name="profile_challenge_title">HUY HIỆU THỬ THÁCH THÁNG</string>

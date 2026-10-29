@@ -1,5 +1,7 @@
 package com.example.asm_final.ui
 
+import com.example.mentor.ui.design.mentorHeader
+
 import android.content.Context
 import android.view.View
 import android.widget.Toast
@@ -15,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.animation.core.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -51,7 +54,7 @@ import com.example.mentor.ui.design.motionEnabled
 /**
  * Level 4 — Premium EdTech Profile Presentation.
  * Designed after modern Duolingo profile architecture:
- * Clean pastel hero, large centered avatar, user identity, quick statistics,
+ * Layered hero, large centered avatar, user identity, quick statistics,
  * primary/secondary action buttons, 2x2 overview grid, dashed friends streak slots,
  * and monthly challenge badges.
  */
@@ -72,7 +75,7 @@ class ProfileUi(
     private var loading by mutableStateOf(true)
     private var failed by mutableStateOf(false)
 
-    fun view(): View = composeHost(context) {
+    fun view(): View = composeHost(context, scenicBackground = true) {
         ProfileScreen(
             displayName, username, avatar, grade, goal, subjects, snapshot, loading, failed,
             { refresh.run() }, { edit.run() }, { settings.run() }, { learn.run() }
@@ -124,14 +127,14 @@ private fun ProfileScreen(
     var entered by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { entered = true }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState())
-            .testTag("profile-screen"),
-    ) {
-        // Hero Section with pastel brand styling
+    Box(Modifier.fillMaxSize()) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .testTag("profile-screen"),
+        ) {
+        // The existing profile content stays interactive above the decorative canvas.
         AnimatedVisibility(
             visible = entered || !motion,
             enter = fadeIn() + slideInVertically { -it / 12 }
@@ -179,6 +182,7 @@ private fun ProfileScreen(
             }
         }
     }
+    }
 }
 
 /**
@@ -192,24 +196,17 @@ private fun ProfileHero(
     avatar: String?,
     settings: () -> Unit,
 ) {
-    val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
-    val heroBg = if (dark) {
-        MentorTokens.DarkPrimaryContainer
-    } else {
-        MentorTokens.PrimaryContainer
-    }
-
     Box(
         Modifier
             .fillMaxWidth()
-            .background(heroBg)
+            .mentorHeader(com.example.mentor.ui.design.MentorArtwork.IDEAS)
             .testTag("profile-hero")
     ) {
         Column(
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = MentorTokens.PagePadding)
-                .padding(top = 16.dp, bottom = 24.dp),
+                .padding(top = 12.dp, bottom = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Top Bar: Display Name / Eyebrow on left, Settings on right
@@ -243,7 +240,7 @@ private fun ProfileHero(
             Spacer(Modifier.height(14.dp))
 
             // Prominent Centered Avatar (96dp)
-            ProfileAvatar(name, avatar, 96.dp)
+            ProfileAvatar(name, avatar, 72.dp)
         }
     }
 }
@@ -251,13 +248,14 @@ private fun ProfileHero(
 @Composable
 private fun ProfileAvatar(name: String, avatar: String?, size: androidx.compose.ui.unit.Dp) {
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
-    val borderColor = if (dark) MentorTokens.DarkSurface else Color.White
+    val borderBrush = if (dark) Brush.linearGradient(listOf(Color(0xFFFFD166), Color(0xFF8B5CF6)))
+        else Brush.linearGradient(listOf(Color.White, Color.White))
 
     Box(
         Modifier
             .size(size)
             .shadow(6.dp, CircleShape)
-            .border(3.5.dp, borderColor, CircleShape)
+            .border(3.5.dp, borderBrush, CircleShape)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.primaryContainer),
         contentAlignment = Alignment.Center
@@ -281,7 +279,7 @@ private fun ProfileAvatar(name: String, avatar: String?, size: androidx.compose.
 
 /**
  * User Identity & Quick Stats:
- * - Subtitle: @username · THAM GIA TỪ 2026
+ * - Subtitle: @username and selected grade, when available
  * - Quick stats: Môn học, Đang theo dõi, Người theo dõi
  * - Action buttons: Primary [CHỈNH SỬA HỒ SƠ], Secondary [QR]
  */
@@ -296,7 +294,6 @@ private fun ProfileIdentitySection(
     val context = LocalContext.current
     val handleText = if (username.isNotBlank()) "@${username.uppercase()}" else "@STUDENT"
     val gradeText = if (grade in 10..12) " · LỚP $grade" else ""
-    val joinedText = stringResource(R.string.profile_joined_date, "2026")
 
     Column(
         Modifier
@@ -305,9 +302,9 @@ private fun ProfileIdentitySection(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Handle & Joined Date info
+        // Show only identity fields that are actually available.
         Text(
-            text = "$handleText · $joinedText$gradeText",
+            text = "$handleText$gradeText",
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -657,25 +654,38 @@ private fun QrCodeCanvas(seedToken: String, modifier: Modifier = Modifier) {
 
 @Composable
 private fun ProfileOverviewGrid(data: LearningOverviewData?) {
-    val streakDays = data?.streakDays ?: 0
-    val totalXp = data?.totalXp ?: 0
+    val streakDays = data?.streakDays
+    val totalXp = data?.totalXp
     val rankRes = when (data?.rankTier?.uppercase()) {
         "DIAMOND" -> R.string.profile_rank_diamond
         "PLATINUM" -> R.string.profile_rank_platinum
         "GOLD" -> R.string.profile_rank_gold
         "SILVER" -> R.string.profile_rank_silver
-        else -> R.string.profile_rank_bronze
+        "BRONZE" -> R.string.profile_rank_bronze
+        else -> R.string.profile_rank_pending
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         ProfileSectionTitle(stringResource(R.string.profile_overview_title))
 
+        val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
+        val borderAlpha = if (motionEnabled() && dark) {
+            val transition = rememberInfiniteTransition(label = "profile glass border")
+            val animated by transition.animateFloat(0.45f, 0.8f,
+                infiniteRepeatable(tween(2800), RepeatMode.Reverse), label = "border glow")
+            animated
+        } else 0.55f
+        val glassBorder = if (dark) Brush.linearGradient(listOf(
+            Color(0xFFFFD166).copy(alpha = borderAlpha),
+            Color(0xFF8B5CF6).copy(alpha = 0.4f),
+            Color(0xFFFFD166).copy(alpha = borderAlpha),
+        )) else Brush.linearGradient(listOf(MaterialTheme.colorScheme.outlineVariant, MaterialTheme.colorScheme.outlineVariant))
         Surface(
             Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
-            color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-            shadowElevation = 1.dp
+            color = if (dark) Color(0xFF1E293B).copy(alpha = 0.72f) else MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, glassBorder),
+            shadowElevation = 6.dp
         ) {
             Column(
                 Modifier.padding(16.dp),
@@ -703,7 +713,7 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
                         )
                         Column {
                             Text(
-                                text = stringResource(R.string.profile_streak_stat, streakDays),
+                                text = if (streakDays == null) "—" else stringResource(R.string.profile_streak_stat, streakDays),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface
@@ -732,7 +742,7 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
                         )
                         Column {
                             Text(
-                                text = stringResource(R.string.profile_xp_stat, totalXp),
+                                text = if (totalXp == null) "—" else stringResource(R.string.profile_xp_stat, totalXp),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface

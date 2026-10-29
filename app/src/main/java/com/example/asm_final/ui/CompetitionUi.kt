@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,77 +32,69 @@ import java.util.function.Consumer
 
 object CompetitionUi {
     @JvmStatic fun view(context: Context, model: CompetitionViewModel, refresh: Runnable,
-        learn: Runnable, profile: Consumer<String>): View = composeHost(context) {
+        learn: Runnable, profile: Consumer<String>): View = composeHost(context, scenicBackground = true) {
         val state by model.state().observeAsState()
         val snapshot = state?.snapshot
         val query = state?.query ?: model.query()
         val xp = query.metric == CompetitionQuery.Metric.DAILY_XP
         val board = snapshot?.board
         val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(context)
-        val heroBg = if (dark) MentorTokens.DarkPrimaryContainer else MentorTokens.PrimaryContainer
+        val palette = premiumDashboardPalette(dark)
 
-        Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-            // Hero Header matching Profile UI
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .background(heroBg)
-                    .padding(horizontal = MentorTokens.PagePadding, vertical = 20.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column(Modifier.fillMaxSize()) {
+            PremiumDashboardHeader(artwork = com.example.mentor.ui.design.MentorArtwork.GOALS) {
                     Box(
                         Modifier
                             .size(56.dp)
-                            .shadow(4.dp, CircleShape)
                             .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primaryContainer),
+                            .background(palette.iconSurface),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_trophy),
                             contentDescription = null,
-                            tint = MentorTokens.RewardXpBar,
+                            tint = palette.experience,
                             modifier = Modifier.size(32.dp)
                         )
                     }
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
                             text = stringResource(R.string.competition_title),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = palette.title
                         )
                         Text(
                             text = stringResource(R.string.competition_description),
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = palette.secondary
                         )
                     }
-                }
             }
 
             LazyColumn(
                 Modifier.fillMaxWidth().weight(1f).testTag("ranking-list"),
-                contentPadding = PaddingValues(MentorTokens.PagePadding),
-                verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceMedium)
+                contentPadding = PaddingValues(horizontal = 18.dp, vertical = 18.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Filter Chips Row
                 item {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Row(
                             Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            FilterChip(
+                            PremiumDashboardSegment(
+                                label = stringResource(R.string.competition_streak),
                                 selected = !xp,
+                                palette = palette,
                                 onClick = { model.select(CompetitionQuery(CompetitionQuery.Metric.STREAK, query.scope)) },
-                                label = { Text(stringResource(R.string.competition_streak)) },
                                 modifier = Modifier.weight(1f)
                             )
-                            FilterChip(
+                            PremiumDashboardSegment(
+                                label = stringResource(R.string.competition_daily),
                                 selected = xp,
+                                palette = palette,
                                 onClick = { model.select(CompetitionQuery(CompetitionQuery.Metric.DAILY_XP, query.scope)) },
-                                label = { Text(stringResource(R.string.competition_daily)) },
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -109,62 +102,55 @@ object CompetitionUi {
                             Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            FilterChip(
+                            PremiumDashboardSegment(
+                                label = stringResource(R.string.competition_friends),
                                 selected = query.scope == CompetitionQuery.Scope.FRIENDS,
+                                palette = palette,
                                 onClick = { model.select(CompetitionQuery(query.metric, CompetitionQuery.Scope.FRIENDS)) },
-                                label = { Text(stringResource(R.string.competition_friends)) },
                                 modifier = Modifier.weight(1f)
                             )
-                            FilterChip(
+                            PremiumDashboardSegment(
+                                label = stringResource(R.string.competition_everyone),
                                 selected = query.scope == CompetitionQuery.Scope.GLOBAL,
+                                palette = palette,
                                 onClick = { model.select(CompetitionQuery(query.metric, CompetitionQuery.Scope.GLOBAL)) },
-                                label = { Text(stringResource(R.string.competition_everyone)) },
                                 modifier = Modifier.weight(1f)
                             )
                         }
                     }
                 }
 
-                // Personal Summary Card
                 item {
-                    Surface(
-                        Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(20.dp),
-                        color = MaterialTheme.colorScheme.surface,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                        shadowElevation = 1.dp
-                    ) {
-                        Row(
-                            Modifier.padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
+                    PremiumDashboardCard(palette, highlighted = true) {
+                        Text(stringResource(R.string.competition_progress_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold, color = palette.title)
+                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                             Box(
-                                Modifier
-                                    .size(48.dp)
-                                    .clip(CircleShape)
-                                    .background(if (xp) Color(0xFFFEF08A) else Color(0xFFFFEDD5)),
+                                Modifier.size(48.dp).clip(RoundedCornerShape(14.dp))
+                                    .background(palette.iconSurface),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
                                     painter = painterResource(if (xp) R.drawable.ic_lightning else R.drawable.ic_flame),
                                     contentDescription = null,
-                                    tint = if (xp) MentorTokens.Orange600 else MentorTokens.RewardStreakDark,
+                                    tint = if (xp) palette.experience else palette.streak,
                                     modifier = Modifier.size(26.dp)
                                 )
                             }
                             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                                 Text(
-                                    text = stringResource(R.string.competition_you),
+                                    text = stringResource(if (xp) R.string.competition_daily else R.string.competition_streak),
                                     style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = palette.secondary
                                 )
                                 val score = if (xp) snapshot?.dailyXp else snapshot?.streak?.toLong()
                                 Text(
                                     text = if (score == null) "—" else stringResource(if (xp) R.string.competition_xp_value else R.string.competition_streak_value, score),
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface
+                                    color = palette.title
                                 )
                             }
                         }
@@ -175,69 +161,67 @@ object CompetitionUi {
                     items(3) { MentorSkeleton(stringResource(R.string.ranking_loading)) }
                 } else if (snapshot?.needsLogin == true || snapshot == null || snapshot.source == CompetitionRepository.Source.UNAVAILABLE || snapshot.source == CompetitionRepository.Source.LOCAL || board == null || board.entries.isEmpty()) {
                     item {
-                        Surface(
-                            Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(20.dp),
-                            color = MaterialTheme.colorScheme.surface,
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-                        ) {
-                            Column(
-                                Modifier.padding(24.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
+                        PremiumDashboardCard(palette) {
+                            MentorIllustration(MentorArtwork.GOALS)
+                                Box(Modifier.size(48.dp).clip(RoundedCornerShape(14.dp))
+                                    .background(palette.iconSurface).align(Alignment.CenterHorizontally),
+                                    contentAlignment = Alignment.Center) {
+                                    Icon(painterResource(R.drawable.ic_trophy), null,
+                                        Modifier.size(26.dp), tint = palette.accent)
+                                }
+                                val unavailable = snapshot == null || snapshot.source == CompetitionRepository.Source.UNAVAILABLE
+                                if (unavailable && snapshot?.needsLogin != true) {
+                                    Text(stringResource(R.string.competition_error_title),
+                                        style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold,
+                                        color = palette.title, modifier = Modifier.align(Alignment.CenterHorizontally))
+                                }
                                 Text(
                                     text = when {
                                         snapshot?.needsLogin == true -> stringResource(R.string.ranking_login)
-                                        snapshot == null || snapshot.source == CompetitionRepository.Source.UNAVAILABLE -> stringResource(R.string.ranking_error)
+                                        unavailable -> stringResource(R.string.competition_error_subtitle)
                                         snapshot.source == CompetitionRepository.Source.LOCAL -> stringResource(R.string.competition_disconnected)
                                         query.scope == CompetitionQuery.Scope.FRIENDS && board?.entries?.size == 1 -> stringResource(R.string.ranking_friends_empty)
                                         else -> stringResource(R.string.ranking_empty)
                                     },
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    color = palette.secondary,
+                                    modifier = Modifier.fillMaxWidth(),
                                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
                                 )
-                                MentorButton(stringResource(if (snapshot?.needsLogin == true) R.string.login_btn else R.string.ranking_retry), { refresh.run() })
-                            }
+                                PremiumDashboardAction(stringResource(if (snapshot?.needsLogin == true) R.string.login_btn else R.string.ranking_retry),
+                                    palette, { refresh.run() }, Modifier.align(Alignment.CenterHorizontally))
                         }
                     }
                 } else {
                     items(board.entries, key = { it.learner.id }) { entry ->
-                        val rankBg = when (entry.rank) {
-                            1 -> MentorTokens.Orange200 // Gold
-                            2 -> MentorTokens.Blue100 // Silver
-                            3 -> MentorTokens.Orange100 // Bronze
-                            else -> MaterialTheme.colorScheme.surfaceVariant
-                        }
                         val rankTint = when (entry.rank) {
-                            1 -> MentorTokens.Orange600
-                            2 -> MentorTokens.Blue600
-                            3 -> MentorTokens.RewardStreakDark
-                            else -> MaterialTheme.colorScheme.onSurfaceVariant
+                            1 -> palette.experience
+                            2 -> palette.secondary
+                            3 -> palette.streak
+                            else -> palette.muted
                         }
 
                         Surface(
                             Modifier
                                 .fillMaxWidth()
                                 .testTag("ranking:${entry.learner.id}")
-                                .clickable { profile.accept(entry.learner.id) },
-                            shape = RoundedCornerShape(16.dp),
-                            color = MaterialTheme.colorScheme.surface,
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                            shadowElevation = 0.5.dp
+                                .clickable(onClickLabel = stringResource(R.string.ranking_profile),
+                                    role = Role.Button) { profile.accept(entry.learner.id) },
+                            shape = RoundedCornerShape(20.dp),
+                            color = palette.card,
+                            border = BorderStroke(1.dp, palette.border)
                         ) {
                             Row(
                                 Modifier.padding(14.dp),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
                                 // Rank Badge
                                 Box(
                                     Modifier
                                         .size(36.dp)
                                         .clip(CircleShape)
-                                        .background(rankBg),
+                                        .background(palette.iconSurface),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
@@ -253,14 +237,14 @@ object CompetitionUi {
                                     Modifier
                                         .size(42.dp)
                                         .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.primaryContainer),
+                                        .background(palette.elevated),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
                                         text = entry.learner.nickname.trim().firstOrNull()?.uppercase() ?: "U",
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                                        color = palette.title
                                     )
                                 }
 
@@ -270,14 +254,14 @@ object CompetitionUi {
                                         text = entry.learner.nickname,
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onSurface,
+                                        color = palette.title,
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
                                     Text(
-                                        text = stringResource(R.string.profile_joined_date, "2026"),
+                                        text = stringResource(if (xp) R.string.competition_daily else R.string.competition_streak),
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        color = palette.secondary
                                     )
                                 }
 
@@ -289,14 +273,14 @@ object CompetitionUi {
                                     Icon(
                                         painter = painterResource(if (xp) R.drawable.ic_lightning else R.drawable.ic_flame),
                                         contentDescription = null,
-                                        tint = if (xp) MentorTokens.RewardXpBar else MentorTokens.RewardStreakLight,
+                                        tint = if (xp) palette.experience else palette.streak,
                                         modifier = Modifier.size(18.dp)
                                     )
                                     Text(
                                         text = stringResource(if (xp) R.string.competition_xp_value else R.string.competition_streak_value, entry.value),
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onSurface
+                                        color = palette.title
                                     )
                                 }
                             }
@@ -315,10 +299,10 @@ object CompetitionUi {
                         Text(
                             text = stringResource(R.string.ranking_rules),
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = palette.muted,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center
                         )
-                        MentorButton(stringResource(R.string.competition_learn), { learn.run() })
+                        PremiumDashboardAction(stringResource(R.string.competition_learn), palette, { learn.run() })
                     }
                 }
             }

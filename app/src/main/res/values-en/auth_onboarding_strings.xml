@@ -73,12 +73,14 @@
     <string name="auth_resend">Resend verification email</string>
     <string name="auth_have_code">I have a password reset code</string>
     <string name="auth_email_verification">Verify email address</string>
+    <string name="auth_email_verified">Verified \u2713</string>
     <string name="auth_request_accepted">If the request is eligible, instructions will be sent by email. Check your inbox and spam folder.</string>
     <string name="auth_token_invalid">The code is invalid or expired. Request new instructions.</string>
     <string name="auth_recovery_failed">We could not complete this request. Try again later.</string>
     <string name="auth_verified">Email verified.</string>
     <string name="auth_password_reset_done">Your password has been reset. Sign in with the new password.</string>
     <string name="auth_resend_wait">You can request another email in about a minute.</string>
+    <string name="auth_resend_wait_timer">Resend in (%1$ds)</string>
     <string name="auth_token_required">Enter a verification code.</string>
     <string name="auth_route_error">Unable to load the account state. Please sign in again.</string>
     <string-array name="learner_goals">

@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,7 +46,7 @@ class OverviewUi(private val context: Context, private val profile: Boolean,
     private var loading by mutableStateOf(true)
     private var failed by mutableStateOf(false)
 
-    fun view(): View = composeHost(context) {
+    fun view(): View = composeHost(context, scenicBackground = true) {
         OverviewScreen(profile, name, avatar, grade, snapshot, selected, loading, failed,
             { open.accept(it) }, { action.run() }, { edit.run() }, { settings.run() }, { learn.run() }, { schedule.run() })
     }
@@ -64,34 +65,26 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
     val context = androidx.compose.ui.platform.LocalContext.current
     val data = snapshot?.data
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(context)
-    val heroBg = if (dark) MentorTokens.DarkPrimaryContainer else MentorTokens.PrimaryContainer
+    val palette = premiumDashboardPalette(dark)
 
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
+    Column(Modifier.fillMaxSize()
         .verticalScroll(rememberScrollState())) {
-        // Hero Header matching Profile & Competition UI
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .background(heroBg)
-                .padding(horizontal = MentorTokens.PagePadding, vertical = 20.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        PremiumDashboardHeader {
                 Box(
                     Modifier
                         .size(60.dp)
-                        .shadow(4.dp, CircleShape)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer),
+                        .background(palette.iconSurface),
                     contentAlignment = Alignment.Center
                 ) {
                     if (!avatar.isNullOrBlank()) {
                         AsyncImage(avatar, null, Modifier.fillMaxSize())
                     } else {
                         Text(
-                            text = name.trim().take(2).uppercase().ifBlank { "HI" },
+                            text = name.trim().firstOrNull()?.uppercase() ?: "A",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = palette.title
                         )
                     }
                 }
@@ -100,152 +93,125 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                         text = name.ifBlank { stringResource(R.string.home_default_user) },
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = palette.title,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = if (grade in 10..12) stringResource(R.string.chat_grade, grade) else stringResource(R.string.design_initial),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = palette.secondary
                     )
                 }
                 if (profile) {
                     IconButton(settings) {
-                        Icon(painter = painterResource(R.drawable.ic_settings), contentDescription = stringResource(R.string.settings_title), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Icon(painter = painterResource(R.drawable.ic_settings), contentDescription = stringResource(R.string.settings_title), tint = palette.secondary)
                     }
                 }
-            }
         }
 
-        Column(Modifier.fillMaxWidth().padding(MentorTokens.PagePadding), verticalArrangement = Arrangement.spacedBy(MentorTokens.PagePadding)) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 18.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                if (!profile) {
+                    val scheduleLabel = stringResource(R.string.home_schedule_title)
+                    PremiumDashboardCard(palette, modifier = Modifier.clickable(
+                        onClickLabel = scheduleLabel, role = Role.Button, onClick = schedule)) {
+                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                            Box(Modifier.size(48.dp).clip(RoundedCornerShape(14.dp))
+                                .background(palette.iconSurface), contentAlignment = Alignment.Center) {
+                                Icon(painterResource(R.drawable.ic_book_course), null, Modifier.size(26.dp), tint = palette.accent)
+                            }
+                            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                Text(scheduleLabel, style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold, color = palette.title)
+                                Text(stringResource(R.string.home_schedule_subtitle),
+                                    style = MaterialTheme.typography.bodySmall, color = palette.secondary)
+                            }
+                            Icon(painterResource(R.drawable.ic_chevron_right), null, Modifier.size(20.dp), tint = palette.muted)
+                        }
+                    }
+                }
+
             if (loading) {
                 repeat(3) { MentorSkeleton(stringResource(R.string.course_loading)) }
             } else {
                 if (failed || data == null || snapshot?.mode != LearningOverviewRepository.Mode.LIVE) {
-                    Surface(
-                        shape = RoundedCornerShape(20.dp),
-                        color = MaterialTheme.colorScheme.surface,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-                    ) {
-                        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    PremiumDashboardCard(palette, highlighted = true) {
+                            Text(stringResource(R.string.home_status_title), style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold, color = palette.title)
                             Text(stringResource(when {
                                 snapshot?.needsLogin == true -> R.string.overview_expired
                                 failed -> R.string.overview_error
                                 snapshot?.mode == LearningOverviewRepository.Mode.CACHED -> R.string.overview_cached
                                 snapshot?.mode == LearningOverviewRepository.Mode.LOCAL -> R.string.dashboard_connect_notice
                                 else -> R.string.overview_error
-                            }))
-                            MentorButton(stringResource(if (snapshot?.needsLogin == true) R.string.login_btn
+                            }), style = MaterialTheme.typography.bodyMedium, color = palette.secondary)
+                            PremiumDashboardAction(stringResource(if (snapshot?.needsLogin == true) R.string.login_btn
                                 else if (snapshot?.mode == LearningOverviewRepository.Mode.LOCAL) R.string.course_open else R.string.overview_reload),
-                                if (snapshot?.mode == LearningOverviewRepository.Mode.LOCAL) learn else action)
-                        }
+                                palette, if (snapshot?.mode == LearningOverviewRepository.Mode.LOCAL) learn else action)
                     }
                 }
-                
-                if (!profile) {
-                    Surface(
-                        shape = RoundedCornerShape(20.dp),
-                        color = MaterialTheme.colorScheme.surface,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                        modifier = Modifier.fillMaxWidth().clickable { schedule() }
-                    ) {
-                        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Icon(painter = painterResource(R.drawable.ic_book_course), contentDescription = null, tint = MentorTokens.Info, modifier = Modifier.size(28.dp))
-                            Spacer(Modifier.width(16.dp))
-                            Column {
-                                Text("Thời khóa biểu", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                                Text("Xem lịch học", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            }
-                        }
-                    }
-                }
+
 
                 if (data != null) {
                     if (snapshot?.mode == LearningOverviewRepository.Mode.LIVE)
                         Text(stringResource(R.string.overview_current), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     
-                    // Gamified Stats Grid Card
-                    Surface(
-                        shape = RoundedCornerShape(20.dp),
-                        color = MaterialTheme.colorScheme.surface,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                        shadowElevation = 1.dp
-                    ) {
-                        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                    Icon(painter = painterResource(R.drawable.ic_flame), contentDescription = null, tint = MentorTokens.RewardStreakLight, modifier = Modifier.size(26.dp))
-                                    Column {
-                                        Text(stringResource(R.string.overview_streak, data.streakDays), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                                        Text(stringResource(R.string.profile_streak_label), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                    }
-                                }
-                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                    Icon(painter = painterResource(R.drawable.ic_lightning), contentDescription = null, tint = MentorTokens.RewardXpBar, modifier = Modifier.size(26.dp))
-                                    Column {
-                                        Text(stringResource(R.string.overview_daily_xp, data.dailyXp), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                                        Text(stringResource(R.string.profile_xp_label), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                    }
-                                }
-                            }
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-                            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                Column {
-                                    Text("${data.totalXp} XP", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                                    Text(stringResource(R.string.design_total_xp), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                }
-                                Column(horizontalAlignment = Alignment.End) {
-                                    Text("${data.completedLessons} / ${data.totalLessons} bài", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                                    Text(stringResource(R.string.profile_lessons_label), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                }
-                            }
-                            MentorProgress(if (data.totalLessons == 0) 0f else data.completedLessons.toFloat() / data.totalLessons)
+                    PremiumDashboardCard(palette, highlighted = true) {
+                        Text(stringResource(R.string.home_progress_title), style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold, color = palette.title)
+                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+                            OverviewMetric(Modifier.weight(1f), R.drawable.ic_flame,
+                                stringResource(R.string.overview_streak, data.streakDays),
+                                stringResource(R.string.profile_streak_label), palette.streak, palette)
+                            Spacer(Modifier.width(10.dp))
+                            OverviewMetric(Modifier.weight(1f), R.drawable.ic_lightning,
+                                stringResource(R.string.overview_daily_xp, data.dailyXp),
+                                stringResource(R.string.competition_daily), palette.experience, palette)
                         }
+                        HorizontalDivider(color = palette.border)
+                        Row(Modifier.fillMaxWidth()) {
+                            OverviewTextMetric(Modifier.weight(1f), "${data.totalXp} XP",
+                                stringResource(R.string.design_total_xp), palette)
+                            OverviewTextMetric(Modifier.weight(1f),
+                                stringResource(R.string.overview_lessons, data.completedLessons, data.totalLessons),
+                                stringResource(R.string.profile_lessons_label), palette)
+                        }
+                        MentorProgress(if (data.totalLessons == 0) 0f else data.completedLessons.toFloat() / data.totalLessons)
                     }
-                    WeekChart(data)
-                } else if (!failed) Surface(
-                    shape = RoundedCornerShape(20.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-                ) {
-                    Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(stringResource(R.string.design_week), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                        Text(stringResource(R.string.design_chart_hint), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
+                    HomeWeekChart(data, palette)
+                } else if (!failed) PremiumDashboardCard(palette) {
+                    Text(stringResource(R.string.design_week), style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold, color = palette.title)
+                    MentorIllustration(MentorArtwork.GOALS)
+                    Text(stringResource(R.string.design_week_empty), style = MaterialTheme.typography.bodyMedium,
+                        color = palette.secondary)
                 }
                 if (!profile) {
-                    Surface(
-                        shape = RoundedCornerShape(20.dp),
-                        color = MaterialTheme.colorScheme.surface,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-                    ) {
-                        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            Text(stringResource(R.string.design_goal), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Text(stringResource(R.string.design_chart_hint), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            MentorButton(stringResource(R.string.course_continue), learn)
-                        }
+                    PremiumDashboardCard(palette) {
+                        Text(stringResource(R.string.design_goal), style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold, color = palette.title)
+                        Text(stringResource(R.string.home_suggestion_subtitle), style = MaterialTheme.typography.bodyMedium,
+                            color = palette.secondary)
+                        PremiumDashboardAction(stringResource(R.string.course_continue), palette, learn)
                     }
-                    Text(stringResource(R.string.design_subjects), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.design_subjects), style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold, color = palette.title)
                     selected.forEach { subject ->
                         val progress = data?.subjects?.firstOrNull { it.id == subject.wireId }
-                        Surface(
-                            Modifier.fillMaxWidth().testTag("dashboard-subject:${subject.wireId}"),
-                            shape = RoundedCornerShape(16.dp),
-                            color = MaterialTheme.colorScheme.surface,
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-                        ) {
-                            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                                Text(subject.label(LocaleHelper.getLanguage(context)), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        PremiumDashboardCard(palette, Modifier.testTag("dashboard-subject:${subject.wireId}")) {
+                                Text(subject.label(LocaleHelper.getLanguage(context)),
+                                    style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold,
+                                    color = palette.title)
                                 if (progress != null) {
-                                    Text(stringResource(R.string.overview_subject_progress, progress.completed, progress.total, progress.experience), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    Text(stringResource(R.string.overview_subject_progress, progress.completed, progress.total, progress.experience), style = MaterialTheme.typography.bodySmall, color = palette.secondary)
                                     MentorProgress(if (progress.total == 0) 0f else progress.completed.toFloat() / progress.total)
-                                } else Text(stringResource(R.string.dashboard_progress_pending), style = MaterialTheme.typography.bodySmall)
-                                MentorButton(stringResource(R.string.course_open), { open(subject) })
-                            }
+                                } else Text(stringResource(R.string.dashboard_progress_pending),
+                                    style = MaterialTheme.typography.bodySmall, color = palette.secondary)
+                                PremiumDashboardAction(stringResource(R.string.course_open), palette, { open(subject) })
                         }
                     }
-                    if (selected.isEmpty()) MentorButton(stringResource(R.string.lesson_choose_prompt), learn)
+                    if (selected.isEmpty()) PremiumDashboardAction(stringResource(R.string.lesson_choose_prompt), palette, learn)
                 } else if (data != null) Surface(
                     shape = RoundedCornerShape(20.dp),
                     color = MaterialTheme.colorScheme.surface,
@@ -256,6 +222,64 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                         Text(stringResource(if (data.questionCount == 0) R.string.overview_no_practice else R.string.overview_practice,
                             data.firstTryCorrect, data.questionCount), style = MaterialTheme.typography.bodyMedium)
                         Text(stringResource(R.string.overview_assisted, data.assisted), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun OverviewMetric(modifier: Modifier, icon: Int, value: String, label: String,
+    accent: Color, palette: PremiumDashboardPalette) {
+    Row(modifier, verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Icon(painterResource(icon), null, Modifier.size(23.dp), tint = accent)
+        Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            Text(value, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold,
+                color = palette.title, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            Text(label, style = MaterialTheme.typography.labelSmall, color = palette.secondary)
+        }
+    }
+}
+
+@Composable
+private fun OverviewTextMetric(modifier: Modifier, value: String, label: String,
+    palette: PremiumDashboardPalette) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+        Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
+            color = palette.title, maxLines = 2)
+        Text(label, style = MaterialTheme.typography.labelSmall, color = palette.secondary)
+    }
+}
+
+@Composable
+private fun HomeWeekChart(data: LearningOverviewData, palette: PremiumDashboardPalette) {
+    PremiumDashboardCard(palette) {
+        Text(stringResource(R.string.design_week), style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold, color = palette.title)
+        if (data.week.isEmpty() || data.week.none { it.xp > 0 || it.streakLit }) {
+            Text(stringResource(R.string.design_week_empty), style = MaterialTheme.typography.bodyMedium,
+                color = palette.secondary)
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                repeat(7) {
+                    Box(Modifier.weight(1f).height(6.dp).clip(RoundedCornerShape(3.dp))
+                        .background(palette.border))
+                }
+            }
+        } else {
+            val max = data.week.maxOf { it.xp }.coerceAtLeast(1)
+            Row(Modifier.fillMaxWidth().heightIn(min = 116.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
+                data.week.forEach { day ->
+                    val label = stringResource(R.string.design_day_xp, day.day, day.xp)
+                    Column(Modifier.weight(1f).semantics(mergeDescendants = true) { contentDescription = label },
+                        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
+                        Box(Modifier.fillMaxWidth().height((day.xp.toFloat() / max * 84).coerceAtLeast(4f).dp)
+                            .clip(RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp))
+                            .background(if (day.streakLit) palette.streak else palette.accent))
+                        Spacer(Modifier.height(6.dp))
+                        Text(day.day.takeLast(2), style = MaterialTheme.typography.labelSmall,
+                            color = palette.muted, maxLines = 1, overflow = TextOverflow.Clip)
                     }
                 }
             }

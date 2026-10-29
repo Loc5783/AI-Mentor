@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="neumorphic_background">#FFF7FA</color>
+    <color name="neumorphic_background">#EDF2FC</color>
     <color name="neumorphic_shadow_light">#FFFFFF</color>
-    <color name="neumorphic_shadow_dark">#EBD5E0</color>
+    <color name="neumorphic_shadow_dark">#D9E1F0</color>
 
     <color name="primaryColor">#8DB6F7</color>
     <color name="primaryDarkColor">#3A5A94</color>
     <color name="primaryContainerColor">#D6E4FB</color>
     <color name="accentColor">#8DB6F7</color>
 
-    <color name="backgroundColor">#FFF7FA</color>
+    <color name="backgroundColor">#EDF2FC</color>
+    <color name="backgroundEndColor">#DFE9FA</color>
     <color name="surfaceColor">#FFFFFF</color>
-    <color name="surfaceVariantColor">#FCEFF5</color>
+    <color name="glassSurfaceColor">#F5FFFFFF</color>
+    <color name="surfaceVariantColor">#DFE9FA</color>
 
-    <color name="textColorPrimary">#24203A</color>
-    <color name="textColorSecondary">#6B5B78</color>
+    <color name="textColorPrimary">#18243A</color>
+    <color name="textColorSecondary">#4A5A74</color>
 
-    <color name="dividerColor">#EBD5E0</color>
+    <color name="dividerColor">#D9E1F0</color>
     <color name="arrowTintColor">#2F5FB3</color>
-    <color name="buttonShadowColor">#FCEFF5</color>
+    <color name="buttonShadowColor">#DFE9FA</color>
 
-    <color name="reminderAccentColor">#F7CE8D</color>
+    <color name="reminderAccentColor">#D99119</color>
     <color name="themeAccentColor">#8DB6F7</color>
     <color name="heroEndColor">#6A9BEF</color>
 
     <color name="onPrimaryColor">#0B2545</color>
 
-    <color name="secondaryColor">#F7CE8D</color>
+    <color name="secondaryColor">#FFD166</color>
     <color name="onSecondaryColor">#4D3110</color>
     <color name="secondaryContainerColor">#FDEFD6</color>
     <color name="onSecondaryContainerColor">#764B15</color>
@@ -35,24 +37,26 @@
     <color name="black">#FF000000</color>
     <color name="errorColor">#C62828</color>
 
-    <color name="auth_background">#FFF7FA</color>
-    <color name="auth_background_end">#FCEFF5</color>
+    <color name="auth_background">#EDF2FC</color>
+    <color name="auth_background_end">#EDE7FF</color>
     <color name="auth_surface">#FFFFFF</color>
+    <color name="auth_surface_glass">#F5FFFFFF</color>
     <color name="auth_surface_soft">#D6E4FB</color>
     <color name="auth_primary">#8DB6F7</color>
     <color name="auth_on_primary">#0B2545</color>
-    <color name="auth_border">#EBD5E0</color>
-    <color name="auth_text">#24203A</color>
-    <color name="auth_muted">#6B5B78</color>
+    <color name="auth_border">#D9E1F0</color>
+    <color name="auth_text">#18243A</color>
+    <color name="auth_muted">#4A5A74</color>
     <color name="auth_success">#1E7F5C</color>
     <color name="auth_error">#C62828</color>
     <color name="auth_pressed">#6A9BEF</color>
 
     <color name="mentor_quiz_surface">#FFFFFF</color>
-    <color name="mentor_quiz_text">#24203A</color>
-    <color name="mentor_quiz_secondary">#6B5B78</color>
-    <color name="mentor_quiz_background">#FFF7FA</color>
+    <color name="mentor_quiz_text">#18243A</color>
+    <color name="mentor_quiz_secondary">#4A5A74</color>
+    <color name="mentor_quiz_background">#EDF2FC</color>
     <color name="mentor_quiz_accent">#8DB6F7</color>
     <color name="mentor_quiz_on_accent">#0B2545</color>
-    <color name="mentor_quiz_border">#EBD5E0</color>
+    <color name="mentor_quiz_border">#D9E1F0</color>
+    <color name="headerOutlineColor">#6B8DBCE8</color>
 </resources>

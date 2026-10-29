@@ -1,0 +1,13 @@
+<resources>
+    <string name="schedule_import_preview">Review timetable</string>
+    <string name="schedule_import_note">Review detected lessons and uncheck incorrect entries. Only empty slots are filled; existing entries stay unchanged. Afternoon periods are numbered 6–10.</string>
+    <string name="schedule_import_result">Added %1$d lessons; skipped %2$d occupied slots.</string>
+    <string name="schedule_import_slot">%1$s · Period %2$d — %3$s</string>
+    <string name="schedule_import_sunday">Sunday</string>
+    <string name="schedule_import_weekday">Weekday %1$d</string>
+    <string name="schedule_import_error">Could not save. Please retry; your existing timetable is unchanged.</string>
+    <string name="schedule_import_saving">Saving…</string>
+    <string name="schedule_import_save">Add to timetable</string>
+    <string name="chat_suggest_schedule">Read my timetable photo and add it to my schedule</string>
+    <string name="schedule_import_invalid">No valid timetable could be extracted. Send a clearer image or clarify the days and periods.</string>
+</resources>

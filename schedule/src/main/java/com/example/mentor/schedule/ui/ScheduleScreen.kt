@@ -1,35 +1,29 @@
 package com.example.mentor.schedule.ui
 
-import androidx.compose.foundation.background
+import com.example.mentor.ui.design.mentorHeader
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mentor.schedule.R
 import com.example.mentor.schedule.domain.ScheduleEntry
 import com.example.mentor.schedule.domain.ScheduleRepository
-import com.example.mentor.ui.design.MentorTokens
 import kotlinx.coroutines.launch
 
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
+import android.app.Application
+import androidx.compose.ui.platform.LocalContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,30 +32,40 @@ fun ScheduleScreen(
     repository: ScheduleRepository,
     onBack: () -> Unit
 ) {
-    val factory = remember { ScheduleViewModelFactory(accountId, repository) }
+    val context = LocalContext.current
+    val factory = remember { ScheduleViewModelFactory(context.applicationContext as Application, accountId, repository) }
     val viewModel: ScheduleViewModel = viewModel(factory = factory)
     
-    // We fetch all entries for the week to draw the grid
-    LaunchedEffect(Unit) {
-        viewModel.loadAllEntriesForWeek()
-    }
+    val daysArray = stringResource(R.string.schedule_days).split(",")
+    val selectedDay by viewModel.selectedDay
     
-    var showForm by remember { mutableStateOf(false) }
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    var showScheduleForm by remember { mutableStateOf(false) }
+    var showTodoForm by remember { mutableStateOf(false) }
+    var showHistory by remember { mutableStateOf(false) }
     var entryToEdit by remember { mutableStateOf<ScheduleEntry?>(null) }
     
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     
     val undoMsg = stringResource(R.string.schedule_undo)
-    val deletedMsg = stringResource(R.string.schedule_deleted)
+    val deletedMsgSchedule = stringResource(R.string.schedule_deleted)
+    val deletedMsgTodo = stringResource(R.string.todo_deleted)
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.schedule_title)) },
+                modifier = Modifier.mentorHeader(com.example.mentor.ui.design.MentorArtwork.PLANNER),
+                title = { Text(if (selectedTabIndex == 0) stringResource(R.string.schedule_tab_schedule) else stringResource(R.string.schedule_tab_todo)) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = androidx.compose.ui.graphics.Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { showHistory = true }) {
+                        Icon(Icons.Default.DateRange, contentDescription = stringResource(R.string.schedule_history))
                     }
                 }
             )
@@ -69,187 +73,293 @@ fun ScheduleScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { 
-                    entryToEdit = null
-                    showForm = true 
+                    if (selectedTabIndex == 0) {
+                        entryToEdit = null
+                        showScheduleForm = true
+                    } else {
+                        showTodoForm = true
+                    }
                 },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary
             ) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_add))
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_add_button))
             }
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = androidx.compose.ui.graphics.Color.Transparent
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
-            ScheduleGrid(
-                entries = viewModel.allEntries,
-                onCellClick = { entry ->
-                    entryToEdit = entry
-                    showForm = true
-                }
+            // Tabs cho Lịch học vs Nhiệm vụ
+            TabRow(selectedTabIndex = selectedTabIndex,
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = .9f)) {
+                Tab(
+                    selected = selectedTabIndex == 0,
+                    onClick = { selectedTabIndex = 0 },
+                    text = { Text(stringResource(R.string.schedule_tab_schedule)) }
+                )
+                Tab(
+                    selected = selectedTabIndex == 1,
+                    onClick = { selectedTabIndex = 1 },
+                    text = { Text(stringResource(R.string.schedule_tab_todo)) }
+                )
+            }
+            
+            // Thanh chọn ngày dùng chung
+            DaySelectorStrip(
+                days = daysArray,
+                selectedDay = selectedDay,
+                onDaySelected = { viewModel.selectDay(it) }
             )
+            
+            if (selectedTabIndex == 0) {
+                ScheduleTimelineList(
+                    entries = viewModel.entries,
+                    onItemClick = { entry ->
+                        entryToEdit = entry
+                        showScheduleForm = true
+                    }
+                )
+            } else {
+                DailyTodoList(
+                    todos = viewModel.todos,
+                    progress = viewModel.todoProgress.value,
+                    onToggle = { viewModel.toggleTodo(it) },
+                    onDelete = { task ->
+                        viewModel.deleteTodo(task)
+                        scope.launch {
+                            val res = snackbarHostState.showSnackbar(
+                                message = deletedMsgTodo, 
+                                actionLabel = undoMsg, 
+                                duration = SnackbarDuration.Short
+                            )
+                            if (res == SnackbarResult.ActionPerformed) viewModel.undoDeleteTodo()
+                        }
+                    }
+                )
+            }
         }
     }
     
-    if (showForm) {
+    if (showScheduleForm) {
         ScheduleFormDialog(
             initialEntry = entryToEdit,
             accountId = accountId,
-            selectedDay = 1, // default to Monday when opened from FAB
+            selectedDay = selectedDay,
             viewModel = viewModel,
-            onDismiss = { showForm = false },
+            onDismiss = { showScheduleForm = false },
             onSave = { entries, isEdit ->
                 viewModel.saveEntries(entries, isEdit)
-                showForm = false
+                showScheduleForm = false
             },
             onDelete = { entry ->
                 viewModel.deleteEntry(entry)
-                showForm = false
+                showScheduleForm = false
                 scope.launch {
-                    val result = snackbarHostState.showSnackbar(
-                        message = deletedMsg,
-                        actionLabel = undoMsg,
-                        duration = SnackbarDuration.Short
-                    )
-                    if (result == SnackbarResult.ActionPerformed) {
-                        viewModel.undoDelete()
-                    }
+                    val result = snackbarHostState.showSnackbar(deletedMsgSchedule, undoMsg, duration = SnackbarDuration.Short)
+                    if (result == SnackbarResult.ActionPerformed) viewModel.undoDeleteEntry()
                 }
             }
         )
     }
-}
-
-val periodTimes = mapOf(
-    1 to "07:00\n07:45",
-    2 to "07:50\n08:35",
-    3 to "08:40\n09:25",
-    4 to "09:35\n10:20",
-    5 to "10:25\n11:10",
-    6 to "13:00\n13:45",
-    7 to "13:50\n14:35",
-    8 to "14:40\n15:25",
-    9 to "15:35\n16:20",
-    10 to "16:25\n17:10"
-)
-
-@Composable
-fun ScheduleGrid(entries: List<ScheduleEntry>, onCellClick: (ScheduleEntry?) -> Unit) {
-    val days = listOf("THỨ HAI", "THỨ BA", "THỨ TƯ", "THỨ NĂM", "THỨ SÁU", "THỨ BẢY")
     
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .horizontalScroll(rememberScrollState())
-            .verticalScroll(rememberScrollState())
-            .padding(12.dp)
-    ) {
-        // Header Row
-        Row(modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))) {
-            Box(modifier = Modifier.width(64.dp).padding(8.dp))
-            days.forEach { day ->
-                Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .padding(8.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(day, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
+    if (showTodoForm) {
+        TodoQuickAddDialog(
+            onDismiss = { showTodoForm = false },
+            onSave = { title, priority ->
+                viewModel.saveTodo(title, priority, null)
+                showTodoForm = false
             }
-        }
-        
-        // Morning header
-        Row(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))) {
-            Box(
-                modifier = Modifier
-                    .width(664.dp) // 64 + 6 * 100
-                    .padding(vertical = 4.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("SÁNG", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSecondaryContainer)
-            }
-        }
-        
-        // Periods 1-5 (Morning)
-        for (period in 1..5) {
-            ScheduleRow(period = period, days = 1..6, entries = entries, onClick = onCellClick)
-        }
-
-        // Afternoon header
-        Row(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))) {
-            Box(
-                modifier = Modifier
-                    .width(664.dp) // 64 + 6 * 100
-                    .padding(vertical = 4.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("CHIỀU", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSecondaryContainer)
-            }
-        }
-        
-        // Periods 6-10 (Afternoon)
-        for (period in 6..10) {
-            val isLast = period == 10
-            ScheduleRow(period = period, days = 1..6, entries = entries, onClick = onCellClick, isLast = isLast)
-        }
+        )
+    }
+    
+    if (showHistory) {
+        ActivityLogSheet(
+            logs = viewModel.logs,
+            onDismiss = { showHistory = false },
+            onClearLogs = { viewModel.clearLogs() }
+        )
     }
 }
 
 @Composable
-fun ScheduleRow(period: Int, days: IntRange, entries: List<ScheduleEntry>, onClick: (ScheduleEntry?) -> Unit, isLast: Boolean = false) {
-    val bgColor = if (period % 2 == 0) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
-    val shape = if (isLast) RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp) else RoundedCornerShape(0.dp)
-    Row(modifier = Modifier.background(bgColor, shape)) {
-        // Period time column
-        Box(
-            modifier = Modifier
-                .width(64.dp)
-                .height(64.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), if (isLast) RoundedCornerShape(bottomStart = 8.dp) else RoundedCornerShape(0.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                periodTimes[period] ?: "",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
+fun TodoQuickAddDialog(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
+    var title by remember { mutableStateOf("") }
+    var priority by remember { mutableStateOf(1) } // 0=Low, 1=Normal, 2=High
+    
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.todo_add_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text(stringResource(R.string.todo_task_name)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+                Text(stringResource(R.string.todo_priority))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                    FilterChip(selected = priority == 0, onClick = { priority = 0 }, label = { Text(stringResource(R.string.todo_priority_low)) })
+                    FilterChip(selected = priority == 1, onClick = { priority = 1 }, label = { Text(stringResource(R.string.todo_priority_normal)) })
+                    FilterChip(selected = priority == 2, onClick = { priority = 2 }, label = { Text(stringResource(R.string.todo_priority_high), color = MaterialTheme.colorScheme.error) })
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { if (title.isNotBlank()) onSave(title.trim(), priority) },
+                enabled = title.isNotBlank()
+            ) { Text(stringResource(R.string.schedule_save)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.schedule_cancel)) }
         }
-        
-        // Days columns
-        days.forEach { dayIdx ->
-            val entry = entries.find { it.dayOfWeek == dayIdx && it.startTimeMin == period }
-            val cellModifier = Modifier
-                .width(100.dp)
-                .height(64.dp)
-                .clickable { onClick(entry) }
-                .padding(4.dp)
-            
-            Box(
-                modifier = cellModifier,
-                contentAlignment = Alignment.Center
-            ) {
-                if (entry != null) {
-                    Surface(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(6.dp),
-                        modifier = Modifier.fillMaxSize()
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScheduleFormDialog(
+    initialEntry: ScheduleEntry?,
+    accountId: String,
+    selectedDay: Int,
+    viewModel: ScheduleViewModel,
+    onDismiss: () -> Unit,
+    onSave: (List<ScheduleEntry>, Boolean) -> Unit,
+    onDelete: (ScheduleEntry) -> Unit
+) {
+    val isEdit = initialEntry != null
+    var title by remember { mutableStateOf(initialEntry?.title ?: "") }
+    var teacher by remember { mutableStateOf(initialEntry?.teacher ?: "") }
+    var notes by remember { mutableStateOf(initialEntry?.notes ?: "") }
+    
+    var period by remember { mutableStateOf(initialEntry?.period ?: 1) }
+    var expanded by remember { mutableStateOf(false) }
+    
+    val daysArray = stringResource(R.string.schedule_days).split(",")
+    val selectedDays = remember { mutableStateListOf<Int>() }
+    
+    LaunchedEffect(Unit) {
+        if (!isEdit && selectedDays.isEmpty()) selectedDays.add(selectedDay)
+        else if (isEdit) selectedDays.add(initialEntry!!.dayOfWeek)
+    }
+    
+    var titleError by remember { mutableStateOf<String?>(null) }
+    var overlapWarning by remember { mutableStateOf<String?>(null) }
+    
+    fun validate(): Boolean {
+        var valid = true
+        if (title.isBlank()) {
+            titleError = "Tên môn là bắt buộc"
+            valid = false
+        } else titleError = null
+        return valid
+    }
+
+    LaunchedEffect(period, selectedDays.toList()) {
+        val overlaps = selectedDays.any { day ->
+            viewModel.checkOverlap(day, period, initialEntry?.id ?: 0L)
+        }
+        if (overlaps) overlapWarning = "Cảnh báo: Tiết này đã có môn học khác"
+        else overlapWarning = null
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(if (isEdit) stringResource(R.string.schedule_edit) else stringResource(R.string.schedule_add)) },
+        text = {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it; validate() },
+                    label = { Text(stringResource(R.string.schedule_subject)) },
+                    isError = titleError != null,
+                    supportingText = { titleError?.let { Text(it) } },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+                
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded }
+                ) {
+                    OutlinedTextField(
+                        value = stringResource(R.string.schedule_period, period),
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.schedule_period_select)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                        modifier = Modifier.fillMaxWidth().menuAnchor(MenuAnchorType.PrimaryEditable)
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
                     ) {
-                        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(2.dp)) {
-                            Text(
-                                text = entry.title,
-                                style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                textAlign = TextAlign.Center,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
+                        for (i in 1..10) {
+                            val timeHint = if (i <= 5) stringResource(R.string.schedule_period_morning) else stringResource(R.string.schedule_period_afternoon)
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.schedule_period, i) + " " + timeHint) },
+                                onClick = {
+                                    period = i
+                                    expanded = false
+                                }
                             )
                         }
                     }
                 }
+                
+                if (overlapWarning != null) Text(overlapWarning!!, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                
+                if (!isEdit) {
+                    Text(stringResource(R.string.schedule_repeat_days), style = MaterialTheme.typography.bodySmall)
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        daysArray.forEachIndexed { index, day ->
+                            val d = index + 1
+                            val sel = selectedDays.contains(d)
+                            Surface(
+                                shape = MaterialTheme.shapes.small,
+                                color = if (sel) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+                                modifier = Modifier.clickable { 
+                                    if (sel && selectedDays.size > 1) selectedDays.remove(d) 
+                                    else if (!sel) selectedDays.add(d) 
+                                }
+                            ) {
+                                Text(day, modifier = Modifier.padding(8.dp), color = if (sel) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface, fontSize = 12.sp)
+                            }
+                        }
+                    }
+                }
+
+                OutlinedTextField(value = teacher, onValueChange = { teacher = it }, label = { Text(stringResource(R.string.schedule_teacher)) }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+                OutlinedTextField(value = notes, onValueChange = { notes = it }, label = { Text(stringResource(R.string.schedule_notes)) }, modifier = Modifier.fillMaxWidth())
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                if (validate()) {
+                    val entries = selectedDays.map { d ->
+                        ScheduleEntry(
+                            id = initialEntry?.id ?: 0L,
+                            accountId = accountId,
+                            title = title.trim(),
+                            dayOfWeek = d,
+                            period = period,
+                            teacher = teacher.trim().takeIf { it.isNotBlank() },
+                            notes = notes.trim().takeIf { it.isNotBlank() }
+                        )
+                    }
+                    onSave(entries, isEdit)
+                }
+            }) { Text(stringResource(R.string.schedule_save)) }
+        },
+        dismissButton = {
+            Row {
+                if (isEdit) TextButton(onClick = { onDelete(initialEntry!!) }) { Text(stringResource(R.string.schedule_delete), color = MaterialTheme.colorScheme.error) }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.schedule_cancel)) }
             }
         }
-    }
+    )
 }

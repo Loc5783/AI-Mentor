@@ -5,7 +5,6 @@ import java.net.URI
 
 plugins {
     alias(libs.plugins.compose.compiler)
-
     alias(libs.plugins.android.application)
 }
 

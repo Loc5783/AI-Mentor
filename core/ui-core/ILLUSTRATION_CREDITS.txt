@@ -1,0 +1,12 @@
+Illustrations: unDraw, Katerina Limpitsouni.
+License: https://undraw.co/license (accessed 2026-10-29).
+Used as decorative UI assets, bundled as optimized WebP for offline display.
+Sources:
+https://cdn.undraw.co/illustration/ai-personal-assistant_2y9y.svg
+https://cdn.undraw.co/illustration/notes-list_non4.svg
+https://cdn.undraw.co/illustration/shared-goals_ijlg.svg
+
+https://cdn.undraw.co/illustration/idea-process_2at3.svg
+https://cdn.undraw.co/illustration/learning-to-sketch_ipnt.svg
+
+Day/night sky backgrounds: generated for AI Mentor from user-provided visual reference.

@@ -18,4 +18,12 @@
   <string name="design_tab_lessons">Learn</string>
   <string name="design_tab_competition">Ranks</string>
   <string name="design_chart_legend">Blue: XP · Amber: streak day</string>
+  <string name="home_status_title">Learning progress</string>
+  <string name="home_schedule_title">Timetable</string>
+  <string name="home_schedule_subtitle">Your classes and to-do list</string>
+  <string name="home_progress_title">Your learning journey</string>
+  <string name="home_suggestion_subtitle">Finish a lesson or review to grow your streak and update your progress.</string>
+  <string name="competition_progress_title">Your progress</string>
+  <string name="competition_error_title">Could not load the leaderboard</string>
+  <string name="competition_error_subtitle">Check your connection and try again.</string>
 </resources>

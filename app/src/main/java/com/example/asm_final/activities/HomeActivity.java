@@ -1,17 +1,31 @@
 package com.example.asm_final.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.asm_final.R;
 import com.example.asm_final.activities.fragments.ProfileFragment;
+import com.example.asm_final.utils.ReminderHelper;
 
 public class HomeActivity extends AppCompatActivity
     implements ProfileFragment.OnProfileUpdatedListener {
   private int authenticatedOwner;
 
+  private final ActivityResultLauncher<String> notificationPermissionLauncher =
+      registerForActivityResult(
+          new ActivityResultContracts.RequestPermission(),
+          granted -> {
+            applyNotificationChoice(granted);
+          });
+
   @Override
   protected void onCreate(Bundle state) {
+    com.example.asm_final.utils.ThemeHelper.applySavedTheme(this);
     super.onCreate(state);
     String username = getIntent().getStringExtra("USERNAME");
     if (username == null || username.trim().isEmpty()) {
@@ -48,12 +62,85 @@ public class HomeActivity extends AppCompatActivity
         new com.example.asm_final.ui.ShellUi(
             this, username, getIntent().hasExtra("CHAT_THREAD_ID") ? R.id.nav_chat : R.id.nav_home);
     setContentView(composeShell.view());
+
+    if (state != null) {
+      String savedRoute = state.getString("CURRENT_ROUTE");
+      if ("settings".equals(savedRoute)) {
+        navigateTo(R.id.nav_settings, false);
+      }
+    } else if (getIntent() != null && getIntent().getBooleanExtra("NAVIGATE_TO_SCHEDULE", false)) {
+        navigateTo(0, false);
+    }
+
+    checkNotificationPrompt();
+  }
+
+  @Override
+  protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    if (composeShell != null) {
+      outState.putString("CURRENT_ROUTE", composeShell.currentRoute());
+    }
+  }
+
+  private void checkNotificationPrompt() {
+    if (ReminderHelper.shouldPromptNotification(this)) {
+      showNotificationPromptDialog();
+    }
+  }
+
+  private void showNotificationPromptDialog() {
+    new AlertDialog.Builder(this)
+        .setTitle(R.string.notification_prompt_title)
+        .setMessage(R.string.notification_prompt_message)
+        .setPositiveButton(
+            R.string.notification_prompt_allow,
+            (dialog, which) -> {
+              ReminderHelper.setHasPromptedNotification(this, true);
+              if (Build.VERSION.SDK_INT >= 33
+                  && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                      != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(
+                    android.Manifest.permission.POST_NOTIFICATIONS);
+              } else {
+                applyNotificationChoice(true);
+              }
+            })
+        .setNegativeButton(
+            R.string.notification_prompt_dismiss,
+            (dialog, which) -> {
+              ReminderHelper.setHasPromptedNotification(this, true);
+              dialog.dismiss();
+            })
+        .setCancelable(false)
+        .show();
+  }
+
+  private void applyNotificationChoice(boolean requested) {
+    boolean enabled =
+        requested
+            && androidx.core.app.NotificationManagerCompat.from(this)
+                .areNotificationsEnabled();
+    ReminderHelper.setReminderEnabled(this, enabled);
+    int message =
+        requested && !enabled
+            ? R.string.reminder_permission_needed
+            : enabled ? R.string.reminder_enabled_time : R.string.reminder_disabled;
+    Toast.makeText(this, message, Toast.LENGTH_LONG).show();
   }
 
   private com.example.asm_final.ui.ShellUi composeShell;
 
   public void navigateTo(int id, boolean remember) {
     if (composeShell != null) composeShell.navigate(id, remember);
+  }
+
+  @Override
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    if (intent != null && intent.getBooleanExtra("NAVIGATE_TO_SCHEDULE", false)) {
+        navigateTo(0, false); // nav_schedule corresponds to id 0 in ShellUi
+    }
   }
 
   @Override

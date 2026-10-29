@@ -1,5 +1,7 @@
 package com.example.asm_final.ui
 
+import com.example.mentor.ui.design.mentorHeader
+
 import android.content.Context
 import android.view.View
 import androidx.compose.foundation.BorderStroke
@@ -249,10 +251,10 @@ private fun LessonScreen(
     val context = androidx.compose.ui.platform.LocalContext.current
     val subjectLabel = subjectId.label(LocaleHelper.getLanguage(context))
 
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
+    Column(Modifier.fillMaxSize()
         .verticalScroll(scroll).padding(MentorTokens.PagePadding), verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceMedium)) {
         
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(Modifier.fillMaxWidth().mentorHeader().padding(vertical = 8.dp, horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
             TextButton(leave) { Text(stringResource(R.string.course_back)) }
             Text("$subjectLabel • Lớp $grade", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         }

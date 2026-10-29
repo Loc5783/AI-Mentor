@@ -33,13 +33,18 @@ object MentorTokens {
     val PinkOutline = Color(0xFFEBD5E0)
 
     // Dark Surface & Navy Palette
-    val NavyBackground = Color(0xFF1F2A44)
-    val NavySurface = Color(0xFF263352)
-    val NavyCard = Color(0xFF2E3D61)
-    val NavyElevated = Color(0xFF364770)
-    val NavyOutline = Color(0xFF43557E)
-    val NavyOnSurface = Color(0xFFF1F4FB)
-    val NavyOnSurfaceVariant = Color(0xFFC3CCE0)
+    val NavyBackground = Color(0xFF0B1426)
+    val NavySurface = Color(0xFF1E293B)
+    val NavyCard = Color(0xFF24334C)
+    val NavyElevated = Color(0xFF30415F)
+    val NavyOutline = Color(0xFF475A79)
+    val NavyOnSurface = Color(0xFFF4F7FC)
+    val NavyOnSurfaceVariant = Color(0xFFBBC9DF)
+    val LightCanvas = Color(0xFFEDF2FC)
+    val LightSoft = Color(0xFFEDF1FB)
+    val LightOutline = Color(0xFFD9E1F0)
+    val Gold = Color(0xFFFFD166)
+    val Purple = Color(0xFF8B5CF6)
 
     // Yellow-Orange Palette
     val Orange50 = Color(0xFFFFF8EC)
@@ -73,11 +78,11 @@ object MentorTokens {
     val PrimaryDark = Blue700
     val PrimaryLight = Blue200
     val PrimaryContainer = Blue200
-    val DarkPrimaryContainer = Blue700
-    val LightBackground = Pink50
+    val DarkPrimaryContainer = Color(0xFF263D68)
+    val LightBackground = LightCanvas
     val DarkBackground = NavyBackground
     val DarkSurface = NavySurface
-    val WarmAccent = Orange300
+    val WarmAccent = Gold
     val Success = SuccessLightText
     val DarkSuccess = SuccessDarkText
     val Warning = WarningLightText
@@ -92,12 +97,12 @@ object MentorTokens {
 
     val RewardStreakLight = Orange500
     val RewardStreakDark = Orange400
-    val RewardXpBar = Orange300
+    val RewardXpBar = Gold
 
     val SpaceTiny = 4.dp
     val SpaceCompact = 12.dp
     val PagePadding = 20.dp
-    val CardElevation = 2.dp
+    val CardElevation = 6.dp
     val ActionElevation = 3.dp
     val ContentMaxWidth = 840.dp
     val SpaceSmall = 8.dp
@@ -162,21 +167,22 @@ private val LightColors = lightColorScheme(
     onPrimary = MentorTokens.OnBrand,
     primaryContainer = MentorTokens.Blue200, 
     onPrimaryContainer = MentorTokens.OnBrand,
-    secondary = MentorTokens.Orange300, 
+    secondary = MentorTokens.Gold,
     onSecondary = MentorTokens.Orange900,
     secondaryContainer = MentorTokens.Orange100, 
     onSecondaryContainer = MentorTokens.Orange800,
-    tertiary = MentorTokens.Pink300,
-    tertiaryContainer = MentorTokens.Pink200,
-    onTertiaryContainer = MentorTokens.Pink700,
-    background = MentorTokens.Pink50, 
-    onBackground = Color(0xFF24203A),
+    tertiary = MentorTokens.Purple,
+    onTertiary = Color(0xFF170E2D),
+    tertiaryContainer = Color(0xFFEDE7FF),
+    onTertiaryContainer = Color(0xFF36205E),
+    background = MentorTokens.LightCanvas,
+    onBackground = Color(0xFF18243A),
     surface = Color.White, 
-    onSurface = Color(0xFF24203A),
-    surfaceVariant = MentorTokens.Pink100, // Card/SurfaceContainer
-    onSurfaceVariant = Color(0xFF6B5B78),
-    outline = MentorTokens.PinkOutline, 
-    outlineVariant = MentorTokens.PinkOutline.copy(alpha = 0.5f),
+    onSurface = Color(0xFF18243A),
+    surfaceVariant = MentorTokens.LightSoft,
+    onSurfaceVariant = Color(0xFF4A5A74),
+    outline = MentorTokens.LightOutline,
+    outlineVariant = MentorTokens.LightOutline.copy(alpha = 0.7f),
     error = MentorTokens.ErrorLightBg,
     onError = MentorTokens.ErrorLightText
 )
@@ -186,13 +192,14 @@ private val DarkColors = darkColorScheme(
     onPrimary = MentorTokens.OnBrand,
     primaryContainer = MentorTokens.Blue700, 
     onPrimaryContainer = Color(0xFFEAF2FF),
-    secondary = MentorTokens.Orange400, 
+    secondary = MentorTokens.Gold,
     onSecondary = MentorTokens.Orange900,
     secondaryContainer = Color(0xFF5A4220), 
     onSecondaryContainer = MentorTokens.Orange100,
-    tertiary = MentorTokens.Pink300,
-    tertiaryContainer = Color(0xFF5A3B58),
-    onTertiaryContainer = Color(0xFFFCE4EE),
+    tertiary = Color(0xFFB7A0FF),
+    onTertiary = Color(0xFF170E2D),
+    tertiaryContainer = Color(0xFF3B315B),
+    onTertiaryContainer = Color(0xFFEDE7FF),
     background = MentorTokens.NavyBackground, 
     onBackground = MentorTokens.NavyOnSurface,
     surface = MentorTokens.NavySurface, 
@@ -212,7 +219,8 @@ fun MentorTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable () -
         colorScheme = if (dark) DarkColors else LightColors,
         typography = Typography(),
         shapes = Shapes(
-            small = RoundedCornerShape(12.dp),
+            extraSmall = RoundedCornerShape(20.dp),
+            small = RoundedCornerShape(16.dp),
             medium = RoundedCornerShape(MentorTokens.CardRadius),
             large = RoundedCornerShape(28.dp),
         ), content = content,

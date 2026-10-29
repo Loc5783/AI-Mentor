@@ -2,7 +2,6 @@ package com.example.asm_final.ui
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
@@ -14,8 +13,9 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.example.asm_final.utils.ThemeHelper
 import com.example.mentor.ui.design.MentorTokens
 import com.example.mentor.ui.design.MentorTheme
+import com.example.mentor.ui.design.TechGraffitiBackground
 
-internal fun composeHost(context: Context, content: @Composable () -> Unit): ComposeView =
+internal fun composeHost(context: Context, scenicBackground: Boolean = false, content: @Composable () -> Unit): ComposeView =
     ComposeView(context).apply {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         setContent {
@@ -25,6 +25,7 @@ internal fun composeHost(context: Context, content: @Composable () -> Unit): Com
                     Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
                     contentAlignment = Alignment.TopCenter
                 ) {
+                    if (scenicBackground) TechGraffitiBackground(isDark)
                     Box(Modifier.widthIn(max = MentorTokens.ContentMaxWidth).fillMaxSize()) {
                         content()
                     }

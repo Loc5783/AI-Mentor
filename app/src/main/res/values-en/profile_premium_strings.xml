@@ -35,6 +35,7 @@
     <string name="profile_rank_gold">Gold</string>
     <string name="profile_rank_silver">Silver</string>
     <string name="profile_rank_bronze">Bronze</string>
+    <string name="profile_rank_pending">Unranked</string>
     <string name="profile_lead_stat">%1$d times leading</string>
     <string name="profile_friends_streak_title">FRIENDS STREAK</string>
     <string name="profile_challenge_title">MONTHLY CHALLENGE BADGES</string>
