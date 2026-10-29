@@ -248,7 +248,7 @@ private fun LessonScreen(
     val context = androidx.compose.ui.platform.LocalContext.current
     val subjectLabel = subjectId.label(LocaleHelper.getLanguage(context))
 
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
+    Column(Modifier.fillMaxSize()
         .verticalScroll(scroll).padding(MentorTokens.PagePadding), verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceMedium)) {
         
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {

@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 
 import androidx.compose.ui.platform.testTag
 
@@ -203,11 +204,13 @@ fun LessonHubMainView(
 
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(androidx.compose.ui.platform.LocalContext.current)
 
-    val heroBg = if (dark) MentorTokens.DarkPrimaryContainer else MentorTokens.PrimaryContainer
+    val heroBg = Brush.horizontalGradient(if (dark)
+        listOf(MentorTokens.DarkPrimaryContainer, Color(0xFF312D59))
+        else listOf(MentorTokens.PrimaryContainer, Color(0xFFEDE7FF)))
 
 
 
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Column(Modifier.fillMaxSize()) {
 
         // Hero Header
 
@@ -363,9 +366,9 @@ fun LessonHubMainView(
 
             HubSectionCard(
 
-                icon = "📚",
+                icon = "01",
 
-                title = "1. Thư viện câu hỏi",
+                title = "Thư viện câu hỏi",
 
                 description = "Kho bài tập trắc nghiệm có cấu trúc theo môn và lớp. Luyện tập theo chương, chủ đề và lưu sổ câu sai.",
 
@@ -379,9 +382,9 @@ fun LessonHubMainView(
 
             HubSectionCard(
 
-                icon = "🎯",
+                icon = "02",
 
-                title = "2. Ôn thi tập trung",
+                title = "Ôn thi tập trung",
 
                 description = "Bộ đề tổng hợp và kế hoạch luyện thi theo chương trình học.",
 
@@ -395,9 +398,9 @@ fun LessonHubMainView(
 
             HubSectionCard(
 
-                icon = "🗺️",
+                icon = "03",
 
-                title = "3. Lộ trình học 9 môn",
+                title = "Lộ trình học 9 môn",
 
                 description = "Khung bài học chuẩn 9 môn học phổ thông cùng công cụ môn học.",
 
@@ -411,9 +414,9 @@ fun LessonHubMainView(
 
             HubSectionCard(
 
-                icon = "🤖",
+                icon = "04",
 
-                title = "4. Luyện cùng AI",
+                title = "Luyện cùng AI",
 
                 description = "Thảo luận, giải thích bài tập và luyện tập tương tác cùng Gia sư AI.",
 
@@ -455,11 +458,13 @@ fun HubSectionCard(
 
             .clickable { onClick() },
 
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(20.dp),
 
         color = MaterialTheme.colorScheme.surface,
 
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        border = BorderStroke(1.dp, Brush.linearGradient(listOf(
+            MaterialTheme.colorScheme.secondary.copy(alpha = .5f),
+            MaterialTheme.colorScheme.outlineVariant))),
 
         shadowElevation = 1.dp
 
@@ -479,23 +484,17 @@ fun HubSectionCard(
 
                 verticalAlignment = Alignment.CenterVertically,
 
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
 
             ) {
 
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-
-                    Text(icon, style = MaterialTheme.typography.titleLarge)
-
-                    Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-
+                Box(Modifier.size(42.dp).clip(RoundedCornerShape(14.dp))
+                    .background(MaterialTheme.colorScheme.secondaryContainer), contentAlignment = Alignment.Center) {
+                    Text(icon, color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
                 }
-
-                Button(onClick = onClick, shape = RoundedCornerShape(12.dp)) {
-
-                    Text(actionText)
-
-                }
+                Text(title, Modifier.weight(1f), style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold)
 
             }
 
@@ -508,6 +507,10 @@ fun HubSectionCard(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
 
             )
+
+            TextButton(onClick = onClick, modifier = Modifier.align(Alignment.End)) {
+                Text(actionText)
+            }
 
         }
 
@@ -538,7 +541,7 @@ fun RoadmapSubjectList(
 
 
 
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Column(Modifier.fillMaxSize()) {
 
         Box(
 

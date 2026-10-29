@@ -18,4 +18,12 @@
   <string name="design_tab_lessons">Bài học</string>
   <string name="design_tab_competition">Thi đua</string>
   <string name="design_chart_legend">Xanh: EXP · Cam: ngày đã thắp streak</string>
+  <string name="home_status_title">Tiến độ học tập</string>
+  <string name="home_schedule_title">Thời khóa biểu</string>
+  <string name="home_schedule_subtitle">Lịch học và việc cần làm của bạn</string>
+  <string name="home_progress_title">Hành trình học tập</string>
+  <string name="home_suggestion_subtitle">Hoàn thành bài học hoặc quiz để tăng streak và cập nhật tiến độ.</string>
+  <string name="competition_progress_title">Tiến độ của bạn</string>
+  <string name="competition_error_title">Không tải được bảng thi đua</string>
+  <string name="competition_error_subtitle">Kiểm tra kết nối rồi thử lại.</string>
 </resources>

@@ -50,6 +50,7 @@ fun ScheduleScreen(
         topBar = {
             TopAppBar(
                 title = { Text(if (selectedTabIndex == 0) stringResource(R.string.schedule_tab_schedule) else stringResource(R.string.schedule_tab_todo)) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = .9f)),
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -72,18 +73,19 @@ fun ScheduleScreen(
                         showTodoForm = true
                     }
                 },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary
             ) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_add_button))
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = androidx.compose.ui.graphics.Color.Transparent
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
             // Tabs cho Lịch học vs Nhiệm vụ
-            TabRow(selectedTabIndex = selectedTabIndex) {
+            TabRow(selectedTabIndex = selectedTabIndex,
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = .9f)) {
                 Tab(
                     selected = selectedTabIndex == 0,
                     onClick = { selectedTabIndex = 0 },

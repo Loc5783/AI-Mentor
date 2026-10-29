@@ -92,7 +92,9 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
                             NavigationBarItem(selected = selectedRoute == tab.route,
                                 onClick = { navigate(tab.id, false) },
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = if (backgroundPath != null) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f) else MaterialTheme.colorScheme.primaryContainer
+                                    indicatorColor = if (backgroundPath != null) MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f) else MaterialTheme.colorScheme.secondaryContainer,
+                                    selectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    selectedTextColor = MaterialTheme.colorScheme.onSurface,
                                 ),
                                 icon = { Icon(painterResource(tab.icon), null, Modifier.size(22.dp)) },
                                 label = { Text(stringResource(tab.label), maxLines = 2, style = MaterialTheme.typography.labelSmall, overflow = TextOverflow.Ellipsis) })
@@ -102,7 +104,7 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
                 }
             ) { padding ->
                 Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
-                    if (top != null && top !in tabs) Row(Modifier.fillMaxWidth()
+                    if (top != null && top !in tabs && route != "schedule") Row(Modifier.fillMaxWidth()
                         .background(if (backgroundPath != null) Color.Transparent else MaterialTheme.colorScheme.background)) {
                         TextButton({ nav.popBackStack() }) {
                             Text(stringResource(R.string.course_back))

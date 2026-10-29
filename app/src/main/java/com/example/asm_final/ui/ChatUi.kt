@@ -5,6 +5,7 @@ import android.view.View
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -66,8 +68,12 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
         val last = list.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
         if (rows.isNotEmpty() && (switched || last >= rows.size - 4)) list.scrollToItem(rows.lastIndex)
     }
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = MentorTokens.SpaceSmall), verticalAlignment = Alignment.CenterVertically) {
+    Column(Modifier.fillMaxSize()) {
+        Box(Modifier.fillMaxWidth().background(Brush.horizontalGradient(listOf(
+            MaterialTheme.colorScheme.primaryContainer,
+            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = .8f),
+        )))) {
+        Row(Modifier.fillMaxWidth().padding(horizontal = MentorTokens.SpaceSmall, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             ChatIcon(R.drawable.ic_chat_history, R.string.chat_history, ready, actions::history)
             Column(Modifier.weight(1f)) {
                 Text(model.snapshot?.thread?.title?.takeIf { it.isNotBlank() } ?: stringResource(R.string.chat_title),
@@ -78,6 +84,7 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
             }
             ChatIcon(R.drawable.ic_chat_new, R.string.chat_new, ready, model::newChat)
             ChatIcon(R.drawable.ic_chat_more, R.string.chat_options, ready, actions::options)
+        }
         }
         if (returning) MentorButton(stringResource(R.string.design_understood), actions::returnToLesson,
             Modifier.fillMaxWidth().padding(horizontal = MentorTokens.SpaceMedium))
@@ -111,7 +118,11 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
             .semantics { liveRegion = LiveRegionMode.Polite }, style = MaterialTheme.typography.bodySmall)
         if (model.importing) MentorSkeleton(stringResource(R.string.chat_importing), Modifier.padding(horizontal = MentorTokens.SpaceMedium))
         Surface(Modifier.fillMaxWidth().padding(MentorTokens.SpaceCompact), shape = MaterialTheme.shapes.large,
-            color = MaterialTheme.colorScheme.surface, shadowElevation = MentorTokens.ActionElevation) {
+            color = MaterialTheme.colorScheme.surface.copy(alpha = .92f),
+            border = BorderStroke(1.dp, Brush.linearGradient(listOf(
+                MaterialTheme.colorScheme.secondary.copy(alpha = .55f),
+                MaterialTheme.colorScheme.tertiary.copy(alpha = .35f)))),
+            shadowElevation = MentorTokens.ActionElevation) {
             Column(Modifier.padding(MentorTokens.SpaceSmall)) {
                 model.snapshot?.draftFiles.orEmpty().forEach { file ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
