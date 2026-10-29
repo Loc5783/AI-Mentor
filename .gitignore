@@ -32,6 +32,12 @@ local.properties
 **/.pytest_cache/
 /backend/data/
 /backend/uploads/
-/backend/.env
+**/.env
+**/.env.*
+!**/.env.example
 *.sqlite3-wal
 *.sqlite3-shm
+
+# Local verification and compiler output
+/.artifacts/
+/core/*/bin/

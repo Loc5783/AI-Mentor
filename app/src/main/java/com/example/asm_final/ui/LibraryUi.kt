@@ -1284,63 +1284,7 @@ private fun LibrarySessionPracticeView(
 
 
 
-@Composable
 
-fun ExamPrepScreen(onBack: () -> Unit, onOpenAiChat: () -> Unit) {
-
-    Column(
-
-        Modifier
-
-            .fillMaxSize()
-
-            .background(MaterialTheme.colorScheme.background)
-
-            .padding(16.dp)
-
-            .verticalScroll(rememberScrollState()),
-
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-
-    ) {
-
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-
-            TextButton(onClick = onBack) { Text("← Quay lại") }
-
-            Text("Ôn thi tập trung", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-
-        }
-
-
-
-        Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.primaryContainer, modifier = Modifier.fillMaxWidth()) {
-
-            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-
-                Text("🎯 Khu vực Ôn thi & Thi thử", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-
-                Text(
-
-                    "Hệ thống đề thi tổng hợp và mô phỏng phòng thi đang được hoàn thiện. Trong đợt đầu, bạn có thể ôn luyện qua Thư viện bài tập hoặc thảo luận đề thi cùng Gia sư AI.",
-
-                    style = MaterialTheme.typography.bodyMedium
-
-                )
-
-                Button(onClick = onOpenAiChat) {
-
-                    Text("Luyện cùng Gia sư AI")
-
-                }
-
-            }
-
-        }
-
-    }
-
-}
 
 
 

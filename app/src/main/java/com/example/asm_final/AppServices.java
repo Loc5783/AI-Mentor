@@ -125,4 +125,12 @@ public final class AppServices {
   public com.example.asm_final.learning.LibraryRepository library(int owner) {
     return new com.example.asm_final.learning.BackendLibraryRepository(context, owner);
   }
+
+  public com.example.asm_final.learning.ExamRepository exam(int owner) {
+    return new com.example.asm_final.learning.BackendExamRepository(context, owner);
+  }
+
+  public com.example.asm_final.learning.AiPracticeRepository aiPractice(int owner) {
+    return new com.example.asm_final.learning.BackendAiPracticeRepository(context, owner);
+  }
 }

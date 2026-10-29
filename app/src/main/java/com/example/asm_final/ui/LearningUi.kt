@@ -43,6 +43,7 @@ import com.example.mentor.ui.design.*
 import androidx.compose.ui.graphics.toArgb
 import kotlinx.coroutines.delay
 import nl.dionsegijn.konfetti.compose.KonfettiView
+import org.json.JSONArray
 import nl.dionsegijn.konfetti.core.Party
 import nl.dionsegijn.konfetti.core.Position
 import nl.dionsegijn.konfetti.core.emitter.Emitter
@@ -379,7 +380,15 @@ private fun PracticeContent(attempt: JSONObject, model: LessonViewModel, busy: B
         MentorButton(stringResource(R.string.course_next), { model.save(step + 1, null, null) })
         return
     }
-    val questions = attempt.getJSONArray("questions")
+    val questions = attempt.optJSONArray("questions") ?: JSONArray()
+    if (attempt.optBoolean("historyUnavailable", false) && questions.length() == 0) {
+        val historyMsg = attempt.optString("historyMessage")
+        if (!historyMsg.isNullOrBlank()) {
+            Text(historyMsg, style = MaterialTheme.typography.bodyMedium)
+        }
+        MentorButton(stringResource(R.string.course_path), model::backToPath)
+        return
+    }
     val index = maxOf(0, step - if (lesson) 2 else 0)
     if (index >= questions.length()) {
         MentorButton(stringResource(R.string.course_finish), model::complete); return
@@ -430,6 +439,10 @@ private fun CompletionContent(model: LessonViewModel, result: JSONObject) {
     Box(Modifier.fillMaxWidth()) {
       MentorCard(Modifier.fillMaxWidth()) {
         Text(stringResource(R.string.course_congratulations), style = MaterialTheme.typography.headlineMedium)
+        val historyMsg = model.attempt?.optString("historyMessage")
+        if (!historyMsg.isNullOrBlank()) {
+            Text(historyMsg, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
         if (placement) {
             val assessment = result.getJSONObject("assessment")
             Text(stringResource(R.string.course_assessment, assessment.getInt("correct"), assessment.getInt("total")))

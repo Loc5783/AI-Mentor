@@ -73,7 +73,8 @@ class Database:
               unit_id TEXT NOT NULL, kind TEXT NOT NULL,
               curriculum_version TEXT NOT NULL, step INTEGER NOT NULL DEFAULT 0,
               answers TEXT NOT NULL DEFAULT '[]', state TEXT NOT NULL DEFAULT 'IN_PROGRESS',
-              revision INTEGER NOT NULL DEFAULT 1, updated_at REAL NOT NULL);
+              revision INTEGER NOT NULL DEFAULT 1, updated_at REAL NOT NULL,
+              unit_snapshot TEXT);
             CREATE TABLE IF NOT EXISTS completions(
               id TEXT PRIMARY KEY, attempt_id TEXT NOT NULL UNIQUE REFERENCES attempts(id),
               user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -170,8 +171,54 @@ class Database:
               new_role TEXT NOT NULL,
               source TEXT NOT NULL DEFAULT 'CLI_MANAGE_ROLES',
               changed_at REAL NOT NULL);
+            CREATE TABLE IF NOT EXISTS exams(
+              id TEXT PRIMARY KEY,
+              title TEXT NOT NULL,
+              subject_id TEXT NOT NULL,
+              grade INTEGER NOT NULL CHECK(grade BETWEEN 10 AND 12),
+              exam_type TEXT NOT NULL CHECK(exam_type IN ('MIDTERM', 'FINAL')),
+              semester INTEGER NOT NULL CHECK(semester IN (1, 2)),
+              duration_minutes INTEGER NOT NULL CHECK(duration_minutes BETWEEN 5 AND 300),
+              question_ids TEXT NOT NULL,
+              total_points INTEGER NOT NULL DEFAULT 0,
+              question_count INTEGER NOT NULL DEFAULT 0,
+              status TEXT NOT NULL DEFAULT 'DRAFT' CHECK(status IN ('DRAFT', 'PUBLISHED')),
+              version INTEGER NOT NULL DEFAULT 1,
+              created_by INTEGER REFERENCES users(id),
+              created_at REAL NOT NULL,
+              updated_at REAL NOT NULL);
+
+            CREATE TABLE IF NOT EXISTS exam_sessions(
+              id TEXT PRIMARY KEY,
+              user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+              exam_id TEXT NOT NULL REFERENCES exams(id),
+              subject_id TEXT NOT NULL,
+              grade INTEGER NOT NULL,
+              exam_title TEXT NOT NULL,
+              exam_type TEXT NOT NULL,
+              semester INTEGER NOT NULL,
+              duration_minutes INTEGER NOT NULL,
+              question_snapshots TEXT NOT NULL,
+              answers TEXT NOT NULL DEFAULT '{}',
+              state TEXT NOT NULL DEFAULT 'IN_PROGRESS' CHECK(state IN ('IN_PROGRESS', 'SUBMITTED', 'TIMED_OUT')),
+              score REAL NOT NULL DEFAULT 0,
+              score_10 REAL NOT NULL DEFAULT 0,
+              raw_score INTEGER NOT NULL DEFAULT 0,
+              total_points INTEGER NOT NULL DEFAULT 0,
+              correct_count INTEGER NOT NULL DEFAULT 0,
+              total_count INTEGER NOT NULL DEFAULT 0,
+              started_at REAL NOT NULL,
+              deadline_at REAL NOT NULL,
+              submitted_at REAL,
+              revision INTEGER NOT NULL DEFAULT 1,
+              created_at REAL NOT NULL,
+              updated_at REAL NOT NULL);
+
             """)
             # --- STEP 4 MIGRATIONS & INDEXES ---
+            attempt_cols = {col['name'] for col in db.execute('PRAGMA table_info(attempts)').fetchall()}
+            if 'unit_snapshot' not in attempt_cols:
+                db.execute('ALTER TABLE attempts ADD COLUMN unit_snapshot TEXT')
             cols = {col["name"] for col in db.execute("PRAGMA table_info(wrong_questions_notebook)").fetchall()}
             if "question_snapshot" not in cols:
                 db.execute("ALTER TABLE wrong_questions_notebook ADD COLUMN question_snapshot TEXT")
@@ -181,6 +228,46 @@ class Database:
                 db.execute("ALTER TABLE wrong_questions_notebook ADD COLUMN updated_at REAL")
             db.execute("CREATE INDEX IF NOT EXISTS idx_wrong_questions_user_subj ON wrong_questions_notebook(user_id, subject_id, grade, state)")
             db.execute("CREATE INDEX IF NOT EXISTS idx_practice_sessions_user_quiz ON practice_sessions(user_id, quiz_id, state, updated_at)")
+            db.execute("CREATE INDEX IF NOT EXISTS idx_exams_filter ON exams(subject_id, grade, exam_type, semester, status)")
+            db.execute("CREATE INDEX IF NOT EXISTS idx_exam_sessions_user ON exam_sessions(user_id, exam_id, state, started_at)")
+            db.executescript('''
+            CREATE TABLE IF NOT EXISTS ai_practice_sessions(
+              id TEXT PRIMARY KEY,
+              user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+              subject_id TEXT NOT NULL,
+              grade INTEGER NOT NULL CHECK(grade BETWEEN 10 AND 12),
+              topic TEXT NOT NULL,
+              difficulty TEXT NOT NULL CHECK(difficulty IN ('EASY', 'MEDIUM', 'HARD')),
+              question_count INTEGER NOT NULL,
+              questions_snapshot TEXT NOT NULL,
+              answers TEXT NOT NULL DEFAULT '{}',
+              current_index INTEGER NOT NULL DEFAULT 0,
+              state TEXT NOT NULL DEFAULT 'IN_PROGRESS' CHECK(state IN ('IN_PROGRESS', 'COMPLETED', 'ABANDONED')),
+              summary TEXT,
+              created_at REAL NOT NULL,
+              updated_at REAL NOT NULL);
+
+            CREATE TABLE IF NOT EXISTS ai_question_reports(
+              id TEXT PRIMARY KEY,
+              user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+              session_id TEXT NOT NULL REFERENCES ai_practice_sessions(id) ON DELETE CASCADE,
+              question_id TEXT NOT NULL,
+              reason TEXT NOT NULL,
+              details TEXT,
+              created_at REAL NOT NULL);
+            ''')
+
+            db.execute('''CREATE TABLE IF NOT EXISTS ai_provider_operations(
+                id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, operation TEXT NOT NULL,
+                operation_key TEXT NOT NULL, request_hash TEXT NOT NULL,
+                state TEXT NOT NULL, created_at REAL NOT NULL,
+                UNIQUE(user_id, operation, operation_key))''')
+            db.execute('CREATE INDEX IF NOT EXISTS idx_ai_provider_usage ON ai_provider_operations(user_id, operation, created_at)')
+            wq_cols = {col['name'] for col in db.execute('PRAGMA table_info(wrong_questions_notebook)').fetchall()}
+            if 'source' not in wq_cols:
+                db.execute("ALTER TABLE wrong_questions_notebook ADD COLUMN source TEXT NOT NULL DEFAULT 'LIBRARY'")
+            db.execute('CREATE INDEX IF NOT EXISTS idx_ai_practice_user_state ON ai_practice_sessions(user_id, state, created_at)')
+            db.execute('CREATE INDEX IF NOT EXISTS idx_ai_reports_user ON ai_question_reports(user_id, created_at)')
             db.commit()
 
     @staticmethod

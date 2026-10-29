@@ -120,18 +120,19 @@ class WrongQuestionRetrySubmit(Input):
 
 class AdminQuestionCreate(Input):
     id: str|None=None
+    expectedVersion: int|None=None
     code: str|None=None
     subjectId: str|None=None
     grade: int|None=None
     chapter: str|None=None
     topic: str|None=None
     textbook: str|None=None
-    prompt: str=""
-    optionA: str=""
-    optionB: str=""
-    optionC: str=""
-    optionD: str=""
-    correctOption: str=""
+    prompt: str|None=None
+    optionA: str|None=None
+    optionB: str|None=None
+    optionC: str|None=None
+    optionD: str|None=None
+    correctOption: str|None=None
     explanation: str|None=None
     difficulty: str|None=None
     points: int|None=None
@@ -153,5 +154,68 @@ class AdminQuizCreate(Input):
     status: str="DRAFT"
 
 class AdminImportConfirm(Input):
+    importKey: str|None=None
     validRows: list[dict]=Field(min_length=1,max_length=2000)
     publish: bool=False
+
+
+class AdminExamCreate(Input):
+    id: str | None = None
+    title: str = Field(min_length=1, max_length=200)
+    subjectId: str = "physics"
+    grade: int = Field(10, ge=10, le=12)
+    examType: Literal["MIDTERM", "FINAL"] = "MIDTERM"
+    semester: Literal[1, 2] = 1
+    durationMinutes: int = Field(45, ge=5, le=300)
+    questionIds: list[str] = Field(min_length=1, max_length=500)
+    status: Literal["DRAFT", "PUBLISHED"] = "DRAFT"
+    expectedVersion: int | None = None
+
+    @field_validator("title")
+    @classmethod
+    def not_blank(cls, value):
+        value = value.strip()
+        if not value:
+            raise ValueError("Tiêu đề đề thi không được để trống")
+        return value
+
+class ExamSessionStart(Input):
+    examId: str = Field(min_length=1, max_length=128)
+
+class ExamAnswerSave(Input):
+    questionId: str = Field(min_length=1, max_length=128)
+    selectedOption: Literal["A", "B", "C", "D"] | None = None
+    revision: int | None = None
+
+
+class AiPracticeSessionCreate(Input):
+    subjectId: str = Field(min_length=1, max_length=50)
+    grade: Literal[10, 11, 12]
+    topic: str = Field(min_length=1, max_length=100)
+    difficulty: Literal["EASY", "MEDIUM", "HARD"] = "MEDIUM"
+    questionCount: int = Field(5, ge=1, le=10)
+
+    @field_validator("topic")
+    @classmethod
+    def not_blank_topic(cls, value):
+        val = value.strip()
+        if not val:
+            raise ValueError("Chủ đề luyện tập không được để trống")
+        return val
+
+class AiPracticeAnswerSubmit(Input):
+    questionId: str = Field(min_length=1, max_length=128)
+    selectedOption: Literal["A", "B", "C", "D"]
+    submissionId: str | None = Field(None, min_length=1, max_length=128)
+
+class AiPracticeQuestionSkip(Input):
+    questionId: str = Field(min_length=1, max_length=128)
+
+class AiPracticeQuestionReport(Input):
+    questionId: str = Field(min_length=1, max_length=200)
+    reason: str = Field(min_length=1, max_length=200)
+    details: str = Field(default="", max_length=1000)
+
+class AiPracticeExplainMore(Input):
+    questionId: str = Field(min_length=1, max_length=128)
+    query: str = Field(min_length=1, max_length=500)

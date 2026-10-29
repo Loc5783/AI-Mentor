@@ -136,13 +136,9 @@ class SubjectHubUi(
                 grade = navModel.grade,
                 onChooseGrade = { chooseGrade.run() },
                 onSelectSection = { section ->
-                    if (section == "AI_PRACTICE" && openAiChat != null) {
-                        openAiChat.run()
-                    } else {
-                        try {
-                            navModel.navigateTo(HubSection.valueOf(section))
-                        } catch (_: Exception) {}
-                    }
+                    try {
+                        navModel.navigateTo(HubSection.valueOf(section))
+                    } catch (_: Exception) {}
                 }
             )
             HubSection.LIBRARY -> {
@@ -177,7 +173,10 @@ class SubjectHubUi(
                 )
             }
             HubSection.EXAM_PREP -> ExamPrepScreen(
+                initialGrade = navModel.grade,
+                initialSubject = navModel.selectedSubject,
                 onBack = { navModel.handleBack() },
+                onOpenNotebook = { subj -> navModel.openNotebook(subj, fromSection = HubSection.EXAM_PREP) },
                 onOpenAiChat = { openAiChat?.run() }
             )
             HubSection.ROADMAP -> RoadmapSubjectList(
@@ -185,6 +184,13 @@ class SubjectHubUi(
                 onChooseGrade = { chooseGrade.run() },
                 onSelectSubject = { subj -> openSubject.accept(subj) },
                 onBack = { navModel.handleBack() }
+            )
+            HubSection.AI_PRACTICE -> AiPracticeScreen(
+                initialGrade = navModel.grade,
+                initialSubject = navModel.selectedSubject,
+                onBack = { navModel.handleBack() },
+                onOpenNotebook = { subj -> navModel.openNotebook(subj, fromSection = HubSection.AI_PRACTICE) },
+                onOpenAiChat = { openAiChat?.run() }
             )
         }
     }

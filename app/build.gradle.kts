@@ -14,9 +14,13 @@ val mentorConfig = Properties().apply {
     if (file.exists()) file.inputStream().use { load(it) }
 }
 val backendUrl = mentorConfig.getProperty("MENTOR_BACKEND_URL", "").trim()
-require(backendUrl.isEmpty() || backendUrl.matches(Regex("https://[A-Za-z0-9.-]+(?::[0-9]+)?(?:/[A-Za-z0-9_/-]*)?"))) {
+require(backendUrl.isEmpty() || runCatching {
+    val uri = URI(backendUrl)
+    uri.scheme == "https" && uri.host != null && uri.userInfo == null && uri.query == null && uri.fragment == null && (uri.port == -1 || uri.port in 1..65535)
+}.getOrDefault(false)) {
     "MENTOR_BACKEND_URL must be an HTTPS base URL without credentials, query or fragment"
 }
+
 val localBackendConfig = Properties().apply {
     val file = rootProject.file("backend.local.properties")
     if (file.exists()) file.inputStream().use { load(it) }
@@ -24,9 +28,9 @@ val localBackendConfig = Properties().apply {
 val debugBackendUrl = localBackendConfig.getProperty("MENTOR_DEBUG_BACKEND_URL", backendUrl).trim()
 require(debugBackendUrl.isEmpty() || runCatching {
     val uri = URI(debugBackendUrl)
-    val local = uri.scheme == "http" && uri.host in listOf("127.0.0.1", "10.0.2.2") && uri.port in 1..65535
+    val local = uri.scheme == "http" && uri.host in listOf("127.0.0.1", "10.0.2.2", "localhost") && uri.port in 1..65535
     (uri.scheme == "https" || local) && uri.host != null && uri.userInfo == null && uri.query == null && uri.fragment == null && (uri.port == -1 || uri.port in 1..65535)
-}.getOrDefault(false)) { "Debug backend must use HTTPS or the explicit local emulator host with a port" }
+}.getOrDefault(false)) { "Debug backend must use HTTPS or local USB/emulator host (127.0.0.1, 10.0.2.2, localhost) with a port" }
 
 android {
     namespace = "com.example.asm_final"
@@ -106,6 +110,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation("org.json:json:20240303")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)
 }

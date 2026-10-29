@@ -167,31 +167,79 @@ class LearningService:
 
     def attempt_dto(self, db, owner, row):
         enrollment = self.enrollment(db, owner, row["enrollment_id"])
-        course = self.catalog.course(enrollment["subject_id"], enrollment["grade"])
-        if course["version"] != row["curriculum_version"]:
-            error("CURRICULUM_VERSION_CONFLICT", 409)
-        _, _, questions, sources = self.catalog.unit(course, row["unit_id"])
+        course = self.catalog.courses.get((enrollment["subject_id"], enrollment["grade"]))
+        is_completed = (row["state"] == "COMPLETED")
+
+        snapshot_raw = row["unit_snapshot"] if "unit_snapshot" in row.keys() else None
+        snapshot = json.loads(snapshot_raw) if snapshot_raw else None
+
+        history_unavailable = False
+        history_message = None
+
+        if is_completed:
+            comp = db.execute("SELECT result FROM completions WHERE attempt_id=?", (row["id"],)).fetchone()
+            comp_data = json.loads(comp[0]) if comp else None
+
+            if snapshot:
+                questions = snapshot.get("questions", [])
+                sources = snapshot.get("sourceLessonIds", [])
+                guidance = snapshot.get("guidance", [])
+                examples = snapshot.get("examples", [])
+            elif course and course["version"] == row["curriculum_version"]:
+                _, _, questions, sources = self.catalog.unit(course, row["unit_id"])
+                lesson = next((x for x in course["lessons"] if x["id"] == row["unit_id"]), None)
+                guidance = lesson["guidance"] if lesson else []
+                examples = lesson["examples"] if lesson else []
+            else:
+                questions = []
+                sources = []
+                guidance = []
+                examples = []
+                history_unavailable = True
+                history_message = "[Phiên học lịch sử: Không có bản lưu snapshot tại thời điểm hoàn thành. Kết quả điểm thưởng và ngày học được bảo toàn chính thống.]"
+        else:
+            if not course:
+                error("CURRICULUM_NOT_PUBLISHED", 409)
+            if course["version"] != row["curriculum_version"]:
+                error("CURRICULUM_VERSION_CONFLICT", 409)
+            if snapshot:
+                questions = snapshot.get("questions", [])
+                sources = snapshot.get("sourceLessonIds", [])
+                guidance = snapshot.get("guidance", [])
+                examples = snapshot.get("examples", [])
+            else:
+                _, _, questions, sources = self.catalog.unit(course, row["unit_id"])
+                lesson = next((x for x in course["lessons"] if x["id"] == row["unit_id"]), None)
+                guidance = lesson["guidance"] if lesson else []
+                examples = lesson["examples"] if lesson else []
+            comp_data = None
+
         answers = json.loads(row["answers"])
         by_id = {x["questionId"]: x for x in answers}
         visible = []
         for q in questions:
             value = {k: deepcopy(v) for k, v in q.items() if k not in ("correctOptionId", "explanation")}
-            # Keep answer order stable across reloads, but vary it for each attempt.
-            # Grading continues to use option IDs, independent of display position.
             value["options"].sort(key=lambda option: hashlib.sha256(
                 f"{row['id']}:{q['id']}:{option['id']}".encode()).digest())
             answer = by_id.get(q["id"], {})
-            if row["state"] == "COMPLETED" or (row["kind"] != "PLACEMENT" and answer.get("wrongCount", 0) >= 2):
+            if is_completed or (row["kind"] != "PLACEMENT" and answer.get("wrongCount", 0) >= 2):
                 value.update(explanation=q["explanation"], correctOptionId=q["correctOptionId"])
             visible.append(value)
-        lesson = next((x for x in course["lessons"] if x["id"] == row["unit_id"]), None)
-        return {"id": row["id"], "enrollmentId": row["enrollment_id"], "lessonId": row["unit_id"],
+
+        dto = {"id": row["id"], "enrollmentId": row["enrollment_id"], "lessonId": row["unit_id"],
                 "subjectId": enrollment["subject_id"], "grade": enrollment["grade"],
                 "rewardUnitId": row["unit_id"], "curriculumVersion": row["curriculum_version"],
                 "kind": row["kind"], "step": row["step"], "answers": answers,
                 "questions": visible, "sourceLessonIds": sources,
-                "guidance": lesson["guidance"] if lesson else [], "examples": lesson["examples"] if lesson else [],
+                "guidance": guidance, "examples": examples,
                 "state": row["state"], "revision": row["revision"], "updatedAt": iso(row["updated_at"])}
+        if is_completed and comp_data:
+            dto["completion"] = comp_data
+        if history_unavailable:
+            dto["historyUnavailable"] = True
+            if history_message:
+                dto["historyMessage"] = history_message
+        return dto
 
     def get_attempt(self, owner, item):
         with self.db.read() as db:
@@ -205,7 +253,7 @@ class LearningService:
                 unit_id = "placement" if placement else body["lessonId"]
                 if not placement and (unit_id == "placement" or course["version"] != body["curriculumVersion"]):
                     error("CURRICULUM_VERSION_CONFLICT", 409)
-                kind, index, _, _ = self.catalog.unit(course, unit_id)
+                kind, index, questions, sources = self.catalog.unit(course, unit_id)
                 if placement:
                     if enrollment["placement"]:
                         error("PLACEMENT_ALREADY_COMPLETED", 409)
@@ -224,8 +272,18 @@ class LearningService:
                                  (owner, enrollment["id"], unit_id, course["version"])).fetchone()
                 if not row:
                     item = identifier()
-                    db.execute("INSERT INTO attempts(id,user_id,enrollment_id,unit_id,kind,curriculum_version,updated_at) VALUES(?,?,?,?,?,?,?)",
-                               (item, owner, enrollment["id"], unit_id, kind, course["version"], self.clock()))
+                    lesson = next((x for x in course["lessons"] if x["id"] == unit_id), None)
+                    snapshot = {
+                        "kind": kind,
+                        "unitId": unit_id,
+                        "curriculumVersion": course["version"],
+                        "questions": questions,
+                        "sourceLessonIds": sources,
+                        "guidance": lesson["guidance"] if lesson else [],
+                        "examples": lesson["examples"] if lesson else [],
+                    }
+                    db.execute("INSERT INTO attempts(id,user_id,enrollment_id,unit_id,kind,curriculum_version,updated_at,unit_snapshot) VALUES(?,?,?,?,?,?,?,?)",
+                               (item, owner, enrollment["id"], unit_id, kind, course["version"], self.clock(), dump(snapshot)))
                     row = self.owned_attempt(db, owner, item)
                     Database.event(db, owner, "ATTEMPT", item)
                 return self.attempt_dto(db, owner, row)
@@ -241,7 +299,12 @@ class LearningService:
             course = self.catalog.course(enrollment["subject_id"], enrollment["grade"])
             if row["curriculum_version"] != course["version"]:
                 error("CURRICULUM_VERSION_CONFLICT", 409)
-            _, _, questions, _ = self.catalog.unit(course, row["unit_id"])
+            snapshot_raw = row["unit_snapshot"] if "unit_snapshot" in row.keys() else None
+            snapshot = json.loads(snapshot_raw) if snapshot_raw else None
+            if snapshot:
+                questions = snapshot.get("questions", [])
+            else:
+                _, _, questions, _ = self.catalog.unit(course, row["unit_id"])
             bank = {q["id"]: q for q in questions}
             if not 0 <= body["step"] <= len(questions) + 2:
                 error("INVALID_STEP")
@@ -288,7 +351,13 @@ class LearningService:
                 course = self.catalog.course(enrollment["subject_id"], enrollment["grade"])
                 if course["version"] != row["curriculum_version"]:
                     error("CURRICULUM_VERSION_CONFLICT", 409)
-                kind, _, questions, _ = self.catalog.unit(course, row["unit_id"])
+                snapshot_raw = row["unit_snapshot"] if "unit_snapshot" in row.keys() else None
+                snapshot = json.loads(snapshot_raw) if snapshot_raw else None
+                if snapshot:
+                    kind = snapshot.get("kind", row["kind"])
+                    questions = snapshot.get("questions", [])
+                else:
+                    kind, _, questions, _ = self.catalog.unit(course, row["unit_id"])
                 answers = {x["questionId"]: x for x in json.loads(row["answers"])}
                 if any(q["id"] not in answers or (kind != "PLACEMENT" and not answers[q["id"]]["correct"]) for q in questions):
                     error("PRACTICE_NOT_FINISHED", 409)

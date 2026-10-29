@@ -32,6 +32,7 @@ public final class LessonViewModel extends AndroidViewModel {
     final int grade;
     final LessonApiClient client;
     final String scopeKey;
+    final String enrollKey;
 
     TaskContext(
         long generation,
@@ -39,13 +40,15 @@ public final class LessonViewModel extends AndroidViewModel {
         String subject,
         int grade,
         LessonApiClient client,
-        String scopeKey) {
+        String scopeKey,
+        String enrollKey) {
       this.generation = generation;
       this.owner = owner;
       this.subject = subject;
       this.grade = grade;
       this.client = client;
       this.scopeKey = scopeKey;
+      this.enrollKey = enrollKey;
     }
   }
 
@@ -294,7 +297,9 @@ public final class LessonViewModel extends AndroidViewModel {
   }
 
   private TaskContext snapshotContext() {
-    return new TaskContext(generation, owner, subject, grade, api, currentScopeKey());
+    String scope = currentScopeKey();
+    String key = stableKey(scope + ":enrollKey");
+    return new TaskContext(generation, owner, subject, grade, api, scope, key);
   }
 
   public void bind(int account, String subject, int grade) {
@@ -410,7 +415,7 @@ public final class LessonViewModel extends AndroidViewModel {
                     "POST",
                     "/enrollments",
                     new JSONObject().put("subjectId", ctx.subject).put("grade", ctx.grade),
-                    enrollKey,
+                    ctx.enrollKey,
                     null);
                 scopeEnrollId = scopeEnrollment.optString("id", "");
                 if (!scopeEnrollId.isEmpty() && attemptEnrollId.equals(scopeEnrollId)) {
@@ -420,10 +425,6 @@ public final class LessonViewModel extends AndroidViewModel {
             }
 
             if (!matched) {
-              if (!respSubj.isEmpty() && respG > 0) {
-                saved.set(candidateSubjKey(ctx.owner, targetAttempt), respSubj);
-                saved.set(candidateGradeKey(ctx.owner, targetAttempt), respG);
-              }
               JSONObject scopePath;
               if (scopeEnrollId != null && !scopeEnrollId.isEmpty()) {
                 scopePath = ctx.client.request("GET", "/enrollments/" + scopeEnrollId + "/path", null, null, null);
@@ -433,6 +434,11 @@ public final class LessonViewModel extends AndroidViewModel {
               JSONObject envelope = new JSONObject();
               envelope.put("__isScopeMismatch", true);
               envelope.put("path", scopePath);
+              if (!respSubj.isEmpty() && respG > 0) {
+                envelope.put("candidateSubj", respSubj);
+                envelope.put("candidateGrade", respG);
+                envelope.put("candidateAttempt", targetAttempt);
+              }
               return envelope;
             }
           }
@@ -441,6 +447,12 @@ public final class LessonViewModel extends AndroidViewModel {
         },
         value -> {
           if (value.optBoolean("__isScopeMismatch", false)) {
+            String cSubj = value.optString("candidateSubj", null);
+            int cGrade = value.optInt("candidateGrade", 0);
+            String cAttempt = value.optString("candidateAttempt", null);
+            if (cSubj != null && cGrade > 0 && cAttempt != null) {
+              addLegacyCandidate(ctx.owner, cAttempt, cSubj, cGrade);
+            }
             path = value.getJSONObject("path");
             attempt = null;
             return;
@@ -459,6 +471,9 @@ public final class LessonViewModel extends AndroidViewModel {
             }
 
             attempt = value;
+            if (value.has("completion")) {
+              completion = value.optJSONObject("completion");
+            }
             setScoped("attemptId", value.optString("id", targetAttempt));
             removeLegacyCandidate(ctx.owner, targetAttempt);
           } else {
@@ -548,7 +563,7 @@ public final class LessonViewModel extends AndroidViewModel {
             "POST",
             "/enrollments",
             new JSONObject().put("subjectId", ctx.subject).put("grade", ctx.grade),
-            enrollKey,
+            ctx.enrollKey,
             null);
     return ctx.client.request(
         "GET", "/enrollments/" + enrollment.getString("id") + "/path", null, null, null);
@@ -569,7 +584,12 @@ public final class LessonViewModel extends AndroidViewModel {
     TaskContext ctx = snapshotContext();
     if (attempt != null) {
       String id = attempt.optString("id");
-      task(ctx, () -> ctx.client.request("GET", "/attempts/" + id, null, null, null), value -> attempt = value);
+      task(ctx, () -> ctx.client.request("GET", "/attempts/" + id, null, null, null), value -> {
+        attempt = value;
+        if (value != null && value.has("completion")) {
+          completion = value.optJSONObject("completion");
+        }
+      });
     } else {
       task(ctx, () -> fetchPath(ctx), value -> path = value);
     }
@@ -580,22 +600,28 @@ public final class LessonViewModel extends AndroidViewModel {
     if (currentActiveUser() != owner) return;
     TaskContext ctx = snapshotContext();
     String requestKey = UUID.randomUUID().toString();
-    task(
-        ctx,
-        () -> {
-          JSONObject enrollment = path.getJSONObject("enrollment");
-          JSONObject body = new JSONObject().put("enrollmentId", enrollment.getString("id"));
-          if (!placement)
-            body.put("lessonId", unit)
-                .put("curriculumVersion", path.getString("curriculumVersion"));
-          return ctx.client.request(
-              "POST", placement ? "/placements" : "/attempts", body, requestKey, null);
-        },
-        result -> {
-          attempt = result;
-          completion = null;
-          setScoped("attemptId", result.getString("id"));
-        });
+    try {
+      JSONObject enrollment = path.getJSONObject("enrollment");
+      String enrollmentId = enrollment.getString("id");
+      String curriculumVersion = placement ? null : path.getString("curriculumVersion");
+      task(
+          ctx,
+          () -> {
+            JSONObject body = new JSONObject().put("enrollmentId", enrollmentId);
+            if (!placement && curriculumVersion != null)
+              body.put("lessonId", unit).put("curriculumVersion", curriculumVersion);
+            return ctx.client.request(
+                "POST", placement ? "/placements" : "/attempts", body, requestKey, null);
+          },
+          result -> {
+            attempt = result;
+            completion = null;
+            setScoped("attemptId", result.getString("id"));
+          });
+    } catch (JSONException invalid) {
+      error = "INVALID_SERVER_RESPONSE";
+      emit();
+    }
   }
 
   public void resume(String id) {
@@ -607,7 +633,11 @@ public final class LessonViewModel extends AndroidViewModel {
         () -> ctx.client.request("GET", "/attempts/" + id, null, null, null),
         result -> {
           attempt = result;
-          completion = null;
+          if (result != null && result.has("completion")) {
+            completion = result.optJSONObject("completion");
+          } else {
+            completion = null;
+          }
           setScoped("attemptId", id);
         });
   }
@@ -662,6 +692,7 @@ public final class LessonViewModel extends AndroidViewModel {
         body = getScoped("pendingBody"),
         key = getScoped("pendingKey");
     Integer revision = getScopedInt("pendingRevision");
+    String currentAttemptId = attempt != null ? attempt.optString("id", null) : null;
     TaskContext ctx = snapshotContext();
     task(
         ctx,
@@ -669,14 +700,22 @@ public final class LessonViewModel extends AndroidViewModel {
           try {
             return ctx.client.request(method, route, new JSONObject(body), key, revision);
           } catch (BackendClient.Failure conflict) {
-            if (conflict.status != 412 || attempt == null) throw conflict;
-            return ctx.client.request("GET", "/attempts/" + attempt.getString("id"), null, null, null);
+            boolean isRevisionMismatch = conflict.status == 412;
+            boolean isAlreadyCompleted = conflict.status == 409 && "ATTEMPT_ALREADY_COMPLETED".equals(conflict.code);
+            if ((!isRevisionMismatch && !isAlreadyCompleted) || currentAttemptId == null) throw conflict;
+            return ctx.client.request("GET", "/attempts/" + currentAttemptId, null, null, null);
           }
         },
         result -> {
           setScoped("pendingPath", null);
-          if (result.has("xpAwarded")) completion = result;
-          else attempt = result;
+          if (result.has("xpAwarded")) {
+            completion = result;
+          } else {
+            attempt = result;
+            if (result.has("completion")) {
+              completion = result.optJSONObject("completion");
+            }
+          }
         });
   }
 
