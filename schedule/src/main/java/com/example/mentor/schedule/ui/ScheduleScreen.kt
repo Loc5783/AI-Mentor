@@ -51,7 +51,7 @@ fun ScheduleScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier.mentorHeader(),
+                modifier = Modifier.mentorHeader(com.example.mentor.ui.design.MentorArtwork.PLANNER),
                 title = { Text(if (selectedTabIndex == 0) stringResource(R.string.schedule_tab_schedule) else stringResource(R.string.schedule_tab_todo)) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = androidx.compose.ui.graphics.Color.Transparent),
                 navigationIcon = {

@@ -10,7 +10,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.mentor.ui.R
 
-enum class MentorArtwork { ASSISTANT, PLANNER, GOALS }
+enum class MentorArtwork { ASSISTANT, PLANNER, GOALS, IDEAS, LEARNING }
 
 /** Bundled unDraw artwork; decorative so screen readers read the adjacent message once. */
 @Composable
@@ -19,6 +19,8 @@ fun MentorIllustration(artwork: MentorArtwork, modifier: Modifier = Modifier) {
         MentorArtwork.ASSISTANT -> R.drawable.illustration_mentor
         MentorArtwork.PLANNER -> R.drawable.illustration_planner
         MentorArtwork.GOALS -> R.drawable.illustration_goals
+        MentorArtwork.IDEAS -> R.drawable.illustration_ideas
+        MentorArtwork.LEARNING -> R.drawable.illustration_learning
     }
     Image(painterResource(resource), contentDescription = null,
         modifier = modifier.widthIn(max = 240.dp).height(124.dp), contentScale = ContentScale.Fit)

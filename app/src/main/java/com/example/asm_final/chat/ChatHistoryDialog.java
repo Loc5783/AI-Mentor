@@ -55,6 +55,9 @@ public final class ChatHistoryDialog extends BottomSheetDialogFragment {
         android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT));
     create.setTextColor(
         androidx.core.content.ContextCompat.getColor(requireContext(), com.example.mentor.ui.R.color.primaryColor));
+    create.setElevation(0f);
+    create.setStateListAnimator(null);
+    create.setCornerRadius(dp(18));
     create.setText(R.string.chat_folder_new);
     create.setOnClickListener(
         v ->
@@ -63,6 +66,8 @@ public final class ChatHistoryDialog extends BottomSheetDialogFragment {
     header.addView(create, new LinearLayout.LayoutParams(-2, -2));
     root.addView(header);
     TextInputLayout searchBox = new TextInputLayout(requireContext());
+    searchBox.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
+    searchBox.setBoxCornerRadii(dp(20), dp(20), dp(20), dp(20));
     searchBox.setHint(getString(R.string.chat_search));
     TextInputEditText search = new TextInputEditText(searchBox.getContext());
     search.setSingleLine(true);
@@ -74,6 +79,9 @@ public final class ChatHistoryDialog extends BottomSheetDialogFragment {
         android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT));
     breadcrumb.setTextColor(
         androidx.core.content.ContextCompat.getColor(requireContext(), com.example.mentor.ui.R.color.primaryColor));
+    breadcrumb.setElevation(0f);
+    breadcrumb.setStateListAnimator(null);
+    breadcrumb.setCornerRadius(dp(18));
     breadcrumb.setOnClickListener(
         v -> {
           folderId = null;

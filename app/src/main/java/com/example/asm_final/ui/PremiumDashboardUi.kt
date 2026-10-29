@@ -27,6 +27,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.example.mentor.ui.design.motionEnabled
 import com.example.mentor.ui.design.MentorTokens
+import com.example.mentor.ui.design.mentorHeader
 
 /** Shared palette for the Home and Competition surfaces. */
 internal object PremiumDashboardColors {
@@ -112,14 +113,11 @@ internal fun premiumDashboardPalette(dark: Boolean): PremiumDashboardPalette {
 internal fun PremiumDashboardHeader(
     palette: PremiumDashboardPalette,
     modifier: Modifier = Modifier,
+    artwork: com.example.mentor.ui.design.MentorArtwork = com.example.mentor.ui.design.MentorArtwork.LEARNING,
     content: @Composable RowScope.() -> Unit,
 ) {
     Box(
-        modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp).clip(RoundedCornerShape(24.dp)).background(Brush.horizontalGradient(listOf(palette.heroStart, palette.heroEnd))).drawBehind {
-            val x = size.width - 24.dp.toPx()
-            drawCircle(palette.streak.copy(alpha = .5f), size.height * .42f, androidx.compose.ui.geometry.Offset(x, size.height * .5f), style = androidx.compose.ui.graphics.drawscope.Stroke(1.dp.toPx()))
-            drawLine(palette.accent.copy(alpha = .35f), androidx.compose.ui.geometry.Offset(x - 44.dp.toPx(), size.height), androidx.compose.ui.geometry.Offset(x + 12.dp.toPx(), 0f), 2.dp.toPx())
-        }
+        modifier.fillMaxWidth().mentorHeader(artwork)
     ) {
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 20.dp),
@@ -145,7 +143,7 @@ internal fun PremiumDashboardCard(
             if (palette.background == PremiumDashboardColors.Navy) palette.streak.copy(alpha = .5f) else palette.border,
             palette.border,
         ))),
-        shadowElevation = if (highlighted) 2.dp else 0.dp,
+        shadowElevation = if (highlighted) 8.dp else 5.dp,
     ) {
         Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp), content = content)
     }

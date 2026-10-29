@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="neumorphic_background">#0F172A</color>
+    <color name="neumorphic_background">#0B1426</color>
     <color name="neumorphic_shadow_light">#24334C</color>
-    <color name="neumorphic_shadow_dark">#0F172A</color>
+    <color name="neumorphic_shadow_dark">#0B1426</color>
 
     <color name="primaryColor">#8DB6F7</color>
     <color name="primaryDarkColor">#3A5A94</color>
     <color name="primaryContainerColor">#263D68</color>
     <color name="accentColor">#8DB6F7</color>
 
-    <color name="backgroundColor">#0F172A</color>
-    <color name="backgroundEndColor">#1B1A3E</color>
+    <color name="backgroundColor">#0B1426</color>
+    <color name="backgroundEndColor">#141C36</color>
     <color name="surfaceColor">#1E293B</color>
     <color name="glassSurfaceColor">#D91E293B</color>
     <color name="surfaceVariantColor">#24334C</color>
@@ -20,7 +20,7 @@
 
     <color name="dividerColor">#475A79</color>
     <color name="arrowTintColor">#8DB6F7</color>
-    <color name="buttonShadowColor">#0F172A</color>
+    <color name="buttonShadowColor">#0B1426</color>
 
     <color name="reminderAccentColor">#FFD166</color>
     <color name="themeAccentColor">#8DB6F7</color>
@@ -37,7 +37,7 @@
     <color name="black">#FF000000</color>
     <color name="errorColor">#FF9AA0</color>
 
-    <color name="auth_background">#0F172A</color>
+    <color name="auth_background">#0B1426</color>
     <color name="auth_background_end">#312D59</color>
     <color name="auth_surface">#1E293B</color>
     <color name="auth_surface_glass">#D91E293B</color>
@@ -54,7 +54,7 @@
     <color name="mentor_quiz_surface">#1E293B</color>
     <color name="mentor_quiz_text">#F4F7FC</color>
     <color name="mentor_quiz_secondary">#BBC9DF</color>
-    <color name="mentor_quiz_background">#0F172A</color>
+    <color name="mentor_quiz_background">#0B1426</color>
     <color name="mentor_quiz_accent">#8DB6F7</color>
     <color name="mentor_quiz_on_accent">#0B2545</color>
     <color name="mentor_quiz_border">#475A79</color>

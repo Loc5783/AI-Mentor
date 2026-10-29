@@ -8,24 +8,40 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.imageResource
+import com.example.mentor.ui.R
 
-/** Draw-only ornament: never changes header measurement or intercepts input. */
+/** A floating notebook cover; decoration never participates in layout or input. */
 @Composable
-fun Modifier.mentorHeader(): Modifier {
+fun Modifier.mentorHeader(illustration: MentorArtwork = MentorArtwork.LEARNING): Modifier {
     val colors = MaterialTheme.colorScheme
-    return padding(horizontal = 16.dp, vertical = 12.dp)
-        .clip(RoundedCornerShape(24.dp))
-        .background(Brush.horizontalGradient(listOf(colors.primaryContainer, colors.tertiaryContainer)))
+    val artwork = ImageBitmap.imageResource(when (illustration) {
+        MentorArtwork.ASSISTANT -> R.drawable.illustration_mentor
+        MentorArtwork.PLANNER -> R.drawable.illustration_planner
+        MentorArtwork.GOALS -> R.drawable.illustration_goals
+        MentorArtwork.IDEAS -> R.drawable.illustration_ideas
+        MentorArtwork.LEARNING -> R.drawable.illustration_learning
+    })
+    val shape = RoundedCornerShape(topStart = 12.dp, topEnd = 28.dp, bottomEnd = 28.dp, bottomStart = 28.dp)
+    return padding(horizontal = 16.dp, vertical = 14.dp)
+        .shadow(8.dp, shape, ambientColor = colors.primary.copy(alpha = .18f), spotColor = Color.Black.copy(alpha = .18f))
+        .clip(shape)
+        .background(Brush.horizontalGradient(listOf(colors.surface, colors.primaryContainer)))
         .drawBehind {
-            val x = size.width - 22.dp.toPx()
-            drawCircle(colors.secondary.copy(alpha = .48f), size.height * .4f,
-                Offset(x, size.height * .5f), style = Stroke(1.dp.toPx()))
-            drawLine(colors.primary.copy(alpha = .24f),
-                Offset(x - 46.dp.toPx(), size.height), Offset(x + 10.dp.toPx(), 0f), 2.dp.toPx())
-            drawCircle(colors.secondary.copy(alpha = .65f), 3.dp.toPx(), Offset(x - 28.dp.toPx(), 16.dp.toPx()))
+            val scale = minOf(100.dp.toPx() / artwork.width, (size.height - 16.dp.toPx()).coerceAtLeast(1f) / artwork.height)
+            val width = (artwork.width * scale).toInt().coerceAtLeast(1)
+            val height = (artwork.height * scale).toInt().coerceAtLeast(1)
+            drawImage(artwork, dstOffset = IntOffset((size.width - width - 8.dp.toPx()).toInt(),
+                ((size.height - height) / 2).toInt()), dstSize = IntSize(width, height), alpha = .24f)
         }
 }

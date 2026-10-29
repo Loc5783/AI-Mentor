@@ -204,7 +204,7 @@ private fun ProfileHero(
     Box(
         Modifier
             .fillMaxWidth()
-            .mentorHeader()
+            .mentorHeader(com.example.mentor.ui.design.MentorArtwork.IDEAS)
             .testTag("profile-hero")
     ) {
         Column(
@@ -690,7 +690,7 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
             shape = RoundedCornerShape(20.dp),
             color = if (dark) Color(0xFF1E293B).copy(alpha = 0.72f) else MaterialTheme.colorScheme.surface,
             border = BorderStroke(1.dp, glassBorder),
-            shadowElevation = 1.dp
+            shadowElevation = 6.dp
         ) {
             Column(
                 Modifier.padding(16.dp),

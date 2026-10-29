@@ -33,14 +33,14 @@ object MentorTokens {
     val PinkOutline = Color(0xFFEBD5E0)
 
     // Dark Surface & Navy Palette
-    val NavyBackground = Color(0xFF0F172A)
+    val NavyBackground = Color(0xFF0B1426)
     val NavySurface = Color(0xFF1E293B)
     val NavyCard = Color(0xFF24334C)
     val NavyElevated = Color(0xFF30415F)
     val NavyOutline = Color(0xFF475A79)
     val NavyOnSurface = Color(0xFFF4F7FC)
     val NavyOnSurfaceVariant = Color(0xFFBBC9DF)
-    val LightCanvas = Color(0xFFF7F8FE)
+    val LightCanvas = Color(0xFFEDF2FC)
     val LightSoft = Color(0xFFEDF1FB)
     val LightOutline = Color(0xFFD9E1F0)
     val Gold = Color(0xFFFFD166)
@@ -102,7 +102,7 @@ object MentorTokens {
     val SpaceTiny = 4.dp
     val SpaceCompact = 12.dp
     val PagePadding = 20.dp
-    val CardElevation = 2.dp
+    val CardElevation = 6.dp
     val ActionElevation = 3.dp
     val ContentMaxWidth = 840.dp
     val SpaceSmall = 8.dp

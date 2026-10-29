@@ -222,7 +222,7 @@ fun LessonHubMainView(
 
                 .fillMaxWidth()
 
-                .mentorHeader()
+                .mentorHeader(com.example.mentor.ui.design.MentorArtwork.LEARNING)
 
                 .padding(horizontal = MentorTokens.PagePadding, vertical = 18.dp)
 
@@ -468,7 +468,7 @@ fun HubSectionCard(
             MaterialTheme.colorScheme.secondary.copy(alpha = .5f),
             MaterialTheme.colorScheme.outlineVariant))),
 
-        shadowElevation = 1.dp
+        shadowElevation = MentorTokens.CardElevation
 
     ) {
 

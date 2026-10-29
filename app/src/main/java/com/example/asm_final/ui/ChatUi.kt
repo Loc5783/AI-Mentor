@@ -71,7 +71,7 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
         if (rows.isNotEmpty() && (switched || last >= rows.size - 4)) list.scrollToItem(rows.lastIndex)
     }
     Column(Modifier.fillMaxSize()) {
-        Box(Modifier.fillMaxWidth().mentorHeader()) {
+        Box(Modifier.fillMaxWidth().mentorHeader(com.example.mentor.ui.design.MentorArtwork.ASSISTANT)) {
         Row(Modifier.fillMaxWidth().padding(horizontal = MentorTokens.SpaceSmall, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             ChatIcon(R.drawable.ic_chat_history, R.string.chat_history, ready, actions::history)
             Column(Modifier.weight(1f)) {
@@ -129,21 +129,22 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
                         TextButton({ model.removeFile(file.id) }, enabled = ready) { Text(stringResource(R.string.chat_remove_file, file.name)) }
                     }
                 }
-                TextField(draft, {
-                    if (it.length <= 30000) { draft = it; model.setDraft(it) }
-                }, Modifier.fillMaxWidth().testTag("chat-input"), placeholder = { Text(stringResource(R.string.chat_hint)) },
-                    enabled = !model.loading && !model.importing, maxLines = 4,
-                    textStyle = MaterialTheme.typography.bodyMedium,
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(22.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                        unfocusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                        disabledContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                        focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-                        unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-                        disabledIndicatorColor = androidx.compose.ui.graphics.Color.Transparent))
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     ChatIcon(R.drawable.ic_chat_attach, R.string.chat_attach, ready, actions::attach)
+                    androidx.compose.foundation.text.BasicTextField(
+                        value = draft,
+                        onValueChange = { if (it.length <= 30000) { draft = it; model.setDraft(it) } },
+                        modifier = Modifier.weight(1f).heightIn(min = 44.dp, max = 112.dp)
+                            .padding(vertical = 12.dp).testTag("chat-input"),
+                        enabled = !model.loading && !model.importing,
+                        maxLines = 4,
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
+                        cursorBrush = Brush.verticalGradient(listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.primary)),
+                        decorationBox = { inner ->
+                            Box { if (draft.isEmpty()) Text(stringResource(R.string.chat_hint),
+                                style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                inner() }
+                        })
                     ChatIcon(if (model.requesting) R.drawable.ic_chat_stop else R.drawable.ic_chat_send,
                         if (model.requesting) R.string.chat_stop else R.string.chat_send, ready) {
                         if (model.requesting) model.cancel()
