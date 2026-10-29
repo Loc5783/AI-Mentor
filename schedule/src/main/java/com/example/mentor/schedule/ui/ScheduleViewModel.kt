@@ -18,7 +18,7 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import android.app.Application
 
-class ScheduleViewModelFactory(
+class pushScheduleViewModelFactory(
     private val app: Application,
     private val accountId: String,
     private val repository: ScheduleRepository
