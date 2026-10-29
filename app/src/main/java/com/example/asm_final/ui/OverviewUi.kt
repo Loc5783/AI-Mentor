@@ -46,7 +46,7 @@ class OverviewUi(private val context: Context, private val profile: Boolean,
     private var loading by mutableStateOf(true)
     private var failed by mutableStateOf(false)
 
-    fun view(): View = composeHost(context) {
+    fun view(): View = composeHost(context, scenicBackground = true) {
         OverviewScreen(profile, name, avatar, grade, snapshot, selected, loading, failed,
             { open.accept(it) }, { action.run() }, { edit.run() }, { settings.run() }, { learn.run() }, { schedule.run() })
     }

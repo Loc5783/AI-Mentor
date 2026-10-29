@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import com.example.mentor.data.ActiveUser
 import com.example.mentor.schedule.data.ScheduleRepositoryImpl
 import com.example.mentor.ui.design.MentorTheme
-import com.example.mentor.ui.design.TechGraffitiBackground
 
 class ScheduleFragment : Fragment() {
     override fun onCreateView(
@@ -30,7 +29,6 @@ class ScheduleFragment : Fragment() {
                 val dark = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
                 MentorTheme(dark = dark) {
                     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-                        TechGraffitiBackground(dark)
                         ScheduleScreen(accountId, repository, onBack = {
                             requireActivity().onBackPressedDispatcher.onBackPressed()
                         })

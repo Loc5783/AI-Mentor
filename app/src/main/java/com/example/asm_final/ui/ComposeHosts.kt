@@ -15,7 +15,7 @@ import com.example.mentor.ui.design.MentorTokens
 import com.example.mentor.ui.design.MentorTheme
 import com.example.mentor.ui.design.TechGraffitiBackground
 
-internal fun composeHost(context: Context, content: @Composable () -> Unit): ComposeView =
+internal fun composeHost(context: Context, scenicBackground: Boolean = false, content: @Composable () -> Unit): ComposeView =
     ComposeView(context).apply {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         setContent {
@@ -25,7 +25,7 @@ internal fun composeHost(context: Context, content: @Composable () -> Unit): Com
                     Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
                     contentAlignment = Alignment.TopCenter
                 ) {
-                    TechGraffitiBackground(isDark)
+                    if (scenicBackground) TechGraffitiBackground(isDark)
                     Box(Modifier.widthIn(max = MentorTokens.ContentMaxWidth).fillMaxSize()) {
                         content()
                     }

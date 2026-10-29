@@ -58,4 +58,5 @@
     <color name="mentor_quiz_accent">#8DB6F7</color>
     <color name="mentor_quiz_on_accent">#0B2545</color>
     <color name="mentor_quiz_border">#475A79</color>
+    <color name="headerOutlineColor">#668EBFFF</color>
 </resources>

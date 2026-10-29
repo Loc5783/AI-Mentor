@@ -1,5 +1,6 @@
 package com.example.mentor.ui.design
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +33,7 @@ fun Modifier.mentorHeader(illustration: MentorArtwork = MentorArtwork.LEARNING):
     val shape = RoundedCornerShape(topStart = 12.dp, topEnd = 28.dp, bottomEnd = 28.dp, bottomStart = 28.dp)
     return padding(horizontal = 16.dp, vertical = 14.dp)
         .shadow(8.dp, shape, ambientColor = colors.primary.copy(alpha = .18f), spotColor = Color.Black.copy(alpha = .18f))
+        .border(1.dp, colors.primary.copy(alpha = .32f), shape)
         .clip(shape)
         .background(Brush.horizontalGradient(listOf(colors.surface, colors.primaryContainer)))
         .drawBehind {

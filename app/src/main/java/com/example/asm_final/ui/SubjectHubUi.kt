@@ -120,7 +120,7 @@ class SubjectHubUi(
 
 
 
-    fun view(): View = composeHost(context) {
+    fun view(): View = composeHost(context, scenicBackground = true) {
         val ownerId = ActiveUser.get(context)
         val navModel = rememberSaveable(ownerId, saver = LessonHubNavigationModel.Saver) {
             LessonHubNavigationModel(initialGrade = grade)

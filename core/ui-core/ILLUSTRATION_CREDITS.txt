@@ -9,6 +9,4 @@ https://cdn.undraw.co/illustration/shared-goals_ijlg.svg
 https://cdn.undraw.co/illustration/idea-process_2at3.svg
 https://cdn.undraw.co/illustration/learning-to-sketch_ipnt.svg
 
-Cloud photograph: Pexels, Clouds during Day, photo 209786.
-Source: https://www.pexels.com/photo/clouds-during-day-209786/
-License: https://www.pexels.com/license/
+Day/night sky backgrounds: generated for AI Mentor from user-provided visual reference.

@@ -32,7 +32,7 @@ import java.util.function.Consumer
 
 object CompetitionUi {
     @JvmStatic fun view(context: Context, model: CompetitionViewModel, refresh: Runnable,
-        learn: Runnable, profile: Consumer<String>): View = composeHost(context) {
+        learn: Runnable, profile: Consumer<String>): View = composeHost(context, scenicBackground = true) {
         val state by model.state().observeAsState()
         val snapshot = state?.snapshot
         val query = state?.query ?: model.query()
