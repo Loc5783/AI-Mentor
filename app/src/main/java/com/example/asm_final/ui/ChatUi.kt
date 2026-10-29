@@ -1,5 +1,7 @@
 package com.example.asm_final.ui
 
+import com.example.mentor.ui.design.mentorHeader
+
 import android.content.Context
 import android.view.View
 import androidx.compose.animation.*
@@ -69,10 +71,7 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
         if (rows.isNotEmpty() && (switched || last >= rows.size - 4)) list.scrollToItem(rows.lastIndex)
     }
     Column(Modifier.fillMaxSize()) {
-        Box(Modifier.fillMaxWidth().background(Brush.horizontalGradient(listOf(
-            MaterialTheme.colorScheme.primaryContainer,
-            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = .8f),
-        )))) {
+        Box(Modifier.fillMaxWidth().mentorHeader()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = MentorTokens.SpaceSmall, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             ChatIcon(R.drawable.ic_chat_history, R.string.chat_history, ready, actions::history)
             Column(Modifier.weight(1f)) {
@@ -89,13 +88,13 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
         if (returning) MentorButton(stringResource(R.string.design_understood), actions::returnToLesson,
             Modifier.fillMaxWidth().padding(horizontal = MentorTokens.SpaceMedium))
         LazyColumn(Modifier.weight(1f).fillMaxWidth(), state = list,
-            contentPadding = PaddingValues(MentorTokens.SpaceMedium), verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceMedium)) {
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             if (model.loading) items(3) { MentorSkeleton(stringResource(R.string.course_loading)) }
             else if (rows.isEmpty()) item {
                 MentorCard(Modifier.fillMaxWidth()) {
-                    MentorPresence()
+                    MentorIllustration(MentorArtwork.ASSISTANT)
                     Text(stringResource(R.string.design_mentor), style = MaterialTheme.typography.labelLarge)
-                    Text(stringResource(R.string.chat_empty_title), style = MaterialTheme.typography.headlineMedium)
+                    Text(stringResource(R.string.chat_empty_title), style = MaterialTheme.typography.titleLarge)
                     Text(stringResource(R.string.chat_empty_body))
                     listOf(R.string.chat_suggest_physics, R.string.chat_suggest_chemistry, R.string.chat_suggest_biology).forEach { id ->
                         val suggestion = stringResource(id)
@@ -133,7 +132,8 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
                 TextField(draft, {
                     if (it.length <= 30000) { draft = it; model.setDraft(it) }
                 }, Modifier.fillMaxWidth().testTag("chat-input"), placeholder = { Text(stringResource(R.string.chat_hint)) },
-                    enabled = !model.loading && !model.importing, maxLines = 5,
+                    enabled = !model.loading && !model.importing, maxLines = 4,
+                    textStyle = MaterialTheme.typography.bodyMedium,
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(22.dp),
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
@@ -174,9 +174,9 @@ private fun MessageBubble(message: ChatRecords.Message, owner: Int, requesting: 
         Column(Modifier.fillMaxWidth(), horizontalAlignment = if (user) Alignment.End else Alignment.Start) {
             Surface(shape = MaterialTheme.shapes.medium,
                 color = if (user) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface) {
-                Column(Modifier.widthIn(max = 600.dp).padding(MentorTokens.SpaceMedium), verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceSmall)) {
+                Column(Modifier.widthIn(max = 480.dp).padding(horizontal = 12.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(if (user) R.string.chat_user else R.string.chat_assistant), style = MaterialTheme.typography.labelMedium)
-                    if (message.text.isNotBlank()) SelectionContainer { Text(remember(message.text) { readableMessage(message.text) }, style = MaterialTheme.typography.bodyLarge) }
+                    if (message.text.isNotBlank()) SelectionContainer { Text(remember(message.text) { readableMessage(message.text) }, style = MaterialTheme.typography.bodyMedium) }
                     message.files.forEach { file ->
                         if (file.mime.startsWith("image/")) {
                             val context = LocalContext.current

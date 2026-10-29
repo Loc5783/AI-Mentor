@@ -1,5 +1,7 @@
 package com.example.asm_final.ui
 
+import com.example.mentor.ui.design.mentorHeader
+
 
 
 import android.content.Context
@@ -220,7 +222,7 @@ fun LessonHubMainView(
 
                 .fillMaxWidth()
 
-                .background(heroBg)
+                .mentorHeader()
 
                 .padding(horizontal = MentorTokens.PagePadding, vertical = 18.dp)
 

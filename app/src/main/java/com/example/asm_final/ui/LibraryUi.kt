@@ -1,5 +1,7 @@
 package com.example.asm_final.ui
 
+import com.example.mentor.ui.design.mentorHeader
+
 import androidx.activity.compose.BackHandler
 
 
@@ -1394,7 +1396,8 @@ fun WrongQuestionsNotebookScreen(
 
             tonalElevation = 2.dp,
 
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().mentorHeader(),
+            color = androidx.compose.ui.graphics.Color.Transparent
 
         ) {
 

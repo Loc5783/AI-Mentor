@@ -1,5 +1,7 @@
 package com.example.mentor.schedule.ui
 
+import com.example.mentor.ui.design.mentorHeader
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -49,8 +51,9 @@ fun ScheduleScreen(
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.mentorHeader(),
                 title = { Text(if (selectedTabIndex == 0) stringResource(R.string.schedule_tab_schedule) else stringResource(R.string.schedule_tab_todo)) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = .9f)),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = androidx.compose.ui.graphics.Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")

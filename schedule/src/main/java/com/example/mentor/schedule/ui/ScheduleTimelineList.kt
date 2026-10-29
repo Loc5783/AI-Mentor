@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mentor.schedule.domain.ScheduleEntry
 
+import com.example.mentor.ui.design.MentorIllustration
+import com.example.mentor.ui.design.MentorArtwork
 import java.util.Calendar
 
 @Composable
@@ -28,8 +30,11 @@ fun ScheduleTimelineList(
 ) {
     if (entries.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(20.dp)) {
+            MentorIllustration(MentorArtwork.PLANNER)
             Text(androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.schedule_empty_list), color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
+            }
     } else {
         LazyColumn(
             contentPadding = PaddingValues(16.dp),

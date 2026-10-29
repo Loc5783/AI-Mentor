@@ -162,6 +162,7 @@ object CompetitionUi {
                 } else if (snapshot?.needsLogin == true || snapshot == null || snapshot.source == CompetitionRepository.Source.UNAVAILABLE || snapshot.source == CompetitionRepository.Source.LOCAL || board == null || board.entries.isEmpty()) {
                     item {
                         PremiumDashboardCard(palette) {
+                            MentorIllustration(MentorArtwork.GOALS)
                                 Box(Modifier.size(48.dp).clip(RoundedCornerShape(14.dp))
                                     .background(palette.iconSurface).align(Alignment.CenterHorizontally),
                                     contentAlignment = Alignment.Center) {

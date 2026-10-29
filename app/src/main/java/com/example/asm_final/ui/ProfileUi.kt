@@ -1,5 +1,7 @@
 package com.example.asm_final.ui
 
+import com.example.mentor.ui.design.mentorHeader
+
 import android.content.Context
 import android.view.View
 import android.widget.Toast
@@ -202,14 +204,14 @@ private fun ProfileHero(
     Box(
         Modifier
             .fillMaxWidth()
-            .background(heroBg)
+            .mentorHeader()
             .testTag("profile-hero")
     ) {
         Column(
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = MentorTokens.PagePadding)
-                .padding(top = 16.dp, bottom = 24.dp),
+                .padding(top = 12.dp, bottom = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Top Bar: Display Name / Eyebrow on left, Settings on right
@@ -243,7 +245,7 @@ private fun ProfileHero(
             Spacer(Modifier.height(14.dp))
 
             // Prominent Centered Avatar (96dp)
-            ProfileAvatar(name, avatar, 96.dp)
+            ProfileAvatar(name, avatar, 72.dp)
         }
     }
 }

@@ -182,6 +182,7 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                 } else if (!failed) PremiumDashboardCard(palette) {
                     Text(stringResource(R.string.design_week), style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold, color = palette.title)
+                    MentorIllustration(MentorArtwork.GOALS)
                     Text(stringResource(R.string.design_week_empty), style = MaterialTheme.typography.bodyMedium,
                         color = palette.secondary)
                 }
