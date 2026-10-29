@@ -25,6 +25,7 @@ public class HomeActivity extends AppCompatActivity
 
   @Override
   protected void onCreate(Bundle state) {
+    com.example.asm_final.utils.ThemeHelper.applySavedTheme(this);
     super.onCreate(state);
     String username = getIntent().getStringExtra("USERNAME");
     if (username == null || username.trim().isEmpty()) {
@@ -62,11 +63,24 @@ public class HomeActivity extends AppCompatActivity
             this, username, getIntent().hasExtra("CHAT_THREAD_ID") ? R.id.nav_chat : R.id.nav_home);
     setContentView(composeShell.view());
 
-    if (getIntent() != null && getIntent().getBooleanExtra("NAVIGATE_TO_SCHEDULE", false)) {
+    if (state != null) {
+      String savedRoute = state.getString("CURRENT_ROUTE");
+      if ("settings".equals(savedRoute)) {
+        navigateTo(R.id.nav_settings, false);
+      }
+    } else if (getIntent() != null && getIntent().getBooleanExtra("NAVIGATE_TO_SCHEDULE", false)) {
         navigateTo(0, false);
     }
 
     checkNotificationPrompt();
+  }
+
+  @Override
+  protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    if (composeShell != null) {
+      outState.putString("CURRENT_ROUTE", composeShell.currentRoute());
+    }
   }
 
   private void checkNotificationPrompt() {
