@@ -20,7 +20,7 @@ public final class AppServices {
   private final com.example.asm_final.competition.PublicProfileRepository publicProfiles;
   private final com.example.asm_final.chat.ChatStore chats;
   private final com.example.asm_final.onboarding.LearnerProfileRepository learners;
-  private final RecoveryService recovery = new UnavailableRecoveryService();
+  private final RecoveryService recovery;
   private final Context context;
   private final UserProfileRepository profiles;
   private final ExecutorService io = Executors.newFixedThreadPool(2);
@@ -30,6 +30,7 @@ public final class AppServices {
     accounts = new LocalAccountRepository(context);
     chats = new com.example.asm_final.chat.LocalChatStore(context);
     learners = new com.example.asm_final.onboarding.LocalLearnerProfiles(context);
+    recovery = new LocalRecoveryService(context);
     access = new AccountAccess(context, accounts, learners);
     overview = new LearningOverviewRepository(context);
     overviewUpdates =

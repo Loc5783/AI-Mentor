@@ -1,6 +1,8 @@
 package com.example.asm_final.activities;
 
 import android.os.*;
+import android.os.CountDownTimer;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +20,7 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
   private RecoveryService service;
   private AsyncActionRunner actions;
   private AuthFormModel draft;
+  private CountDownTimer resendTimer;
 
   @Override
   protected void onCreate(Bundle state) {
@@ -69,6 +72,16 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
     findViewById(R.id.recovery_back).setOnClickListener(v -> finish());
     submit.setOnClickListener(v -> request(false));
     resend.setOnClickListener(v -> request(true));
+    
+    // Auto-fill email if available for email verification
+    if (mode == 2) {
+      String currentUser = AuthSession.remembered(this);
+      if (currentUser != null && !currentUser.isEmpty()) {
+        email.setText(currentUser);
+        draft.email = currentUser;
+      }
+    }
+    
     render();
   }
 
@@ -89,9 +102,41 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
     AuthFields.container(confirm).setVisibility(mode == 1 ? View.VISIBLE : View.GONE);
     resend.setVisibility(mode == 2 ? View.VISIBLE : View.GONE);
     submit.setEnabled(service.available());
-    resend.setEnabled(service.available());
+    
+    updateResendButton();
+    
     status.setText(
         service.available() ? R.string.auth_empty_text : R.string.auth_recovery_unavailable);
+  }
+
+  private void updateResendButton() {
+    if (mode == 2 && service.available()) {
+      long remaining = resendUntil - android.os.SystemClock.elapsedRealtime();
+      if (remaining > 0) {
+        resend.setEnabled(false);
+        startResendTimer(remaining);
+      } else {
+        resend.setEnabled(true);
+        resend.setText(R.string.auth_resend);
+      }
+    } else {
+      resend.setEnabled(false);
+    }
+  }
+
+  private void startResendTimer(long duration) {
+    if (resendTimer != null) resendTimer.cancel();
+    resendTimer = new CountDownTimer(duration, 1000) {
+      @Override
+      public void onTick(long millisUntilFinished) {
+        resend.setText(getString(R.string.auth_resend_wait_timer, millisUntilFinished / 1000));
+      }
+      @Override
+      public void onFinish() {
+        resend.setEnabled(true);
+        resend.setText(R.string.auth_resend);
+      }
+    }.start();
   }
 
   private void request(boolean again) {
@@ -140,7 +185,7 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
                     : requestedMode == 1 ? service.reset(code, secret) : service.verify(code),
         result -> {
           submit.setEnabled(true);
-          resend.setEnabled(true);
+          updateResendButton();
           int message =
               result == RecoveryService.Result.REQUEST_ACCEPTED
                   ? R.string.auth_request_accepted
@@ -154,9 +199,21 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
                                   ? R.string.auth_recovery_unavailable
                                   : R.string.auth_recovery_failed;
           status.setText(message);
-          if (result == RecoveryService.Result.REQUEST_ACCEPTED)
+          if (result == RecoveryService.Result.REQUEST_ACCEPTED) {
             resendUntil = android.os.SystemClock.elapsedRealtime() + 60000;
-          if (result == RecoveryService.Result.PASSWORD_RESET) {
+            updateResendButton();
+          }
+          if (result == RecoveryService.Result.VERIFIED) {
+            draft.consumed();
+            android.content.SharedPreferences prefs = getSharedPreferences("settings", android.content.Context.MODE_PRIVATE);
+            prefs.edit().putBoolean(LocalRecoveryService.KEY_EMAIL_VERIFIED_PREFIX + com.example.mentor.data.ActiveUser.get(this), true).apply();
+            
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setMessage("Xác minh email thành công! Tài khoản của bạn đã được kích hoạt đầy đủ tính năng bảo mật.")
+                .setPositiveButton(android.R.string.ok, (d, w) -> finish())
+                .setCancelable(false)
+                .show();
+          } else if (result == RecoveryService.Result.PASSWORD_RESET) {
             draft.consumed();
             new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setMessage(message)
@@ -167,7 +224,7 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
         },
         error -> {
           submit.setEnabled(true);
-          resend.setEnabled(true);
+          updateResendButton();
           status.setText(R.string.auth_recovery_failed);
         });
   }

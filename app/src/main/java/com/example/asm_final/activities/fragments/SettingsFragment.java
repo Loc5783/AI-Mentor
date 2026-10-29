@@ -148,6 +148,30 @@ public class SettingsFragment extends Fragment {
       reminderSwitch.setChecked(ReminderHelper.isReminderEnabled(requireContext()));
       updatingReminderSwitch = false;
     }
+    updateEmailVerificationButton();
+  }
+
+  private void updateEmailVerificationButton() {
+    View view = getView();
+    if (view == null) return;
+    
+    com.google.android.material.button.MaterialButton btnVerify = view.findViewById(R.id.setting_verify_email);
+    if (btnVerify == null) return;
+    
+    android.content.SharedPreferences prefs = requireContext().getSharedPreferences("settings", android.content.Context.MODE_PRIVATE);
+    int currentOwner = com.example.mentor.data.ActiveUser.get(requireContext());
+    boolean isVerified = prefs.getBoolean(com.example.asm_final.accounts.LocalRecoveryService.KEY_EMAIL_VERIFIED_PREFIX + currentOwner, false);
+    
+    if (isVerified) {
+        btnVerify.setText(R.string.auth_email_verified);
+        btnVerify.setEnabled(false);
+        btnVerify.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0xFF10B981)); // Emerald Green
+        btnVerify.setTextColor(android.graphics.Color.WHITE);
+    } else {
+        btnVerify.setText(R.string.auth_email_verification);
+        btnVerify.setEnabled(true);
+        // Reset to default colors by passing null if needed, but typically standard behavior is fine
+    }
   }
 
   @Override
