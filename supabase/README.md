@@ -27,8 +27,8 @@ Supabase is the cloud path when `SUPABASE_ENABLED=true`. The app keeps the old F
 
 ## Configuration and secrets
 
-- `supabase.properties` contains only the project URL and public publishable key; never put a secret or `service_role` key in the app or Git.
-- Use the ignored local override `supabase.local.properties` for developer-specific values. Do not commit that file.
+- `supabase.local.properties.example` contains the project's public URL and publishable key so a fresh clone can connect. A publishable key is intended for client apps; never put a secret or `service_role` key in the app or Git.
+- Gradle reads that tracked default first, then lets ignored `supabase.properties` or `supabase.local.properties` override it for local development.
 - Keep `SUPABASE_ENABLED=false` to use the legacy backend path.
 - Configure Gemini keys only as Supabase Edge Function secrets, never in Android resources, source code, or Git.
 

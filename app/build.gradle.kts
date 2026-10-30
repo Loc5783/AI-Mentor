@@ -28,7 +28,8 @@ require(debugBackendUrl.isEmpty() || runCatching {
 }.getOrDefault(false)) { "Debug backend must use HTTPS or the explicit local emulator host with a port" }
 
 val supabaseConfig = Properties().apply {
-    for (configName in listOf("supabase.properties", "supabase.local.properties")) {
+    // The publishable project config is safe to bundle; ignored local files override it.
+    for (configName in listOf("supabase.local.properties.example", "supabase.properties", "supabase.local.properties")) {
         val configFile = rootProject.file(configName)
         if (configFile.exists()) configFile.inputStream().use { load(it) }
     }
