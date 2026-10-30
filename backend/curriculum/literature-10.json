@@ -1,0 +1,1137 @@
+{
+  "subjectId": "literature",
+  "grade": 10,
+  "version": "intro-2026.1",
+  "title": "Ngữ văn: đọc hiểu, tiếng Việt và tạo lập văn bản",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_10",
+  "extendedReviews": false,
+  "sourceNote": "15 bài nhập môn lớp 10 do AI Mentor biên soạn theo yêu cầu cần đạt chung của Chương trình GDPT 2018; không sao chép một bộ SGK và chưa phủ toàn bộ năm học. Bài đầu vào dùng hai câu mỗi bài đã xuất bản để ước lượng nền tảng và đề xuất bài có thể bỏ qua. Nội dung cần giáo viên rà soát trước khi dùng chính thức.",
+  "lessons": [
+    {
+      "id": "literature-10-reading-purpose",
+      "title": "Đọc văn bản có mục đích",
+      "guidance": [
+        "Đọc hiểu gồm nhận biết thông tin, phân tích cách biểu đạt và liên hệ có căn cứ. Xác định yêu cầu câu hỏi trước khi chọn dẫn chứng."
+      ],
+      "examples": [
+        "Khi câu hỏi hỏi thái độ người viết, tìm từ ngữ đánh giá và giọng điệu thay vì chỉ kể lại sự việc."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-reading-purpose-q1",
+          "prompt": "Bước nào giúp đọc có trọng tâm?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Xác định yêu cầu và kiểu văn bản"
+            },
+            {
+              "id": "b",
+              "text": "Đọc lướt rồi đoán"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ tra nghĩa từng từ"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Mục tiêu đọc quyết định thông tin và dấu hiệu cần chú ý."
+        },
+        {
+          "id": "literature-10-reading-purpose-q2",
+          "prompt": "Câu hỏi yêu cầu tìm luận điểm chính thì nên ưu tiên điều gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Một chi tiết ngẫu nhiên"
+            },
+            {
+              "id": "b",
+              "text": "Từ dài nhất"
+            },
+            {
+              "id": "c",
+              "text": "Ý xuyên suốt được các ý khác hỗ trợ"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Luận điểm chính bao quát lập luận, không phải chi tiết đơn lẻ."
+        },
+        {
+          "id": "literature-10-reading-purpose-q3",
+          "prompt": "Một bài viết khẳng định công viên giúp cải thiện sức khỏe, rồi nêu số người đi bộ tăng. Số liệu đóng vai trò gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Kết luận chắc chắn cho mọi thành phố"
+            },
+            {
+              "id": "b",
+              "text": "Dẫn chứng hỗ trợ luận điểm"
+            },
+            {
+              "id": "c",
+              "text": "Nhan đề"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Số liệu minh họa lập luận nhưng cần xem nguồn và phạm vi trước khi khái quát."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-narrative-elements",
+      "title": "Nhân vật, sự kiện và cốt truyện",
+      "guidance": [
+        "Cốt truyện tổ chức các sự kiện; nhân vật bộc lộ tính cách qua hành động, lời nói và lựa chọn. Không suy ra tính cách chỉ từ một chi tiết thiếu ngữ cảnh."
+      ],
+      "examples": [
+        "Nhân vật trả lại ví nhặt được và giải thích vì sao, qua đó thể hiện sự trung thực."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-narrative-elements-q1",
+          "prompt": "Chi tiết nào thường giúp nhận xét tính cách nhân vật có căn cứ?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Màu bìa sách"
+            },
+            {
+              "id": "b",
+              "text": "Số trang"
+            },
+            {
+              "id": "c",
+              "text": "Hành động, lời nói và lựa chọn"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Đặc điểm nhân vật cần dựa vào biểu hiện trong văn bản."
+        },
+        {
+          "id": "literature-10-narrative-elements-q2",
+          "prompt": "Cốt truyện chủ yếu là gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phần chú giải"
+            },
+            {
+              "id": "b",
+              "text": "Chuỗi sự kiện được tổ chức trong tác phẩm"
+            },
+            {
+              "id": "c",
+              "text": "Danh sách tác giả"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Cốt truyện liên kết các biến cố và quan hệ giữa chúng."
+        },
+        {
+          "id": "literature-10-narrative-elements-q3",
+          "prompt": "Nhân vật nhiều lần giữ lời hứa dù gặp khó khăn. Nhận xét phù hợp nhất là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Có trách nhiệm; cần dẫn các lần thực hiện lời hứa"
+            },
+            {
+              "id": "b",
+              "text": "Chắc chắn giàu có"
+            },
+            {
+              "id": "c",
+              "text": "Không cần trích chi tiết"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Kết luận nên bám vào hành động lặp lại và nêu bằng chứng cụ thể."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-point-of-view",
+      "title": "Người kể chuyện và điểm nhìn",
+      "guidance": [
+        "Người kể chuyện là tiếng nói kể lại câu chuyện; điểm nhìn cho biết sự việc được quan sát từ vị trí nào. Hai yếu tố này ảnh hưởng lượng thông tin người đọc nhận được."
+      ],
+      "examples": [
+        "Người kể xưng “tôi” thường giới hạn điều mình trực tiếp biết, không tự động đồng nghĩa tác giả."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-point-of-view-q1",
+          "prompt": "Người kể xưng “tôi” có nhất thiết là tác giả ngoài đời không?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ trong thơ"
+            },
+            {
+              "id": "b",
+              "text": "Không"
+            },
+            {
+              "id": "c",
+              "text": "Luôn luôn"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Người kể là cấu trúc nghệ thuật, có thể là nhân vật hư cấu."
+        },
+        {
+          "id": "literature-10-point-of-view-q2",
+          "prompt": "Điểm nhìn ảnh hưởng điều gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cách và phạm vi thông tin được kể"
+            },
+            {
+              "id": "b",
+              "text": "Khổ giấy in"
+            },
+            {
+              "id": "c",
+              "text": "Số chương bắt buộc"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Vị trí quan sát quyết định người đọc thấy và biết những gì."
+        },
+        {
+          "id": "literature-10-point-of-view-q3",
+          "prompt": "Người kể chỉ biết suy nghĩ của nhân vật chính. Đây là dấu hiệu gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Người kể biết mọi việc"
+            },
+            {
+              "id": "b",
+              "text": "Văn bản không có người kể"
+            },
+            {
+              "id": "c",
+              "text": "Điểm nhìn giới hạn theo nhân vật"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Thông tin bị giới hạn vào trải nghiệm của nhân vật ấy."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-myth-legend",
+      "title": "Đọc truyện thần thoại và truyền thuyết",
+      "guidance": [
+        "Truyện thần thoại thường lí giải nguồn gốc thế giới hoặc hiện tượng bằng tưởng tượng; truyền thuyết gắn với nhân vật, sự kiện được cộng đồng ghi nhớ và yếu tố kì ảo."
+      ],
+      "examples": [
+        "Khi đọc truyện về nguồn gốc một dòng sông, phân biệt điều văn bản tưởng tượng với kiến thức khoa học hiện nay."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-myth-legend-q1",
+          "prompt": "Yếu tố kì ảo trong truyện dân gian thường có tác dụng gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thể hiện cách nhìn và ước vọng của cộng đồng"
+            },
+            {
+              "id": "b",
+              "text": "Chứng minh sự kiện là tư liệu khoa học"
+            },
+            {
+              "id": "c",
+              "text": "Thay thế mọi nhân vật"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Kì ảo tạo cách lí giải nghệ thuật, không phải bằng chứng khoa học."
+        },
+        {
+          "id": "literature-10-myth-legend-q2",
+          "prompt": "Truyền thuyết thường gắn với yếu tố nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bảng số liệu khí tượng"
+            },
+            {
+              "id": "b",
+              "text": "Hướng dẫn lắp ráp"
+            },
+            {
+              "id": "c",
+              "text": "Kí ức cộng đồng về nhân vật hoặc sự kiện"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Truyền thuyết lưu giữ cách cộng đồng hình dung quá khứ."
+        },
+        {
+          "id": "literature-10-myth-legend-q3",
+          "prompt": "Khi so sánh truyện sáng thế với kiến thức khoa học, cách đọc phù hợp là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Dùng tình tiết làm chứng cứ thực nghiệm"
+            },
+            {
+              "id": "b",
+              "text": "Nhận diện chức năng biểu tượng và không coi đó là mô hình khoa học"
+            },
+            {
+              "id": "c",
+              "text": "Bác bỏ mọi giá trị văn hóa"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Đọc thể loại đúng chức năng giúp vừa hiểu văn hóa vừa tránh nhầm lẫn."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-epic",
+      "title": "Đặc trưng sử thi",
+      "guidance": [
+        "Sử thi thường kể cộng đồng và người anh hùng trong không gian rộng lớn, giọng điệu trang trọng; phóng đại nghệ thuật làm nổi bật tầm vóc chứ không phải phép đo thực tế."
+      ],
+      "examples": [
+        "Một hành trình gian nan được kể qua nhiều thử thách để biểu đạt khát vọng và giá trị của cộng đồng."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-epic-q1",
+          "prompt": "Sử thi thường mở rộng phạm vi câu chuyện tới đâu?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ một mẹo nấu ăn"
+            },
+            {
+              "id": "b",
+              "text": "Một bản tin ngắn"
+            },
+            {
+              "id": "c",
+              "text": "Cộng đồng và biến cố có ý nghĩa lớn"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Sử thi gắn hành động anh hùng với số phận cộng đồng."
+        },
+        {
+          "id": "literature-10-epic-q2",
+          "prompt": "Phóng đại trong sử thi chủ yếu tạo hiệu quả gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Làm mất mọi xung đột"
+            },
+            {
+              "id": "b",
+              "text": "Nhấn mạnh tầm vóc nghệ thuật"
+            },
+            {
+              "id": "c",
+              "text": "Đưa ra số đo chính xác"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Phóng đại là thủ pháp biểu đạt, cần đọc theo quy ước thể loại."
+        },
+        {
+          "id": "literature-10-epic-q3",
+          "prompt": "Khi phân tích người anh hùng, nên kết hợp hành động cá nhân với điều gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Giá trị và ước vọng cộng đồng"
+            },
+            {
+              "id": "b",
+              "text": "Giá bán sách"
+            },
+            {
+              "id": "c",
+              "text": "Số lần xuống dòng"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nhân vật sử thi thường đại diện những chuẩn mực và khát vọng chung."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-short-story",
+      "title": "Đọc truyện ngắn và chi tiết nghệ thuật",
+      "guidance": [
+        "Truyện ngắn cô đọng quanh tình huống và một số chi tiết có sức gợi. Tình huống làm nhân vật bộc lộ phẩm chất hoặc tạo chuyển biến nhận thức."
+      ],
+      "examples": [
+        "Một chiếc vé cũ xuất hiện đầu và cuối truyện có thể nối các mốc thời gian, nhưng cần căn cứ cách văn bản dùng nó."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-short-story-q1",
+          "prompt": "Tình huống truyện giúp làm rõ điều gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Số từ trong tựa đề"
+            },
+            {
+              "id": "b",
+              "text": "Xung đột và lựa chọn của nhân vật"
+            },
+            {
+              "id": "c",
+              "text": "Định dạng trang"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Tình huống tạo hoàn cảnh để tính cách và chủ đề hiện ra."
+        },
+        {
+          "id": "literature-10-short-story-q2",
+          "prompt": "Chi tiết lặp lại trong truyện có thể tạo tác dụng nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Liên kết ý nghĩa hoặc biến chuyển"
+            },
+            {
+              "id": "b",
+              "text": "Bảo đảm truyện là thật"
+            },
+            {
+              "id": "c",
+              "text": "Thay cho mọi phân tích"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tác dụng cần được chứng minh bằng vị trí và ngữ cảnh xuất hiện."
+        },
+        {
+          "id": "literature-10-short-story-q3",
+          "prompt": "Muốn kết luận một chi tiết biểu tượng cho hi vọng, cần làm gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ dựa vào màu sắc"
+            },
+            {
+              "id": "b",
+              "text": "Tra một nghĩa cố định duy nhất"
+            },
+            {
+              "id": "c",
+              "text": "Phân tích ngữ cảnh, sự lặp lại và phản ứng nhân vật"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Ý nghĩa biểu tượng hình thành trong quan hệ với toàn văn bản."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-poetry-image",
+      "title": "Hình ảnh, từ ngữ và cảm xúc trong thơ",
+      "guidance": [
+        "Hình ảnh thơ có thể gợi tả và gợi cảm. Phân tích nên nối từ ngữ cụ thể với cảm xúc, chủ đề và ngữ cảnh, tránh gán ý nghĩa tùy tiện."
+      ],
+      "examples": [
+        "Hình ảnh “cánh cửa hé sáng” có thể gợi mở một khởi đầu nếu mạch thơ hỗ trợ cách hiểu ấy."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-poetry-image-q1",
+          "prompt": "Phân tích hình ảnh thơ cần dựa vào điều gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Từ ngữ và mạch văn bản"
+            },
+            {
+              "id": "b",
+              "text": "Suy đoán không dẫn chứng"
+            },
+            {
+              "id": "c",
+              "text": "Tiểu sử người đọc"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Cách hiểu phải có căn cứ trong cách dùng từ và toàn bài."
+        },
+        {
+          "id": "literature-10-poetry-image-q2",
+          "prompt": "Một hình ảnh vừa tả cảnh vừa gợi tâm trạng là biểu hiện nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Sai lệch thể loại"
+            },
+            {
+              "id": "b",
+              "text": "Bảng thống kê"
+            },
+            {
+              "id": "c",
+              "text": "Tính gợi của ngôn ngữ thơ"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Thơ thường nén nhiều lớp nghĩa trong hình ảnh."
+        },
+        {
+          "id": "literature-10-poetry-image-q3",
+          "prompt": "Nếu cùng một hình ảnh được hiểu theo hai cách khác nhau, em nên làm gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bỏ qua văn bản"
+            },
+            {
+              "id": "b",
+              "text": "Đối chiếu mỗi cách với ngữ cảnh và dẫn chứng"
+            },
+            {
+              "id": "c",
+              "text": "Chọn cách nghe hay hơn"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Đọc đa nghĩa vẫn cần kiểm tra mức độ phù hợp với văn bản."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-rhyme-rhythm",
+      "title": "Nhịp, vần và âm hưởng",
+      "guidance": [
+        "Vần tạo liên kết âm thanh; nhịp tổ chức chỗ ngắt và tốc độ đọc. Cần đọc thành tiếng hoặc đánh dấu nhịp trước khi nêu tác dụng."
+      ],
+      "examples": [
+        "Nhịp ngắn, dồn có thể tạo cảm giác gấp nếu cú pháp và nội dung cùng hướng đó."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-rhyme-rhythm-q1",
+          "prompt": "Cách tốt để nhận ra nhịp thơ là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ đếm chữ cái"
+            },
+            {
+              "id": "b",
+              "text": "Đọc nhan đề"
+            },
+            {
+              "id": "c",
+              "text": "Đọc thành tiếng và quan sát cú pháp"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nhịp liên quan cách ngắt câu, âm tiết và nhấn giọng."
+        },
+        {
+          "id": "literature-10-rhyme-rhythm-q2",
+          "prompt": "Vần thơ tạo liên kết chủ yếu ở phương diện nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Số tác giả"
+            },
+            {
+              "id": "b",
+              "text": "Âm thanh"
+            },
+            {
+              "id": "c",
+              "text": "Màu sắc trang"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Các tiếng hiệp vần tạo sự vang nối trong bài."
+        },
+        {
+          "id": "literature-10-rhyme-rhythm-q3",
+          "prompt": "Nhịp thơ nhanh nhưng nội dung đang tả nỗi buồn. Kết luận an toàn là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nêu hiệu quả nhịp trong đoạn và dựa vào từ ngữ cụ thể"
+            },
+            {
+              "id": "b",
+              "text": "Nhịp nhanh luôn vui"
+            },
+            {
+              "id": "c",
+              "text": "Nhịp không ảnh hưởng cảm xúc"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tác dụng nhịp phụ thuộc văn cảnh, không có quy tắc đơn giản tuyệt đối."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-argumentation",
+      "title": "Luận đề, luận điểm và lí lẽ",
+      "guidance": [
+        "Văn bản nghị luận nêu luận đề, triển khai bằng luận điểm, lí lẽ và dẫn chứng. Dẫn chứng phù hợp phải liên quan và đủ tin cậy cho kết luận."
+      ],
+      "examples": [
+        "Luận đề “nên đọc sách mỗi ngày” có thể được hỗ trợ bằng lí do về vốn từ và ví dụ cụ thể."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-argumentation-q1",
+          "prompt": "Luận điểm trong bài nghị luận làm nhiệm vụ gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thay mọi dẫn chứng"
+            },
+            {
+              "id": "b",
+              "text": "Triển khai và hỗ trợ luận đề"
+            },
+            {
+              "id": "c",
+              "text": "Trang trí văn bản"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Các luận điểm tổ chức lí do để bảo vệ luận đề."
+        },
+        {
+          "id": "literature-10-argumentation-q2",
+          "prompt": "Dẫn chứng tốt cần có đặc điểm nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Liên quan và kiểm chứng được"
+            },
+            {
+              "id": "b",
+              "text": "Càng dài càng tốt"
+            },
+            {
+              "id": "c",
+              "text": "Không cần nguồn"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Độ tin cậy và sự liên quan quyết định sức nặng của dẫn chứng."
+        },
+        {
+          "id": "literature-10-argumentation-q3",
+          "prompt": "Một bài lấy một câu chuyện cá nhân để kết luận mọi học sinh đều học tốt khi nghe nhạc. Hạn chế chính là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Có quá nhiều luận đề"
+            },
+            {
+              "id": "b",
+              "text": "Dùng sai dấu chấm"
+            },
+            {
+              "id": "c",
+              "text": "Khái quát vượt quá phạm vi dẫn chứng"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Một trường hợp riêng không đủ đại diện cho toàn bộ học sinh."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-information-text",
+      "title": "Đọc văn bản thông tin",
+      "guidance": [
+        "Văn bản thông tin trình bày dữ kiện, giải thích hoặc hướng dẫn. Phân biệt dữ kiện với nhận định; chú ý nguồn, thời điểm, đơn vị và phạm vi khảo sát."
+      ],
+      "examples": [
+        "Tỉ lệ 40% chỉ có nghĩa khi biết 40% của nhóm nào, trong thời gian và cách đo nào."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-information-text-q1",
+          "prompt": "Khi đọc một con số phần trăm, cần hỏi thêm điều gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mẫu số, phạm vi và thời điểm"
+            },
+            {
+              "id": "b",
+              "text": "Màu chữ"
+            },
+            {
+              "id": "c",
+              "text": "Số đoạn văn"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tỉ lệ cần có mẫu số và ngữ cảnh mới diễn giải được."
+        },
+        {
+          "id": "literature-10-information-text-q2",
+          "prompt": "Dữ kiện khác nhận định ở điểm nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Dữ kiện luôn sai"
+            },
+            {
+              "id": "b",
+              "text": "Nhận định luôn là số"
+            },
+            {
+              "id": "c",
+              "text": "Dữ kiện có thể kiểm tra; nhận định là đánh giá hoặc diễn giải"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Phân biệt hai loại giúp không coi ý kiến là sự thật đã chứng minh."
+        },
+        {
+          "id": "literature-10-information-text-q3",
+          "prompt": "Bài đăng trích số liệu nhưng không ghi nguồn. Cách xử lí phù hợp là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tự thêm nguồn"
+            },
+            {
+              "id": "b",
+              "text": "Tạm thận trọng và tìm nguồn gốc dữ liệu"
+            },
+            {
+              "id": "c",
+              "text": "Chia sẻ ngay như sự thật"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Không có nguồn làm giảm khả năng kiểm chứng."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-paragraph-cohesion",
+      "title": "Đoạn văn và liên kết ý",
+      "guidance": [
+        "Đoạn văn thường có một ý chính được phát triển bằng các câu hỗ trợ. Phép lặp, phép thế, nối và liên tưởng giúp liên kết nhưng cần tránh lặp rườm rà."
+      ],
+      "examples": [
+        "Có thể dùng “ý kiến ấy” để thế cho quan điểm vừa nêu, miễn đại từ quy chiếu rõ."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-paragraph-cohesion-q1",
+          "prompt": "Một đoạn văn mạch lạc cần điều gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mỗi câu nói một chủ đề khác"
+            },
+            {
+              "id": "b",
+              "text": "Thật nhiều từ nối"
+            },
+            {
+              "id": "c",
+              "text": "Các câu cùng phục vụ ý chính và liên kết rõ"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Liên kết không thay thế sự thống nhất nội dung."
+        },
+        {
+          "id": "literature-10-paragraph-cohesion-q2",
+          "prompt": "Từ “điều đó” có hiệu quả khi nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Dùng thay mọi danh từ"
+            },
+            {
+              "id": "b",
+              "text": "Đối tượng được nhắc tới rõ ràng"
+            },
+            {
+              "id": "c",
+              "text": "Không có nội dung trước đó"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Từ thế cần có chỗ quy chiếu giúp người đọc hiểu."
+        },
+        {
+          "id": "literature-10-paragraph-cohesion-q3",
+          "prompt": "Đoạn văn có ba câu lặp nguyên một ý. Cách sửa tốt là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Giữ câu nêu ý, thay câu sau bằng lí giải hoặc dẫn chứng"
+            },
+            {
+              "id": "b",
+              "text": "Thêm nhiều từ nối"
+            },
+            {
+              "id": "c",
+              "text": "Xóa dấu câu"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Mỗi câu nên đóng góp một bước phát triển ý."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-figurative-language",
+      "title": "Biện pháp tu từ và tác dụng",
+      "guidance": [
+        "So sánh, nhân hóa, ẩn dụ và điệp ngữ tạo hình ảnh hoặc nhấn mạnh. Gọi đúng tên biện pháp chưa đủ; cần nêu tác dụng trong câu cụ thể."
+      ],
+      "examples": [
+        "“Gió thì thầm” nhân hóa gió và có thể gợi âm thanh nhẹ nếu đoạn văn phù hợp."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-figurative-language-q1",
+          "prompt": "“Mặt trời xuống biển như hòn lửa” nổi bật biện pháp nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nói giảm"
+            },
+            {
+              "id": "b",
+              "text": "So sánh"
+            },
+            {
+              "id": "c",
+              "text": "Liệt kê"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Từ “như” nối hai hình ảnh có nét tương đồng."
+        },
+        {
+          "id": "literature-10-figurative-language-q2",
+          "prompt": "Sau khi gọi tên phép tu từ, cần làm gì tiếp?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ ra từ ngữ và hiệu quả trong ngữ cảnh"
+            },
+            {
+              "id": "b",
+              "text": "Lặp lại định nghĩa"
+            },
+            {
+              "id": "c",
+              "text": "Kết luận chung chung"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tác dụng phải gắn với hình ảnh, cảm xúc hoặc ý nghĩa cụ thể."
+        },
+        {
+          "id": "literature-10-figurative-language-q3",
+          "prompt": "Một câu lặp “mãi” nhiều lần để nhấn nỗi chờ đợi. Nhận xét nào hợp lí?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Điệp từ chứng minh thời gian chính xác"
+            },
+            {
+              "id": "b",
+              "text": "Không thể tạo tác dụng"
+            },
+            {
+              "id": "c",
+              "text": "Điệp từ làm nổi bật cảm giác kéo dài"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Sự lặp có thể nhấn mạnh trạng thái nhưng không thay thế dữ kiện thời gian."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-sentence-structure",
+      "title": "Câu, thành phần và dấu câu",
+      "guidance": [
+        "Chủ ngữ nêu đối tượng; vị ngữ nêu hoạt động, trạng thái hoặc đặc điểm. Dấu câu giúp biểu thị quan hệ và nhịp; cần đọc lại để phát hiện câu thiếu thành phần."
+      ],
+      "examples": [
+        "“Sau cơn mưa, sân trường sáng lên.” có trạng ngữ thời gian, chủ ngữ “sân trường” và vị ngữ “sáng lên”."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-sentence-structure-q1",
+          "prompt": "Trong câu “Sân trường sáng lên”, chủ ngữ là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Sân trường"
+            },
+            {
+              "id": "b",
+              "text": "Sáng lên"
+            },
+            {
+              "id": "c",
+              "text": "Lên"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Chủ ngữ nêu đối tượng được nói đến."
+        },
+        {
+          "id": "literature-10-sentence-structure-q2",
+          "prompt": "Dấu phẩy trong câu thường có tác dụng nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Luôn thay dấu chấm"
+            },
+            {
+              "id": "b",
+              "text": "Bảo đảm câu đúng dù thiếu ý"
+            },
+            {
+              "id": "c",
+              "text": "Đánh dấu ranh giới hoặc thành phần phụ theo cấu trúc"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Dấu câu phải phù hợp cấu trúc, không tự sửa câu thiếu thành phần."
+        },
+        {
+          "id": "literature-10-sentence-structure-q3",
+          "prompt": "Câu “Khi em đến thư viện.” đứng riêng thường tạo cảm giác gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Là câu hỏi"
+            },
+            {
+              "id": "b",
+              "text": "Thiếu mệnh đề chính"
+            },
+            {
+              "id": "c",
+              "text": "Đủ chủ-vị hoàn chỉnh"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mệnh đề bắt đầu bằng “khi” thường cần phần nêu sự việc chính."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-analytical-writing",
+      "title": "Viết đoạn phân tích văn học",
+      "guidance": [
+        "Đoạn phân tích cần luận điểm rõ, dẫn chứng chính xác và phần lí giải nối dẫn chứng với luận điểm. Tránh kể lại toàn bộ tác phẩm."
+      ],
+      "examples": [
+        "Luận điểm về sự trưởng thành của nhân vật có thể dẫn một lựa chọn then chốt rồi phân tích hệ quả."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-analytical-writing-q1",
+          "prompt": "Dẫn chứng trong đoạn phân tích cần đi kèm điều gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Một nhận xét không căn cứ"
+            },
+            {
+              "id": "b",
+              "text": "Tóm tắt toàn truyện"
+            },
+            {
+              "id": "c",
+              "text": "Lí giải mối liên hệ với luận điểm"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Dẫn chứng chỉ thuyết phục khi được diễn giải."
+        },
+        {
+          "id": "literature-10-analytical-writing-q2",
+          "prompt": "Mục đích của luận điểm đầu đoạn là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Giới thiệu số trang"
+            },
+            {
+              "id": "b",
+              "text": "Nêu nhận xét cần chứng minh"
+            },
+            {
+              "id": "c",
+              "text": "Kể hết cốt truyện"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Luận điểm định hướng các dẫn chứng và phân tích tiếp theo."
+        },
+        {
+          "id": "literature-10-analytical-writing-q3",
+          "prompt": "Đoạn viết chỉ tóm tắt ba sự kiện, chưa phân tích. Nên bổ sung gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nhận xét về ý nghĩa chi tiết và cách thể hiện"
+            },
+            {
+              "id": "b",
+              "text": "Thêm sự kiện thứ tư"
+            },
+            {
+              "id": "c",
+              "text": "Thêm lời khen chung"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Phân tích làm rõ vì sao chi tiết hỗ trợ nhận định."
+        }
+      ]
+    },
+    {
+      "id": "literature-10-speaking-listening",
+      "title": "Nói, nghe và phản hồi có căn cứ",
+      "guidance": [
+        "Bài trình bày hiệu quả có mục tiêu, thứ tự ý và ví dụ vừa đủ. Khi phản hồi, nhắc lại chính xác ý bạn, nêu điểm đồng thuận hoặc câu hỏi, giữ thái độ tôn trọng."
+      ],
+      "examples": [
+        "“Mình hiểu bạn cho rằng…; bạn có thể giải thích thêm dữ kiện…” vừa xác nhận vừa mở đối thoại."
+      ],
+      "questions": [
+        {
+          "id": "literature-10-speaking-listening-q1",
+          "prompt": "Trước khi phản biện, nên làm gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Gán động cơ"
+            },
+            {
+              "id": "b",
+              "text": "Hiểu và diễn đạt lại đúng ý người nói"
+            },
+            {
+              "id": "c",
+              "text": "Ngắt lời ngay"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Lắng nghe chính xác giúp phản hồi vào luận điểm thật."
+        },
+        {
+          "id": "literature-10-speaking-listening-q2",
+          "prompt": "Bài nói có bố cục nào dễ theo dõi?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mở ý, triển khai, kết luận"
+            },
+            {
+              "id": "b",
+              "text": "Các ý hoàn toàn ngẫu nhiên"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ đọc nguyên slide"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Trình tự rõ giúp người nghe theo dõi mạch lập luận."
+        },
+        {
+          "id": "literature-10-speaking-listening-q3",
+          "prompt": "Bạn không đồng ý với ý kiến của bạn học. Cách phản hồi tốt là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chê người nói"
+            },
+            {
+              "id": "b",
+              "text": "Khẳng định mình đúng mà không giải thích"
+            },
+            {
+              "id": "c",
+              "text": "Nêu lí do và bằng chứng, đồng thời giữ lời lẽ tôn trọng"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Phản biện nên tập trung vào lập luận và có căn cứ."
+        }
+      ]
+    }
+  ]
+}

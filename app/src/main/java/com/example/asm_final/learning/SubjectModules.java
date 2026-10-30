@@ -21,6 +21,6 @@ public final class SubjectModules {
             new com.example.mentor.physics.PhysicsSubject(),
             new com.example.mentor.biology.BiologySubject(),
             new com.example.mentor.economicslaw.EconomicsLawSubject()),
-        EnumSet.of(SubjectId.BIOLOGY, SubjectId.CHEMISTRY, SubjectId.PHYSICS));
+        EnumSet.allOf(SubjectId.class));
   }
 }

@@ -9,6 +9,7 @@ import time
 from .common import ACTIVE_SUBJECTS, error, iso, idem, check_revision, owned_resource, resource
 from .database import Database, dump, identifier
 from .learning_stats import ZONE, reward_summary
+from .placement_policy import PlacementPolicy
 
 
 
@@ -71,8 +72,8 @@ class Catalog:
 
     def unit(self, course, unit_id):
         if unit_id == "placement":
-            # Ten questions sampling the first five lessons, with no rewards or auto-unlocks.
-            return "PLACEMENT", -1, [q for l in course["lessons"][:5] for q in l["questions"][:2]], []
+            # Two questions per published lesson support a topic-by-topic diagnostic.
+            return "PLACEMENT", -1, [q for lesson in course["lessons"] for q in lesson["questions"][:2]], []
         for index, lesson in enumerate(course["lessons"]):
             if lesson["id"] == unit_id:
                 return "LESSON", index, lesson["questions"], [unit_id]
@@ -143,24 +144,35 @@ class LearningService:
             enrollment = self.enrollment(db, owner, item)
             course = self.catalog.course(enrollment["subject_id"], enrollment["grade"])
             done = self.completed_units(db, owner, item)
+            placement = json.loads(enrollment["placement"]) if enrollment["placement"] else {}
+            skipped = set(placement.get("skippedUnitIds", []))
             pending = db.execute("SELECT id,unit_id FROM attempts WHERE user_id=? AND enrollment_id=? AND state='IN_PROGRESS' ORDER BY updated_at DESC",
                                  (owner, item)).fetchall()
-        units, required = [], []
+        units, required, satisfied = [], [], done | skipped
         ready = bool(enrollment["placement"])
         for index, lesson in enumerate(course["lessons"]):
             unit = {"id": lesson["id"], "title": lesson["title"], "kind": "LESSON", "xp": 200}
-            unit["state"] = "COMPLETED" if unit["id"] in done else "AVAILABLE" if ready and all(x in done for x in required) else "LOCKED"
+            unit["state"] = ("SKIPPED" if unit["id"] in skipped else "COMPLETED" if unit["id"] in done
+                              else "AVAILABLE" if ready and all(x in satisfied for x in required) else "LOCKED")
+            unit["canOpen"] = ready and all(x in satisfied for x in required)
             units.append(unit)
             required.append(unit["id"])
             if (index + 1) % 5 == 0:
                 review_id = self.catalog.review_id(course, index + 1)
+                review_skipped = review_id in skipped
                 units.append({"id": review_id, "title": f"Ôn tập {(index + 1) // 5}",
                               "kind": "FIVE_LESSON_REVIEW", "xp": 400,
                               "questionCount": 15 if course.get("extendedReviews", False) else 10,
                               "sourceLessonIds": required[-5:],
-                              "state": "COMPLETED" if review_id in done else "AVAILABLE" if ready and all(x in done for x in required) else "LOCKED"})
+                              "state": ("SKIPPED" if review_skipped else "COMPLETED" if review_id in done
+                                        else "AVAILABLE" if ready and all(x in satisfied for x in required) else "LOCKED"),
+                              "canOpen": ready and all(x in satisfied for x in required)})
                 # Subsequent lessons require the intervening review, not only the five lessons.
                 required.append(review_id)
+                if review_skipped:
+                    satisfied.add(review_id)
+            if unit["state"] == "SKIPPED":
+                satisfied.add(unit["id"])
         return {"enrollment": self.enrollment_dto(enrollment), "title": course["title"],
                 "curriculumVersion": course["version"], "sourceNote": course["sourceNote"],
                 "units": units, "pendingAttempts": [dict(x) for x in pending]}
@@ -213,6 +225,8 @@ class LearningService:
                     if not enrollment["placement"]:
                         error("PLACEMENT_REQUIRED", 409)
                     done = self.completed_units(db, owner, enrollment["id"])
+                    placement_result = json.loads(enrollment["placement"])
+                    done.update(placement_result.get("skippedUnitIds", []))
                     lessons = course["lessons"][:index] if kind == "LESSON" else course["lessons"][index - 4:index + 1]
                     if any(x["id"] not in done for x in lessons):
                         error("PREVIOUS_LESSON_REQUIRED", 409)
@@ -296,10 +310,7 @@ class LearningService:
                 day = datetime.fromtimestamp(now, ZONE).date().isoformat()
                 exp, awarded, lit = 0, False, False
                 if kind == "PLACEMENT":
-                    score = sum(int(answers[q["id"]]["correct"]) for q in questions)
-                    assessment = {"correct": score, "total": len(questions),
-                                  "recommendation": "GUIDED" if score < len(questions) * .6 else "STANDARD",
-                                  "scope": "INTRODUCTORY_BLOCK", "completedAt": iso(now)}
+                    assessment = PlacementPolicy.assess(course, questions, answers, iso(now))
                     db.execute("UPDATE enrollments SET placement=?,revision=revision+1,updated_at=? WHERE id=?",
                                (dump(assessment), now, enrollment["id"]))
                     Database.event(db, owner, "ENROLLMENT", enrollment["id"], enrollment["revision"] + 1)

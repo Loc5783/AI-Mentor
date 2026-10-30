@@ -70,7 +70,7 @@ object LearningUi {
         leave: Runnable,
         openTool: Runnable?,
         ask: Consumer<String>
-    ): View = composeHost(context) {
+    ): View = composeHost(context, scenicBackground = true) {
         val revision by model.changes().observeAsState(0)
         val state = remember(revision) { LessonUiState(model.busy, model.needsLogin, model.hasPending(),
             model.error, model.path, model.attempt, model.completion, model.grade()) }
@@ -102,9 +102,11 @@ internal fun PathContent(path: LessonPathData, subjectId: SubjectId, open: (Stri
             verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceSmall)) {
             Text(stringResource(R.string.design_path), style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold)
-            Text(stringResource(R.string.course_path_count, path.completedLessons, path.totalLessons),
+            Text(stringResource(R.string.course_path_progress, path.completedLessons + path.skippedLessons,
+                path.totalLessons, path.skippedLessons),
                 style = MaterialTheme.typography.bodyMedium)
-            MentorProgress(if (path.totalLessons == 0) 0f else path.completedLessons.toFloat() / path.totalLessons)
+            MentorProgress(if (path.totalLessons == 0) 0f
+                else (path.completedLessons + path.skippedLessons).toFloat() / path.totalLessons)
             Text(stringResource(R.string.course_path_note), style = MaterialTheme.typography.bodySmall)
         }
     }
@@ -114,7 +116,8 @@ internal fun PathContent(path: LessonPathData, subjectId: SubjectId, open: (Stri
             Text(stringResource(R.string.course_stage_title, index + 1),
                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             Text(stringResource(R.string.course_stage_count,
-                units.count { it.state == "COMPLETED" && !it.review }, units.count { !it.review }),
+                units.count { (it.state == "COMPLETED" || it.state == "SKIPPED") && !it.review },
+                units.count { !it.review }),
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         LessonPathStage(units, path.units.firstOrNull { it.state == "AVAILABLE" }?.id, accent) { selected = it }
@@ -163,16 +166,19 @@ private fun LessonPathStage(
         units.forEachIndexed { index, unit ->
             val locked = unit.state == "LOCKED"
             val done = unit.state == "COMPLETED"
+            val skipped = unit.state == "SKIPPED"
             val current = unit.id == currentId
             val center = maxWidth * nodeOffset(index)
             val color = when {
                 done -> if (dark) MentorTokens.DarkSuccess else MentorTokens.Success
+                skipped -> MentorTokens.WarmAccent
                 locked -> scheme.surfaceVariant
                 unit.review -> if (dark) MentorTokens.WarmAccent else MentorTokens.Warning
                 else -> accent
             }
             val contentColor = when {
                 done -> if (dark) MentorTokens.DarkBackground else Color.White
+                skipped -> MentorTokens.DarkBackground
                 locked -> scheme.onSurfaceVariant
                 unit.review && dark -> MentorTokens.DarkBackground
                 unit.review -> Color.White
@@ -180,6 +186,7 @@ private fun LessonPathStage(
             }
             val status = stringResource(when {
                 done -> R.string.course_done
+                skipped -> R.string.course_placement_skipped_status
                 locked -> R.string.course_locked
                 else -> R.string.course_available
             })
@@ -192,7 +199,7 @@ private fun LessonPathStage(
                 border = if (current) BorderStroke(3.dp, scheme.primaryContainer) else null,
                 shadowElevation = if (current) 8.dp else 2.dp) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(if (unit.review) stringResource(R.string.course_review_badge) else unit.ordinal.toString(),
+                    Text(if (skipped) "✓" else if (unit.review) stringResource(R.string.course_review_badge) else unit.ordinal.toString(),
                         style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 }
             }
@@ -212,14 +219,20 @@ private fun LessonPathStage(
 private fun LessonPathSheet(unit: LessonPathData.Unit, dismiss: () -> Unit, open: () -> Unit) {
     val locked = unit.state == "LOCKED"
     val done = unit.state == "COMPLETED"
+    val skipped = unit.state == "SKIPPED"
     ModalBottomSheet(onDismissRequest = dismiss) {
         Column(Modifier.fillMaxWidth().padding(horizontal = MentorTokens.PagePadding)
             .padding(bottom = MentorTokens.SpaceLarge),
             verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceMedium)) {
             Text(unit.title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-            Text(stringResource(if (locked) R.string.course_locked else if (done) R.string.course_done
+            Text(stringResource(if (skipped) R.string.course_placement_skipped_status
+                else if (locked) R.string.course_locked else if (done) R.string.course_done
                 else R.string.course_available), style = MaterialTheme.typography.bodyMedium)
-            if (locked) {
+            if (skipped) {
+                Text(stringResource(R.string.course_placement_skipped_note), style = MaterialTheme.typography.bodyMedium)
+                if (!unit.canOpen) Text(stringResource(R.string.course_unlock_note), style = MaterialTheme.typography.bodyMedium)
+                else MentorButton(stringResource(R.string.course_retake_skipped), open, Modifier.fillMaxWidth())
+            } else if (locked) {
                 Text(stringResource(R.string.course_unlock_note), style = MaterialTheme.typography.bodyMedium)
             } else {
                 Text(if (done) stringResource(R.string.course_path_retake)
@@ -358,7 +371,10 @@ private fun LessonScreen(
                     val pending = path.optJSONArray("pendingAttempts")
                     if (pending != null && pending.length() > 0)
                         MentorButton(stringResource(R.string.course_continue), { model.resume(pending.getJSONObject(0).getString("id")) })
-                    if (path.optJSONObject("enrollment")?.optString("placementStatus") != "COMPLETED") {
+                    val enrollment = path.optJSONObject("enrollment")
+                    val hasPlacement = enrollment?.optString("placementStatus") == "COMPLETED" ||
+                        enrollment?.optJSONObject("placement") != null
+                    if (!hasPlacement) {
                         Text(stringResource(R.string.course_placement_note))
                         MentorButton(stringResource(R.string.course_placement), { model.start("placement", true) })
                     }
@@ -577,6 +593,18 @@ private fun CompletionContent(model: LessonViewModel, result: JSONObject) {
         if (placement) {
             val assessment = result.getJSONObject("assessment")
             Text(stringResource(R.string.course_assessment, assessment.getInt("correct"), assessment.getInt("total")))
+            Text(stringResource(R.string.course_assessment_level,
+                stringResource(when (assessment.optString("proficiencyBand")) {
+                    "DEVELOPING" -> R.string.course_level_developing
+                    "PROFICIENT" -> R.string.course_level_proficient
+                    "STRONG" -> R.string.course_level_strong
+                    else -> R.string.course_level_foundation
+                })), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.course_assessment_skipped,
+                assessment.optInt("skippedLessonCount"), assessment.optInt("totalLessonCount")))
+            if (assessment.optInt("skippedReviewCount") > 0) {
+                Text(stringResource(R.string.course_assessment_skipped_reviews, assessment.optInt("skippedReviewCount")))
+            }
         } else {
             val xp = result.optInt("xpAwarded")
             Text(stringResource(if (xp > 0) R.string.course_completed_reward else R.string.course_completed_retake, xp), style = MaterialTheme.typography.titleLarge)

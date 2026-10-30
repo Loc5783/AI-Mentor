@@ -1,0 +1,1137 @@
+{
+  "subjectId": "geography",
+  "grade": 10,
+  "version": "intro-2026.1",
+  "title": "Địa lí: bản đồ, hệ tự nhiên và hoạt động kinh tế",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_10",
+  "extendedReviews": false,
+  "sourceNote": "15 bài nhập môn lớp 10 do AI Mentor biên soạn theo yêu cầu cần đạt chung của Chương trình GDPT 2018; không sao chép một bộ SGK và chưa phủ toàn bộ năm học. Bài đầu vào dùng hai câu mỗi bài đã xuất bản để ước lượng nền tảng và đề xuất bài có thể bỏ qua. Nội dung cần giáo viên rà soát trước khi dùng chính thức.",
+  "lessons": [
+    {
+      "id": "geography-10-maps-scale",
+      "title": "Bản đồ và tỉ lệ",
+      "guidance": [
+        "Bản đồ thu nhỏ không gian theo tỉ lệ. Tỉ lệ 1:100.000 nghĩa là 1 đơn vị trên bản đồ bằng 100.000 đơn vị cùng loại ngoài thực địa."
+      ],
+      "examples": [
+        "2 cm trên bản đồ tỉ lệ 1:50.000 ứng với 100.000 cm = 1 km."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-maps-scale-q1",
+          "prompt": "Tỉ lệ 1:100.000 có nghĩa là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "1 đơn vị bản đồ bằng 100.000 đơn vị thực địa"
+            },
+            {
+              "id": "b",
+              "text": "100.000 km trên bản đồ bằng 1 km"
+            },
+            {
+              "id": "c",
+              "text": "Bản đồ có 100.000 trang"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Hai độ dài phải dùng cùng đơn vị khi áp dụng tỉ lệ."
+        },
+        {
+          "id": "geography-10-maps-scale-q2",
+          "prompt": "Trên bản đồ 1:50.000, 2 cm ứng với bao nhiêu?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "100 m"
+            },
+            {
+              "id": "b",
+              "text": "10 km"
+            },
+            {
+              "id": "c",
+              "text": "1 km"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "2×50.000=100.000 cm=1.000 m."
+        },
+        {
+          "id": "geography-10-maps-scale-q3",
+          "prompt": "Một tuyến đường dài 4 cm trên bản đồ 1:25.000. Độ dài thực tế là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "10 km"
+            },
+            {
+              "id": "b",
+              "text": "1 km"
+            },
+            {
+              "id": "c",
+              "text": "100 m"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "4×25.000=100.000 cm, đổi ra 1 km."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-earth-motion",
+      "title": "Chuyển động Trái Đất và mùa",
+      "guidance": [
+        "Trái Đất tự quay quanh trục gây chu kì ngày đêm; chuyển động quanh Mặt Trời cùng trục nghiêng tạo phân bố mùa theo bán cầu."
+      ],
+      "examples": [
+        "Khi bán cầu Bắc nghiêng về phía Mặt Trời, ngày thường dài hơn và nhận nhiều năng lượng hơn."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-earth-motion-q1",
+          "prompt": "Tự quay quanh trục chủ yếu tạo hiện tượng nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thủy triều duy nhất"
+            },
+            {
+              "id": "b",
+              "text": "Các mùa giống nhau ở mọi nơi"
+            },
+            {
+              "id": "c",
+              "text": "Ngày và đêm luân phiên"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mỗi nơi lần lượt hướng về và khuất khỏi ánh sáng Mặt Trời."
+        },
+        {
+          "id": "geography-10-earth-motion-q2",
+          "prompt": "Trục Trái Đất nghiêng góp phần tạo ra điều gì trong năm?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đổi vị trí xích đạo hằng ngày"
+            },
+            {
+              "id": "b",
+              "text": "Khác biệt mùa giữa các bán cầu"
+            },
+            {
+              "id": "c",
+              "text": "Tắt hoàn toàn trọng lực"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Góc nhận bức xạ thay đổi theo thời gian và vĩ độ."
+        },
+        {
+          "id": "geography-10-earth-motion-q3",
+          "prompt": "Khi Bắc bán cầu vào mùa hè, Nam bán cầu thường có mùa nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mùa đông"
+            },
+            {
+              "id": "b",
+              "text": "Cũng luôn mùa hè"
+            },
+            {
+              "id": "c",
+              "text": "Không có mùa"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Hai bán cầu nhận phân bố năng lượng trái ngược do trục nghiêng."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-atmosphere-temperature",
+      "title": "Khí quyển và nhiệt độ",
+      "guidance": [
+        "Khí quyển gồm nhiều tầng; thời tiết và khí hậu chịu ảnh hưởng bức xạ, độ cao, vĩ độ, mặt đệm và hoàn lưu. Nhiệt độ thường giảm theo độ cao ở tầng đối lưu nhưng có thể biến đổi theo điều kiện."
+      ],
+      "examples": [
+        "Một sườn núi cao thường mát hơn chân núi nếu các yếu tố khác gần tương tự."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-atmosphere-temperature-q1",
+          "prompt": "Phần lớn hiện tượng thời tiết diễn ra trong tầng nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nhân Trái Đất"
+            },
+            {
+              "id": "b",
+              "text": "Đối lưu"
+            },
+            {
+              "id": "c",
+              "text": "Ngoại quyển"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Tầng đối lưu gần mặt đất và chứa phần lớn hơi nước, mây."
+        },
+        {
+          "id": "geography-10-atmosphere-temperature-q2",
+          "prompt": "Nhiệt độ không khí thường thay đổi thế nào khi lên cao trong tầng đối lưu?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Giảm trung bình"
+            },
+            {
+              "id": "b",
+              "text": "Tăng vô hạn"
+            },
+            {
+              "id": "c",
+              "text": "Không bao giờ đổi"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Đây là xu hướng trung bình, không phải quy luật tuyệt đối ở mọi thời điểm."
+        },
+        {
+          "id": "geography-10-atmosphere-temperature-q3",
+          "prompt": "Một thị trấn ven biển mát hơn nơi sâu trong đất liền cùng vĩ độ vào ban ngày. Yếu tố nào có thể góp phần?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Kinh độ tự tạo mưa"
+            },
+            {
+              "id": "b",
+              "text": "Độ cao luôn bằng 0"
+            },
+            {
+              "id": "c",
+              "text": "Nước biển nóng lên chậm hơn đất"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nhiệt dung của nước làm giảm biên độ nhiệt ngày."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-winds-pressure",
+      "title": "Khí áp và gió",
+      "guidance": [
+        "Gió là không khí chuyển động, chịu tác động của chênh lệch khí áp và lực làm lệch hướng do sự tự quay Trái Đất. Gió thực tế còn bị địa hình và ma sát ảnh hưởng."
+      ],
+      "examples": [
+        "Không khí có xu hướng dịch chuyển từ vùng áp cao về vùng áp thấp, nhưng đường đi không nhất thiết thẳng."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-winds-pressure-q1",
+          "prompt": "Không khí gần mặt đất có xu hướng chuyển từ đâu đến đâu?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Áp cao về áp thấp"
+            },
+            {
+              "id": "b",
+              "text": "Áp thấp về áp cao trong mọi trường hợp"
+            },
+            {
+              "id": "c",
+              "text": "Biển lên núi luôn luôn"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Chênh lệch khí áp tạo lực thúc đẩy chuyển động không khí."
+        },
+        {
+          "id": "geography-10-winds-pressure-q2",
+          "prompt": "Vì sao hướng gió thực tế có thể lệch so với đường nối hai vùng áp?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Màu mây"
+            },
+            {
+              "id": "b",
+              "text": "Độ dài ngày duy nhất"
+            },
+            {
+              "id": "c",
+              "text": "Sự quay Trái Đất và địa hình"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Lực Coriolis và ma sát làm biến đổi hướng chuyển động."
+        },
+        {
+          "id": "geography-10-winds-pressure-q3",
+          "prompt": "Gió vượt dãy núi có thể đổi nhiệt độ, độ ẩm ở hai sườn. Cần xem yếu tố nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Màu bản đồ"
+            },
+            {
+              "id": "b",
+              "text": "Hướng gió, độ cao và quá trình nâng/hạ không khí"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ tên ngọn núi"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Địa hình buộc khối khí nâng lên hoặc hạ xuống, làm đổi trạng thái."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-precipitation",
+      "title": "Mưa và vòng tuần hoàn nước",
+      "guidance": [
+        "Nước bốc hơi, ngưng tụ thành mây, rồi trở lại bề mặt qua mưa hoặc tuyết. Địa hình, nhiệt độ, độ ẩm và hoàn lưu ảnh hưởng phân bố mưa."
+      ],
+      "examples": [
+        "Không khí ẩm bị nâng lên sườn núi có thể lạnh đi và ngưng tụ thành mưa."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-precipitation-q1",
+          "prompt": "Mây hình thành chủ yếu khi hơi nước làm gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Biến thành đất"
+            },
+            {
+              "id": "b",
+              "text": "Chuyển thành khí quyển rắn"
+            },
+            {
+              "id": "c",
+              "text": "Ngưng tụ thành giọt nhỏ hoặc tinh thể băng"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hơi nước ngưng tụ khi không khí đạt điều kiện phù hợp."
+        },
+        {
+          "id": "geography-10-precipitation-q2",
+          "prompt": "Bốc hơi là chuyển trạng thái nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Rắn sang lỏng"
+            },
+            {
+              "id": "b",
+              "text": "Lỏng sang khí"
+            },
+            {
+              "id": "c",
+              "text": "Khí sang lỏng"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Bốc hơi đưa nước lỏng vào khí quyển dưới dạng hơi."
+        },
+        {
+          "id": "geography-10-precipitation-q3",
+          "prompt": "Một sườn đón gió ẩm thường mưa nhiều hơn sườn khuất gió trong một số điều kiện. Cơ chế là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không khí ẩm bị nâng lên, lạnh và ngưng tụ"
+            },
+            {
+              "id": "b",
+              "text": "Núi hút nước trực tiếp từ mây"
+            },
+            {
+              "id": "c",
+              "text": "Sườn khuất luôn cao hơn"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nâng địa hình làm không khí lạnh đi và tăng khả năng ngưng tụ."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-water-cycle",
+      "title": "Sông, hồ và tài nguyên nước",
+      "guidance": [
+        "Lưu vực là vùng nước mưa tập trung về một hệ thống sông. Dòng chảy thay đổi theo mưa, địa hình, thảm phủ và hoạt động của con người."
+      ],
+      "examples": [
+        "Bê tông hóa làm giảm thấm nước, có thể tăng dòng chảy mặt và nguy cơ ngập nhanh."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-water-cycle-q1",
+          "prompt": "Lưu vực sông là gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đường biên quốc gia"
+            },
+            {
+              "id": "b",
+              "text": "Vùng tập trung nước về một hệ thống sông"
+            },
+            {
+              "id": "c",
+              "text": "Một khúc sông duy nhất"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Ranh lưu vực thường theo địa hình phân thủy."
+        },
+        {
+          "id": "geography-10-water-cycle-q2",
+          "prompt": "Bề mặt đô thị không thấm nước tăng có thể gây gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Dòng chảy mặt tăng"
+            },
+            {
+              "id": "b",
+              "text": "Mưa biến mất"
+            },
+            {
+              "id": "c",
+              "text": "Lưu vực tự mở rộng"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nước ít thấm xuống đất nên chảy nhanh trên bề mặt."
+        },
+        {
+          "id": "geography-10-water-cycle-q3",
+          "prompt": "Để giảm thiếu nước mùa khô, biện pháp dài hạn hợp lí là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ khai thác nước ngầm nhanh hơn"
+            },
+            {
+              "id": "b",
+              "text": "Xóa toàn bộ vùng đất ngập nước"
+            },
+            {
+              "id": "c",
+              "text": "Bảo vệ lưu vực, trữ nước và sử dụng tiết kiệm"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Quản lí tổng hợp cân bằng nguồn cung và hệ sinh thái."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-ocean",
+      "title": "Đại dương, dòng biển và khí hậu",
+      "guidance": [
+        "Đại dương lưu trữ và vận chuyển nhiệt, ảnh hưởng khí hậu ven bờ. Dòng biển hình thành do gió, chênh lệch nhiệt độ-muối và cấu hình bờ biển."
+      ],
+      "examples": [
+        "Dòng biển ấm có thể làm không khí ven bờ ẩm và ôn hòa hơn, tùy hoàn lưu khu vực."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-ocean-q1",
+          "prompt": "Đại dương ảnh hưởng khí hậu bằng cách nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Lưu trữ và vận chuyển nhiệt"
+            },
+            {
+              "id": "b",
+              "text": "Ngăn hoàn toàn gió"
+            },
+            {
+              "id": "c",
+              "text": "Làm mọi nơi có cùng nhiệt độ"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nước biển có thể điều hòa và phân phối lại năng lượng."
+        },
+        {
+          "id": "geography-10-ocean-q2",
+          "prompt": "Dòng biển có thể được thúc đẩy bởi?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ động đất"
+            },
+            {
+              "id": "b",
+              "text": "Màu bờ biển"
+            },
+            {
+              "id": "c",
+              "text": "Gió và chênh lệch nhiệt độ, độ muối"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nhiều cơ chế cùng tham gia tuần hoàn đại dương."
+        },
+        {
+          "id": "geography-10-ocean-q3",
+          "prompt": "Một thành phố ven biển chịu ảnh hưởng dòng biển lạnh. Kết luận khí hậu nên dựa thêm vào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tên thành phố"
+            },
+            {
+              "id": "b",
+              "text": "Gió, địa hình, vĩ độ và mùa"
+            },
+            {
+              "id": "c",
+              "text": "Dòng biển là yếu tố duy nhất"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Khí hậu là kết quả tương tác nhiều yếu tố."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-tectonics",
+      "title": "Cấu trúc Trái Đất và kiến tạo",
+      "guidance": [
+        "Thạch quyển gồm vỏ và phần trên cứng của manti, chia thành các mảng. Tương tác mảng liên quan đến động đất, núi lửa và tạo núi, nhưng mức độ phụ thuộc ranh giới và điều kiện địa phương."
+      ],
+      "examples": [
+        "Một vùng gần ranh giới mảng có thể có hoạt động địa chấn cao hơn vùng ổn định."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-tectonics-q1",
+          "prompt": "Lớp ngoài cứng chia thành các mảng là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thủy quyển"
+            },
+            {
+              "id": "b",
+              "text": "Khí quyển"
+            },
+            {
+              "id": "c",
+              "text": "Thạch quyển"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Thạch quyển bao gồm vỏ và phần trên cứng của manti."
+        },
+        {
+          "id": "geography-10-tectonics-q2",
+          "prompt": "Động đất thường liên quan đến quá trình nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Sự đổi mùa"
+            },
+            {
+              "id": "b",
+              "text": "Tích lũy và giải phóng năng lượng trong vỏ"
+            },
+            {
+              "id": "c",
+              "text": "Vòng tuần hoàn nước"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Chuyển động kiến tạo có thể giải phóng năng lượng dưới dạng sóng địa chấn."
+        },
+        {
+          "id": "geography-10-tectonics-q3",
+          "prompt": "Không phải mọi vùng gần núi lửa đều có cùng rủi ro. Cần đánh giá thêm điều gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hoạt động, địa hình, dân cư và khả năng ứng phó"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ tên núi"
+            },
+            {
+              "id": "c",
+              "text": "Màu dung nham trong ảnh"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Rủi ro kết hợp hiểm họa, mức phơi bày và tính dễ tổn thương."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-weathering-erosion",
+      "title": "Phong hóa, xói mòn và địa hình",
+      "guidance": [
+        "Phong hóa phá vỡ hoặc biến đổi đá tại chỗ; xói mòn bóc tách và vận chuyển vật liệu. Nước, gió, băng và trọng lực góp phần tạo địa hình."
+      ],
+      "examples": [
+        "Rễ cây chui vào khe đá có thể làm đá nứt rộng theo thời gian."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-weathering-erosion-q1",
+          "prompt": "Phong hóa khác xói mòn ở điểm nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phong hóa chỉ do con người"
+            },
+            {
+              "id": "b",
+              "text": "Phong hóa biến đổi tại chỗ; xói mòn vận chuyển vật liệu"
+            },
+            {
+              "id": "c",
+              "text": "Hai quá trình luôn giống nhau"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Phân biệt nơi biến đổi với quá trình bóc chuyển vật liệu."
+        },
+        {
+          "id": "geography-10-weathering-erosion-q2",
+          "prompt": "Dòng sông mang cát đi khỏi bờ là quá trình gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Xói mòn và vận chuyển"
+            },
+            {
+              "id": "b",
+              "text": "Ngưng tụ"
+            },
+            {
+              "id": "c",
+              "text": "Kiến tạo mảng"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nước có thể bóc và chuyển vật liệu theo dòng."
+        },
+        {
+          "id": "geography-10-weathering-erosion-q3",
+          "prompt": "Mất cây trên sườn dốc làm nguy cơ rửa trôi đất tăng vì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đá biến thành nước"
+            },
+            {
+              "id": "b",
+              "text": "Mưa không còn trọng lực"
+            },
+            {
+              "id": "c",
+              "text": "Đất ít được rễ giữ và giảm che phủ"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Thảm thực vật giảm làm đất dễ bị tác động bởi dòng chảy."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-soil",
+      "title": "Đất và các nhân tố hình thành",
+      "guidance": [
+        "Đất hình thành từ vật liệu mẹ chịu tác động của khí hậu, sinh vật, địa hình, thời gian và con người. Độ phì liên quan đến khả năng cung cấp nước, khí và chất dinh dưỡng."
+      ],
+      "examples": [
+        "Đất dốc trơ trụi dễ mất lớp mặt khi mưa lớn."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-soil-q1",
+          "prompt": "Yếu tố nào góp phần hình thành đất?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khí hậu, sinh vật, địa hình và vật liệu mẹ"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ kinh độ"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ ánh sáng ban đêm"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Đất hình thành qua tương tác nhiều nhân tố trong thời gian dài."
+        },
+        {
+          "id": "geography-10-soil-q2",
+          "prompt": "Lớp đất mặt thường quan trọng vì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không có sinh vật"
+            },
+            {
+              "id": "b",
+              "text": "Luôn dày nhất"
+            },
+            {
+              "id": "c",
+              "text": "Chứa nhiều chất hữu cơ và hoạt động sinh học"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Lớp mặt thường giàu hữu cơ nhưng có thể bị xói mòn."
+        },
+        {
+          "id": "geography-10-soil-q3",
+          "prompt": "Trên sườn dốc canh tác, biện pháp nào giúp giảm mất đất?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đốt hết thảm thực vật"
+            },
+            {
+              "id": "b",
+              "text": "Canh tác theo đường đồng mức và giữ che phủ"
+            },
+            {
+              "id": "c",
+              "text": "Cày xuôi dốc trơ đất"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Các biện pháp làm chậm dòng chảy và bảo vệ lớp đất."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-biosphere",
+      "title": "Sinh quyển và phân bố sinh vật",
+      "guidance": [
+        "Sinh vật phân bố theo nhiệt, nước, đất và quan hệ sinh thái. Ranh giới sinh cảnh biến đổi dần; cùng một loài có thể thích nghi hoặc di chuyển khi điều kiện thay đổi."
+      ],
+      "examples": [
+        "Rừng ngập mặn phát triển ở vùng bờ có nước mặn-lợ và chịu tác động thủy triều."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-biosphere-q1",
+          "prompt": "Nhân tố nào thường giới hạn sinh vật trên cạn?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tên vùng hành chính"
+            },
+            {
+              "id": "b",
+              "text": "Kinh độ không đổi"
+            },
+            {
+              "id": "c",
+              "text": "Nhiệt độ và nước"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Khí hậu và nguồn nước ảnh hưởng khả năng tồn tại của loài."
+        },
+        {
+          "id": "geography-10-biosphere-q2",
+          "prompt": "Rừng ngập mặn gắn với môi trường nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Sa mạc nội lục"
+            },
+            {
+              "id": "b",
+              "text": "Vùng ven biển chịu thủy triều"
+            },
+            {
+              "id": "c",
+              "text": "Đỉnh núi băng giá"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Loài ngập mặn thích nghi với điều kiện mặn-lợ ven biển."
+        },
+        {
+          "id": "geography-10-biosphere-q3",
+          "prompt": "Mất một loài thụ phấn có thể ảnh hưởng hệ sinh thái qua cách nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Làm giảm sinh sản của một số thực vật và tác động chuỗi tương tác"
+            },
+            {
+              "id": "b",
+              "text": "Không thể ảnh hưởng loài khác"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ đổi màu đất"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Các loài liên kết qua quan hệ sinh thái."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-population",
+      "title": "Dân số và phân bố dân cư",
+      "guidance": [
+        "Mật độ dân số bằng dân số chia diện tích. Mật độ trung bình không cho biết phân bố trong từng khu vực, mức tập trung hay điều kiện sống."
+      ],
+      "examples": [
+        "Một tỉnh đông dân nhưng diện tích lớn có thể có mật độ thấp hơn một đô thị nhỏ."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-population-q1",
+          "prompt": "Công thức mật độ dân số là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Dân số × diện tích"
+            },
+            {
+              "id": "b",
+              "text": "Dân số / diện tích"
+            },
+            {
+              "id": "c",
+              "text": "Diện tích / dân số"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mật độ cho biết số người trung bình trên một đơn vị diện tích."
+        },
+        {
+          "id": "geography-10-population-q2",
+          "prompt": "Mật độ trung bình cao có nghĩa mọi nơi trong vùng đều đông như nhau không?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không"
+            },
+            {
+              "id": "b",
+              "text": "Có"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ ở miền núi"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giá trị trung bình che khuất khác biệt nội vùng."
+        },
+        {
+          "id": "geography-10-population-q3",
+          "prompt": "Khu vực dân cư tập trung dọc bờ sông. Cần xem yếu tố nào để giải thích?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ màu dòng sông"
+            },
+            {
+              "id": "b",
+              "text": "Kinh độ duy nhất"
+            },
+            {
+              "id": "c",
+              "text": "Nước, giao thông, lịch sử và việc làm"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Phân bố dân cư phản ánh nhiều điều kiện tự nhiên và xã hội."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-urbanization",
+      "title": "Đô thị hóa và vấn đề đô thị",
+      "guidance": [
+        "Đô thị hóa gồm tăng dân số đô thị và thay đổi lối sống, không gian, việc làm. Đô thị tạo cơ hội dịch vụ nhưng cũng cần giải quyết nhà ở, giao thông và môi trường."
+      ],
+      "examples": [
+        "Mở rộng giao thông công cộng có thể giảm phụ thuộc xe cá nhân nếu mạng lưới thuận tiện."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-urbanization-q1",
+          "prompt": "Đô thị hóa chỉ là xây thêm nhà cao tầng đúng không?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không, còn là thay đổi dân cư và hoạt động kinh tế"
+            },
+            {
+              "id": "b",
+              "text": "Đúng trong mọi trường hợp"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ là tăng dân số nông thôn"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Khái niệm bao gồm biến đổi dân cư và chức năng không gian."
+        },
+        {
+          "id": "geography-10-urbanization-q2",
+          "prompt": "Một thách thức thường gặp khi đô thị tăng nhanh là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mọi dịch vụ biến mất"
+            },
+            {
+              "id": "b",
+              "text": "Không còn giao thông"
+            },
+            {
+              "id": "c",
+              "text": "Áp lực nhà ở và hạ tầng"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tốc độ tăng nhanh có thể vượt khả năng cung cấp hạ tầng."
+        },
+        {
+          "id": "geography-10-urbanization-q3",
+          "prompt": "Một thành phố muốn giảm ùn tắc bền vững. Giải pháp nào có tác động hệ thống?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thu hẹp vỉa hè"
+            },
+            {
+              "id": "b",
+              "text": "Kết nối giao thông công cộng với khu dân cư và việc làm"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ xây thêm bãi đỗ xe ở trung tâm"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mạng lưới thuận tiện tạo lựa chọn thay thế xe cá nhân."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-economic-sectors",
+      "title": "Các ngành kinh tế và phân bố",
+      "guidance": [
+        "Nông nghiệp, công nghiệp và dịch vụ phân bố theo tài nguyên, lao động, thị trường, giao thông và chính sách. Một ngành thường cần nhiều yếu tố cùng lúc."
+      ],
+      "examples": [
+        "Nhà máy chế biến gần vùng nguyên liệu có thể giảm chi phí vận chuyển đầu vào."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-economic-sectors-q1",
+          "prompt": "Yếu tố nào có thể ảnh hưởng vị trí nhà máy chế biến?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ lượng mưa hôm nay"
+            },
+            {
+              "id": "b",
+              "text": "Màu đất trên bản đồ"
+            },
+            {
+              "id": "c",
+              "text": "Nguyên liệu, lao động và giao thông"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Vị trí sản xuất cân nhắc chi phí và khả năng tiếp cận."
+        },
+        {
+          "id": "geography-10-economic-sectors-q2",
+          "prompt": "Dịch vụ thường gắn chặt với yếu tố nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Độ dốc duy nhất"
+            },
+            {
+              "id": "b",
+              "text": "Dân cư và thị trường"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ mỏ khoáng sản"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Nhiều dịch vụ cần khách hàng, lao động và kết nối."
+        },
+        {
+          "id": "geography-10-economic-sectors-q3",
+          "prompt": "Một vùng chuyển từ nông nghiệp sang du lịch, cần xem tác động nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Việc làm, thu nhập, môi trường và quyền tiếp cận đất"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ số khách trong một ngày"
+            },
+            {
+              "id": "c",
+              "text": "Không cần hỏi cư dân"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Phát triển ngành mới có tác động kinh tế-xã hội và môi trường."
+        }
+      ]
+    },
+    {
+      "id": "geography-10-sustainable-development",
+      "title": "Phát triển bền vững và bản đồ số liệu",
+      "guidance": [
+        "Phát triển bền vững cân bằng kinh tế, xã hội và môi trường qua thời gian. Bản đồ, biểu đồ cần đọc đúng đơn vị, nguồn, thời điểm và phạm vi."
+      ],
+      "examples": [
+        "Một biểu đồ lượng khách tăng không tự chứng minh thu nhập cư dân cũng tăng."
+      ],
+      "questions": [
+        {
+          "id": "geography-10-sustainable-development-q1",
+          "prompt": "Phát triển bền vững xem xét các mặt nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ số lượng công trình"
+            },
+            {
+              "id": "b",
+              "text": "Kinh tế, xã hội và môi trường"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ tốc độ tăng trưởng"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Ba trụ cột cần được cân nhắc đồng thời."
+        },
+        {
+          "id": "geography-10-sustainable-development-q2",
+          "prompt": "Trước khi so sánh hai số liệu, nên kiểm tra gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đơn vị, thời điểm và phạm vi"
+            },
+            {
+              "id": "b",
+              "text": "Màu đường biểu diễn"
+            },
+            {
+              "id": "c",
+              "text": "Tên tác giả duy nhất"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Số liệu khác đơn vị hoặc phạm vi không thể so sánh trực tiếp."
+        },
+        {
+          "id": "geography-10-sustainable-development-q3",
+          "prompt": "Biểu đồ cho thấy khách du lịch tăng nhưng không có số liệu thu nhập. Có thể khẳng định đời sống mọi cư dân tốt lên không?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Có, khách tăng luôn giúp tất cả"
+            },
+            {
+              "id": "b",
+              "text": "Có, chỉ cần nhìn biểu đồ"
+            },
+            {
+              "id": "c",
+              "text": "Chưa; cần thêm dữ liệu phân phối thu nhập và tác động"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Một chỉ số không đủ đánh giá đầy đủ tính bền vững."
+        }
+      ]
+    }
+  ]
+}

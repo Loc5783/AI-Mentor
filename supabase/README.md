@@ -1,6 +1,6 @@
 # Supabase — AI Mentor
 
-Supabase is the cloud path when `SUPABASE_ENABLED=true`. The app keeps the old FastAPI path available as a fallback when Supabase is disabled. Course lesson content is intentionally unchanged in this UI/backend integration pass.
+Supabase is the cloud path when `SUPABASE_ENABLED=true`. The app keeps the old FastAPI path available as a fallback when Supabase is disabled. The Grade 10 curriculum now includes six introductory subject packs in addition to the existing Physics, Chemistry and Biology packs; migration `202610300001_remaining_grade10_curricula.sql` seeds the new packs and their review quizzes.
 
 ## Connected app areas
 
@@ -39,7 +39,7 @@ This checkout has no Supabase CLI session attached, so database migrations and E
 
 ## Database migrations
 
-Apply migrations in `migrations/` in ascending order. `202610290001_foundation.sql` was previously confirmed as applied; verify the Supabase migration history before applying anything so an already-applied migration is not run twice. This checkout contains migrations through `202610290018_seed_practice_from_lessons.sql`; the app expects the RPC/table contracts from the relevant migrations to exist.
+Apply migrations in `migrations/` in ascending order. `202610290001_foundation.sql` was previously confirmed as applied; verify the Supabase migration history before applying anything so an already-applied migration is not run twice. This checkout contains migrations through `202610300002_adaptive_placement.sql`; apply pending migrations in order. Migration `202610300001_remaining_grade10_curricula.sql` adds 15 introductory lessons to Math, Literature, English, History, Geography and Economics-Law, plus three 10-question review quizzes per course. Migration `202610300002_adaptive_placement.sql` asks two questions per published lesson, marks only demonstrated lessons as mastered, and skips a review checkpoint only when all five lessons are mastered. This does not complete the full Grade 10 curriculum or add Grade 11–12 content.
 
 The latest overview RPC counts progress only for selected subjects and uses the existing rank thresholds: Silver 500 XP, Gold 2,000, Platinum 5,000 and Diamond 10,000. No XP or activity is fabricated for empty accounts.
 

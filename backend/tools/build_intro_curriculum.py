@@ -9,6 +9,7 @@ from pathlib import Path
 from biology_extension import LESSONS as BIOLOGY_EXTENSION
 from chemistry_extension import LESSONS as CHEMISTRY_EXTENSION
 from physics_extension import LESSONS as PHYSICS_EXTENSION
+from remaining_grade10_courses import COURSES as REMAINING_GRADE10_COURSES
 
 PACKS = {
     ("physics", 10): ("Chuyển động quanh ta", [
@@ -141,9 +142,40 @@ def build():
             lessons.append({"id": lid, "title": name, "guidance": [guidance], "examples": [example], "questions": values})
         course = {"subjectId": subject, "grade": grade, "version": "intro-2026.1", "title": title,
                   "published": True, "coverage": "PARTIAL_GRADE_10", "extendedReviews": False,
-                  "sourceNote": "20 bài ngắn lớp 10 do AI Mentor biên soạn, không phải bản sao SGK hay toàn bộ chương trình năm học. Đầu vào chỉ khảo sát 5 bài nhập môn. Cần giáo viên duyệt trước khi dùng chính thức.",
+                  "sourceNote": "20 bài ngắn lớp 10 do AI Mentor biên soạn, không phải bản sao SGK hay toàn bộ chương trình năm học. Bài đầu vào dùng hai câu mỗi bài đã xuất bản để ước lượng nền tảng và đề xuất bài có thể bỏ qua; không đánh giá toàn bộ năm học. Cần giáo viên duyệt trước khi dùng chính thức.",
                   "lessons": lessons}
         (target / f"{subject}-{grade}.json").write_text(json.dumps(course, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    # Keep the six remaining Grade 10 packs in the same API contract as the
+    # original science courses. They are introductory cross-textbook content,
+    # not a claim of full-year coverage.
+    source_note = (
+        "15 bài nhập môn lớp 10 do AI Mentor biên soạn theo yêu cầu cần đạt chung "
+        "của Chương trình GDPT 2018; không sao chép một bộ SGK và chưa phủ toàn bộ "
+        "năm học. Bài đầu vào dùng hai câu mỗi bài đã xuất bản để ước lượng nền tảng "
+        "và đề xuất bài có thể bỏ qua. Nội dung cần giáo viên rà soát trước khi dùng chính thức."
+    )
+    for subject, (title, units) in REMAINING_GRADE10_COURSES.items():
+        lessons = []
+        for number, (slug, name, guidance, example, questions) in enumerate(units):
+            lid = f"{subject}-10-{slug}"
+            values = []
+            for qn, (prompt, correct, wrong1, wrong2, explanation) in enumerate(questions):
+                choices = [correct, wrong1, wrong2]
+                shift = (number + qn) % 3
+                choices = choices[shift:] + choices[:shift]
+                options = [{"id": chr(97 + n), "text": text} for n, text in enumerate(choices)]
+                values.append({"id": f"{lid}-q{qn + 1}", "prompt": prompt,
+                               "difficulty": ("EASY", "MEDIUM", "APPLIED")[qn], "options": options,
+                               "correctOptionId": next(o["id"] for o in options if o["text"] == correct),
+                               "explanation": explanation})
+            lessons.append({"id": lid, "title": name, "guidance": [guidance],
+                            "examples": [example], "questions": values})
+        course = {"subjectId": subject, "grade": 10, "version": "intro-2026.1", "title": title,
+                  "published": True, "coverage": "PARTIAL_GRADE_10", "extendedReviews": False,
+                  "sourceNote": source_note, "lessons": lessons}
+        (target / f"{subject}-10.json").write_text(
+            json.dumps(course, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

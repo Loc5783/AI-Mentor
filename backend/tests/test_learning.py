@@ -68,7 +68,10 @@ def finish(c, s, a, k=None):
 
 def placed(c, s, e):
     a = ok(post(c, s, "/placements", {"enrollmentId": e["id"]}))
-    result = finish(c, s, answer(c, s, a))
+    values = [{"questionId": q["id"],
+               "selectedOptionId": next(option["id"] for option in q["options"] if option["id"] != q["correctOptionId"]),
+               "submissionId": key()} for q in a["questions"]]
+    result = finish(c, s, answer(c, s, a, values))
     assert result["xpAwarded"] == 0 and not result["streakLit"]
 
 
@@ -80,7 +83,7 @@ def test_placement_required_final_answers_no_rewards(api):
     r = post(c, s, "/attempts", {"enrollmentId": e["id"], "lessonId": "physics-10-unit-1", "curriculumVersion": "test-v1"})
     assert r.status_code == 409 and r.json()["code"] == "PLACEMENT_REQUIRED"
     a = ok(post(c, s, "/placements", {"enrollmentId": e["id"]}))
-    assert len(a["questions"]) == 10
+    assert len(a["questions"]) == 20
     assert all("correctOptionId" not in q and "explanation" not in q for q in a["questions"])
     a = answer(c, s, a, [{"questionId": a["questions"][0]["id"], "selectedOptionId": "b", "submissionId": key()}])
     r = c.patch("/attempts/" + a["id"], json={"step": 2, "answers": [
@@ -89,10 +92,15 @@ def test_placement_required_final_answers_no_rewards(api):
     assert r.status_code == 409 and r.json()["code"] == "PLACEMENT_ANSWER_FINAL"
     a = answer(c, s, a, [{"questionId": q["id"], "selectedOptionId": "a", "submissionId": key()} for q in a["questions"][1:]])
     done = finish(c, s, a)
-    assert done["assessment"]["correct"] == 9 and done["assessment"]["total"] == 10
+    assert done["assessment"]["correct"] == 19 and done["assessment"]["total"] == 20
+    assert done["assessment"]["masteredLessonCount"] == 9
+    assert done["assessment"]["skippedReviewCount"] == 1
+    assert done["assessment"]["proficiencyBand"] == "STRONG"
     assert done["xpAwarded"] == 0 and not done["streakLit"]
     path = c.get(f"/enrollments/{e['id']}/path", headers=headers(s)).json()
-    assert path["units"][0]["state"] == "AVAILABLE" and path["units"][1]["state"] == "LOCKED"
+    assert path["units"][0]["state"] == "AVAILABLE"
+    assert path["units"][1]["state"] == "SKIPPED"
+    assert path["units"][5]["state"] == "LOCKED"
 
 
 def test_first_reward_retake_new_day_and_replay_no_new_streak(api):

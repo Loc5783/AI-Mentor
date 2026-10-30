@@ -30,10 +30,12 @@ public final class LearningPresentationTest {
               .put("title", "Tên bài học dài để kiểm tra xuống dòng và khả năng đọc")
               .put("kind", i == 6 ? "FIVE_LESSON_REVIEW" : "LESSON")
               .put("xp", i == 6 ? 400 : 200)
-              .put("state", i == 1 ? "COMPLETED" : i == 2 ? "AVAILABLE" : "LOCKED"));
+              .put("state", i == 1 ? "COMPLETED" : i == 2 ? "AVAILABLE" : i == 3 ? "SKIPPED" : "LOCKED")
+              .put("canOpen", i != 3));
     LessonPathData path = new LessonPathData(units);
     assertEquals(5, path.totalLessons);
     assertEquals(1, path.completedLessons);
+    assertEquals(1, path.skippedLessons);
     assertTrue(path.units.get(5).review);
     assertEquals(5, path.units.get(5).ordinal);
   }

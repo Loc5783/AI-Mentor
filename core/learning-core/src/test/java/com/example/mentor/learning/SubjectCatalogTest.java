@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class SubjectCatalogTest {
   private static final Set<SubjectId> LESSONS =
-      EnumSet.of(SubjectId.BIOLOGY, SubjectId.CHEMISTRY, SubjectId.PHYSICS);
+      EnumSet.allOf(SubjectId.class);
 
   private SubjectModule module(SubjectId subject) {
     return new SubjectModule() {
@@ -34,7 +34,7 @@ public class SubjectCatalogTest {
     }
     SubjectCatalog catalog = new SubjectCatalog(modules, LESSONS);
     assertEquals(9, catalog.all().size());
-    assertEquals(3, catalog.lessonModules().size());
+    assertEquals(9, catalog.lessonModules().size());
     for (SubjectId subject : SubjectId.values())
       assertEquals(LESSONS.contains(subject), catalog.hasLessonScope(subject));
   }

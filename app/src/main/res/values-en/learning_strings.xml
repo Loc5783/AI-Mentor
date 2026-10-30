@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-  <string name="course_path_count">%1$d / %2$d lessons completed</string>
+  <string name="course_path_progress">Progress: %1$d/%2$d lessons · %3$d marked as already mastered</string>
   <string name="course_stage_title">Stage %1$d</string>
   <string name="course_stage_count">%1$d / %2$d lessons</string>
-  <string name="course_path_note">Review after every five lessons. EXP is awarded on the first completion only.</string>
+  <string name="course_path_note">Review after every five lessons. Lessons mastered on entry are skipped; EXP is awarded only the first time you complete a lesson or review.</string>
   <string name="course_stage_reward">First completion +%1$d EXP</string>
   <string name="course_review_badge">Quiz</string>
   <string name="course_review_range">Review lessons %1$d–%2$d</string>
@@ -24,10 +24,13 @@
   <string name="course_retry">Retry</string>
   <string name="course_loading">Loading progress…</string>
   <string name="course_placement">Entry assessment</string>
-  <string name="course_placement_note">This introductory assessment helps tailor guidance. No time limit, EXP or streak rewards. It does not assess the entire school year.</string>
+  <string name="course_placement_note">There are 2 questions for each published lesson. A lesson is skipped only if you answer both correctly; unsure lessons stay on your path. No time limit, EXP or streak. This does not assess the entire school year.</string>
   <string name="course_continue">Resume your lesson</string>
   <string name="course_locked">Locked</string>
   <string name="course_done">Completed · review again</string>
+  <string name="course_placement_skipped_status">Mastered on entry assessment</string>
+  <string name="course_placement_skipped_note">Your entry assessment shows that you know this lesson’s foundations. Skipping it gives no EXP or streak, and you can still choose to study it.</string>
+  <string name="course_retake_skipped">Study this lesson</string>
   <string name="course_available">Start</string>
   <string name="course_guidance">Discover the concept</string>
   <string name="course_example">A worked example</string>
@@ -49,6 +52,13 @@
   <string name="course_streak_lit">Your streak is lit for today!</string>
   <string name="course_streak_already">Your streak is lit at most once a day.</string>
   <string name="course_assessment">Introductory result: %1$d / %2$d correct</string>
+  <string name="course_assessment_level">Current level in assessed lessons: %1$s</string>
+  <string name="course_level_foundation">Foundations need practice</string>
+  <string name="course_level_developing">Building understanding</string>
+  <string name="course_level_proficient">Many lessons mastered</string>
+  <string name="course_level_strong">Nearly all assessed lessons mastered</string>
+  <string name="course_assessment_skipped">You showed mastery of %1$d/%2$d lessons; these lessons are skipped.</string>
+  <string name="course_assessment_skipped_reviews">Skipped %1$d review checkpoint(s) made entirely of mastered lessons.</string>
   <string name="course_path">Back to learning path</string>
   <string name="course_readonly">Progress is saved on the server. Return later to continue where you left off.</string>
   <string name="course_content_language">Lesson content is currently available in Vietnamese.</string>

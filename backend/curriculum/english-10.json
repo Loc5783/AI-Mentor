@@ -1,0 +1,1137 @@
+{
+  "subjectId": "english",
+  "grade": 10,
+  "version": "intro-2026.1",
+  "title": "Tiếng Anh: ngữ pháp, từ vựng và giao tiếp nền tảng",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_10",
+  "extendedReviews": false,
+  "sourceNote": "15 bài nhập môn lớp 10 do AI Mentor biên soạn theo yêu cầu cần đạt chung của Chương trình GDPT 2018; không sao chép một bộ SGK và chưa phủ toàn bộ năm học. Bài đầu vào dùng hai câu mỗi bài đã xuất bản để ước lượng nền tảng và đề xuất bài có thể bỏ qua. Nội dung cần giáo viên rà soát trước khi dùng chính thức.",
+  "lessons": [
+    {
+      "id": "english-10-present-simple",
+      "title": "Present simple và thói quen",
+      "guidance": [
+        "Dùng hiện tại đơn cho thói quen, sự thật chung và lịch cố định. Với he/she/it, động từ thường thêm -s/-es ở câu khẳng định."
+      ],
+      "examples": [
+        "She studies English every evening. They study together on Fridays."
+      ],
+      "questions": [
+        {
+          "id": "english-10-present-simple-q1",
+          "prompt": "Choose the correct form: He ___ to school by bus.",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "goes"
+            },
+            {
+              "id": "b",
+              "text": "go"
+            },
+            {
+              "id": "c",
+              "text": "going"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "He is third-person singular, so the verb takes -es."
+        },
+        {
+          "id": "english-10-present-simple-q2",
+          "prompt": "Which sentence describes a routine?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "I am reading right now."
+            },
+            {
+              "id": "b",
+              "text": "I read a book yesterday."
+            },
+            {
+              "id": "c",
+              "text": "I read for twenty minutes every night."
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "“Every night” signals a repeated habit."
+        },
+        {
+          "id": "english-10-present-simple-q3",
+          "prompt": "Your sister usually ___ breakfast at seven.",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "is have"
+            },
+            {
+              "id": "b",
+              "text": "has"
+            },
+            {
+              "id": "c",
+              "text": "have"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Use has with a third-person singular subject."
+        }
+      ]
+    },
+    {
+      "id": "english-10-present-continuous",
+      "title": "Present continuous và hành động đang diễn ra",
+      "guidance": [
+        "Dùng am/is/are + V-ing cho việc đang xảy ra quanh thời điểm nói hoặc một tình huống tạm thời."
+      ],
+      "examples": [
+        "They are preparing a presentation now."
+      ],
+      "questions": [
+        {
+          "id": "english-10-present-continuous-q1",
+          "prompt": "Present continuous uses which structure?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "do/does + base verb"
+            },
+            {
+              "id": "b",
+              "text": "will + verb-ing"
+            },
+            {
+              "id": "c",
+              "text": "am/is/are + verb-ing"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "The auxiliary be is followed by the -ing form."
+        },
+        {
+          "id": "english-10-present-continuous-q2",
+          "prompt": "Look! The children ___ in the yard.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "played"
+            },
+            {
+              "id": "b",
+              "text": "are playing"
+            },
+            {
+              "id": "c",
+              "text": "play"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "“Look!” points to an action happening now."
+        },
+        {
+          "id": "english-10-present-continuous-q3",
+          "prompt": "Mai normally cycles, but this week she ___ the bus because her bicycle is being repaired.",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "is taking"
+            },
+            {
+              "id": "b",
+              "text": "takes always"
+            },
+            {
+              "id": "c",
+              "text": "take"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "A temporary situation can use the present continuous."
+        }
+      ]
+    },
+    {
+      "id": "english-10-past-simple",
+      "title": "Past simple và mốc thời gian đã kết thúc",
+      "guidance": [
+        "Dùng quá khứ đơn cho sự việc đã hoàn tất trong quá khứ. Động từ có quy tắc thường thêm -ed; động từ bất quy tắc cần học dạng riêng."
+      ],
+      "examples": [
+        "We visited the museum last Saturday. She went there by train."
+      ],
+      "questions": [
+        {
+          "id": "english-10-past-simple-q1",
+          "prompt": "Choose the past form of “go”.",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "gone"
+            },
+            {
+              "id": "b",
+              "text": "went"
+            },
+            {
+              "id": "c",
+              "text": "goed"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "“Went” is the simple past form; “gone” is the past participle."
+        },
+        {
+          "id": "english-10-past-simple-q2",
+          "prompt": "They ___ the clean-up event yesterday.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "joined"
+            },
+            {
+              "id": "b",
+              "text": "join"
+            },
+            {
+              "id": "c",
+              "text": "are join"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "“Yesterday” calls for the past simple."
+        },
+        {
+          "id": "english-10-past-simple-q3",
+          "prompt": "Which question is correct?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Did you saw the notice?"
+            },
+            {
+              "id": "b",
+              "text": "Do you saw the notice?"
+            },
+            {
+              "id": "c",
+              "text": "Did you see the notice?"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "After did, use the base form of the verb."
+        }
+      ]
+    },
+    {
+      "id": "english-10-future-plans",
+      "title": "Dự định với be going to",
+      "guidance": [
+        "Dùng be going to cho dự định đã có hoặc dự đoán dựa trên dấu hiệu hiện tại. Chia be theo chủ ngữ."
+      ],
+      "examples": [
+        "We are going to plant trees this Sunday."
+      ],
+      "questions": [
+        {
+          "id": "english-10-future-plans-q1",
+          "prompt": "Complete: I ___ going to call my teacher.",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "am"
+            },
+            {
+              "id": "b",
+              "text": "is"
+            },
+            {
+              "id": "c",
+              "text": "are"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Use am with I."
+        },
+        {
+          "id": "english-10-future-plans-q2",
+          "prompt": "Which sentence expresses a prior plan?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "They visited it last week."
+            },
+            {
+              "id": "b",
+              "text": "They visit it every Monday."
+            },
+            {
+              "id": "c",
+              "text": "They are going to visit the science fair tomorrow."
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "“Be going to” presents a plan for the future."
+        },
+        {
+          "id": "english-10-future-plans-q3",
+          "prompt": "The sky is very dark. It ___ rain soon.",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "does going to"
+            },
+            {
+              "id": "b",
+              "text": "is going to"
+            },
+            {
+              "id": "c",
+              "text": "went to"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "The visible sign supports a prediction with be going to."
+        }
+      ]
+    },
+    {
+      "id": "english-10-countable-uncountable",
+      "title": "Danh từ đếm được và không đếm được",
+      "guidance": [
+        "Danh từ đếm được có dạng số ít/số nhiều; danh từ không đếm được thường không dùng a/an và kết hợp với some, much hoặc đơn vị đo."
+      ],
+      "examples": [
+        "a bottle of water; some rice; three apples."
+      ],
+      "questions": [
+        {
+          "id": "english-10-countable-uncountable-q1",
+          "prompt": "Which noun is normally uncountable?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "apple"
+            },
+            {
+              "id": "b",
+              "text": "notebook"
+            },
+            {
+              "id": "c",
+              "text": "water"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Water is generally treated as an uncountable noun."
+        },
+        {
+          "id": "english-10-countable-uncountable-q2",
+          "prompt": "Choose the natural phrase.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "three informations"
+            },
+            {
+              "id": "b",
+              "text": "some information"
+            },
+            {
+              "id": "c",
+              "text": "an information"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Information is uncountable in standard English."
+        },
+        {
+          "id": "english-10-countable-uncountable-q3",
+          "prompt": "You need ___ apples and ___ milk for the recipe.",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "three / some"
+            },
+            {
+              "id": "b",
+              "text": "much / an"
+            },
+            {
+              "id": "c",
+              "text": "a / many"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Use a number with countable plural apples and some with uncountable milk."
+        }
+      ]
+    },
+    {
+      "id": "english-10-comparatives",
+      "title": "So sánh hơn",
+      "guidance": [
+        "Tính từ ngắn thường thêm -er; tính từ dài thường dùng more. So sánh hai đối tượng với than; tránh dùng đồng thời more và -er."
+      ],
+      "examples": [
+        "This route is shorter than the old one. The new map is more useful."
+      ],
+      "questions": [
+        {
+          "id": "english-10-comparatives-q1",
+          "prompt": "The comparative of “small” is?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "smallest"
+            },
+            {
+              "id": "b",
+              "text": "smaller"
+            },
+            {
+              "id": "c",
+              "text": "more small"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "“Small” normally takes -er for a two-item comparison."
+        },
+        {
+          "id": "english-10-comparatives-q2",
+          "prompt": "This exercise is ___ than the last one.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "more difficult"
+            },
+            {
+              "id": "b",
+              "text": "difficulter"
+            },
+            {
+              "id": "c",
+              "text": "most difficult than"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Long adjectives normally use more in the comparative."
+        },
+        {
+          "id": "english-10-comparatives-q3",
+          "prompt": "A bike uses less fuel than a car. Which comparison is expressed?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "The bike uses no fuel in every case."
+            },
+            {
+              "id": "b",
+              "text": "The car is always slower."
+            },
+            {
+              "id": "c",
+              "text": "The bike uses a smaller amount of fuel."
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "“Less…than” compares quantities and does not mean zero."
+        }
+      ]
+    },
+    {
+      "id": "english-10-modals",
+      "title": "Modal verbs: can, should, must",
+      "guidance": [
+        "Modal verbs đi với động từ nguyên mẫu không to. Can diễn tả khả năng/cho phép; should đưa lời khuyên; must diễn tả sự cần thiết mạnh."
+      ],
+      "examples": [
+        "You should save your work; you must wear a helmet here."
+      ],
+      "questions": [
+        {
+          "id": "english-10-modals-q1",
+          "prompt": "After “should”, use which verb form?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Base form without to"
+            },
+            {
+              "id": "b",
+              "text": "Past participle"
+            },
+            {
+              "id": "c",
+              "text": "Verb-ing"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Modal should is followed by the bare infinitive."
+        },
+        {
+          "id": "english-10-modals-q2",
+          "prompt": "Choose a suitable piece of advice.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "You should to take a break."
+            },
+            {
+              "id": "b",
+              "text": "You should took a break."
+            },
+            {
+              "id": "c",
+              "text": "You should take a short break."
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "The correct pattern is should + base verb."
+        },
+        {
+          "id": "english-10-modals-q3",
+          "prompt": "A sign says helmets are required. Which sentence best expresses the rule?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "You should to wear a helmet."
+            },
+            {
+              "id": "b",
+              "text": "You must wear a helmet."
+            },
+            {
+              "id": "c",
+              "text": "You can wearing a helmet."
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Must expresses a strong requirement; the verb remains in base form."
+        }
+      ]
+    },
+    {
+      "id": "english-10-passive",
+      "title": "Câu bị động cơ bản",
+      "guidance": [
+        "Dùng be + past participle khi muốn nhấn mạnh đối tượng chịu tác động. Thì của câu được thể hiện qua be; tác nhân có thể nêu với by."
+      ],
+      "examples": [
+        "The school library was opened in 2015."
+      ],
+      "questions": [
+        {
+          "id": "english-10-passive-q1",
+          "prompt": "A basic passive verb phrase contains?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "have + -ing"
+            },
+            {
+              "id": "b",
+              "text": "do + base verb"
+            },
+            {
+              "id": "c",
+              "text": "be + past participle"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "The auxiliary be changes with tense and the main verb uses a past participle."
+        },
+        {
+          "id": "english-10-passive-q2",
+          "prompt": "Choose the correct passive sentence.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "The posters was design by students."
+            },
+            {
+              "id": "b",
+              "text": "The posters were designed by students."
+            },
+            {
+              "id": "c",
+              "text": "The posters designed by students."
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Plural subject posters takes were; designed is the past participle."
+        },
+        {
+          "id": "english-10-passive-q3",
+          "prompt": "People recycle paper at this center. What is the passive form?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Paper is recycled at this center."
+            },
+            {
+              "id": "b",
+              "text": "Paper recycled people at this center."
+            },
+            {
+              "id": "c",
+              "text": "Paper are recycle at this center."
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Paper is the singular subject; use is + recycled."
+        }
+      ]
+    },
+    {
+      "id": "english-10-gerunds-infinitives",
+      "title": "V-ing và to-infinitive sau động từ",
+      "guidance": [
+        "Một số động từ theo sau bởi V-ing, một số theo sau bởi to + động từ nguyên mẫu. Học theo cụm động từ, không thay dạng theo cảm tính."
+      ],
+      "examples": [
+        "enjoy reading; decide to join; want to learn."
+      ],
+      "questions": [
+        {
+          "id": "english-10-gerunds-infinitives-q1",
+          "prompt": "Complete: I enjoy ___ novels.",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "read"
+            },
+            {
+              "id": "b",
+              "text": "reading"
+            },
+            {
+              "id": "c",
+              "text": "to reading"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Enjoy is followed by a gerund."
+        },
+        {
+          "id": "english-10-gerunds-infinitives-q2",
+          "prompt": "Complete: They decided ___ the club.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "to join"
+            },
+            {
+              "id": "b",
+              "text": "joining to"
+            },
+            {
+              "id": "c",
+              "text": "join"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Decide is commonly followed by a to-infinitive."
+        },
+        {
+          "id": "english-10-gerunds-infinitives-q3",
+          "prompt": "Which sentence uses the pattern correctly?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "She hopes improving her pronunciation."
+            },
+            {
+              "id": "b",
+              "text": "She hopes improve her pronunciation."
+            },
+            {
+              "id": "c",
+              "text": "She hopes to improve her pronunciation."
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hope is followed by to + base verb."
+        }
+      ]
+    },
+    {
+      "id": "english-10-relative-clauses",
+      "title": "Mệnh đề quan hệ với who, which, that",
+      "guidance": [
+        "Mệnh đề quan hệ bổ sung thông tin cho danh từ. Who thường chỉ người; which chỉ vật/sự việc; that có thể thay trong nhiều mệnh đề xác định."
+      ],
+      "examples": [
+        "The student who won the contest thanked her team."
+      ],
+      "questions": [
+        {
+          "id": "english-10-relative-clauses-q1",
+          "prompt": "Choose a relative word for a person.",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "who"
+            },
+            {
+              "id": "b",
+              "text": "where"
+            },
+            {
+              "id": "c",
+              "text": "when"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Who refers to people."
+        },
+        {
+          "id": "english-10-relative-clauses-q2",
+          "prompt": "The book ___ I borrowed is about space.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "who"
+            },
+            {
+              "id": "b",
+              "text": "where"
+            },
+            {
+              "id": "c",
+              "text": "which"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Which refers to the thing, book."
+        },
+        {
+          "id": "english-10-relative-clauses-q3",
+          "prompt": "A “teacher who listens carefully” means the teacher ___ carefully.",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "happened yesterday"
+            },
+            {
+              "id": "b",
+              "text": "listens carefully"
+            },
+            {
+              "id": "c",
+              "text": "is a place"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "The relative clause gives information about the teacher."
+        }
+      ]
+    },
+    {
+      "id": "english-10-conditionals",
+      "title": "Câu điều kiện loại 0 và loại 1",
+      "guidance": [
+        "Loại 0 nói quy luật chung: if + hiện tại đơn, hiện tại đơn. Loại 1 nói khả năng tương lai: if + hiện tại đơn, will + động từ nguyên mẫu."
+      ],
+      "examples": [
+        "If you heat ice, it melts. If it rains, we will study indoors."
+      ],
+      "questions": [
+        {
+          "id": "english-10-conditionals-q1",
+          "prompt": "A general scientific fact usually uses which pattern?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "If + past, will + past"
+            },
+            {
+              "id": "b",
+              "text": "If + will, present"
+            },
+            {
+              "id": "c",
+              "text": "If + present, present"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Zero conditional uses present simple in both clauses."
+        },
+        {
+          "id": "english-10-conditionals-q2",
+          "prompt": "If we finish early, we ___ the exhibition.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "visiting"
+            },
+            {
+              "id": "b",
+              "text": "will visit"
+            },
+            {
+              "id": "c",
+              "text": "visited"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "First conditional uses will + base verb in the likely result."
+        },
+        {
+          "id": "english-10-conditionals-q3",
+          "prompt": "If water reaches 100°C at standard pressure, it ___.",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "boils"
+            },
+            {
+              "id": "b",
+              "text": "will boiled"
+            },
+            {
+              "id": "c",
+              "text": "boil yesterday"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "This describes a general condition and result."
+        }
+      ]
+    },
+    {
+      "id": "english-10-reported-speech",
+      "title": "Tường thuật lời nói đơn giản",
+      "guidance": [
+        "Khi tường thuật lời nói ở quá khứ, đại từ và một số thì có thể lùi theo ngữ cảnh. Không đổi máy móc nếu thông tin vẫn đúng hoặc thời điểm không thay đổi."
+      ],
+      "examples": [
+        "“I am tired,” Lan said. → Lan said that she was tired."
+      ],
+      "questions": [
+        {
+          "id": "english-10-reported-speech-q1",
+          "prompt": "“I am ready,” he said. A common reported form is?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "He said that he is readyed."
+            },
+            {
+              "id": "b",
+              "text": "He said that he was ready."
+            },
+            {
+              "id": "c",
+              "text": "He says I am ready yesterday."
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "With a past reporting verb, am commonly shifts to was and pronouns change."
+        },
+        {
+          "id": "english-10-reported-speech-q2",
+          "prompt": "Which reporting verb is in the past?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "said"
+            },
+            {
+              "id": "b",
+              "text": "says"
+            },
+            {
+              "id": "c",
+              "text": "will say"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Said is the past form of say."
+        },
+        {
+          "id": "english-10-reported-speech-q3",
+          "prompt": "A speaker says “We live here” and the reporter is describing a past conversation. What should guide tense choice?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Always change every verb twice"
+            },
+            {
+              "id": "b",
+              "text": "Ignore pronouns"
+            },
+            {
+              "id": "c",
+              "text": "The reporting context and whether the fact remains true"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Reported speech depends on time reference and current truth."
+        }
+      ]
+    },
+    {
+      "id": "english-10-environment-vocabulary",
+      "title": "Từ vựng về môi trường",
+      "guidance": [
+        "Học từ theo cụm và ngữ cảnh: reduce waste, protect wildlife, renewable energy. Dùng từ đúng sắc thái và kết hợp tự nhiên."
+      ],
+      "examples": [
+        "Schools can reduce waste by reusing paper and sorting recyclable materials."
+      ],
+      "questions": [
+        {
+          "id": "english-10-environment-vocabulary-q1",
+          "prompt": "Which phrase means “giảm rác thải”?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "reduce waste"
+            },
+            {
+              "id": "b",
+              "text": "make waste"
+            },
+            {
+              "id": "c",
+              "text": "waste a reduce"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Reduce means make something smaller or less."
+        },
+        {
+          "id": "english-10-environment-vocabulary-q2",
+          "prompt": "Solar power is an example of ___ energy.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "single-use"
+            },
+            {
+              "id": "b",
+              "text": "polluted"
+            },
+            {
+              "id": "c",
+              "text": "renewable"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Solar energy is naturally replenished."
+        },
+        {
+          "id": "english-10-environment-vocabulary-q3",
+          "prompt": "A class wants to protect local birds. Which action best matches the goal?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Feed them plastic scraps."
+            },
+            {
+              "id": "b",
+              "text": "Keep nesting areas clean and avoid disturbing them."
+            },
+            {
+              "id": "c",
+              "text": "Remove every tree near the school."
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Protecting habitat and reducing disturbance support wildlife."
+        }
+      ]
+    },
+    {
+      "id": "english-10-reading-strategies",
+      "title": "Đọc hiểu: ý chính và chi tiết",
+      "guidance": [
+        "Đọc lướt để nắm chủ đề; đọc quét để tìm tên, số liệu hoặc từ khóa. Suy luận phải dựa trên thông tin văn bản và tránh thêm giả định."
+      ],
+      "examples": [
+        "Nếu đoạn nêu ba lợi ích của vận động nhưng không nói thời lượng, không thể kết luận chính xác bao lâu là tối ưu."
+      ],
+      "questions": [
+        {
+          "id": "english-10-reading-strategies-q1",
+          "prompt": "Skimming is mainly used to find?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Every punctuation mark"
+            },
+            {
+              "id": "b",
+              "text": "A word's spelling only"
+            },
+            {
+              "id": "c",
+              "text": "The general idea"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Skimming quickly identifies the overall topic and structure."
+        },
+        {
+          "id": "english-10-reading-strategies-q2",
+          "prompt": "Scanning is useful when you need to find?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "A new paragraph to add"
+            },
+            {
+              "id": "b",
+              "text": "A specific date or name"
+            },
+            {
+              "id": "c",
+              "text": "The author's entire life story"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Scanning searches selectively for a particular detail."
+        },
+        {
+          "id": "english-10-reading-strategies-q3",
+          "prompt": "The text says a park opened in 2022 and attracts many families. Can you infer its exact visitor count?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "No, the exact number is not given."
+            },
+            {
+              "id": "b",
+              "text": "Yes, it must be 2,022."
+            },
+            {
+              "id": "c",
+              "text": "Yes, every family visits daily."
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Inference must stay within what the text supports."
+        }
+      ]
+    },
+    {
+      "id": "english-10-paragraph-writing",
+      "title": "Viết đoạn văn tiếng Anh có mạch lạc",
+      "guidance": [
+        "Một đoạn ngắn thường có câu chủ đề, các câu hỗ trợ và câu kết hoặc chuyển ý. Dùng từ nối đúng quan hệ, kiểm tra hòa hợp chủ-vị và dấu câu."
+      ],
+      "examples": [
+        "Topic sentence: “Walking to school can benefit students.” Supporting details explain exercise and reduced traffic."
+      ],
+      "questions": [
+        {
+          "id": "english-10-paragraph-writing-q1",
+          "prompt": "What does a topic sentence usually do?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Replace all supporting details"
+            },
+            {
+              "id": "b",
+              "text": "State the paragraph's main idea"
+            },
+            {
+              "id": "c",
+              "text": "List every source"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "The topic sentence guides the paragraph's focus."
+        },
+        {
+          "id": "english-10-paragraph-writing-q2",
+          "prompt": "Choose the correct connector for a contrast.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "However"
+            },
+            {
+              "id": "b",
+              "text": "Because of"
+            },
+            {
+              "id": "c",
+              "text": "For example of"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "However introduces a contrasting idea."
+        },
+        {
+          "id": "english-10-paragraph-writing-q3",
+          "prompt": "Which paragraph plan is clearest?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Unrelated facts → new topic → title"
+            },
+            {
+              "id": "b",
+              "text": "Only a list of connectors"
+            },
+            {
+              "id": "c",
+              "text": "Main idea → reasons/examples → closing sentence"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "A logical order helps readers follow the argument."
+        }
+      ]
+    }
+  ]
+}

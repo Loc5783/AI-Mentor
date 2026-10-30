@@ -23,6 +23,7 @@ ORIGINAL_DIGESTS = {
     "chemistry": "ec871d5417ab28876708777f3b7bf290101fdf57d8cec5557e709ed0ff1d285d",
     "biology": "82164b79e9f83e87de8f342d530fb390d8f0a4ad9629428aeda0a37063980dd0",
 }
+NEW_GRADE_10_SUBJECTS = ("math", "literature", "english", "history", "geography", "economics_law")
 
 
 def course(subject):
@@ -44,7 +45,11 @@ def begin(client, session, enrollment, unit, content):
 def prepare(client, session, content):
     enrollment = ok(post(client, session, "/enrollments", {"subjectId": content["subjectId"], "grade": 10}))
     placement = ok(post(client, session, "/placements", {"enrollmentId": enrollment["id"]}))
-    completed = finish(client, session, solve(client, session, placement, content))
+    answers = [{"questionId": question["id"],
+                "selectedOptionId": next(option["id"] for option in question["options"]
+                                          if option["id"] != question["correctOptionId"]),
+                "submissionId": key()} for question in placement["questions"]]
+    completed = finish(client, session, answer(client, session, placement, answers))
     assert completed["xpAwarded"] == 0 and not completed["streakLit"]
     return enrollment
 
@@ -56,11 +61,59 @@ def test_generation_reproduces_shipped_packs_and_android_fixture():
     assert (BACKEND.parent / "app/src/androidTest/assets/physics-10.json").read_bytes() == (PACKS / "physics-10.json").read_bytes()
 
 
+def test_supabase_migration_seeds_placement_lessons_reviews_and_practice_quizzes():
+    subprocess.run([sys.executable, str(BACKEND / "tools" / "build_grade10_supabase_migration.py")], check=True)
+    migration = (BACKEND.parent / "supabase/migrations/202610300001_remaining_grade10_curricula.sql").read_text(encoding="utf-8")
+    assert migration.count("insert into public.mentor_course_units(") == 114
+    assert migration.count("'PLACEMENT'") == 6
+    assert sum(line.startswith("values (") for line in migration.splitlines()) == 114
+    assert migration.count("'FIVE_LESSON_REVIEW'") == 18
+    assert "insert into public.mentor_library_quizzes" in migration
+    assert "on conflict(subject_id,grade,unit_id) do nothing" in migration
+
+
+def test_adaptive_placement_migration_updates_assessment_and_path_rules():
+    subprocess.run([sys.executable, str(BACKEND / "tools" / "build_adaptive_placement_migration.py")], check=True)
+    migration = (BACKEND.parent / "supabase/migrations/202610300002_adaptive_placement.sql").read_text(encoding="utf-8")
+    assert "q.ordinality<=2" in migration
+    assert "question_count=2 and correct_count=2" in migration
+    assert "'SKIPPED'" in migration
+    assert "skipped_units ? prior.unit_id" in migration
+    assert "Bài đầu vào dùng hai câu mỗi bài đã xuất bản" in migration
+
+
+@pytest.mark.parametrize("subject", NEW_GRADE_10_SUBJECTS)
+def test_remaining_grade_ten_subjects_publish_fifteen_lessons_and_three_reviews(subject):
+    content = course(subject)
+    Catalog.validate(content)
+    assert content["subjectId"] == subject
+    assert content["grade"] == 10
+    assert content["coverage"] == "PARTIAL_GRADE_10"
+    assert len(content["lessons"]) == 15
+
+    catalog = Catalog(PACKS)
+    question_ids = [q["id"] for lesson in content["lessons"] for q in lesson["questions"]]
+    assert len(question_ids) == 45 and len(set(question_ids)) == 45
+    for end in (5, 10, 15):
+        _, _, questions, sources = catalog.unit(content, catalog.review_id(content, end))
+        assert len(questions) == 10
+        assert sources == [lesson["id"] for lesson in content["lessons"][end - 5:end]]
+        assert len({q["id"] for q in questions}) == 10
+    _, _, placement_questions, _ = catalog.unit(content, "placement")
+    assert len(placement_questions) == 30
+    assert {q["id"] for q in placement_questions} == {
+        q["id"] for lesson in content["lessons"] for q in lesson["questions"][:2]}
+
+
 @pytest.mark.parametrize("subject", ORIGINAL_DIGESTS)
 def test_packs_preserve_old_questions_and_cover_four_disjoint_blocks(subject):
     content = course(subject)
     Catalog.validate(content)
     assert len(content["lessons"]) == 20
+    _, _, placement_questions, _ = Catalog(PACKS).unit(content, "placement")
+    assert len(placement_questions) == 40
+    assert {q["id"] for q in placement_questions} == {
+        q["id"] for lesson in content["lessons"] for q in lesson["questions"][:2]}
     original = json.dumps(content["lessons"][:5], ensure_ascii=False, sort_keys=True).encode()
     assert hashlib.sha256(original).hexdigest() == ORIGINAL_DIGESTS[subject]
     assert content["version"] == "intro-2026.1"  # Append-compatible, no re-enrollment.

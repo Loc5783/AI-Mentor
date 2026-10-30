@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-  <string name="course_path_count">Đã hoàn thành %1$d / %2$d bài học</string>
+  <string name="course_path_progress">Tiến độ: %1$d/%2$d bài · %3$d bài được xếp đã nắm vững</string>
   <string name="course_stage_title">Chặng %1$d</string>
   <string name="course_stage_count">%1$d / %2$d bài</string>
-  <string name="course_path_note">Sau mỗi 5 bài là một chặng ôn tập. EXP chỉ tính ở lần hoàn thành đầu tiên.</string>
+  <string name="course_path_note">Sau mỗi 5 bài là một chặng ôn tập. Bài đã nắm vững qua đầu vào được bỏ qua; EXP nhận ở lần đầu tự hoàn thành bài hoặc bài ôn.</string>
   <string name="course_stage_reward">Lần đầu +%1$d EXP</string>
   <string name="course_review_badge">Ôn</string>
   <string name="course_review_range">Ôn tập bài %1$d–%2$d</string>
@@ -24,10 +24,13 @@
   <string name="course_retry">Thử lại</string>
   <string name="course_loading">Đang tải tiến độ…</string>
   <string name="course_placement">Kiểm tra đầu vào</string>
-  <string name="course_placement_note">Bài nhập môn giúp chọn cách hướng dẫn phù hợp, không có giới hạn thời gian và không tính EXP hay streak. Đây chưa phải đánh giá toàn bộ chương trình.</string>
+  <string name="course_placement_note">Có 2 câu cho mỗi bài đã xuất bản. Chỉ bài đúng cả 2 câu mới được bỏ qua; bài chưa chắc vẫn nằm trong lộ trình. Không giới hạn thời gian, không tính EXP/streak và không đánh giá toàn bộ chương trình.</string>
   <string name="course_continue">Học tiếp bài đang dở</string>
   <string name="course_locked">Chưa mở khóa</string>
   <string name="course_done">Đã hoàn thành · ôn lại</string>
+  <string name="course_placement_skipped_status">Đã nắm vững qua đầu vào</string>
+  <string name="course_placement_skipped_note">Kết quả đầu vào cho thấy bạn đã nắm phần nền tảng của bài này. Bài được bỏ qua trong lộ trình; việc bỏ qua không cộng EXP hoặc streak. Bạn vẫn có thể mở học lại.</string>
+  <string name="course_retake_skipped">Học bài này</string>
   <string name="course_available">Bắt đầu</string>
   <string name="course_guidance">Khám phá kiến thức</string>
   <string name="course_example">Cùng xem ví dụ</string>
@@ -49,6 +52,13 @@
   <string name="course_streak_lit">Streak hôm nay đã được thắp!</string>
   <string name="course_streak_already">Streak chỉ được thắp một lần mỗi ngày.</string>
   <string name="course_assessment">Kết quả nhập môn: %1$d / %2$d câu đúng</string>
+  <string name="course_assessment_level">Mức hiện tại trong các bài đã khảo sát: %1$s</string>
+  <string name="course_level_foundation">Cần củng cố nền tảng</string>
+  <string name="course_level_developing">Đang nắm dần kiến thức</string>
+  <string name="course_level_proficient">Nắm vững nhiều bài</string>
+  <string name="course_level_strong">Nắm vững gần hết bài đã khảo sát</string>
+  <string name="course_assessment_skipped">Đã xác định nắm vững %1$d/%2$d bài; các bài này được bỏ qua.</string>
+  <string name="course_assessment_skipped_reviews">Đã bỏ qua %1$d chặng ôn gồm các bài đã nắm vững.</string>
   <string name="course_path">Về lộ trình</string>
   <string name="course_readonly">Tiến độ được lưu trên máy chủ. Có thể quay lại học tiếp mà không cần bắt đầu lại.</string>
   <string name="course_content_language">Nội dung bài học hiện có bằng tiếng Việt.</string>

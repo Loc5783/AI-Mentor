@@ -1,0 +1,1137 @@
+{
+  "subjectId": "math",
+  "grade": 10,
+  "version": "intro-2026.1",
+  "title": "Toán: nền tảng đại số, hình học và dữ liệu",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_10",
+  "extendedReviews": false,
+  "sourceNote": "15 bài nhập môn lớp 10 do AI Mentor biên soạn theo yêu cầu cần đạt chung của Chương trình GDPT 2018; không sao chép một bộ SGK và chưa phủ toàn bộ năm học. Bài đầu vào dùng hai câu mỗi bài đã xuất bản để ước lượng nền tảng và đề xuất bài có thể bỏ qua. Nội dung cần giáo viên rà soát trước khi dùng chính thức.",
+  "lessons": [
+    {
+      "id": "math-10-sets",
+      "title": "Tập hợp và cách biểu diễn",
+      "guidance": [
+        "Tập hợp gom các đối tượng xác định rõ. Kí hiệu x ∈ A nghĩa là x thuộc A; A ⊂ B nghĩa là mọi phần tử của A đều thuộc B."
+      ],
+      "examples": [
+        "A={1,2,3}, B={2,3,4} thì A∩B={2,3} và A∪B={1,2,3,4}."
+      ],
+      "questions": [
+        {
+          "id": "math-10-sets-q1",
+          "prompt": "Kí hiệu nào diễn tả 2 thuộc tập A?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "2 ∈ A"
+            },
+            {
+              "id": "b",
+              "text": "A ∈ 2"
+            },
+            {
+              "id": "c",
+              "text": "2 ⊂ A"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "∈ diễn tả quan hệ giữa một phần tử và một tập hợp."
+        },
+        {
+          "id": "math-10-sets-q2",
+          "prompt": "A={1,2,3}, B={2,3,4}. A∩B là gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "{1,4}"
+            },
+            {
+              "id": "b",
+              "text": "{1,2,3,4}"
+            },
+            {
+              "id": "c",
+              "text": "{2,3}"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Giao gồm phần tử có mặt trong cả hai tập."
+        },
+        {
+          "id": "math-10-sets-q3",
+          "prompt": "Lớp 10A có 18 bạn thích Toán, 12 bạn thích Anh, 5 bạn thích cả hai. Có bao nhiêu bạn thích ít nhất một môn?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "35"
+            },
+            {
+              "id": "b",
+              "text": "25"
+            },
+            {
+              "id": "c",
+              "text": "30"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Dùng |A∪B|=|A|+|B|−|A∩B|=18+12−5."
+        }
+      ]
+    },
+    {
+      "id": "math-10-intervals",
+      "title": "Khoảng, đoạn và giá trị tuyệt đối",
+      "guidance": [
+        "Khoảng (a;b) không lấy hai đầu mút; đoạn [a;b] có lấy hai đầu mút. |x| là khoảng cách từ x đến 0 trên trục số."
+      ],
+      "examples": [
+        "|x−3|≤2 tương đương 1≤x≤5, tức x∈[1;5]."
+      ],
+      "questions": [
+        {
+          "id": "math-10-intervals-q1",
+          "prompt": "Đoạn [−1;4] có chứa đầu mút 4 không?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ khi 4 âm"
+            },
+            {
+              "id": "c",
+              "text": "Có"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Dấu ngoặc vuông cho biết đầu mút được lấy."
+        },
+        {
+          "id": "math-10-intervals-q2",
+          "prompt": "|−7| bằng bao nhiêu?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "0"
+            },
+            {
+              "id": "b",
+              "text": "7"
+            },
+            {
+              "id": "c",
+              "text": "−7"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giá trị tuyệt đối là khoảng cách nên không âm."
+        },
+        {
+          "id": "math-10-intervals-q3",
+          "prompt": "Điều kiện |x−2|<3 tương đương khoảng nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "(−1;5)"
+            },
+            {
+              "id": "b",
+              "text": "[−1;5]"
+            },
+            {
+              "id": "c",
+              "text": "(2;5)"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Bất đẳng thức tương đương −3<x−2<3; cộng 2 vào ba vế."
+        }
+      ]
+    },
+    {
+      "id": "math-10-linear-inequalities",
+      "title": "Bất phương trình bậc nhất một ẩn",
+      "guidance": [
+        "Giải bất phương trình là tìm mọi giá trị của ẩn làm mệnh đề đúng. Khi nhân hoặc chia hai vế cho số âm, phải đổi chiều bất đẳng thức."
+      ],
+      "examples": [
+        "−2x<6 suy ra x>−3 vì chia cả hai vế cho −2."
+      ],
+      "questions": [
+        {
+          "id": "math-10-linear-inequalities-q1",
+          "prompt": "Khi chia hai vế bất đẳng thức cho số âm, cần làm gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đổi dấu cả hai vế thành bằng"
+            },
+            {
+              "id": "b",
+              "text": "Đổi chiều dấu"
+            },
+            {
+              "id": "c",
+              "text": "Giữ nguyên dấu"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Nhân hoặc chia với số âm làm thứ tự trên trục số đảo ngược."
+        },
+        {
+          "id": "math-10-linear-inequalities-q2",
+          "prompt": "Nghiệm của 3x+1≥7 là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "x≥2"
+            },
+            {
+              "id": "b",
+              "text": "x≤2"
+            },
+            {
+              "id": "c",
+              "text": "x≥6"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Trừ 1 rồi chia 3: 3x≥6."
+        },
+        {
+          "id": "math-10-linear-inequalities-q3",
+          "prompt": "Một chuyến xe có phí 20 nghìn và mỗi km 8 nghìn. Ngân sách tối đa 100 nghìn. Số km d thỏa điều kiện nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "20d+8≤100"
+            },
+            {
+              "id": "b",
+              "text": "8(d+20)=100"
+            },
+            {
+              "id": "c",
+              "text": "20+8d≤100"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tổng tiền gồm phí cố định và tiền theo quãng đường, không vượt ngân sách."
+        }
+      ]
+    },
+    {
+      "id": "math-10-systems-regions",
+      "title": "Hệ bất phương trình và miền nghiệm",
+      "guidance": [
+        "Mỗi bất phương trình hai ẩn xác định một nửa mặt phẳng. Miền nghiệm của hệ là phần giao các miền tương ứng."
+      ],
+      "examples": [
+        "x≥0 và y≥0 chọn góc phần tư thứ nhất kể cả hai trục."
+      ],
+      "questions": [
+        {
+          "id": "math-10-systems-regions-q1",
+          "prompt": "Miền nghiệm của hệ gồm những điểm nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thỏa đồng thời mọi bất phương trình"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ thỏa một bất phương trình bất kỳ"
+            },
+            {
+              "id": "c",
+              "text": "Không cần thay tọa độ"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nghiệm hệ phải làm tất cả các điều kiện cùng đúng."
+        },
+        {
+          "id": "math-10-systems-regions-q2",
+          "prompt": "Điểm (2,1) có thỏa x≥0, y≥0 không?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ thỏa x≥0"
+            },
+            {
+              "id": "c",
+              "text": "Có"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Cả hai tọa độ đều không âm."
+        },
+        {
+          "id": "math-10-systems-regions-q3",
+          "prompt": "Một cửa hàng cần x hộp loại A, y hộp loại B; tổng không quá 10 hộp và mỗi loại ít nhất 2. Hệ điều kiện là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "xy≤10"
+            },
+            {
+              "id": "b",
+              "text": "x+y≤10, x≥2, y≥2"
+            },
+            {
+              "id": "c",
+              "text": "x+y≥10, x≤2, y≤2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Tổng số hộp bị chặn trên; mỗi số lượng có chặn dưới."
+        }
+      ]
+    },
+    {
+      "id": "math-10-quadratic-function",
+      "title": "Hàm số bậc hai và đồ thị",
+      "guidance": [
+        "Hàm số bậc hai có dạng y=ax²+bx+c, a≠0. Đồ thị là parabol; dấu của a quyết định parabol mở lên hay mở xuống."
+      ],
+      "examples": [
+        "y=2x² mở lên vì a=2>0."
+      ],
+      "questions": [
+        {
+          "id": "math-10-quadratic-function-q1",
+          "prompt": "Đồ thị hàm số bậc hai là hình nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đường tròn"
+            },
+            {
+              "id": "b",
+              "text": "Đường thẳng luôn luôn"
+            },
+            {
+              "id": "c",
+              "text": "Parabol"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Biểu thức bậc hai theo x tạo nên đồ thị parabol."
+        },
+        {
+          "id": "math-10-quadratic-function-q2",
+          "prompt": "y=−x²+3 mở về phía nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không có đồ thị"
+            },
+            {
+              "id": "b",
+              "text": "Mở xuống"
+            },
+            {
+              "id": "c",
+              "text": "Mở lên"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hệ số a âm nên hai nhánh hướng xuống."
+        },
+        {
+          "id": "math-10-quadratic-function-q3",
+          "prompt": "Một vật được phóng lên có độ cao h(t)=−5t²+20t. Đồ thị giúp tìm thời điểm đạt độ cao cực đại bằng cách nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tìm hoành độ đỉnh parabol"
+            },
+            {
+              "id": "b",
+              "text": "Tìm giao điểm với trục Oy"
+            },
+            {
+              "id": "c",
+              "text": "Lấy hệ số tự do"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Parabol mở xuống nên đỉnh biểu diễn giá trị lớn nhất."
+        }
+      ]
+    },
+    {
+      "id": "math-10-quadratic-sign",
+      "title": "Dấu tam thức bậc hai",
+      "guidance": [
+        "Nghiệm của ax²+bx+c=0 chia trục số thành các khoảng. Với hai nghiệm phân biệt, tam thức cùng dấu với a ở ngoài hai nghiệm và trái dấu với a ở giữa."
+      ],
+      "examples": [
+        "x²−5x+6=(x−2)(x−3) âm khi 2<x<3."
+      ],
+      "questions": [
+        {
+          "id": "math-10-quadratic-sign-q1",
+          "prompt": "Khi tam thức có hai nghiệm phân biệt, dấu ở ngoài hai nghiệm cùng hay trái dấu với a?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Luôn bằng 0"
+            },
+            {
+              "id": "b",
+              "text": "Cùng dấu"
+            },
+            {
+              "id": "c",
+              "text": "Trái dấu"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Quy tắc dấu cho tam thức bậc hai cho dấu cùng a ở hai miền ngoài."
+        },
+        {
+          "id": "math-10-quadratic-sign-q2",
+          "prompt": "x²−4 âm trên khoảng nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "(−2;2)"
+            },
+            {
+              "id": "b",
+              "text": "(−∞;−2)∪(2;+∞)"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ tại x=2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "x²−4=(x−2)(x+2), tam thức âm giữa hai nghiệm."
+        },
+        {
+          "id": "math-10-quadratic-sign-q3",
+          "prompt": "Để x²−2x−3≤0, chọn tập nghiệm nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "(−∞;−1]∪[3;+∞)"
+            },
+            {
+              "id": "b",
+              "text": "(−1;3)"
+            },
+            {
+              "id": "c",
+              "text": "[−1;3]"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tam thức có nghiệm −1 và 3, hệ số đầu dương; lấy phần giữa, kể cả hai nghiệm."
+        }
+      ]
+    },
+    {
+      "id": "math-10-quadratic-equations",
+      "title": "Phương trình bậc hai",
+      "guidance": [
+        "Với ax²+bx+c=0, biệt thức Δ=b²−4ac cho biết số nghiệm thực: Δ>0 có hai nghiệm, Δ=0 có nghiệm kép, Δ<0 không có nghiệm thực."
+      ],
+      "examples": [
+        "x²−5x+6=0 có Δ=1 và nghiệm 2, 3."
+      ],
+      "questions": [
+        {
+          "id": "math-10-quadratic-equations-q1",
+          "prompt": "Nếu Δ<0 thì phương trình bậc hai có bao nhiêu nghiệm thực?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không có nghiệm thực"
+            },
+            {
+              "id": "b",
+              "text": "Hai nghiệm thực phân biệt"
+            },
+            {
+              "id": "c",
+              "text": "Một nghiệm kép"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Biệt thức âm loại trừ giao điểm thực với trục hoành."
+        },
+        {
+          "id": "math-10-quadratic-equations-q2",
+          "prompt": "Phương trình x²−5x+6=0 có nghiệm nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "−2 và −3"
+            },
+            {
+              "id": "b",
+              "text": "1 và 6"
+            },
+            {
+              "id": "c",
+              "text": "2 và 3"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Phân tích thành (x−2)(x−3)=0."
+        },
+        {
+          "id": "math-10-quadratic-equations-q3",
+          "prompt": "Diện tích hình chữ nhật 24 m², chiều dài hơn chiều rộng 2 m. Nếu rộng x, phương trình phù hợp là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "x²−2=24"
+            },
+            {
+              "id": "b",
+              "text": "x(x+2)=24"
+            },
+            {
+              "id": "c",
+              "text": "2x+24=0"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Diện tích bằng rộng nhân dài; chiều dài là x+2."
+        }
+      ]
+    },
+    {
+      "id": "math-10-trigonometry",
+      "title": "Tỉ số lượng giác trong tam giác vuông",
+      "guidance": [
+        "Trong tam giác vuông, sin góc nhọn bằng cạnh đối/huyền, cos bằng cạnh kề/huyền, tan bằng cạnh đối/kề."
+      ],
+      "examples": [
+        "Tam giác có cạnh đối 3, kề 4, huyền 5 thì sin α=3/5, cos α=4/5."
+      ],
+      "questions": [
+        {
+          "id": "math-10-trigonometry-q1",
+          "prompt": "sin α trong tam giác vuông bằng tỉ số nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cạnh kề / cạnh huyền"
+            },
+            {
+              "id": "b",
+              "text": "Cạnh đối / cạnh kề"
+            },
+            {
+              "id": "c",
+              "text": "Cạnh đối / cạnh huyền"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Định nghĩa sin dùng cạnh đối chia cạnh huyền."
+        },
+        {
+          "id": "math-10-trigonometry-q2",
+          "prompt": "Cạnh đối 6, cạnh kề 8. tan α bằng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "6/8²"
+            },
+            {
+              "id": "b",
+              "text": "3/4"
+            },
+            {
+              "id": "c",
+              "text": "4/3"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "tan α=6/8=3/4."
+        },
+        {
+          "id": "math-10-trigonometry-q3",
+          "prompt": "Một dốc cao 1 m, chiều ngang 5 m. Góc nghiêng α với mặt đất có tan α bằng?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "1/5"
+            },
+            {
+              "id": "b",
+              "text": "5"
+            },
+            {
+              "id": "c",
+              "text": "1/25"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tang bằng độ cao chia chiều ngang trong tam giác vuông."
+        }
+      ]
+    },
+    {
+      "id": "math-10-vectors",
+      "title": "Vectơ và phép cộng",
+      "guidance": [
+        "Vectơ có hướng và độ dài. Hai vectơ bằng nhau khi cùng hướng và cùng độ dài; quy tắc hình bình hành hoặc quy tắc nối đuôi dùng để cộng vectơ."
+      ],
+      "examples": [
+        "Đi 3 km về đông rồi 4 km về bắc, vectơ tổng là đường chéo hướng đông-bắc."
+      ],
+      "questions": [
+        {
+          "id": "math-10-vectors-q1",
+          "prompt": "Hai vectơ bằng nhau cần có điều kiện nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ cùng độ dài"
+            },
+            {
+              "id": "b",
+              "text": "Cùng hướng và cùng độ dài"
+            },
+            {
+              "id": "c",
+              "text": "Cùng điểm đầu"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Điểm đặt không quyết định vectơ tự do; hướng và độ dài mới quyết định."
+        },
+        {
+          "id": "math-10-vectors-q2",
+          "prompt": "Nếu AB⃗ và BC⃗ nối tiếp, tổng bằng vectơ nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "AC⃗"
+            },
+            {
+              "id": "b",
+              "text": "CA⃗"
+            },
+            {
+              "id": "c",
+              "text": "AB⃗−BC⃗"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Quy tắc ba điểm cho AB⃗+BC⃗=AC⃗."
+        },
+        {
+          "id": "math-10-vectors-q3",
+          "prompt": "Bạn đi 3 km đông rồi 4 km bắc. Độ lớn độ dời là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "7 km"
+            },
+            {
+              "id": "b",
+              "text": "1 km"
+            },
+            {
+              "id": "c",
+              "text": "5 km"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hai hướng vuông góc nên dùng định lý Pythagore: √(3²+4²)=5."
+        }
+      ]
+    },
+    {
+      "id": "math-10-dot-product",
+      "title": "Tích vô hướng và góc",
+      "guidance": [
+        "Tích vô hướng a⃗·b⃗=|a⃗||b⃗|cosθ. Nếu hai vectơ vuông góc thì tích vô hướng bằng 0."
+      ],
+      "examples": [
+        "Hai vectơ đơn vị tạo góc 60° có tích vô hướng bằng cos60°=1/2."
+      ],
+      "questions": [
+        {
+          "id": "math-10-dot-product-q1",
+          "prompt": "Hai vectơ vuông góc có tích vô hướng bằng bao nhiêu?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "0"
+            },
+            {
+              "id": "b",
+              "text": "1"
+            },
+            {
+              "id": "c",
+              "text": "Tích độ dài"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "cos90°=0 nên tích vô hướng bằng 0."
+        },
+        {
+          "id": "math-10-dot-product-q2",
+          "prompt": "Hai vectơ đơn vị tạo góc 60°. Tích vô hướng là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "√3/2"
+            },
+            {
+              "id": "b",
+              "text": "−1/2"
+            },
+            {
+              "id": "c",
+              "text": "1/2"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tích bằng 1·1·cos60°=1/2."
+        },
+        {
+          "id": "math-10-dot-product-q3",
+          "prompt": "Hai lực vuông góc có hợp lực độ lớn 3 N và 4 N. Công thức kiểm tra độ lớn hợp lực là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "3×4"
+            },
+            {
+              "id": "b",
+              "text": "√(3²+4²)"
+            },
+            {
+              "id": "c",
+              "text": "3+4 luôn luôn"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hai vectơ vuông góc tạo tam giác vuông khi cộng."
+        }
+      ]
+    },
+    {
+      "id": "math-10-coordinates-vectors",
+      "title": "Tọa độ vectơ trong mặt phẳng",
+      "guidance": [
+        "Với A(x₁;y₁), B(x₂;y₂), vectơ AB⃗=(x₂−x₁;y₂−y₁). Độ dài vectơ (u;v) là √(u²+v²)."
+      ],
+      "examples": [
+        "A(1;2), B(4;6) thì AB⃗=(3;4), độ dài bằng 5."
+      ],
+      "questions": [
+        {
+          "id": "math-10-coordinates-vectors-q1",
+          "prompt": "Tọa độ AB⃗ được tính theo thứ tự nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "A trừ B"
+            },
+            {
+              "id": "b",
+              "text": "Cộng hai điểm"
+            },
+            {
+              "id": "c",
+              "text": "B trừ A"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Vectơ đi từ A đến B nên lấy tọa độ cuối trừ đầu."
+        },
+        {
+          "id": "math-10-coordinates-vectors-q2",
+          "prompt": "A(−1;2), B(2;6). AB⃗ là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "(1;8)"
+            },
+            {
+              "id": "b",
+              "text": "(3;4)"
+            },
+            {
+              "id": "c",
+              "text": "(−3;−4)"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "(2−(−1);6−2)=(3;4)."
+        },
+        {
+          "id": "math-10-coordinates-vectors-q3",
+          "prompt": "Vectơ dịch chuyển (5;12) có độ dài bao nhiêu đơn vị?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "13"
+            },
+            {
+              "id": "b",
+              "text": "17"
+            },
+            {
+              "id": "c",
+              "text": "7"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Độ dài bằng √(25+144)=13."
+        }
+      ]
+    },
+    {
+      "id": "math-10-coordinate-line",
+      "title": "Phương trình đường thẳng",
+      "guidance": [
+        "Dạng ax+by+c=0 mô tả đường thẳng khi a và b không đồng thời bằng 0. Vectơ pháp tuyến (a;b) vuông góc với đường thẳng."
+      ],
+      "examples": [
+        "2x−y+1=0 có vectơ pháp tuyến (2;−1)."
+      ],
+      "questions": [
+        {
+          "id": "math-10-coordinate-line-q1",
+          "prompt": "Trong ax+by+c=0, một vectơ pháp tuyến là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "(c;0)"
+            },
+            {
+              "id": "b",
+              "text": "(a;b)"
+            },
+            {
+              "id": "c",
+              "text": "(−b;a) luôn là pháp tuyến"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Các hệ số của x,y tạo vectơ vuông góc với đường thẳng."
+        },
+        {
+          "id": "math-10-coordinate-line-q2",
+          "prompt": "Điểm (1;1) có thuộc đường thẳng x+y−2=0 không?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Có"
+            },
+            {
+              "id": "b",
+              "text": "Không"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ khi x=0"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Thay vào: 1+1−2=0."
+        },
+        {
+          "id": "math-10-coordinate-line-q3",
+          "prompt": "Đường thẳng qua (0;2) và song song trục Ox có phương trình?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "x=2"
+            },
+            {
+              "id": "b",
+              "text": "x+y=2"
+            },
+            {
+              "id": "c",
+              "text": "y=2"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Đường ngang giữ tung độ không đổi."
+        }
+      ]
+    },
+    {
+      "id": "math-10-counting",
+      "title": "Quy tắc cộng và quy tắc nhân",
+      "guidance": [
+        "Quy tắc cộng dùng cho các lựa chọn loại trừ nhau; quy tắc nhân dùng cho các bước lựa chọn nối tiếp."
+      ],
+      "examples": [
+        "Chọn 1 áo trong 3 và 1 quần trong 2 có 3×2=6 bộ."
+      ],
+      "questions": [
+        {
+          "id": "math-10-counting-q1",
+          "prompt": "Chọn áo rồi chọn quần là các bước nối tiếp, thường dùng quy tắc nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Quy tắc nhân"
+            },
+            {
+              "id": "b",
+              "text": "Quy tắc cộng"
+            },
+            {
+              "id": "c",
+              "text": "Quy tắc trừ"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Mỗi kết quả gồm một lựa chọn ở mỗi bước nên nhân số cách."
+        },
+        {
+          "id": "math-10-counting-q2",
+          "prompt": "Có 4 món tráng miệng hoặc 3 loại nước, chọn đúng một món. Có bao nhiêu cách?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "12"
+            },
+            {
+              "id": "b",
+              "text": "1"
+            },
+            {
+              "id": "c",
+              "text": "7"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hai nhóm lựa chọn loại trừ nhau nên cộng 4+3."
+        },
+        {
+          "id": "math-10-counting-q3",
+          "prompt": "Mật khẩu gồm 2 chữ số, mỗi vị trí chọn từ 0–9 và được lặp. Có bao nhiêu mật khẩu?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "90"
+            },
+            {
+              "id": "b",
+              "text": "100"
+            },
+            {
+              "id": "c",
+              "text": "20"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mỗi vị trí có 10 lựa chọn độc lập: 10×10."
+        }
+      ]
+    },
+    {
+      "id": "math-10-combinations",
+      "title": "Hoán vị và tổ hợp",
+      "guidance": [
+        "Hoán vị xét thứ tự sắp xếp tất cả phần tử; tổ hợp chọn một nhóm mà không xét thứ tự. C_n^k=n!/(k!(n−k)!)."
+      ],
+      "examples": [
+        "Chọn 2 bạn từ 5 bạn có C(5,2)=10 nhóm."
+      ],
+      "questions": [
+        {
+          "id": "math-10-combinations-q1",
+          "prompt": "Chọn một ban gồm 3 bạn từ 8 bạn, không phân chức vụ, dùng dạng nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hoán vị"
+            },
+            {
+              "id": "b",
+              "text": "Chỉnh hợp có lặp"
+            },
+            {
+              "id": "c",
+              "text": "Tổ hợp"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Không phân chức vụ nên thứ tự chọn không tạo nhóm mới."
+        },
+        {
+          "id": "math-10-combinations-q2",
+          "prompt": "C(5,2) bằng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "5"
+            },
+            {
+              "id": "b",
+              "text": "10"
+            },
+            {
+              "id": "c",
+              "text": "20"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "5·4/(2·1)=10."
+        },
+        {
+          "id": "math-10-combinations-q3",
+          "prompt": "Xếp 4 quyển sách khác nhau thành một hàng có bao nhiêu cách?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "24"
+            },
+            {
+              "id": "b",
+              "text": "16"
+            },
+            {
+              "id": "c",
+              "text": "4"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Có 4!=24 hoán vị vì vị trí mỗi quyển khác nhau."
+        }
+      ]
+    },
+    {
+      "id": "math-10-statistics",
+      "title": "Mô tả và đọc dữ liệu",
+      "guidance": [
+        "Số trung bình mô tả tâm dữ liệu; trung vị chia dãy đã sắp xếp thành hai nửa; khoảng biến thiên bằng giá trị lớn nhất trừ nhỏ nhất."
+      ],
+      "examples": [
+        "Dữ liệu 2,3,3,8 có trung vị (3+3)/2=3 và khoảng biến thiên 6."
+      ],
+      "questions": [
+        {
+          "id": "math-10-statistics-q1",
+          "prompt": "Khoảng biến thiên bằng gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Giá trị ở giữa"
+            },
+            {
+              "id": "b",
+              "text": "Giá trị lớn nhất trừ nhỏ nhất"
+            },
+            {
+              "id": "c",
+              "text": "Tổng chia số phần tử"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Khoảng biến thiên đo độ rộng từ đầu nhỏ đến đầu lớn."
+        },
+        {
+          "id": "math-10-statistics-q2",
+          "prompt": "Trung vị của 1,4,7 là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "4"
+            },
+            {
+              "id": "b",
+              "text": "1"
+            },
+            {
+              "id": "c",
+              "text": "7"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Dãy đã sắp xếp có phần tử chính giữa là 4."
+        },
+        {
+          "id": "math-10-statistics-q3",
+          "prompt": "Hai nhóm có cùng trung bình nhưng một nhóm phân tán rộng hơn. Chỉ số nào gợi ý khác biệt này?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Số phần tử luôn luôn"
+            },
+            {
+              "id": "b",
+              "text": "Trung bình"
+            },
+            {
+              "id": "c",
+              "text": "Khoảng biến thiên hoặc độ lệch chuẩn"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Chỉ số phân tán bổ sung thông tin mà trung bình không cho biết."
+        }
+      ]
+    }
+  ]
+}

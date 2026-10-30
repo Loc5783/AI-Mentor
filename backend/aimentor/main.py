@@ -33,7 +33,7 @@ def create_app(settings=None):
     library=LibraryService(database)
     library.seed_sample_physics()
     app=FastAPI(title="AI Mentor API",version="0.2.0",
-        description="Working account/chat/profile/event backend. Learning engine integration is in progress; six other subject modules remain framework-only.")
+        description="AI Mentor API with all nine Grade 10 subject courses published. Grade 11–12 lesson content is not yet published.")
     app.state.db=database
     app.state.auth=auth
     app.state.learning=learning
