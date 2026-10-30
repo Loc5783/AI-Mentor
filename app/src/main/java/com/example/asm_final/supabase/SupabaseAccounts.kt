@@ -58,7 +58,7 @@ class SupabaseAccounts @JvmOverloads constructor(context: Context, private val h
 
     @Throws(Exception::class)
     fun register(name: String,email: String,password: String): AuthTicket {
-        val result=JSONObject(http.request("POST","/auth/v1/signup",JSONObject().put("email",email.trim()).put("password",password)
+        val result=JSONObject(http.request("POST",SupabaseAuthRedirect.withCallback("/auth/v1/signup"),JSONObject().put("email",email.trim()).put("password",password)
             .put("data",JSONObject().put("nickname",name.trim()))))
         if(result.optString("access_token").isEmpty()) throw BackendClient.Failure("EMAIL_CONFIRMATION_REQUIRED",202)
         // Never authenticate by local password; verify the server identity through the normal path.

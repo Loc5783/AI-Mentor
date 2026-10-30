@@ -31,7 +31,7 @@ public final class SupabaseRecoveryService implements RecoveryService {
 
   @Override
   public Result resendVerification(String email) {
-    return request("POST", "/auth/v1/resend", json("type", "signup", "email", email.trim()), null);
+    return request("POST", SupabaseAuthRedirect.withCallback("/auth/v1/resend"), json("type", "signup", "email", email.trim()), null);
   }
 
   @Override

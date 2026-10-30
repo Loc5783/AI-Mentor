@@ -5,8 +5,17 @@ import android.os.Looper
 import com.example.asm_final.BuildConfig
 import com.example.asm_final.backend.BackendClient
 import org.json.JSONObject
+import android.net.Uri
 import java.net.HttpURLConnection
 import java.net.URL
+
+/** Deep link used by Supabase confirmation emails to return to the Android app. */
+object SupabaseAuthRedirect {
+    const val CALLBACK_URL = "aimentor://auth/callback"
+
+    @JvmStatic fun withCallback(path: String): String =
+        "$path?redirect_to=${Uri.encode(CALLBACK_URL)}"
+}
 
 /** Bounded HTTPS transport. Never logs credentials or silently retries token mutations. */
 class SupabaseHttp : SupabaseTransport {

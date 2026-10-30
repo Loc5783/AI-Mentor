@@ -81,6 +81,7 @@
     <string name="auth_resend_wait">You can request another email in about a minute.</string>
     <string name="auth_token_required">Enter a verification code.</string>
     <string name="auth_route_error">Unable to load the account state. Please sign in again.</string>
+    <string name="supabase_email_confirmed_return">Email verified. Sign in to continue.</string>
     <string-array name="learner_goals">
         <item>@string/profile_goal_0</item>
         <item>@string/profile_goal_1</item>

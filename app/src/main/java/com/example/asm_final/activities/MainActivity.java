@@ -1,6 +1,7 @@
 package com.example.asm_final.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,11 +15,13 @@ public class MainActivity extends AppCompatActivity {
   private Button login;
   private TextView message, register;
   private AuthFormModel model;
+  private boolean emailConfirmedCallback;
 
   @Override
   protected void onCreate(Bundle state) {
     super.onCreate(state);
     setContentView(R.layout.activity_main);
+    emailConfirmedCallback = isEmailConfirmationCallback(getIntent());
     AuthChrome.bind(this);
     AppServices services = ((AiMentorApplication) getApplication()).services();
     model = new ViewModelProvider(this).get(AuthFormModel.class);
@@ -68,9 +71,11 @@ public class MainActivity extends AppCompatActivity {
           remember.setEnabled(!s.busy);
           findViewById(R.id.tvForgotPassword).setEnabled(!s.busy);
           message.setText(
-              s.busy
-                  ? R.string.auth_processing
-                  : s.error == 0 ? R.string.auth_empty_text : s.error);
+              emailConfirmedCallback && !s.busy && s.error == 0 && s.ticket == null
+                  ? R.string.supabase_email_confirmed_return
+                  : s.busy
+                      ? R.string.auth_processing
+                      : s.error == 0 ? R.string.auth_empty_text : s.error);
           if (s.ticket != null) {
             AuthTicket ticket = s.ticket;
             if (ticket.profile == null) {
@@ -87,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     if (!model.restoreAttempted) {
       model.restoreAttempted = true;
       String saved = AuthSession.remembered(this);
-      if (!saved.isEmpty()) {
+      if (!saved.isEmpty() && !emailConfirmedCallback) {
         model.remember = true;
         remember.setChecked(true);
         model.submit(
@@ -96,5 +101,15 @@ public class MainActivity extends AppCompatActivity {
             R.string.auth_route_error);
       }
     }
+  }
+
+  private static boolean isEmailConfirmationCallback(Intent intent) {
+    Uri uri = intent == null ? null : intent.getData();
+    return intent != null
+        && Intent.ACTION_VIEW.equals(intent.getAction())
+        && uri != null
+        && "aimentor".equals(uri.getScheme())
+        && "auth".equals(uri.getHost())
+        && "/callback".equals(uri.getPath());
   }
 }

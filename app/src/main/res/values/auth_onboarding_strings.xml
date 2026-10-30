@@ -81,6 +81,7 @@
     <string name="auth_resend_wait">Bạn có thể gửi lại sau khoảng một phút.</string>
     <string name="auth_token_required">Vui lòng nhập mã xác minh.</string>
     <string name="auth_route_error">Chưa thể tải trạng thái tài khoản. Hãy đăng nhập lại.</string>
+    <string name="supabase_email_confirmed_return">Email đã được xác thực. Đăng nhập để tiếp tục.</string>
     <string-array name="learner_goals">
         <item>@string/profile_goal_0</item>
         <item>@string/profile_goal_1</item>
