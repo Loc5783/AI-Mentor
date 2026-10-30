@@ -62,8 +62,7 @@ public final class LearningSetupStore extends ModuleDatabaseHelper {
     if (user <= 0
         || grade < 10
         || grade > 12
-        || !EnumSet.of(SubjectId.BIOLOGY, SubjectId.CHEMISTRY, SubjectId.PHYSICS)
-            .containsAll(selected)) throw new IllegalArgumentException("Unsupported lesson scope");
+        || !EnumSet.allOf(SubjectId.class).containsAll(selected)) throw new IllegalArgumentException("Unsupported lesson scope");
     SQLiteDatabase db = getWritableDatabase();
     db.beginTransaction();
     try {
