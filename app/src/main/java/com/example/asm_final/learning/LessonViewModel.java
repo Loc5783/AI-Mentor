@@ -150,7 +150,7 @@ public final class LessonViewModel extends AndroidViewModel {
   }
 
   public static String normalizeSubject(String subject) {
-    return subject == null ? "" : subject.trim().toLowerCase();
+    return subject == null ? "" : subject.trim().toLowerCase(java.util.Locale.ROOT);
   }
 
   public static String scopeKey(int owner, String subject, int grade) {

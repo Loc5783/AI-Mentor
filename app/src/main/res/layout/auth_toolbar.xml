@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:minWidth="44dp"
         android:minHeight="44dp"
-        android:text="VI / EN"
+        android:text="@string/auth_language_label"
         android:textColor="@color/auth_primary"
         android:contentDescription="@string/auth_language_toggle" />
 
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:minWidth="44dp"
         android:minHeight="44dp"
-        android:text="◐"
+        android:text="@string/auth_theme_label"
         android:textColor="@color/auth_primary"
         android:contentDescription="@string/auth_theme_toggle" />
 </LinearLayout>

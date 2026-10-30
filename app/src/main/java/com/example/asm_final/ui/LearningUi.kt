@@ -231,7 +231,8 @@ private fun LessonPathSheet(unit: LessonPathData.Unit, dismiss: () -> Unit, open
             if (skipped) {
                 Text(stringResource(R.string.course_placement_skipped_note), style = MaterialTheme.typography.bodyMedium)
                 if (!unit.canOpen) Text(stringResource(R.string.course_unlock_note), style = MaterialTheme.typography.bodyMedium)
-                else MentorButton(stringResource(R.string.course_retake_skipped), open, Modifier.fillMaxWidth())
+                else MentorButton(stringResource(R.string.course_retake_skipped), open,
+                    Modifier.fillMaxWidth().testTag("path-sheet-open"))
             } else if (locked) {
                 Text(stringResource(R.string.course_unlock_note), style = MaterialTheme.typography.bodyMedium)
             } else {
@@ -239,7 +240,7 @@ private fun LessonPathSheet(unit: LessonPathData.Unit, dismiss: () -> Unit, open
                     else stringResource(R.string.course_stage_reward, unit.xp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                 MentorButton(stringResource(if (done) R.string.course_done else R.string.course_available), open,
-                    Modifier.fillMaxWidth())
+                    Modifier.fillMaxWidth().testTag("path-sheet-open"))
             }
             TextButton(dismiss) { Text(stringResource(R.string.course_back)) }
         }
@@ -426,7 +427,7 @@ private fun StudySessionEffect(owner: Int, subjectId: String, grade: Int, attemp
                         tracker.start(owner, id, subjectId, grade)
                         synchronized(lock) {
                             if (currentSession == id && heartbeat == null) {
-                                heartbeat = executor.scheduleAtFixedRate({
+                                heartbeat = executor.scheduleWithFixedDelay({
                                     if (synchronized(lock) { currentSession == id }) {
                                         runCatching { tracker.heartbeat(owner, id, UUID.randomUUID().toString()) }
                                     }

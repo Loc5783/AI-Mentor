@@ -28,6 +28,8 @@
     <string name="auth_registration_failed">We could not create an account with these details. Check them or try signing in.</string>
     <string name="auth_theme_toggle">Switch light / dark mode</string>
     <string name="auth_language_toggle">Change language</string>
+    <string name="auth_language_label">VI / EN</string>
+    <string name="auth_theme_label">◐</string>
     <string name="auth_back_login">Back to sign in</string>
     <string name="auth_back">Back</string>
     <string name="settings_logout_title">Ready to sign out?</string>
@@ -41,7 +43,7 @@
     <string name="auth_guide">App guide</string>
     <string name="onboard_step">Step %1$d / 4</string>
     <string name="onboard_1_title">Welcome to AI Mentor!</string>
-    <string name="onboard_1_body">Learn smarter, at your own pace.\n\nExplore your school subjects, with learning paths for Physics, Chemistry and Biology. When a question gets tricky, you have a companion to help you work through it.</string>
+    <string name="onboard_1_body">Learn smarter, at your own pace.\n\nExplore Grade 10 subjects with a learning path for each one. When a question gets tricky, you have a companion to help you work through it.</string>
     <string name="onboard_2_title">Learn with AI, understand it your way</string>
     <string name="onboard_2_body">Ask a question or share a photo of a problem.\n\nExplore step-by-step explanations, save notes and revisit conversations. AI features need a connection and a configured service.</string>
     <string name="onboard_3_title">Every student has their own journey</string>

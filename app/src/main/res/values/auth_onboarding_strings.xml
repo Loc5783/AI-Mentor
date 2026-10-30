@@ -28,6 +28,8 @@
     <string name="auth_registration_failed">Chưa thể tạo tài khoản với thông tin này. Hãy kiểm tra lại hoặc thử đăng nhập.</string>
     <string name="auth_theme_toggle">Đổi sáng / tối</string>
     <string name="auth_language_toggle">Đổi ngôn ngữ</string>
+    <string name="auth_language_label">VI / EN</string>
+    <string name="auth_theme_label">◐</string>
     <string name="auth_back_login">Về đăng nhập</string>
     <string name="auth_back">Quay lại</string>
     <string name="settings_logout_title">Kết thúc buổi học?</string>
@@ -41,7 +43,7 @@
     <string name="auth_guide">Hướng dẫn sử dụng</string>
     <string name="onboard_step">Bước %1$d / 4</string>
     <string name="onboard_1_title">Chào mừng bạn đến với AI Mentor! 🌸</string>
-    <string name="onboard_1_body">Học thông minh hơn, theo tốc độ của bạn.\n\nKhám phá các môn học, với lộ trình Lý, Hóa và Sinh. Khi gặp câu hỏi khó, bạn có thêm một người bạn để cùng tìm hiểu.</string>
+    <string name="onboard_1_body">Học thông minh hơn, theo tốc độ của bạn.\n\nKhám phá các môn học lớp 10 với lộ trình riêng theo từng môn. Khi gặp câu hỏi khó, bạn có thêm một người bạn để cùng tìm hiểu.</string>
     <string name="onboard_2_title">Học cùng AI, hiểu bài theo cách của bạn</string>
     <string name="onboard_2_body">Đặt câu hỏi hoặc gửi ảnh đề bài.\n\nXem giải thích từng bước, lưu ghi chú và quay lại những cuộc trò chuyện cần thiết. Các tính năng AI cần kết nối và dịch vụ được cấu hình.</string>
     <string name="onboard_3_title">Mỗi học sinh đều có hành trình riêng</string>

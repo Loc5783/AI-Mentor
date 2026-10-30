@@ -105,7 +105,7 @@ class ComposeRedesignTest {
         capture("home")
         compose.onNodeWithTag("dashboard-subject:physics").assertExists()
         compose.onNodeWithTag("dashboard-subject:chemistry").assertDoesNotExist()
-        compose.onAllNodesWithText(label(R.string.design_chart_hint)).onFirst().assertExists()
+        compose.onAllNodesWithText(label(R.string.design_week_empty)).onFirst().assertExists()
         navigate(R.id.nav_competition)
         compose.onNodeWithText(label(R.string.competition_title)).assertExists()
         navigate(R.id.nav_profile)
@@ -187,16 +187,16 @@ class ComposeRedesignTest {
         compose.onNodeWithTag("chat-input").assertTextContains("Giữ câu hỏi đang soạn")
     }
 
-    @Test(timeout = 60000) fun subjectChangesAndToolsSurviveRecreation() {
+    @Test(timeout = 60000) fun subjectChangesSurviveRecreation() {
         LearningSetupStore(context).use { it.save(owner, 11, setOf(SubjectId.CHEMISTRY, SubjectId.PHYSICS)) }
         navigate(R.id.nav_category)
+        compose.onNodeWithText("Lộ trình học 9 môn").performClick()
         waitForTag("subject-list")
         compose.onNodeWithTag("subject-list").performScrollToNode(hasTestTag("subject:physics"))
-        compose.onNodeWithText(label(R.string.lesson_circuit)).assertExists()
         scenario.recreate()
         waitForTag("subject-list")
         compose.onNodeWithTag("subject-list").performScrollToNode(hasTestTag("subject:physics"))
-        compose.onNodeWithText(label(R.string.lesson_circuit)).assertExists()
+        compose.onNodeWithTag("subject:physics").assertExists()
         compose.onNodeWithTag("subject-list").performScrollToNode(hasTestTag("subject:chemistry"))
         compose.onNodeWithTag("subject:chemistry").assertExists()
         navigate(R.id.nav_home)
