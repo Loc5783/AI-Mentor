@@ -21,6 +21,7 @@ public final class AccountAccess {
   }
 
   public AuthTicket signIn(String identifier, String password) throws Exception {
+    if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) return new com.example.asm_final.supabase.SupabaseAccounts(context).signIn(identifier, password);
     if (BackendClient.endpoint(context).isEmpty()) {
       if (!local.authenticate(identifier, password)) return null;
       return ticket(local.canonicalUsername(identifier));
@@ -30,6 +31,7 @@ public final class AccountAccess {
   }
 
   public AuthTicket register(String name, String email, String password) throws Exception {
+    if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) return new com.example.asm_final.supabase.SupabaseAccounts(context).register(name, email, password);
     if (BackendClient.endpoint(context).isEmpty()) {
       long id = local.registerLearner(name, email, password);
       return id > 0 ? ticket(local.canonicalUsername(email)) : null;
@@ -43,6 +45,7 @@ public final class AccountAccess {
   }
 
   public AuthTicket restore(String username) throws Exception {
+    if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) return new com.example.asm_final.supabase.SupabaseAccounts(context).restore(username);
     AuthTicket ticket = ticket(username);
     if (ticket == null || BackendClient.endpoint(context).isEmpty()) return ticket;
     try (RemoteAccountLinks links = new RemoteAccountLinks(context)) {

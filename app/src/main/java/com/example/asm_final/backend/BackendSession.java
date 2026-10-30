@@ -17,8 +17,14 @@ public final class BackendSession {
   private final Context context;
   private final int owner;
   private final String endpoint;
+  private final String preferenceName;
 
   public BackendSession(Context context, int owner, String endpoint) {
+    this(context, owner, endpoint, "backend_sessions");
+  }
+
+  public BackendSession(Context context, int owner, String endpoint, String preferenceName) {
+    this.preferenceName = preferenceName;
     this.context = context.getApplicationContext();
     this.owner = owner;
     this.endpoint = endpoint;
@@ -43,12 +49,12 @@ public final class BackendSession {
 
   public JSONObject load() throws Exception {
     String stored =
-        context.getSharedPreferences("backend_sessions", 0).getString("owner_" + owner, "");
+        context.getSharedPreferences(preferenceName, 0).getString("owner_" + owner, "");
     JSONObject decoded = decode(stored);
     if (decoded == null
         && !stored.isEmpty()
         && stored.equals(
-            context.getSharedPreferences("backend_sessions", 0).getString("owner_" + owner, "")))
+            context.getSharedPreferences(preferenceName, 0).getString("owner_" + owner, "")))
       clear();
     return decoded;
   }
@@ -88,19 +94,20 @@ public final class BackendSession {
                         session.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8)),
                     Base64.NO_WRAP));
     if (!context
-        .getSharedPreferences("backend_sessions", 0)
+        .getSharedPreferences(preferenceName, 0)
         .edit()
         .putString("owner_" + owner, wrapped.toString())
         .commit()) throw new java.io.IOException("SESSION_STORAGE_FAILED");
   }
 
   public void clear() {
-    context.getSharedPreferences("backend_sessions", 0).edit().remove("owner_" + owner).apply();
+    if (!context.getSharedPreferences(preferenceName, 0).edit().remove("owner_" + owner).commit())
+      throw new IllegalStateException("SESSION_STORAGE_FAILED");
   }
 
   public String take() {
     String stored =
-        context.getSharedPreferences("backend_sessions", 0).getString("owner_" + owner, "");
+        context.getSharedPreferences(preferenceName, 0).getString("owner_" + owner, "");
     clear();
     return stored;
   }

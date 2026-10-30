@@ -14,11 +14,11 @@ public final class UnavailableRecoveryService implements RecoveryService {
     return Result.UNAVAILABLE;
   }
 
-  public Result verify(String token) {
+  public Result verify(String email, String token) {
     return Result.UNAVAILABLE;
   }
 
-  public Result reset(String token, String password) {
+  public Result reset(String email, String token, String password) {
     return Result.UNAVAILABLE;
   }
 }

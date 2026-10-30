@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     register = findViewById(R.id.tvGoToRegister);
     com.google.android.material.checkbox.MaterialCheckBox remember =
         findViewById(R.id.checkRemember);
+    if (com.example.asm_final.supabase.SupabaseHttp.enabled(this)) name.setHint(R.string.prof_hint_email);
     name.setText(model.identifier);
     password.setText(model.password);
     remember.setChecked(model.remember);

@@ -24,6 +24,7 @@ import java.util.*;
 
 public final class GeneralChatFragment extends Fragment {
   private ChatViewModel model;
+  private com.example.asm_final.dashboard.OverviewUpdates.Subscription chatUpdates;
   private View root;
   private boolean initialChatApplied;
   private String cameraName, cameraThread;
@@ -161,11 +162,19 @@ public final class GeneralChatFragment extends Fragment {
   public void onResume() {
     super.onResume();
     if (model != null && model.threadId() != null) model.refresh();
+    if (model != null) {
+      chatUpdates = ((com.example.asm_final.AiMentorApplication) requireActivity().getApplication())
+          .services().chatUpdates().observe(ActiveUser.get(requireContext()), model::refresh);
+    }
   }
 
   @Override
   public void onPause() {
     if (model != null) model.flush();
+    if (chatUpdates != null) {
+      chatUpdates.close();
+      chatUpdates = null;
+    }
     super.onPause();
   }
 

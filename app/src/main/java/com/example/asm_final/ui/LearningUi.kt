@@ -25,8 +25,11 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -44,11 +47,16 @@ import com.example.mentor.learning.SubjectId
 import com.example.mentor.ui.design.*
 import androidx.compose.ui.graphics.toArgb
 import kotlinx.coroutines.delay
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import nl.dionsegijn.konfetti.compose.KonfettiView
 import nl.dionsegijn.konfetti.core.Party
 import nl.dionsegijn.konfetti.core.Position
 import nl.dionsegijn.konfetti.core.emitter.Emitter
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledFuture
+import java.util.UUID
 import java.util.function.Consumer
 import org.json.JSONObject
 
@@ -71,7 +79,9 @@ object LearningUi {
 }
 
 @Composable
-internal fun PathContent(path: LessonPathData, open: (String) -> Unit) {
+internal fun PathContent(path: LessonPathData, subjectId: SubjectId, open: (String) -> Unit) {
+    val accent = SubjectPalette.getAccent(subjectId.wireId)
+    val pathSurface = SubjectPalette.getContainer(subjectId.wireId, androidx.compose.foundation.isSystemInDarkTheme())
     val stages = remember(path) {
         buildList {
             var stage = mutableListOf<LessonPathData.Unit>()
@@ -87,7 +97,7 @@ internal fun PathContent(path: LessonPathData, open: (String) -> Unit) {
     }
     var selected by remember(path) { mutableStateOf<LessonPathData.Unit?>(null) }
     Surface(Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.primaryContainer) {
+        color = pathSurface, border = BorderStroke(1.dp, accent.copy(alpha = .45f))) {
         Column(Modifier.padding(MentorTokens.SpaceLarge),
             verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceSmall)) {
             Text(stringResource(R.string.design_path), style = MaterialTheme.typography.headlineSmall,
@@ -107,7 +117,7 @@ internal fun PathContent(path: LessonPathData, open: (String) -> Unit) {
                 units.count { it.state == "COMPLETED" && !it.review }, units.count { !it.review }),
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        LessonPathStage(units, path.units.firstOrNull { it.state == "AVAILABLE" }?.id) { selected = it }
+        LessonPathStage(units, path.units.firstOrNull { it.state == "AVAILABLE" }?.id, accent) { selected = it }
     }
     selected?.let { unit ->
         LessonPathSheet(unit, { selected = null }) {
@@ -125,7 +135,8 @@ private fun nodeOffset(index: Int): Float = when (index % 5) {
 
 @Composable
 private fun LessonPathStage(
-    units: List<LessonPathData.Unit>, currentId: String?, select: (LessonPathData.Unit) -> Unit,
+    units: List<LessonPathData.Unit>, currentId: String?, accent: Color,
+    select: (LessonPathData.Unit) -> Unit,
 ) {
     val dark = androidx.compose.foundation.isSystemInDarkTheme()
     val fontScale = LocalDensity.current.fontScale
@@ -145,7 +156,7 @@ private fun LessonPathStage(
                     cubicTo(start.x, middle, end.x, middle, end.x, end.y)
                 }
                 drawPath(connector,
-                    color = if (units[index + 1].state == "LOCKED") scheme.outlineVariant else scheme.primary.copy(alpha = .48f),
+                    color = if (units[index + 1].state == "LOCKED") scheme.outlineVariant else accent.copy(alpha = .62f),
                     style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round))
             }
         }
@@ -158,7 +169,7 @@ private fun LessonPathStage(
                 done -> if (dark) MentorTokens.DarkSuccess else MentorTokens.Success
                 locked -> scheme.surfaceVariant
                 unit.review -> if (dark) MentorTokens.WarmAccent else MentorTokens.Warning
-                else -> scheme.primary
+                else -> accent
             }
             val contentColor = when {
                 done -> if (dark) MentorTokens.DarkBackground else Color.White
@@ -236,6 +247,11 @@ private fun LessonScreen(
     openTool: Runnable?,
     ask: (String) -> Unit
 ) {
+    val studyKind = state.attempt?.optString("kind").orEmpty()
+    StudySessionEffect(
+        model.owner(), subjectId.wireId, grade, state.attempt?.optString("id").orEmpty(),
+        studyKind.isNotEmpty() && studyKind != "PLACEMENT" && state.completion == null
+    )
     val configuration = LocalConfiguration.current
     val attemptId = state.attempt?.optString("id").orEmpty()
     val scroll = rememberScrollState()
@@ -253,10 +269,7 @@ private fun LessonScreen(
     Column(Modifier.fillMaxSize()
         .verticalScroll(scroll).padding(MentorTokens.PagePadding), verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceMedium)) {
         
-        Row(Modifier.fillMaxWidth().mentorHeader().padding(vertical = 8.dp, horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-            TextButton(leave) { Text(stringResource(R.string.course_back)) }
-            Text("$subjectLabel • Lớp $grade", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-        }
+        SubjectLearningHeader(subjectId, subjectLabel, grade, leave)
 
         // Supporting Tools Section if available
         if (openTool != null) {
@@ -283,7 +296,9 @@ private fun LessonScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    Button(onClick = { openTool.run() }, shape = RoundedCornerShape(12.dp)) {
+                    Button(onClick = { openTool.run() }, shape = RoundedCornerShape(14.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = SubjectPalette.getAccent(subjectId.wireId),
+                            contentColor = MentorTokens.OnBrand)) {
                         Text("Mở công cụ")
                     }
                 }
@@ -348,8 +363,135 @@ private fun LessonScreen(
                         MentorButton(stringResource(R.string.course_placement), { model.start("placement", true) })
                     }
                     val units = path.optJSONArray("units")
-                    if (units != null) PathContent(LessonPathData(units)) { model.start(it, false) }
+                    if (units != null) PathContent(LessonPathData(units), subjectId) { model.start(it, false) }
                 }
+            }
+        }
+    }
+}
+
+/** Records foreground time only while a real lesson or review attempt is open. */
+@Composable
+private fun StudySessionEffect(owner: Int, subjectId: String, grade: Int, attemptId: String, enabled: Boolean) {
+    val context = LocalContext.current.applicationContext
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val tracker = remember(context) {
+        (context as? com.example.asm_final.AiMentorApplication)?.services()?.study()
+    }
+    DisposableEffect(lifecycleOwner, tracker, owner, subjectId, grade, attemptId, enabled) {
+        if (tracker == null || owner <= 0 || !enabled || attemptId.isBlank()) {
+            onDispose { }
+        } else {
+            val lock = Any()
+            val executor = Executors.newSingleThreadScheduledExecutor()
+            var currentSession: String? = null
+            var heartbeat: ScheduledFuture<*>? = null
+
+            fun stop() {
+                val id = synchronized(lock) {
+                    val value = currentSession ?: return
+                    currentSession = null
+                    heartbeat?.cancel(false)
+                    heartbeat = null
+                    value
+                }
+                executor.execute {
+                    runCatching { tracker.stop(owner, id, UUID.randomUUID().toString()) }
+                }
+            }
+
+            fun start() {
+                val id = synchronized(lock) {
+                    if (currentSession != null) return
+                    UUID.randomUUID().toString().also { currentSession = it }
+                }
+                executor.execute {
+                    try {
+                        tracker.start(owner, id, subjectId, grade)
+                        synchronized(lock) {
+                            if (currentSession == id && heartbeat == null) {
+                                heartbeat = executor.scheduleAtFixedRate({
+                                    if (synchronized(lock) { currentSession == id }) {
+                                        runCatching { tracker.heartbeat(owner, id, UUID.randomUUID().toString()) }
+                                    }
+                                }, 1, 1, TimeUnit.MINUTES)
+                            }
+                        }
+                    } catch (_: Exception) {
+                        synchronized(lock) { if (currentSession == id) currentSession = null }
+                    }
+                }
+            }
+
+            val observer = LifecycleEventObserver { _, event ->
+                when (event) {
+                    Lifecycle.Event.ON_RESUME -> start()
+                    Lifecycle.Event.ON_PAUSE, Lifecycle.Event.ON_STOP -> stop()
+                    else -> Unit
+                }
+            }
+            lifecycleOwner.lifecycle.addObserver(observer)
+            if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) start()
+            onDispose {
+                lifecycleOwner.lifecycle.removeObserver(observer)
+                stop()
+                executor.shutdown()
+            }
+        }
+    }
+}
+
+@Composable
+private fun SubjectLearningHeader(
+    subjectId: SubjectId,
+    subjectLabel: String,
+    grade: Int,
+    leave: () -> Unit
+) {
+    val dark = androidx.compose.foundation.isSystemInDarkTheme()
+    val accent = SubjectPalette.getAccent(subjectId.wireId)
+    val container = SubjectPalette.getContainer(subjectId.wireId, dark)
+    val mark = when (subjectId) {
+        SubjectId.MATH -> "∑"
+        SubjectId.PHYSICS -> "⚛"
+        SubjectId.CHEMISTRY -> "H₂O"
+        SubjectId.BIOLOGY -> "✿"
+        SubjectId.HISTORY -> "⌛"
+        SubjectId.GEOGRAPHY -> "◎"
+        SubjectId.LITERATURE -> "Aa"
+        SubjectId.ENGLISH -> "A–Z"
+        SubjectId.ECONOMICS_LAW -> "₫"
+    }
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(topStart = 14.dp, topEnd = 30.dp, bottomEnd = 30.dp, bottomStart = 30.dp),
+        color = container,
+        border = BorderStroke(1.dp, accent.copy(alpha = if (dark) .46f else .55f)),
+        shadowElevation = 5.dp
+    ) {
+        Row(
+            Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            TextButton(onClick = leave, contentPadding = PaddingValues(horizontal = 8.dp)) {
+                Text(stringResource(R.string.course_back))
+            }
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(subjectLabel, style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                Text(stringResource(R.string.chat_grade, grade),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Box(
+                Modifier.size(52.dp).clip(CircleShape)
+                    .background(accent.copy(alpha = if (dark) .22f else .3f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(mark, color = if (dark) MaterialTheme.colorScheme.onSurface else MentorTokens.OnBrand,
+                    style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
             }
         }
     }

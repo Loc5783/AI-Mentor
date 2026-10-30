@@ -38,6 +38,15 @@
     <string name="profile_rank_pending">Unranked</string>
     <string name="profile_lead_stat">%1$d times leading</string>
     <string name="profile_friends_streak_title">FRIENDS STREAK</string>
-    <string name="profile_challenge_title">MONTHLY CHALLENGE BADGES</string>
+    <string name="profile_challenge_title">BADGE COLLECTION</string>
+    <string name="profile_badge_unlocked">Unlocked</string>
+    <string name="profile_badge_locked">Locked</string>
+    <string name="profile_badge_unavailable">Badges could not be loaded. Check your connection and refresh your profile.</string>
+    <string name="profile_badge_empty">No badges are available for this account yet.</string>
+    <string name="profile_study_time_title">Study time</string>
+    <string name="profile_study_time_empty">No study-time data is available for this account.</string>
+    <string name="profile_study_time_seconds">%1$d seconds recorded</string>
+    <string name="profile_study_time_minutes">%1$d minutes recorded</string>
+    <string name="profile_study_time_hours">%1$d hr %2$d min recorded</string>
     <string name="profile_feature_coming_soon">Feature is connecting with server</string>
 </resources>

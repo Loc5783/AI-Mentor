@@ -83,7 +83,7 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
     ((TextView) findViewById(R.id.recovery_title)).setText(titles[mode]);
     ((TextView) findViewById(R.id.recovery_intro)).setText(intro[mode]);
     submit.setText(buttons[mode]);
-    AuthFields.container(email).setVisibility(mode == 1 ? View.GONE : View.VISIBLE);
+    AuthFields.container(email).setVisibility(View.VISIBLE);
     AuthFields.container(token).setVisibility(mode == 0 ? View.GONE : View.VISIBLE);
     AuthFields.container(password).setVisibility(mode == 1 ? View.VISIBLE : View.GONE);
     AuthFields.container(confirm).setVisibility(mode == 1 ? View.VISIBLE : View.GONE);
@@ -103,7 +103,7 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
         code = AuthFields.text(token).trim(),
         secret = AuthFields.text(password);
     FormFeedback.clear(email, token, password, confirm);
-    if ((mode == 0 || again) && !AuthFields.email(e)) {
+    if (!AuthFields.email(e)) {
       FormFeedback.error(email, R.string.auth_invalid_email);
       FormFeedback.focus(email);
       return;
@@ -137,7 +137,7 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
                 ? service.resendVerification(e)
                 : requestedMode == 0
                     ? service.requestReset(e)
-                    : requestedMode == 1 ? service.reset(code, secret) : service.verify(code),
+                    : requestedMode == 1 ? service.reset(e, code, secret) : service.verify(e, code),
         result -> {
           submit.setEnabled(true);
           resend.setEnabled(true);

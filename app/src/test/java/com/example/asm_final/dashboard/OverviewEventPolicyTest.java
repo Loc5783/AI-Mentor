@@ -19,8 +19,13 @@ public class OverviewEventPolicyTest {
   }
 
   @Test
+  public void ownFriendshipChangesRefreshProfileFriends() {
+    assertTrue(OverviewEventPolicy.affectsSummary("FRIENDSHIP", "current", "me"));
+  }
+
+  @Test
   public void chatTypingQuestionSavesAndGlobalRankingDoNotReloadPersonalStats() {
-    for (String type : new String[] {"MESSAGE", "ATTEMPT", "RANKING", "FRIENDSHIP", "UNKNOWN"})
+    for (String type : new String[] {"MESSAGE", "ATTEMPT", "RANKING", "UNKNOWN"})
       assertFalse(OverviewEventPolicy.affectsSummary(type, "current", "me"));
   }
 }

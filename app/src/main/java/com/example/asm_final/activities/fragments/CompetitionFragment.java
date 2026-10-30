@@ -42,11 +42,17 @@ public final class CompetitionFragment extends Fragment {
   public void onResume() {
     super.onResume();
     model.refresh();
+    model.refreshFriends();
     liveUpdates =
         ((AiMentorApplication) requireActivity().getApplication())
             .services()
             .rankingUpdates()
-            .observe(ActiveUser.get(requireContext()), model::refresh);
+            .observe(
+                ActiveUser.get(requireContext()),
+                () -> {
+                  model.refresh();
+                  model.refreshFriends();
+                });
   }
 
   @Override

@@ -105,4 +105,17 @@ public class RankingBoardTest {
     assertFalse(RankingEventPolicy.affects("ATTEMPT", "question", "me"));
     assertFalse(RankingEventPolicy.affects("MESSAGE", "chat", "me"));
   }
+
+  @Test
+  public void publicLearnerAcceptsSupabaseUuidAndLegacyNumericId() {
+    assertEquals("42", entry(1, 0, "42").learner.id);
+    assertEquals(
+        "a1234567-89ab-cdef-0123-456789abcdef",
+        entry(1, 0, "a1234567-89ab-cdef-0123-456789abcdef").learner.id);
+  }
+
+  @Test
+  public void publicLearnerRejectsMalformedRemoteId() {
+    invalid(() -> entry(1, 0, "not-an-id"));
+  }
 }

@@ -22,7 +22,8 @@ class ScheduleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val accountId = ActiveUser.get(requireContext()).toString()
-        val repository = ScheduleRepositoryImpl(requireContext())
+        val repository = (requireContext().applicationContext as? com.example.mentor.schedule.domain.ScheduleRepositoryProvider)?.scheduleRepository()
+            ?: ScheduleRepositoryImpl(requireContext())
         
         return ComposeView(requireContext()).apply {
             setContent {

@@ -1,0 +1,5 @@
+<resources>
+<string name="supabase_confirm_email">Tài khoản cần xác nhận email. Hãy mở email từ Supabase, xác nhận rồi quay lại đăng nhập bằng email.</string>
+<string name="supabase_email_required">Hãy dùng địa chỉ email để đăng nhập tài khoản online.</string>
+<string name="supabase_email_sender_required">Project chưa gửi được email tới địa chỉ này. Khi thử nghiệm, hãy dùng email của thành viên project Supabase hoặc cấu hình SMTP.</string>
+</resources>

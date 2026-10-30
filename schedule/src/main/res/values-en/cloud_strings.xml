@@ -1,0 +1,4 @@
+<resources>
+<string name="schedule_connection_error">Could not connect to your online schedule. Retry when connected.</string>
+<string name="schedule_retry">Retry</string>
+</resources>

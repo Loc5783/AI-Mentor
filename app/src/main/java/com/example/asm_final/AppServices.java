@@ -9,8 +9,7 @@ import java.util.concurrent.*;
 public final class AppServices {
   private final com.example.mentor.learning.SubjectCatalog subjects =
       com.example.asm_final.learning.SubjectModules.create();
-  private final com.example.mentor.chat.TutorGateway tutor =
-      com.example.mentor.chat.GeminiTutorGateway.configuredClient();
+  private final com.example.mentor.chat.TutorGateway tutor;
   private final LocalAccountRepository accounts;
   private final AccountAccess access;
   private final LearningOverviewRepository overview;
@@ -18,32 +17,57 @@ public final class AppServices {
   private final OverviewUpdates rankingUpdates;
   private final com.example.asm_final.competition.CompetitionRepository competition;
   private final com.example.asm_final.competition.PublicProfileRepository publicProfiles;
+  private final com.example.asm_final.competition.FriendshipRepository friendships;
   private final com.example.asm_final.chat.ChatStore chats;
   private final com.example.asm_final.onboarding.LearnerProfileRepository learners;
-  private final RecoveryService recovery = new UnavailableRecoveryService();
+  private final RecoveryService recovery;
+  private final com.example.asm_final.supabase.SupabaseStudyRepository study;
   private final Context context;
   private final UserProfileRepository profiles;
   private final ExecutorService io = Executors.newFixedThreadPool(2);
 
   public AppServices(Context context) {
     this.context = context.getApplicationContext();
+    tutor = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+      ? new com.example.asm_final.supabase.SupabaseTutorGateway(context)
+      : com.example.mentor.chat.GeminiTutorGateway.configuredClient();
     accounts = new LocalAccountRepository(context);
-    chats = new com.example.asm_final.chat.LocalChatStore(context);
-    learners = new com.example.asm_final.onboarding.LocalLearnerProfiles(context);
+    recovery = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+        ? new com.example.asm_final.supabase.SupabaseRecoveryService(context)
+        : new UnavailableRecoveryService();
+    study = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+        ? new com.example.asm_final.supabase.SupabaseStudyRepository(context)
+        : null;
+    chats = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+      ? new com.example.asm_final.supabase.SupabaseChatStore(context)
+      : new com.example.asm_final.chat.LocalChatStore(context);
+    learners = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+      ? new com.example.asm_final.supabase.SupabaseLearnerProfiles(context)
+      : new com.example.asm_final.onboarding.LocalLearnerProfiles(context);
     access = new AccountAccess(context, accounts, learners);
     overview = new LearningOverviewRepository(context);
     overviewUpdates =
         new LiveOverviewUpdates(
-            context, owner -> new com.example.asm_final.backend.BackendEventStream(context, owner));
-    profiles = new LocalUserProfileRepository(context);
-    competition =
-        new com.example.asm_final.competition.BackendCompetitionRepository(
+            context, owner -> com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+                ? new com.example.asm_final.supabase.SupabaseEventStream(context, owner)
+                : new com.example.asm_final.backend.BackendEventStream(context, owner));
+    profiles = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+        ? new com.example.asm_final.supabase.SupabaseUserProfiles(context)
+        : new LocalUserProfileRepository(context);
+    competition = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+        ? new com.example.asm_final.competition.SupabaseCompetitionRepository(context, overview, learners)
+        : new com.example.asm_final.competition.BackendCompetitionRepository(
             context, overview, learners);
     publicProfiles = new com.example.asm_final.competition.BackendPublicProfiles(context);
+    friendships = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+        ? new com.example.asm_final.competition.SupabaseFriendshipRepository(context)
+        : new com.example.asm_final.competition.BackendFriendshipRepository(context);
     rankingUpdates =
         new LiveOverviewUpdates(
             context,
-            owner -> new com.example.asm_final.backend.BackendEventStream(context, owner),
+            owner -> com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+                ? new com.example.asm_final.supabase.SupabaseEventStream(context, owner)
+                : new com.example.asm_final.backend.BackendEventStream(context, owner),
             com.example.asm_final.competition.RankingEventPolicy::affects);
   }
 
@@ -63,12 +87,25 @@ public final class AppServices {
     return overviewUpdates;
   }
 
+  public OverviewUpdates chatUpdates() {
+    return new LiveOverviewUpdates(
+        context,
+        owner -> com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+            ? new com.example.asm_final.supabase.SupabaseEventStream(context, owner)
+            : new com.example.asm_final.backend.BackendEventStream(context, owner),
+        (type, id, owner) -> "CHAT".equals(type));
+  }
+
   public com.example.asm_final.competition.CompetitionRepository competition() {
     return competition;
   }
 
   public com.example.asm_final.competition.PublicProfileRepository publicProfiles() {
     return publicProfiles;
+  }
+
+  public com.example.asm_final.competition.FriendshipRepository friendships() {
+    return friendships;
   }
 
   public OverviewUpdates rankingUpdates() {
@@ -78,7 +115,9 @@ public final class AppServices {
   public OverviewUpdates publicProfileUpdates(Context context, String profileId) {
     return new LiveOverviewUpdates(
         context,
-        owner -> new com.example.asm_final.backend.BackendEventStream(context, owner),
+        owner -> com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+            ? new com.example.asm_final.supabase.SupabaseEventStream(context, owner)
+            : new com.example.asm_final.backend.BackendEventStream(context, owner),
         (type, id, owner) -> "PROFILE".equals(type) && profileId.equals(id));
   }
 
@@ -88,6 +127,10 @@ public final class AppServices {
 
   public RecoveryService recovery() {
     return recovery;
+  }
+
+  public com.example.asm_final.supabase.SupabaseStudyRepository study() {
+    return study;
   }
 
   public UserAuthenticator authenticator() {
@@ -123,9 +166,13 @@ public final class AppServices {
   }
 
   public com.example.asm_final.learning.LibraryRepository library(int owner) {
-    return new com.example.asm_final.learning.BackendLibraryRepository(context, owner);
+    return com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+        ? new com.example.asm_final.learning.SupabaseLibraryRepository(context, owner)
+        : new com.example.asm_final.learning.BackendLibraryRepository(context, owner);
   }
   public com.example.mentor.schedule.domain.ScheduleImportRepository scheduleImport() {
-    return new com.example.mentor.schedule.data.ScheduleRepositoryImpl(context);
+    return com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+      ? new com.example.asm_final.supabase.SupabaseScheduleRepository(context)
+      : new com.example.mentor.schedule.data.ScheduleRepositoryImpl(context);
   }
 }

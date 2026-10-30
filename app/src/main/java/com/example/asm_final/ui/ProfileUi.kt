@@ -40,9 +40,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import org.json.JSONObject
 import com.example.asm_final.R
 import com.example.asm_final.dashboard.LearningOverviewData
 import com.example.asm_final.dashboard.LearningOverviewRepository
+import com.example.asm_final.competition.FriendshipRepository
 import com.example.asm_final.utils.LocaleHelper
 import com.example.mentor.learning.SubjectId
 import com.example.mentor.ui.design.MentorButton
@@ -50,6 +52,8 @@ import com.example.mentor.ui.design.MentorCard
 import com.example.mentor.ui.design.MentorSkeleton
 import com.example.mentor.ui.design.MentorTokens
 import com.example.mentor.ui.design.motionEnabled
+
+private data class ProfileBadge(val title: String, val description: String, val unlocked: Boolean)
 
 /**
  * Level 4 — Premium EdTech Profile Presentation.
@@ -64,6 +68,7 @@ class ProfileUi(
     private val edit: Runnable,
     private val settings: Runnable,
     private val learn: Runnable,
+    private val friendsAction: Runnable,
 ) {
     private var displayName by mutableStateOf("")
     private var username by mutableStateOf("")
@@ -72,13 +77,18 @@ class ProfileUi(
     private var goal by mutableIntStateOf(-1)
     private var subjects by mutableStateOf<Set<SubjectId>>(emptySet())
     private var snapshot by mutableStateOf<LearningOverviewRepository.Snapshot?>(null)
+    private var studySeconds by mutableStateOf<Long?>(null)
+    private var badges by mutableStateOf<List<ProfileBadge>>(emptyList())
+    private var badgesLoaded by mutableStateOf(false)
+    private var friends by mutableStateOf<List<FriendshipRepository.Item>>(emptyList())
     private var loading by mutableStateOf(true)
     private var failed by mutableStateOf(false)
 
     fun view(): View = composeHost(context, scenicBackground = true) {
         ProfileScreen(
             displayName, username, avatar, grade, goal, subjects, snapshot, loading, failed,
-            { refresh.run() }, { edit.run() }, { settings.run() }, { learn.run() }
+            studySeconds, badges, badgesLoaded, friends,
+            { refresh.run() }, { edit.run() }, { settings.run() }, { learn.run() }, { friendsAction.run() }
         )
     }
 
@@ -100,6 +110,28 @@ class ProfileUi(
         failed = false
     }
 
+    fun activity(summary: JSONObject?, badgeResponse: JSONObject?) {
+        studySeconds = summary?.optLong("totalSeconds")?.takeIf { it >= 0L }
+        val list = mutableListOf<ProfileBadge>()
+        val rows = badgeResponse?.optJSONArray("badges")
+        if (rows != null) {
+            for (index in 0 until rows.length()) {
+                val item = rows.optJSONObject(index) ?: continue
+                list += ProfileBadge(
+                    item.optString("title").takeIf(String::isNotBlank) ?: continue,
+                    item.optString("description"),
+                    item.optBoolean("unlocked")
+                )
+            }
+        }
+        badges = list
+        badgesLoaded = badgeResponse != null
+    }
+
+    fun social(acceptedFriends: List<FriendshipRepository.Item>) {
+        friends = acceptedFriends.toList()
+    }
+
     fun failure() {
         loading = false
         failed = true
@@ -117,10 +149,15 @@ private fun ProfileScreen(
     snapshot: LearningOverviewRepository.Snapshot?,
     loading: Boolean,
     failed: Boolean,
+    studySeconds: Long?,
+    badges: List<ProfileBadge>,
+    badgesLoaded: Boolean,
+    friends: List<FriendshipRepository.Item>,
     refresh: () -> Unit,
     edit: () -> Unit,
     settings: () -> Unit,
     learn: () -> Unit,
+    friendsAction: () -> Unit,
 ) {
     val data = snapshot?.data
     val motion = motionEnabled()
@@ -165,16 +202,18 @@ private fun ProfileScreen(
                 // Section TỔNG QUAN (2x2 Grid)
                 ProfileOverviewGrid(data)
 
+                ProfileStudySummary(studySeconds)
+
                 // Error / Offline / Cache notice if applicable
                 if (failed || data == null || snapshot?.mode != LearningOverviewRepository.Mode.LIVE) {
                     ProfileNotice(snapshot, failed, refresh, learn)
                 }
 
                 // Section STREAK BẠN BÈ (Dashed circular slots)
-                ProfileFriendsStreak()
+                ProfileFriendsStreak(friends, friendsAction)
 
                 // Section HUY HIỆU THỬ THÁCH THÁNG
-                ProfileMonthlyChallenge(data)
+                ProfileBadgeCollection(badges, badgesLoaded)
 
                 // Section HƯỚNG HỌC & TIẾN ĐỘ TUẦN
                 ProfileFocus(grade, goal, subjects, learn)
@@ -832,8 +871,7 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
  * Features 5 circular dashed slots with (+) symbol matching Image A.
  */
 @Composable
-private fun ProfileFriendsStreak() {
-    val context = LocalContext.current
+private fun ProfileFriendsStreak(friends: List<FriendshipRepository.Item>, onAddFriend: () -> Unit) {
     val outlineColor = MaterialTheme.colorScheme.outlineVariant
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -856,7 +894,8 @@ private fun ProfileFriendsStreak() {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    repeat(5) {
+                    repeat(5) { index ->
+                        val friend = friends.getOrNull(index)
                         Box(
                             Modifier
                                 .size(52.dp)
@@ -872,27 +911,30 @@ private fun ProfileFriendsStreak() {
                                         )
                                     )
                                 }
-                                .clickable {
-                                    Toast.makeText(
-                                        context,
-                                        context.getString(R.string.profile_feature_coming_soon),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                },
+                                .clickable(enabled = friend == null, onClick = onAddFriend),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_add),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                                modifier = Modifier.size(20.dp)
-                            )
+                            if (friend == null) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_add),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            } else {
+                                Text(
+                                    text = friend.nickname.trim().firstOrNull()?.uppercase() ?: "•",
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 }
 
                 Text(
-                    text = stringResource(R.string.profile_friends_empty),
+                    text = if (friends.isEmpty()) stringResource(R.string.profile_friends_empty)
+                        else friends.take(5).joinToString("   •   ") { "${it.nickname.ifBlank { "Bạn học" }} · ${it.streakDays} ngày" },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -901,98 +943,83 @@ private fun ProfileFriendsStreak() {
     }
 }
 
-/**
- * Section HUY HIỆU THỬ THÁC THÁNG:
- * Shows monthly challenge with progress and chevron.
- */
+/** Renders only badge facts returned by the account-scoped backend. */
 @Composable
-private fun ProfileMonthlyChallenge(data: LearningOverviewData?) {
-    val context = LocalContext.current
-    val cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("Asia/Ho_Chi_Minh"))
-    val currentMonth = cal.get(java.util.Calendar.MONTH) + 1
-    val currentYear = cal.get(java.util.Calendar.YEAR)
-    val totalLessons = data?.totalLessons ?: 0
-    val completedLessons = data?.completedLessons ?: 0
-    val progressPct = if (totalLessons > 0) ((completedLessons * 100) / totalLessons).coerceIn(0, 100) else 0
-
+private fun ProfileBadgeCollection(badges: List<ProfileBadge>, loaded: Boolean) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .clickable {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.profile_feature_coming_soon),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                },
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            ProfileSectionTitle(stringResource(R.string.profile_challenge_title))
-            Icon(
-                painter = painterResource(R.drawable.ic_chevron_right),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(24.dp)
-            )
-        }
+        ProfileSectionTitle(stringResource(R.string.profile_challenge_title))
 
         Surface(
             Modifier
                 .fillMaxWidth()
-                .testTag("profile-badges-empty"),
+                .testTag(if (badges.isEmpty()) "profile-badges-empty" else "profile-badges-loaded"),
             shape = RoundedCornerShape(20.dp),
             color = MaterialTheme.colorScheme.surface,
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
         ) {
-            Row(
-                Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Box(
-                    Modifier
-                        .size(52.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_badge_challenge),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-
-                Column(
-                    Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = "Thử thách tháng $currentMonth/$currentYear",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    LinearProgressIndicator(
-                        progress = { progressPct / 100f },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(8.dp)
-                            .clip(RoundedCornerShape(4.dp)),
-                        color = MaterialTheme.colorScheme.primary,
-                        trackColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                    Text(
-                        text = "$progressPct% hoàn thành",
-                        style = MaterialTheme.typography.labelSmall,
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                when {
+                    !loaded -> Text(
+                        stringResource(R.string.profile_badge_unavailable),
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    badges.isEmpty() -> Text(
+                        stringResource(R.string.profile_badge_empty),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    else -> badges.forEach { badge ->
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Box(
+                                Modifier.size(42.dp).clip(CircleShape)
+                                    .background(if (badge.unlocked) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_badge_challenge),
+                                    contentDescription = null,
+                                    tint = if (badge.unlocked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                            }
+                            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                Text(badge.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                                Text(badge.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                            Text(
+                                stringResource(if (badge.unlocked) R.string.profile_badge_unlocked else R.string.profile_badge_locked),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = if (badge.unlocked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ProfileStudySummary(totalSeconds: Long?) {
+    MentorCard(Modifier.fillMaxWidth().testTag("profile-study-time")) {
+        Text(stringResource(R.string.profile_study_time_title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Text(
+            totalSeconds?.let { seconds ->
+                val minutes = seconds / 60
+                when {
+                    minutes >= 60 -> stringResource(R.string.profile_study_time_hours, minutes / 60, minutes % 60)
+                    seconds < 60 -> stringResource(R.string.profile_study_time_seconds, seconds.toInt())
+                    else -> stringResource(R.string.profile_study_time_minutes, minutes.toInt())
+                }
+            } ?: stringResource(R.string.profile_study_time_empty),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 

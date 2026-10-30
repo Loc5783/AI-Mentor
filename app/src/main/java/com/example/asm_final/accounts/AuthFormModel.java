@@ -37,7 +37,11 @@ public final class AuthFormModel extends ViewModel {
             if (error instanceof com.example.asm_final.backend.BackendClient.Failure) {
               String code = ((com.example.asm_final.backend.BackendClient.Failure) error).code;
               message =
-                  "INVALID_CREDENTIALS".equals(code)
+                  "EMAIL_SENDING_NOT_CONFIGURED".equals(code) ? R.string.supabase_email_sender_required
+                      : "EMAIL_CONFIRMATION_REQUIRED".equals(code)
+                      ? R.string.supabase_confirm_email
+                      : "EMAIL_REQUIRED".equals(code) ? R.string.supabase_email_required
+                      : "INVALID_CREDENTIALS".equals(code)
                       ? R.string.login_msg_fail
                       : "ACCOUNT_ALREADY_EXISTS".equals(code)
                           ? R.string.auth_account_exists

@@ -5,11 +5,18 @@ import com.example.asm_final.utils.LocaleHelper;
 import com.example.asm_final.utils.ThemeHelper;
 
 /** Applies the saved visual and language preferences before any Activity is created. */
-public class AiMentorApplication extends Application {
+public class AiMentorApplication extends Application implements com.example.mentor.schedule.domain.ScheduleRepositoryProvider {
   private AppServices services;
 
   public AppServices services() {
     return services;
+  }
+
+  @Override
+  public com.example.mentor.schedule.domain.ScheduleRepository scheduleRepository() {
+    return com.example.asm_final.supabase.SupabaseHttp.enabled(this)
+        ? new com.example.asm_final.supabase.SupabaseScheduleRepository(this)
+        : new com.example.mentor.schedule.data.ScheduleRepositoryImpl(this);
   }
 
   @Override

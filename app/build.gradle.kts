@@ -27,11 +27,25 @@ require(debugBackendUrl.isEmpty() || runCatching {
     (uri.scheme == "https" || local) && uri.host != null && uri.userInfo == null && uri.query == null && uri.fragment == null && (uri.port == -1 || uri.port in 1..65535)
 }.getOrDefault(false)) { "Debug backend must use HTTPS or the explicit local emulator host with a port" }
 
+val supabaseConfig = Properties().apply {
+    for (configName in listOf("supabase.properties", "supabase.local.properties")) {
+        val configFile = rootProject.file(configName)
+        if (configFile.exists()) configFile.inputStream().use { load(it) }
+    }
+}
+val supabaseUrl = supabaseConfig.getProperty("SUPABASE_URL", "").trim()
+val supabaseKey = supabaseConfig.getProperty("SUPABASE_PUBLISHABLE_KEY", "").trim()
+val supabaseEnabled = supabaseConfig.getProperty("SUPABASE_ENABLED", "false") == "true"
+require(!supabaseEnabled || (supabaseUrl.matches(Regex("https://[a-z0-9-]+\\.supabase\\.co")) && supabaseKey.matches(Regex("sb_publishable_[A-Za-z0-9_-]+")))) { "Invalid Supabase public configuration" }
+
 android {
     namespace = "com.example.asm_final"
     compileSdk = 36
 
     defaultConfig {
+        buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+        buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"$supabaseKey\"")
+        buildConfigField("boolean", "SUPABASE_ENABLED", supabaseEnabled.toString())
         applicationId = "com.example.asm_final"
         minSdk = 24
         targetSdk = 35
@@ -65,6 +79,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.okhttp)
     implementation(libs.activity.compose)
     implementation(libs.compose.livedata)
     implementation(libs.navigation.compose)

@@ -8,6 +8,7 @@ public final class OverviewEventPolicy {
     return "COMPLETION".equals(type)
         || "ENROLLMENT".equals(type)
         || "LEARNING_PROFILE".equals(type)
+        || "FRIENDSHIP".equals(type)
         || ("PROFILE".equals(type) && owner != null && owner.equals(id));
   }
 }

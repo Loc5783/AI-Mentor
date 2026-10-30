@@ -66,7 +66,9 @@ public class HomeActivity extends AppCompatActivity
   public void logout() {
     int owner = com.example.mentor.data.ActiveUser.get(this);
     if (owner > 0) {
-      Runnable revoke = com.example.asm_final.backend.BackendClient.detach(this, owner);
+      Runnable revoke = com.example.asm_final.supabase.SupabaseHttp.enabled(this)
+          ? new com.example.asm_final.supabase.SupabaseAccounts(this).detach(owner)
+          : com.example.asm_final.backend.BackendClient.detach(this, owner);
       ((com.example.asm_final.AiMentorApplication) getApplication())
           .services()
           .io()

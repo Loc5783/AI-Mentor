@@ -11,8 +11,10 @@ import java.util.*;
  * Enrollment choices survive process restarts and are isolated from legacy onboarding interests.
  */
 public final class LearningSetupStore extends ModuleDatabaseHelper {
+  private final Context context;
   public LearningSetupStore(Context context) {
     super(context, "learning_setup", null, 1);
+    this.context = context.getApplicationContext();
   }
 
   @Override
@@ -29,6 +31,17 @@ public final class LearningSetupStore extends ModuleDatabaseHelper {
   }
 
   public Set<SubjectId> selected(int user, int grade) {
+    if (com.example.asm_final.supabase.SupabaseHttp.enabled(context) && android.os.Looper.myLooper() != android.os.Looper.getMainLooper()) {
+      try {
+        Set<SubjectId> chosen = com.example.asm_final.supabase.SupabaseEnrollmentSync.selected(context, user, grade);
+        saveLocal(user, grade, chosen);
+        return chosen;
+      } catch (Exception offline) { /* Retain account-scoped cached selection offline. */ }
+    }
+    return localSelected(user, grade);
+  }
+
+  private Set<SubjectId> localSelected(int user, int grade) {
     EnumSet<SubjectId> result = EnumSet.noneOf(SubjectId.class);
     try (Cursor c =
         getReadableDatabase()
@@ -41,6 +54,11 @@ public final class LearningSetupStore extends ModuleDatabaseHelper {
   }
 
   public void save(int user, int grade, Set<SubjectId> selected) {
+    if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) com.example.asm_final.supabase.SupabaseEnrollmentSync.save(context, user, grade, selected);
+    saveLocal(user, grade, selected);
+  }
+
+  private void saveLocal(int user, int grade, Set<SubjectId> selected) {
     if (user <= 0
         || grade < 10
         || grade > 12
@@ -49,7 +67,7 @@ public final class LearningSetupStore extends ModuleDatabaseHelper {
     SQLiteDatabase db = getWritableDatabase();
     db.beginTransaction();
     try {
-      Set<SubjectId> before = selected(user, grade);
+      Set<SubjectId> before = localSelected(user, grade);
       for (SubjectId id : before)
         if (!selected.contains(id))
           db.delete(

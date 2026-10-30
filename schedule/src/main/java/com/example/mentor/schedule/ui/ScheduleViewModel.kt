@@ -32,6 +32,10 @@ class ScheduleViewModel(
     private val repository: ScheduleRepository
 ) : ViewModel() {
 
+    val error = mutableStateOf(false)
+    private val failures = kotlinx.coroutines.CoroutineExceptionHandler { _, _ ->
+        viewModelScope.launch(Dispatchers.Main) { error.value = true }
+    }
     val entries = mutableStateListOf<ScheduleEntry>()
     val todos = mutableStateListOf<TodoTask>()
     val logs = mutableStateListOf<ScheduleActivityLog>()
@@ -54,12 +58,13 @@ class ScheduleViewModel(
     }
 
     fun loadData() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + failures) {
             val entryList = repository.getEntries(accountId, selectedDay.value)
             val todoList = repository.getTodos(accountId, selectedDay.value)
             val logList = repository.getLogs(accountId, 20)
             
             withContext(Dispatchers.Main) {
+                error.value = false
                 entries.clear()
                 entries.addAll(entryList)
                 
@@ -89,7 +94,7 @@ class ScheduleViewModel(
     }
 
     fun saveEntries(entriesToSave: List<ScheduleEntry>, isEdit: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + failures) {
             val titles = entriesToSave.joinToString { it.title }
             entriesToSave.forEach { entry ->
                 if (isEdit) {
@@ -109,7 +114,7 @@ class ScheduleViewModel(
     }
 
     fun deleteEntry(entry: ScheduleEntry) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + failures) {
             repository.deleteEntry(entry.id, accountId)
             lastDeletedEntry = entry
             logAction("DELETE", "SCHEDULE", "Đã xóa môn: ${entry.title}")
@@ -119,7 +124,7 @@ class ScheduleViewModel(
 
     fun undoDeleteEntry() {
         lastDeletedEntry?.let { entry ->
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(Dispatchers.IO + failures) {
                 repository.insertEntry(entry)
                 lastDeletedEntry = null
                 logAction("CREATE", "SCHEDULE", "Đã khôi phục môn: ${entry.title}")
@@ -131,7 +136,7 @@ class ScheduleViewModel(
     // --- TODO LOGIC ---
     
     fun saveTodo(title: String, priority: Int, linkedSubject: String?) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + failures) {
             val task = TodoTask(
                 accountId = accountId,
                 title = title,
@@ -146,7 +151,7 @@ class ScheduleViewModel(
     }
     
     fun toggleTodo(todo: TodoTask) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + failures) {
             val newState = !todo.isCompleted
             val completedTime = if (newState) System.currentTimeMillis() else null
             repository.updateTodoStatus(todo.id, accountId, newState, completedTime)
@@ -160,7 +165,7 @@ class ScheduleViewModel(
     }
     
     fun deleteTodo(todo: TodoTask) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + failures) {
             repository.deleteTodo(todo.id, accountId)
             lastDeletedTodo = todo
             logAction("DELETE", "TODO", "Đã xóa nhiệm vụ: ${todo.title}")
@@ -170,7 +175,7 @@ class ScheduleViewModel(
     
     fun undoDeleteTodo() {
         lastDeletedTodo?.let { todo ->
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(Dispatchers.IO + failures) {
                 repository.insertTodo(todo)
                 lastDeletedTodo = null
                 logAction("CREATE", "TODO", "Đã khôi phục nhiệm vụ: ${todo.title}")
@@ -193,7 +198,7 @@ class ScheduleViewModel(
     }
     
     fun clearLogs() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + failures) {
             repository.clearLogs(accountId)
             loadData()
         }

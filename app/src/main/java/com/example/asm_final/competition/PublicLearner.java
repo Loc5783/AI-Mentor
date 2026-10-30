@@ -10,7 +10,8 @@ public final class PublicLearner {
   public PublicLearner(
       String id, String nickname, String bio, String day, long xp, int streak, boolean avatar) {
     if (id == null
-        || !id.matches("[1-9][0-9]{0,18}")
+        || !(id.matches("[1-9][0-9]{0,18}")
+            || id.matches("(?i)[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}"))
         || nickname == null
         || nickname.trim().isEmpty()
         || nickname.length() > 100

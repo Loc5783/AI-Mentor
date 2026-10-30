@@ -1,0 +1,18 @@
+<resources>
+    <string name="friends_manage_title">Study friends</string>
+    <string name="friends_manage_subtitle">Add friends from the global board and manage requests here.</string>
+    <string name="friends_empty">No friends or requests yet.</string>
+    <string name="friends_load_error">Friends could not be loaded. Try again.</string>
+    <string name="friends_action_error">That action did not complete. The request may have changed; refresh the list.</string>
+    <string name="friends_learner">Learner</string>
+    <string name="friends_incoming">Incoming friend request</string>
+    <string name="friends_outgoing">Friend request sent</string>
+    <string name="friends_add">Add friend</string>
+    <string name="friends_accept">Accept</string>
+    <string name="friends_decline">Decline</string>
+    <string name="friends_remove">Remove</string>
+    <string name="friends_request_sent">Friend request sent.</string>
+    <string name="friends_accepted">Friend request accepted.</string>
+    <string name="friends_declined">Friend request declined.</string>
+    <string name="friends_removed">Friend removed.</string>
+</resources>
