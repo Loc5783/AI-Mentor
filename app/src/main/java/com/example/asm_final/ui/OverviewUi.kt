@@ -258,8 +258,13 @@ private fun OverviewTextMetric(modifier: Modifier, value: String, label: String,
 @Composable
 private fun HomeWeekChart(data: LearningOverviewData, palette: PremiumDashboardPalette) {
     PremiumDashboardCard(palette) {
-        Text(stringResource(R.string.design_week), style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold, color = palette.title)
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(stringResource(R.string.design_week), style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold, color = palette.title)
+            Text("Chiều cao thể hiện EXP · 🔥 Ngày thắp streak", style = MaterialTheme.typography.labelSmall,
+                color = palette.secondary)
+        }
+        Spacer(Modifier.height(8.dp))
         if (data.week.isEmpty() || data.week.none { it.xp > 0 || it.streakLit }) {
             Text(stringResource(R.string.design_week_empty), style = MaterialTheme.typography.bodyMedium,
                 color = palette.secondary)
@@ -271,18 +276,36 @@ private fun HomeWeekChart(data: LearningOverviewData, palette: PremiumDashboardP
             }
         } else {
             val max = data.week.maxOf { it.xp }.coerceAtLeast(1)
-            Row(Modifier.fillMaxWidth().heightIn(min = 116.dp),
+            Row(Modifier.fillMaxWidth().heightIn(min = 126.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
                 data.week.forEach { day ->
                     val label = stringResource(R.string.design_day_xp, day.day, day.xp)
                     Column(Modifier.weight(1f).semantics(mergeDescendants = true) { contentDescription = label },
                         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
-                        Box(Modifier.fillMaxWidth().height((day.xp.toFloat() / max * 84).coerceAtLeast(4f).dp)
+                        if (day.streakLit) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_flame),
+                                contentDescription = null,
+                                tint = Color(0xFFEA580C),
+                                modifier = Modifier.size(14.dp).padding(bottom = 2.dp)
+                            )
+                        } else {
+                            Spacer(Modifier.height(16.dp))
+                        }
+                        Text(
+                            text = if (day.xp > 0) "${day.xp}" else "",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = palette.muted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Clip
+                        )
+                        Spacer(Modifier.height(2.dp))
+                        Box(Modifier.fillMaxWidth().height((day.xp.toFloat() / max * 72).coerceAtLeast(4f).dp)
                             .clip(RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp))
-                            .background(if (day.streakLit) palette.streak else palette.accent))
+                            .background(if (day.streakLit) Color(0xFFFFAD42) else palette.accent))
                         Spacer(Modifier.height(6.dp))
                         Text(day.day.takeLast(2), style = MaterialTheme.typography.labelSmall,
-                            color = palette.muted, maxLines = 1, overflow = TextOverflow.Clip)
+                            color = palette.title, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Clip)
                     }
                 }
             }
