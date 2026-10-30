@@ -1,1 +1,32 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingTop="8dp" android:paddingBottom="12dp"><ImageView android:layout_width="44dp" android:layout_height="44dp" android:src="@drawable/ic_mentor_brand" app:tint="@color/auth_primary" android:importantForAccessibility="no" android:contentDescription="@null"/><LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="12dp"><TextView style="@style/AuthHeading" android:text="@string/app_name" android:textSize="20sp"/><TextView style="@style/AuthBody" android:text="@string/auth_brand_note" android:textSize="12sp"/></LinearLayout></LinearLayout>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="132dp"
+    android:layout_marginTop="4dp"
+    android:background="@drawable/auth_illustration_bg"
+    android:importantForAccessibility="no">
+
+    <View
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="-24dp"
+        android:background="@drawable/auth_decor_orb" />
+
+    <View
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="14dp"
+        android:background="@drawable/auth_decor_orb_small" />
+
+    <ImageView
+        android:id="@+id/auth_brand_art"
+        android:layout_width="104dp"
+        android:layout_height="104dp"
+        android:layout_gravity="center"
+        android:padding="14dp"
+        android:background="@drawable/auth_art_card"
+        android:contentDescription="@null" />
+</FrameLayout>

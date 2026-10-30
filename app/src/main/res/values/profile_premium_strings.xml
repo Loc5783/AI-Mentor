@@ -1,32 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="profile_eyebrow">HỒ SƠ</string>
-    <string name="profile_premium_grade">Học viên lớp %1$d</string>
+    <string name="profile_grade_label">Lớp %1$d</string>
     <string name="profile_grade_missing">Chưa chọn lớp học</string>
     <string name="profile_focus_title">Hướng học &amp; Tiến độ</string>
     <string name="profile_subjects_empty">Bạn chưa chọn môn học nào.</string>
     <string name="profile_choose_subjects">Chọn môn học</string>
     <string name="profile_progress_offline">Chưa kết nối dữ liệu tiến độ. Bạn vẫn có thể mở bài học.</string>
-    <string name="profile_stats_title">Tiến bộ của bạn</string>
-    <string name="profile_stats_pending">Chưa có số liệu tiến độ để hiển thị.</string>
-    <string name="profile_saved_data">Số liệu đã lưu trên thiết bị</string>
     <string name="profile_streak_label">Chuỗi học</string>
     <string name="profile_xp_label">Tổng kinh nghiệm</string>
     <string name="profile_lessons_label">Bài hoàn thành</string>
-    <string name="profile_today_label">Kinh nghiệm hôm nay</string>
-    <string name="profile_days_unit">ngày</string>
     <string name="profile_lessons_unit">bài</string>
-    <string name="profile_badges_title">Huy hiệu</string>
-    <string name="profile_badges_empty">Chưa có dữ liệu huy hiệu. Thành tích sẽ hiện ở đây khi hệ thống hỗ trợ.</string>
     <string name="profile_friends_title">Bạn bè học cùng</string>
     <string name="profile_friends_empty">Chưa có dữ liệu bạn bè để hiển thị chuỗi học cùng nhau.</string>
     <string name="profile_editor_details">Thông tin tài khoản</string>
-    <string name="profile_joined_date">THAM GIA TỪ %1$s</string>
     <string name="profile_quick_subjects">%1$d Môn học</string>
-    <string name="profile_following_label">Đang theo dõi</string>
-    <string name="profile_followers_label">Người theo dõi</string>
-    <string name="profile_add_friends">Thêm bạn bè</string>
-    <string name="profile_qr_code">Mã QR hồ sơ</string>
+    <string name="profile_note_title">Điều bạn muốn chia sẻ</string>
+    <string name="profile_note_hint">Viết vài dòng về mục tiêu hoặc điều bạn yêu thích…</string>
+    <string name="profile_note_empty">Chưa có ghi chú. Bạn có thể chia sẻ mục tiêu học tập hoặc điều mình yêu thích.</string>
+    <string name="profile_add_note">Thêm ghi chú</string>
+    <string name="profile_bio_too_long">Ghi chú tối đa 500 ký tự.</string>
     <string name="profile_overview_title">TỔNG QUAN</string>
     <string name="profile_streak_stat">%1$d ngày</string>
     <string name="profile_xp_stat">%1$d KN</string>
@@ -36,7 +29,6 @@
     <string name="profile_rank_silver">Bạc</string>
     <string name="profile_rank_bronze">Đồng</string>
     <string name="profile_rank_pending">Chưa xếp hạng</string>
-    <string name="profile_lead_stat">%1$d lần dẫn đầu</string>
     <string name="profile_friends_streak_title">STREAK BẠN BÈ</string>
     <string name="profile_challenge_title">BỘ SƯU TẬP HUY HIỆU</string>
     <string name="profile_badge_unlocked">Đã mở</string>
@@ -48,5 +40,4 @@
     <string name="profile_study_time_seconds">%1$d giây học đã ghi nhận</string>
     <string name="profile_study_time_minutes">%1$d phút học đã ghi nhận</string>
     <string name="profile_study_time_hours">%1$d giờ %2$d phút học đã ghi nhận</string>
-    <string name="profile_feature_coming_soon">Tính năng đang được kết nối với máy chủ</string>
 </resources>

@@ -28,6 +28,7 @@ class ComposeRedesignTest {
     private val context = instrumentation.targetContext
     private lateinit var app: AiMentorApplication
     private lateinit var scenario: ActivityScenario<HomeActivity>
+    private lateinit var qaUsername: String
     private var owner = 0
     private var previous = 0
     private var originalDark = false
@@ -38,13 +39,13 @@ class ComposeRedesignTest {
         previous = ActiveUser.get(context)
         originalDark = ThemeHelper.isDarkMode(context)
         originalLanguage = LocaleHelper.getLanguage(context)
-        val username = "compose_qa_${System.nanoTime()}"
-        owner = app.services().registration().register(username, "Mentor01!2026", "qa@gmail.com", "0901234567").toInt()
+        qaUsername = "compose_qa_${System.nanoTime()}"
+        owner = app.services().registration().register(qaUsername, "Mentor01!2026", "qa@gmail.com", "0901234567").toInt()
         Assert.assertTrue(owner > 0)
         app.services().learners().complete(LearnerProfile(owner, 5, "Compose QA", 11, "BIOLOGY,PHYSICS", 0, 0, 0))
         LearningSetupStore(context).use { it.save(owner, 11, setOf(SubjectId.BIOLOGY, SubjectId.PHYSICS)) }
         ActiveUser.set(context, owner)
-        scenario = ActivityScenario.launch(Intent(context, HomeActivity::class.java).putExtra("USERNAME", username))
+        scenario = ActivityScenario.launch(Intent(context, HomeActivity::class.java).putExtra("USERNAME", qaUsername))
         waitForTag("dashboard-subject:biology")
     }
 
@@ -144,6 +145,33 @@ class ComposeRedesignTest {
             .check(androidx.test.espresso.assertion.ViewAssertions.matches(
                 androidx.test.espresso.matcher.ViewMatchers.isDisplayed()))
         capture("profile-editor")
+    }
+
+    @Test(timeout = 30000) fun profileNeverShowsInternalLoginIdentifierAsDisplayName() {
+        navigate(R.id.nav_profile)
+        compose.onAllNodesWithText(qaUsername).assertCountEquals(0)
+        compose.onAllNodesWithText("@${qaUsername.uppercase()}").assertCountEquals(0)
+        waitForTag("profile-display-name")
+        compose.onNodeWithTag("profile-display-name").assertTextEquals("Compose QA")
+        compose.onAllNodesWithText("@${qaUsername.uppercase()}").assertCountEquals(0)
+        compose.onAllNodesWithText(qaUsername).assertCountEquals(0)
+    }
+
+    @Test(timeout = 30000) fun profileDoesNotUseLoginNameWhenDisplayNameIsMissing() {
+        val current = app.services().profiles().load(qaUsername)!!
+        Assert.assertTrue(
+            app.services().profiles().update(
+                qaUsername,
+                com.example.asm_final.accounts.UserProfile(
+                    qaUsername, current.address, current.phone, current.email, current.avatar
+                ),
+                ""
+            )
+        )
+        navigate(R.id.nav_profile)
+        waitForTag("profile-display-name")
+        compose.onNodeWithTag("profile-display-name").assertTextEquals(label(R.string.profile_eyebrow))
+        compose.onAllNodesWithText(qaUsername).assertCountEquals(0)
     }
 
     @Test(timeout = 60000) fun chatDraftSurvivesTabsAndRecreation() {

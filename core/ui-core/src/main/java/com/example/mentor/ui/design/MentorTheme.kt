@@ -124,7 +124,6 @@ object SubjectPalette {
     val Geography = Color(0xFF6FCFC4)
     val Literature = Color(0xFFF7998D)
     val English = Color(0xFFF2A6C8)
-    val Programming = Color(0xFFA3B4CC)
     val Economics = Color(0xFFE8B08A)
 
     fun getAccent(subjectId: String): Color {
@@ -137,7 +136,6 @@ object SubjectPalette {
             "geography" -> Geography
             "literature" -> Literature
             "english" -> English
-            "programming" -> Programming
             "economics_law", "economics" -> Economics
             else -> MentorTokens.Blue300
         }
