@@ -92,7 +92,7 @@ internal fun PathContent(path: LessonPathData, open: (String) -> Unit) {
             verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceSmall)) {
             Text(stringResource(R.string.design_path), style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold)
-            Text(stringResource(R.string.course_path_count, path.completedLessons, path.totalLessons),
+            Text(stringResource(R.string.course_path_progress, path.completedLessons, path.totalLessons, path.skippedLessons),
                 style = MaterialTheme.typography.bodyMedium)
             MentorProgress(if (path.totalLessons == 0) 0f else path.completedLessons.toFloat() / path.totalLessons)
             Text(stringResource(R.string.course_path_note), style = MaterialTheme.typography.bodySmall)

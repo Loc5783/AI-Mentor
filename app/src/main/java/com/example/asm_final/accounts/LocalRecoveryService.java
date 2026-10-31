@@ -61,7 +61,7 @@ public class LocalRecoveryService implements RecoveryService {
     }
 
     @Override
-    public Result verify(String token) {
+    public Result verify(String email, String token) {
         String savedOtp = prefs.getString(KEY_OTP, null);
         long expiryTime = prefs.getLong(KEY_OTP_EXPIRY, 0);
 
@@ -82,8 +82,8 @@ public class LocalRecoveryService implements RecoveryService {
     }
 
     @Override
-    public Result reset(String token, String password) {
-        if (verify(token) == Result.VERIFIED) {
+    public Result reset(String email, String token, String password) {
+        if (verify(email, token) == Result.VERIFIED) {
             // Demo only: We just accept the reset locally
             return Result.PASSWORD_RESET;
         }
