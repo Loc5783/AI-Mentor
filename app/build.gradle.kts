@@ -23,9 +23,14 @@ val localBackendConfig = Properties().apply {
 val debugBackendUrl = localBackendConfig.getProperty("MENTOR_DEBUG_BACKEND_URL", backendUrl).trim()
 require(debugBackendUrl.isEmpty() || runCatching {
     val uri = URI(debugBackendUrl)
-    val local = uri.scheme == "http" && (uri.host in listOf("127.0.0.1", "10.0.2.2") || uri.host.matches(Regex("^192\\.168\\.\\d+\\.\\d+$")) || uri.host.matches(Regex("^10\\.\\d+\\.\\d+\\.\\d+$"))) && uri.port in 1..65535
+    val host = uri.host ?: ""
+    val isLocalHost = host in listOf("127.0.0.1", "10.0.2.2", "localhost") ||
+            host.matches(Regex("""^192\.168\.\d{1,3}\.\d{1,3}$""")) ||
+            host.matches(Regex("""^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$""")) ||
+            host.matches(Regex("""^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$"""))
+    val local = uri.scheme == "http" && isLocalHost && uri.port in 1..65535
     (uri.scheme == "https" || local) && uri.host != null && uri.userInfo == null && uri.query == null && uri.fragment == null && (uri.port == -1 || uri.port in 1..65535)
-}.getOrDefault(false)) { "Debug backend must use HTTPS or the explicit local emulator host with a port" }
+}.getOrDefault(false)) { "Debug backend must use HTTPS or local USB/emulator/LAN host (127.0.0.1, 10.0.2.2, localhost, or LAN IP e.g. 192.168.x.x) with a port" }
 
 val supabaseConfig = Properties().apply {
     // The publishable project config is safe to bundle; ignored local files override it.

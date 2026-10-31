@@ -19,15 +19,31 @@ public final class BackendClient implements com.example.asm_final.learning.Lesso
   private final Object sessionLock;
 
   public static String endpoint(Context context) {
-    // Supabase tokens cannot authenticate against the legacy Python API.
     if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) return BuildConfig.SUPABASE_URL;
-    String value =
-        BuildConfig.DEBUG
-            ? context
-                .getSharedPreferences("backend_test", 0)
-                .getString("endpoint", BuildConfig.MENTOR_BACKEND_URL)
-            : BuildConfig.MENTOR_BACKEND_URL;
-    return value == null ? "" : value.trim().replaceAll("/+$", "");
+    if (context == null) {
+      return BuildConfig.MENTOR_BACKEND_URL.trim().replaceAll("/+$", "");
+    }
+    if (BuildConfig.DEBUG) {
+      android.content.SharedPreferences prefs = context.getSharedPreferences("backend_test", 0);
+      if (prefs.contains("endpoint")) {
+        String override = prefs.getString("endpoint", "");
+        if (override == null || override.trim().isEmpty()) {
+          return "";
+        }
+        String trimmed = override.trim().replaceAll("/+$", "");
+        if (!trimmed.equalsIgnoreCase(BuildConfig.MENTOR_BACKEND_URL.trim())
+            && ("http://127.0.0.1:8000".equals(trimmed)
+                || "http://10.0.2.2:8000".equals(trimmed)
+                || "http://127.0.0.1:18080".equals(trimmed))) {
+          prefs.edit().remove("endpoint").apply();
+          return BuildConfig.MENTOR_BACKEND_URL.trim().replaceAll("/+$", "");
+        }
+        if (BackendEndpointPolicy.allowed(trimmed, true)) {
+          return trimmed;
+        }
+      }
+    }
+    return BuildConfig.MENTOR_BACKEND_URL.trim().replaceAll("/+$", "");
   }
 
   /** Read and remove opaque encrypted credentials immediately; remote revocation can run later. */
