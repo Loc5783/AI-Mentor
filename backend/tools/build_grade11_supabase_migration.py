@@ -42,20 +42,34 @@ def main():
 
                 json_str = json.dumps(data, ensure_ascii=False)
 
-                sql = f"""INSERT INTO curricula (id, subject_id, grade, version, title, data)
-VALUES (
-    {escape_sql_string(record_id)},
+                sql = ""
+                for index, lesson in enumerate(data['lessons']):
+                    position = index + 1
+                    kind = "LESSON"
+                    if index % 5 == 4:
+                        kind = "FIVE_LESSON_REVIEW"
+
+                    unit_id = lesson['id']
+                    lesson_title = lesson['title']
+                    guidance = json.dumps(lesson.get('guidance', []), ensure_ascii=False)
+                    examples = json.dumps(lesson.get('examples', []), ensure_ascii=False)
+                    questions = json.dumps(lesson.get('questions', []), ensure_ascii=False)
+
+                    sql += f"""insert into public.mentor_course_units(subject_id,grade,course_version,unit_id,position,kind,title,course_title,source_note,guidance,examples,questions,sources) values(
     {escape_sql_string(subject_id)},
     {grade},
     {escape_sql_string(version)},
+    {escape_sql_string(unit_id)},
+    {position},
+    {escape_sql_string(kind)},
+    {escape_sql_string(lesson_title)},
     {escape_sql_string(title)},
-    {escape_sql_string(json_str)}::jsonb
-)
-ON CONFLICT (id) DO UPDATE SET
-    version = EXCLUDED.version,
-    title = EXCLUDED.title,
-    data = EXCLUDED.data,
-    updated_at = NOW();\n\n"""
+    {escape_sql_string(data.get('sourceNote', ''))},
+    {escape_sql_string(guidance)}::jsonb,
+    {escape_sql_string(examples)}::jsonb,
+    {escape_sql_string(questions)}::jsonb,
+    '[]'::jsonb
+) on conflict(subject_id,grade,unit_id) do nothing;\n"""
                 out.write(sql)
                 print(f"Generated SQL for {record_id}")
             except Exception as e:
