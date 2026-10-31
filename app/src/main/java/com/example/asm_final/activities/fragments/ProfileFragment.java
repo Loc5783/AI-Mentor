@@ -18,7 +18,8 @@ import com.example.asm_final.R;
 
 public class ProfileFragment extends Fragment {
 
-  private EditText edtFullName, edtAddress, edtPhone, edtEmail, edtPassword;
+  private EditText edtFullName, edtEmail, edtPassword, edtBio;
+  private com.example.asm_final.accounts.UserProfile loadedProfile;
   private Button btnUpdate, btnChooseAvatar;
   private ImageView imgAvatar;
   private com.example.asm_final.accounts.UserProfileRepository profiles;
@@ -77,10 +78,9 @@ public class ProfileFragment extends Fragment {
     }
 
     edtFullName = view.findViewById(R.id.edtProfileFullName);
-    edtAddress = view.findViewById(R.id.edtProfileAddress);
-    edtPhone = view.findViewById(R.id.edtProfilePhone);
     edtEmail = view.findViewById(R.id.edtProfileEmail);
     edtPassword = view.findViewById(R.id.edtProfilePassword);
+    edtBio = view.findViewById(R.id.edtProfileBio);
     btnUpdate = view.findViewById(R.id.btnUpdateProfile);
     btnChooseAvatar = view.findViewById(R.id.btnChooseAvatar);
     imgAvatar = view.findViewById(R.id.imgProfileAvatar);
@@ -102,10 +102,14 @@ public class ProfileFragment extends Fragment {
             return;
           }
           String fullName = edtFullName.getText().toString().trim();
-          String address = edtAddress.getText().toString().trim();
-          String phone = edtPhone.getText().toString().trim();
           String email = edtEmail.getText().toString().trim();
           String password = edtPassword.getText().toString();
+          String bio = edtBio.getText().toString().trim();
+
+          if (bio.length() > 500) {
+            edtBio.setError(getString(R.string.profile_bio_too_long));
+            return;
+          }
 
           if (!password.isEmpty() && !isValidPassword(password)) {
             Toast.makeText(getContext(), R.string.reg_msg_weak_pass, Toast.LENGTH_LONG).show();
@@ -114,7 +118,12 @@ public class ProfileFragment extends Fragment {
 
           com.example.asm_final.accounts.UserProfile profile =
               new com.example.asm_final.accounts.UserProfile(
-                  fullName, address, phone, email, avatarUri);
+                  fullName,
+                  loadedProfile == null ? "" : loadedProfile.address,
+                  loadedProfile == null ? "" : loadedProfile.phone,
+                  email,
+                  avatarUri,
+                  bio);
           btnUpdate.setEnabled(false);
           actions.submit(
               () -> profiles.update(username, profile, password),
@@ -151,12 +160,12 @@ public class ProfileFragment extends Fragment {
           btnUpdate.setEnabled(true);
           btnChooseAvatar.setEnabled(true);
           if (profile == null) return;
+          loadedProfile = profile;
           profileReady = true;
           if (!restoringDraft) {
             edtFullName.setText(profile.fullName);
-            edtAddress.setText(profile.address);
-            edtPhone.setText(profile.phone);
             edtEmail.setText(profile.email);
+            edtBio.setText(profile.bio);
           }
           restoringDraft = false;
           avatarUri = profile.avatar;

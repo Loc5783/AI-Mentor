@@ -6,7 +6,7 @@
   "published": true,
   "coverage": "PARTIAL_GRADE_10",
   "extendedReviews": false,
-  "sourceNote": "20 bài ngắn lớp 10 do AI Mentor biên soạn, không phải bản sao SGK hay toàn bộ chương trình năm học. Đầu vào chỉ khảo sát 5 bài nhập môn. Cần giáo viên duyệt trước khi dùng chính thức.",
+  "sourceNote": "20 bài ngắn lớp 10 do AI Mentor biên soạn, không phải bản sao SGK hay toàn bộ chương trình năm học. Bài đầu vào dùng hai câu mỗi bài đã xuất bản để ước lượng nền tảng và đề xuất bài có thể bỏ qua; không đánh giá toàn bộ năm học. Cần giáo viên duyệt trước khi dùng chính thức.",
   "lessons": [
     {
       "id": "physics-10-position",

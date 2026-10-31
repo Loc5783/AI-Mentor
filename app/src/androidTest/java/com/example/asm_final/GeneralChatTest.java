@@ -277,17 +277,13 @@ public class GeneralChatTest {
   }
 
   @Test
-  public void lessonEnrollmentOnlyEnablesThreeSubjectsAndKeepsGradesSeparate() {
+  public void lessonEnrollmentIsAccountAndGradeScopedAcrossTheSubjectCatalog() {
     try (LearningSetupStore setup = new LearningSetupStore(context)) {
       setup.save(owner, 11, EnumSet.of(SubjectId.BIOLOGY, SubjectId.CHEMISTRY));
       assertEquals(2, setup.selected(owner, 11).size());
       assertTrue(setup.selected(owner, 12).isEmpty());
-      try {
-        setup.save(owner, 11, EnumSet.of(SubjectId.MATH));
-        fail("Framework-only subject");
-      } catch (IllegalArgumentException expected) {
-      }
-      assertEquals(2, setup.selected(owner, 11).size());
+      setup.save(owner, 11, EnumSet.of(SubjectId.MATH));
+      assertEquals(EnumSet.of(SubjectId.MATH), setup.selected(owner, 11));
       assertTrue(setup.selected(other, 11).isEmpty());
     }
   }

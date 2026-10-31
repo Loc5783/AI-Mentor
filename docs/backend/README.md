@@ -11,4 +11,4 @@ Reward ledger quyết định 200 EXP/bài, 400 EXP/quiz, chỉ một lần mỗ
 
 Sửa/xóa dùng revision/If-Match; tạo và hoàn thành dùng idempotency. SSE chỉ phát sau commit, giới hạn dữ liệu theo quyền truy cập. Hồ sơ công khai không chứa email, mật khẩu hay token.
 
-9 môn được khai báo riêng; hiện chỉ Lý–Hóa–Sinh có gói 20 bài lớp 10. Sáu môn còn lại là FRAMEWORK. Reset local một lần cho app mới không xóa dữ liệu backend hay coi backend đã triển khai Internet.
+Chín môn đều có gói nội dung lớp 10: Lý–Hóa–Sinh có 20 bài ngắn mỗi môn; Toán, Văn, Anh, Sử, Địa và GDKT & Pháp luật có 15 bài nhập môn mỗi môn. Các gói chưa phủ hết chương trình năm học; lớp 11–12 chưa xuất bản. Reset local một lần cho app mới không xóa dữ liệu backend.

@@ -19,7 +19,7 @@
     <string name="auth_terms_link">Read terms and privacy notice</string>
     <string name="auth_terms_required">Please read and accept the terms before creating an account.</string>
     <string name="auth_terms_title">Use AI Mentor responsibly</string>
-    <string name="auth_terms_body">AI Mentor supports learning; it does not replace teachers or your own thinking. AI responses may be inaccurate. Check textbooks and reliable sources.\n\nAccounts and learning profiles are currently stored on this device. Passwords are hashed with BCrypt, never stored as plain text. When you use a connected AI feature, the question or image you choose to send is shared with the configured AI service. Do not submit private information or other people’s data without permission.\n\nYour grade, interests and goals are used to display your learning profile. You can edit account details in Profile. Multi-device sync and server email verification are not connected yet. This notice describes the current app; a server-enabled release needs an updated policy.</string>
+    <string name="auth_terms_body">AI Mentor supports learning; it does not replace teachers or your own thinking. AI responses may be inaccurate, so check textbooks and reliable sources.\n\nYour account, profile and learning progress are stored through Supabase. Some data may be cached on this device for convenience. Questions or images you send to AI are shared with the configured AI service. Only share content you have permission to use, and avoid sending unnecessary private information.\n\nYour display name, grade, subjects and profile note personalize your experience; the profile note may be visible to other learners. You can edit these details in Profile.</string>
     <string name="auth_email_help">Use an email you can access. Gmail is not required.</string>
     <string name="auth_password_rules">At least 8 characters, an uppercase letter and a number; up to 72 UTF-8 bytes.</string>
     <string name="auth_valid">Looks good</string>
@@ -28,8 +28,12 @@
     <string name="auth_registration_failed">We could not create an account with these details. Check them or try signing in.</string>
     <string name="auth_theme_toggle">Switch light / dark mode</string>
     <string name="auth_language_toggle">Change language</string>
+    <string name="auth_language_label">VI / EN</string>
+    <string name="auth_theme_label">◐</string>
     <string name="auth_back_login">Back to sign in</string>
     <string name="auth_back">Back</string>
+    <string name="settings_logout_title">Ready to sign out?</string>
+    <string name="settings_logout_message">Your account will be signed out on this device. Synced learning progress will remain saved.</string>
     <string name="auth_next">Continue</string>
     <string name="auth_skip">Skip introduction</string>
     <string name="auth_start">Start exploring</string>
@@ -39,7 +43,7 @@
     <string name="auth_guide">App guide</string>
     <string name="onboard_step">Step %1$d / 4</string>
     <string name="onboard_1_title">Welcome to AI Mentor!</string>
-    <string name="onboard_1_body">Learn smarter, at your own pace.\n\nExplore your school subjects, with learning paths for Physics, Chemistry and Biology. When a question gets tricky, you have a companion to help you work through it.</string>
+    <string name="onboard_1_body">Learn smarter, at your own pace.\n\nExplore Grade 10 subjects with a learning path for each one. When a question gets tricky, you have a companion to help you work through it.</string>
     <string name="onboard_2_title">Learn with AI, understand it your way</string>
     <string name="onboard_2_body">Ask a question or share a photo of a problem.\n\nExplore step-by-step explanations, save notes and revisit conversations. AI features need a connection and a configured service.</string>
     <string name="onboard_3_title">Every student has their own journey</string>
@@ -83,6 +87,7 @@
     <string name="auth_resend_wait_timer">Resend in (%1$ds)</string>
     <string name="auth_token_required">Enter a verification code.</string>
     <string name="auth_route_error">Unable to load the account state. Please sign in again.</string>
+    <string name="supabase_email_confirmed_return">Email verified. Sign in to continue.</string>
     <string-array name="learner_goals">
         <item>@string/profile_goal_0</item>
         <item>@string/profile_goal_1</item>

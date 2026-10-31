@@ -64,7 +64,9 @@ public final class LiveOverviewUpdates implements OverviewUpdates {
 
     void run() {
       try {
-        String endpoint = BackendClient.endpoint(context);
+        String endpoint = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+            ? com.example.asm_final.BuildConfig.SUPABASE_URL
+            : BackendClient.endpoint(context);
         if (endpoint.isEmpty() || owner <= 0) return;
         try (RemoteAccountLinks links = new RemoteAccountLinks(context)) {
           remoteId = links.remoteId(owner, endpoint);

@@ -19,7 +19,7 @@ public interface RecoveryService {
 
   Result resendVerification(String email);
 
-  Result verify(String token);
+  Result verify(String email, String token);
 
-  Result reset(String token, String password);
+  Result reset(String email, String token, String password);
 }

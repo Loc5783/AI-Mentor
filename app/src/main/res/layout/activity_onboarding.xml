@@ -1,1 +1,89 @@
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:background="@drawable/auth_canvas"><com.example.asm_final.utils.AuthColumn android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"><include layout="@layout/auth_toolbar"/><include layout="@layout/auth_brand"/><LinearLayout style="@style/AuthPanel"><TextView style="@style/AuthBody" android:id="@+id/onboarding_step" android:text="@string/auth_empty_text" android:textStyle="bold" android:textColor="@color/auth_primary"/><com.google.android.material.progressindicator.LinearProgressIndicator android:id="@+id/onboarding_progress" android:layout_width="match_parent" android:layout_height="6dp" android:layout_marginTop="12dp" android:max="4" app:indicatorColor="@color/auth_primary" app:trackColor="@color/auth_border"/><ImageView android:id="@+id/onboarding_art" android:layout_width="96dp" android:layout_height="96dp" android:layout_marginTop="24dp" android:layout_marginBottom="20dp" android:layout_gravity="center" android:background="@drawable/auth_illustration_bg" android:padding="20dp" android:importantForAccessibility="no" android:contentDescription="@null" app:tint="@color/auth_primary"/><TextView style="@style/AuthHeading" android:id="@+id/onboarding_title" android:text="@string/onboard_1_title" /><TextView style="@style/AuthBody" android:id="@+id/onboarding_body" android:text="@string/onboard_1_body" android:layout_marginTop="12dp" android:accessibilityLiveRegion="polite"/><LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="24dp"><com.google.android.material.button.MaterialButton android:id="@+id/onboarding_back" style="@style/Widget.Material3.Button.TextButton" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/auth_back"/><com.google.android.material.button.MaterialButton android:id="@+id/onboarding_next" style="@style/AuthButton" android:layout_width="0dp" android:layout_weight="2" android:layout_marginTop="0dp" android:layout_height="wrap_content" android:text="@string/auth_next"/></LinearLayout></LinearLayout><TextView style="@style/AuthLink" android:id="@+id/onboarding_skip" android:text="@string/auth_skip" /></com.example.asm_final.utils.AuthColumn></androidx.core.widget.NestedScrollView>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@drawable/auth_canvas">
+
+    <com.example.asm_final.utils.AuthColumn
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/auth_toolbar" />
+
+        <LinearLayout style="@style/AuthPanel">
+            <TextView
+                android:id="@+id/onboarding_step"
+                style="@style/AuthBody"
+                android:text="@string/auth_empty_text"
+                android:textColor="@color/auth_primary"
+                android:textStyle="bold" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/onboarding_progress"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="12dp"
+                android:max="4"
+                app:indicatorColor="@color/auth_primary"
+                app:trackColor="@color/auth_border" />
+
+            <ImageView
+                android:id="@+id/onboarding_art"
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="28dp"
+                android:layout_marginBottom="22dp"
+                android:background="@drawable/auth_illustration_bg"
+                android:padding="22dp"
+                android:importantForAccessibility="no"
+                android:contentDescription="@null"
+                app:tint="@color/auth_primary" />
+
+            <TextView
+                android:id="@+id/onboarding_title"
+                style="@style/AuthHeading"
+                android:text="@string/onboard_1_title" />
+
+            <TextView
+                android:id="@+id/onboarding_body"
+                style="@style/AuthBody"
+                android:layout_marginTop="12dp"
+                android:text="@string/onboard_1_body"
+                android:accessibilityLiveRegion="polite" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/onboarding_back"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="48dp"
+                    android:text="@string/auth_back" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/onboarding_next"
+                    style="@style/AuthButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_weight="2"
+                    android:text="@string/auth_next" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/onboarding_skip"
+            style="@style/AuthLink"
+            android:text="@string/auth_skip" />
+    </com.example.asm_final.utils.AuthColumn>
+</androidx.core.widget.NestedScrollView>

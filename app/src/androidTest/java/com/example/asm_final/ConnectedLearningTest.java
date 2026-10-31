@@ -606,12 +606,18 @@ public final class ConnectedLearningTest {
     assertFalse(model.completion.getBoolean("streakLit"));
     main(model::backToPath);
     settled();
-    assertEquals(
-        curriculumLessonCount,
-        new com.example.asm_final.learning.LessonPathData(model.path.getJSONArray("units"))
-            .totalLessons);
+    com.example.asm_final.learning.LessonPathData assessedPath =
+        new com.example.asm_final.learning.LessonPathData(model.path.getJSONArray("units"));
+    assertEquals(curriculumLessonCount, assessedPath.totalLessons);
+    assertEquals(0, assessedPath.completedLessons);
+    assertEquals(curriculumLessonCount, assessedPath.skippedLessons);
     ComposeProbe.text(
-        compose, context.getString(R.string.course_path_count, 0, curriculumLessonCount));
+        compose,
+        context.getString(
+            R.string.course_path_progress,
+            assessedPath.completedLessons + assessedPath.skippedLessons,
+            assessedPath.totalLessons,
+            assessedPath.skippedLessons));
     String unit = model.path.getJSONArray("units").getJSONObject(0).getString("id");
     main(() -> model.start(unit, false));
     settled();
@@ -680,8 +686,17 @@ public final class ConnectedLearningTest {
     assertEquals(1, profile.getInt("streakDays"));
     main(model::backToPath);
     settled();
+    com.example.asm_final.learning.LessonPathData currentPath =
+        new com.example.asm_final.learning.LessonPathData(model.path.getJSONArray("units"));
+    assertEquals(1, currentPath.completedLessons);
+    assertEquals(curriculumLessonCount - 1, currentPath.skippedLessons);
     ComposeProbe.text(
-        compose, context.getString(R.string.course_path_count, 1, curriculumLessonCount));
+        compose,
+        context.getString(
+            R.string.course_path_progress,
+            currentPath.completedLessons + currentPath.skippedLessons,
+            currentPath.totalLessons,
+            currentPath.skippedLessons));
     drawn();
     try (FileOutputStream out =
         new FileOutputStream(

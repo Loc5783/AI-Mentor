@@ -26,6 +26,12 @@
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="16dp" android:text="@string/settings_dark_mode" android:textSize="16sp" android:textColor="@color/textColorPrimary" android:textStyle="bold" />
                     <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switch_dark_mode" android:layout_width="wrap_content" android:layout_height="wrap_content" />
                 </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/dividerColor" android:layout_marginStart="68dp" />
+                <LinearLayout android:id="@+id/setting_custom_background" android:layout_width="match_parent" android:layout_height="64dp" android:paddingHorizontal="16dp" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackground" android:gravity="center_vertical">
+                    <ImageView android:layout_width="36dp" android:layout_height="36dp" android:src="@drawable/ic_settings" android:padding="8dp" android:background="@drawable/neumorphic_edittext_bg" app:tint="@color/themeAccentColor" android:contentDescription="@null" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="16dp" android:text="Thay đổi hình nền" android:textSize="16sp" android:textColor="@color/textColorPrimary" android:textStyle="bold" />
+                    <TextView android:id="@+id/txt_custom_background_status" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mặc định" android:textColor="@color/primaryColor" android:textSize="14sp" android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_others" android:textColor="@color/textColorSecondary" android:textSize="13sp" android:textStyle="bold" android:textAllCaps="true" android:layout_marginStart="8dp" android:layout_marginBottom="8dp" android:letterSpacing="0.1" />

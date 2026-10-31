@@ -8,6 +8,8 @@
   <string name="settings_preferences">Learning Preferences</string>
   <string name="settings_reminders">Study Reminders</string>
   <string name="settings_dark_mode">Dark Mode</string>
+  <string name="settings_change_background">Change background</string>
+  <string name="settings_background_default">Default</string>
   <string name="settings_others">Others</string>
   <string name="settings_language">Language</string>
   <string name="settings_share">Share App</string>

@@ -10,16 +10,15 @@
 - `docs/`: hợp đồng API và nội dung môn học.
 - `tools/`: dọn thư mục build cũ sau khi cập nhật Git.
 
-Chỉ Lý–Hóa–Sinh có nội dung học hiện tại: mỗi môn 20 bài ngắn lớp 10, 60 câu luyện và 4 quiz ôn 10 câu. Sáu môn còn lại giữ khung; Toán có máy tính bong bóng, Lý có mô phỏng mạch điện, Hóa có bảng tuần hoàn. Lớp 11–12 và toàn bộ chương trình năm học chưa hoàn tất.
+Lý–Hóa–Sinh có 20 bài ngắn lớp 10 mỗi môn; Toán, Văn, Anh, Sử, Địa và GDKT & Pháp luật có thêm 15 bài nhập môn mỗi môn. Các bài có câu luyện theo ba mức và quiz ôn sau mỗi 5 bài. Đây là nội dung tự biên soạn mức khởi đầu, chưa phủ toàn bộ năm học và cần giáo viên rà soát; lớp 11–12 chưa có gói bài. Toán có máy tính bong bóng, Lý có mô phỏng mạch điện, Hóa có bảng tuần hoàn.
 
-Bốn nhóm module cũ và dữ liệu local cũ được loại bỏ theo yêu cầu làm mới. Lần chạy đầu bản này xóa dữ liệu local cũ một lần; các lần mở sau giữ dữ liệu mới. Backend đang phát triển riêng, chưa triển khai Internet.
+Bốn nhóm module cũ và dữ liệu local cũ được loại bỏ theo yêu cầu làm mới. Lần chạy đầu bản này xóa dữ liệu local cũ một lần; các lần mở sau giữ dữ liệu mới. App có tích hợp backend FastAPI local và Supabase; các migration mới phải được áp dụng vào project Supabase trước khi nội dung lớp 10 và kiểm tra đầu vào cập nhật trên cloud.
 
 ## Chạy app
 1. Mở thư mục gốc bằng Android Studio; dùng Gradle JDK 21 và Android SDK 36.
-2. Chạy `Start-AIMentor-Backend.cmd`, giữ cửa sổ server mở. Launcher tạo cấu hình debug cục bộ `http://10.0.2.2:8000` cho máy giả lập.
-3. Sync Gradle và Run module `app`.
-4. Key Chat AI điền trong `api.properties`, pool `CHAT_GEMINI_API_KEY_1/2/3`. File trên Git để trống. Sync/rebuild sau khi đổi cấu hình.
-5. Backend public dùng `MENTOR_BACKEND_URL` HTTPS; không đưa đường dẫn máy hoặc key thật lên Git.
+2. Sync Gradle và Run module `app`. Mặc định app dùng Supabase theo cấu hình public trong `supabase.local.properties.example`; áp dụng các migration còn thiếu trước khi thử khóa học lớp 10 trên cloud.
+3. Muốn chạy FastAPI local: thêm `SUPABASE_ENABLED=false` vào `supabase.local.properties`, chạy `Start-AIMentor-Backend.cmd` và sync/rebuild. Launcher dùng `http://10.0.2.2:8000` cho giả lập.
+4. Chat AI qua Supabase cần Edge Function `mentor-ai` đã deploy và Gemini key trong Supabase Secrets. Không đưa secret vào Git hoặc APK. `api.properties` chỉ dành cho cấu hình backend/tutor cũ.
 
 Tài khoản debug và backend chế độ demo: `student 01`, `student 02`, `student 03`; mật khẩu `123123123`.
 
@@ -37,7 +36,7 @@ Hợp đồng đang chạy: [runtime-openapi.json](docs/backend/runtime-openapi.
 Nội dung môn: [CONTENT_PLAN_VI.md](docs/content/CONTENT_PLAN_VI.md).
 Bàn giao backend: [BAN_GIAO_BACKEND.txt](app/BAN_GIAO_BACKEND.txt).
 
-Chưa hoàn tất: đồng bộ chat cloud, chỉnh sửa hồ sơ/mật khẩu với server, quản lý lời mời kết bạn, outbox offline và triển khai production.
+Trước khi dùng cloud đầy đủ cần áp dụng migration còn thiếu `202610300001_remaining_grade10_curricula.sql` và `202610300002_adaptive_placement.sql`, xác nhận Edge Function/email auth, và kiểm thử trên thiết bị. Hàng đợi gửi thay đổi khi offline, xử lý xung đột nhiều thiết bị và triển khai production vẫn còn ngoài bản hiện tại.
 
 Git: nhánh feature/*, module/* hoặc fix/* → Pull Request integration; trưởng nhóm quản lý main.
 

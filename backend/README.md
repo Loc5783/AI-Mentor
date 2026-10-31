@@ -1,6 +1,6 @@
 # Backend AI Mentor — đang triển khai
 
-Backend thật chạy bằng FastAPI và SQLite, tách khỏi cơ sở dữ liệu trên điện thoại. Đây là bản phát triển, chưa phải backend đã nối hoàn chỉnh với Android hay đã triển khai trên Internet.
+Backend local chạy bằng FastAPI và SQLite, tách khỏi cơ sở dữ liệu trên điện thoại; Android cũng có adapter Supabase. Chín môn đã có gói bài lớp 10. Tính năng cloud cần các migration mới nhất được áp dụng; nội dung lớp 11–12 chưa xuất bản.
 
 ## Chạy tại máy
 Từ thư mục backend:
@@ -149,21 +149,21 @@ Tính năng hỗ trợ người dùng có quyền Quản trị (`ADMIN`) hoặc 
 - Kết bạn có lời mời/xác nhận; ranking streak/EXP ngày đọc ledger server, không xếp theo level.
 - Event stream SSE có cursor, kiểm tra phiên và sự kiện riêng theo account. Dữ liệu sự kiện không có nội dung chat, mật khẩu hay API key.
 
-## Chưa hoàn tất
-- Mở rộng và giáo viên duyệt nội dung ba môn cho lớp 10–12; hiện có 20 bài ngắn/60 câu/4 review cho mỗi môn lớp 10, không phải toàn bộ năm học.
-- Đồng bộ Android, migration account/chat cũ, outbox offline và xử lý xung đột nhiều thiết bị.
-- Gửi email reset/xác minh bằng SMTP/provider thật; không giả gửi email.
-- Dọn tệp sau xóa, lưu trữ dài hạn/pagination lớn, retention cursor và hoàn thiện kiểm thử tải.
+## Giới hạn hiện tại
+- Nội dung lớp 10 là các gói nhập môn từng phần, chưa phủ trọn chương trình năm học và cần giáo viên rà soát. Lớp 11–12 chưa có nội dung theo phạm vi hiện tại.
+- Các migration mới `202610300001_remaining_grade10_curricula.sql` và `202610300002_adaptive_placement.sql` cần được áp dụng vào Supabase sau khi đối chiếu lịch sử migration từ xa.
+- Outbox offline, xử lý xung đột nhiều thiết bị, dọn tệp sau xóa, lưu trữ dài hạn/pagination lớn, retention cursor và kiểm thử tải chưa hoàn tất.
+- Gửi email reset/xác minh cần SMTP/provider thật; chưa giả gửi email.
 
 ## Engine học tập đã có
-- Enrollment theo account/môn/lớp; đánh giá đầu vào nhập môn 10 câu, không trao EXP/streak và không gọi là đánh giá cả năm học.
+- Enrollment theo account/môn/lớp; bài đầu vào có hai câu cho mỗi bài đã xuất bản (30 câu với khóa 15 bài, 40 câu với khóa 20 bài). Chỉ bài đúng cả hai câu mới được bỏ qua; chặng ôn chỉ bỏ qua khi cả năm bài đã nắm vững. Bài đầu vào không trao EXP/streak và không đại diện đánh giá cả năm học.
 - Lộ trình phải hoàn thành lần lượt; mỗi năm bài có quiz ôn đúng năm bài trước, 10 hoặc 15 câu theo gói nội dung. Phải qua checkpoint trước bài thứ sáu.
 - Lưu đáp án/tiến độ có If-Match; submissionId chống đếm lại lần sai khi gửi lại. Hai lần sai có lời giải, kể cả hai lần chọn cùng một phương án với hai submissionId khác nhau.
 - Ledger server cấp 200 EXP/bài, 400 EXP/review chỉ ở lần đầu; retake 0 EXP vẫn thắp streak ngày mới. Completion cũ phát lại không tạo ngày học hay phần thưởng mới.
 - Handoff/resume giữ attempt, câu hỏi và phiên bản nội dung; quay lại đọc tiến độ mới nhất, không ghi đè từ snapshot cũ.
 - Question bank các câu đã luyện, phân loại môn/lớp/bài/phiên bản để tải về ôn offline. Ngân hàng câu Gemini tạo trong module cũ chưa đồng bộ vào bank server này.
 
-Android có màn lộ trình/làm bài mới dùng API; cấu hình `MENTOR_BACKEND_URL` (HTTPS) trong api.properties rồi rebuild. Khi trống, app dùng luồng cục bộ và báo chưa có máy chủ ở lộ trình mới, không tính thưởng giả.
+Android dùng Supabase khi bật `SUPABASE_ENABLED`; có thể chuyển sang FastAPI local bằng cấu hình debug riêng. Cấu hình cloud cần migration mới nhất; FastAPI local dùng `/health` để xác nhận đủ chín khóa lớp 10.
 
 ## Tài khoản và thống kê chung — 19/10/2026
 - Khi có backend, đăng nhập/đăng ký ở màn chính tạo phiên dùng chung cho Lesson, không yêu cầu đăng nhập đồng bộ riêng. Chỉ yêu cầu xác nhận lại nếu phiên hết hiệu lực; không cho đổi sang remote identity khác trong một bài đang học.
@@ -173,9 +173,9 @@ Android có màn lộ trình/làm bài mới dùng API; cấu hình `MENTOR_BACK
 - Completion, Dashboard, public profile và ranking dùng chung `learning_stats.reward_summary`, UTC+7 và learning clock. Ranking chốt một mốc giờ/snapshot cho toàn bộ danh sách, tránh trộn ngày khi đi qua nửa đêm.
 - Dashboard, số liệu cá nhân trong Profile và Thi đua đọc cùng nguồn. Có cache theo local user/endpoint/remote ID/grade; mất kết nối hiển thị rõ bản đã lưu, không quay về EXP legacy hoặc dựng số 0.
 - App mới dùng chín môn học; dữ liệu bốn module cũ trên thiết bị bị xóa một lần theo yêu cầu. Không nhập hoặc cộng EXP cũ vào backend.
-- Android đã nối SSE để làm mới summary, bảng thi đua và hồ sơ công khai đang xem: cursor trước refresh, reconnect/backoff, gộp sự kiện và hủy theo lifecycle/account. Bảng dùng rank server và hai trục STREAK/DAILY_XP × FRIENDS/GLOBAL; chỉ bạn ACCEPTED được đưa vào FRIENDS. Ảnh công khai tải qua endpoint cùng origin có xác thực và giới hạn dung lượng/kích thước decode. Đây chưa phải sync toàn bộ app; UI quản lý lời mời, profile editor/onboarding, lesson state trên thiết bị khác, chat cloud và outbox offline còn phải nối.
+- Android đã nối SSE để làm mới summary, bảng thi đua, hồ sơ công khai và chat: cursor trước refresh, reconnect/backoff, gộp sự kiện và hủy theo lifecycle/account. Bảng dùng rank server và hai trục STREAK/DAILY_XP × FRIENDS/GLOBAL; chỉ bạn ACCEPTED được đưa vào FRIENDS. Hồ sơ, onboarding, quản lý lời mời và chat cloud đã có adapter; đây chưa phải outbox offline hay bảo đảm hợp nhất xung đột khi nhiều thiết bị cùng sửa.
 
-Sáu môn ngoài Sinh/Hóa/Lý chỉ là khung. /health phân biệt engine đã triển khai với publishedCourses (hiện chỉ ba gói lớp 10, mỗi gói 20 bài); không đồng nghĩa Android đã nối realtime hay đủ nội dung lớp 11–12.
+`/health` phân biệt engine với publishedCourses. Kho nội dung có chín gói lớp 10: ba môn Lý–Hóa–Sinh (20 bài mỗi môn) và sáu môn Toán, Văn, Anh, Sử, Địa, GDKT & Pháp luật (15 bài mỗi môn). Nội dung là phần nhập môn, chưa phủ trọn chương trình; lớp 11–12 chưa có bài. FastAPI local đọc các gói này trực tiếp; Supabase cần áp dụng migration `202610300001_remaining_grade10_curricula.sql`. Migration `202610300002_adaptive_placement.sql` cập nhật bài đầu vào và lộ trình cá nhân hóa.
 
 ## Nguồn kỹ thuật
 https://fastapi.tiangolo.com/tutorial/security/

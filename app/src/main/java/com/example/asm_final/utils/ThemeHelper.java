@@ -24,7 +24,9 @@ public final class ThemeHelper {
   }
 
   public static void setDarkMode(Context context, boolean enabled) {
-    preferences(context).edit().putBoolean(KEY_DARK_MODE, enabled).apply();
+    // Persist before AppCompat recreates the activity so a process restart during the
+    // configuration change cannot restore the previous appearance.
+    preferences(context).edit().putBoolean(KEY_DARK_MODE, enabled).commit();
 
     AppCompatDelegate.setDefaultNightMode(
         enabled ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);

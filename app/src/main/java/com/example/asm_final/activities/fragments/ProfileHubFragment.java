@@ -31,9 +31,9 @@ public final class ProfileHubFragment extends Fragment {
             },
             () -> shell().navigateTo(R.id.nav_edit_profile, true),
             () -> shell().navigateTo(R.id.nav_settings, true),
-            () -> shell().navigateTo(R.id.nav_category, false));
+            () -> shell().navigateTo(R.id.nav_category, false),
+            () -> shell().navigateTo(R.id.nav_competition, false));
     String username = getArguments() == null ? "" : getArguments().getString("USERNAME", "");
-    presenter.identity(username, username, null);
     return presenter.view();
   }
 
@@ -80,6 +80,32 @@ public final class ProfileHubFragment extends Fragment {
                 }
                 Set<SubjectId> chosen = subjects;
                 var result = services.overview().load(owner, grade);
+                org.json.JSONObject studySummary = null;
+                org.json.JSONObject badgeSummary = null;
+                java.util.List<com.example.asm_final.competition.FriendshipRepository.Item>
+                    acceptedFriends = new java.util.ArrayList<>();
+                try {
+                  for (var friend : services.friendships().list(owner)) {
+                    if ("ACCEPTED".equalsIgnoreCase(friend.state)) acceptedFriends.add(friend);
+                  }
+                } catch (Exception ignored) {
+                  // Keep profile available if social data cannot be reached.
+                }
+                if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) {
+                  try {
+                    studySummary = services.study().summary(owner);
+                  } catch (RuntimeException ignored) {
+                    // Keep the rest of the profile usable when the optional cloud summary is down.
+                  }
+                  try {
+                    badgeSummary = services.study().badges(owner);
+                  } catch (RuntimeException ignored) {
+                    // The UI presents an explicit unavailable state instead of inventing badge data.
+                  }
+                }
+                org.json.JSONObject finalStudySummary = studySummary;
+                org.json.JSONObject finalBadgeSummary = badgeSummary;
+                var finalAcceptedFriends = acceptedFriends;
                 new Handler(Looper.getMainLooper())
                     .post(
                         () -> {
@@ -88,15 +114,13 @@ public final class ProfileHubFragment extends Fragment {
                               || ActiveUser.get(context) != owner) return;
                           needsLogin = result.needsLogin;
                           presenter.identity(
-                              profile != null
-                                      && profile.fullName != null
-                                      && !profile.fullName.isBlank()
-                                  ? profile.fullName
-                                  : username,
-                              username,
-                              profile == null ? null : profile.avatar);
+                              userVisibleName(profile, username),
+                              profile == null ? null : profile.avatar,
+                              profile == null ? "" : profile.bio);
                           presenter.learning(grade, learning == null ? -1 : learning.goal, chosen);
                           presenter.render(result);
+                          presenter.activity(finalStudySummary, finalBadgeSummary);
+                          presenter.social(finalAcceptedFriends);
                         });
               } catch (RuntimeException unavailable) {
                 new Handler(Looper.getMainLooper())
@@ -108,6 +132,16 @@ public final class ProfileHubFragment extends Fragment {
                         });
               }
             });
+  }
+
+  /** A login handle or email is not a display name and must never appear on the profile. */
+  private static String userVisibleName(
+      com.example.asm_final.accounts.UserProfile profile, String loginName) {
+    if (profile == null || profile.fullName == null || profile.fullName.isBlank()) return "";
+    String name = profile.fullName.trim();
+    if (name.equalsIgnoreCase(loginName == null ? "" : loginName.trim())
+        || name.equalsIgnoreCase(profile.email == null ? "" : profile.email.trim())) return "";
+    return name;
   }
 
   @Override

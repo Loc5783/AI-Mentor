@@ -1,0 +1,4 @@
+<resources>
+<string name="schedule_connection_error">Chưa kết nối được lịch online. Thử lại khi có mạng.</string>
+<string name="schedule_retry">Thử lại</string>
+</resources>

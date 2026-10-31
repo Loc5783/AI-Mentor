@@ -125,4 +125,6 @@ def test_health_reports_active_subjects(api):
     assert result["learningEngineReady"] is True
     assert set(result["activeLessonSubjects"])=={"math","physics","chemistry","biology","literature","english","geography","history","economics_law"}
     assert len(result["frameworkOnlySubjects"])==0
+    assert len(result["publishedCourses"]) == 9
+    assert {course["grade"] for course in result["publishedCourses"]} == {10}
 

@@ -10,7 +10,7 @@ import com.example.mentor.data.ModuleDatabaseHelper;
 public class DatabaseHelper extends ModuleDatabaseHelper {
 
   private static final String DB_NAME = "accounts";
-  private static final int DB_VERSION = 1;
+  private static final int DB_VERSION = 2;
   private static final int BCRYPT_COST = 12;
 
   private static final String TABLE_USERS = "users";
@@ -23,6 +23,7 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
   public static final String COL_PHONE = "phone";
   public static final String COL_EMAIL = "email";
   public static final String COL_AVATAR = "avatar";
+  public static final String COL_BIO = "bio";
 
   public DatabaseHelper(Context context) {
     super(context.getApplicationContext(), DB_NAME, null, DB_VERSION);
@@ -49,14 +50,18 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
             + COL_EMAIL
             + " TEXT, "
             + COL_AVATAR
-            + " TEXT)";
+            + " TEXT, "
+            + COL_BIO
+            + " TEXT NOT NULL DEFAULT '')";
     db.execSQL(createTable);
     createLearnerProfiles(db);
   }
 
   @Override
   public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    throw new android.database.sqlite.SQLiteException("Missing account schema upgrade");
+    if (oldVersion < 2) {
+      db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_BIO + " TEXT NOT NULL DEFAULT ''");
+    }
   }
 
   private void createLearnerProfiles(SQLiteDatabase db) {
@@ -261,6 +266,18 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
       String email,
       String password,
       String avatar) {
+    return updateUser(username, fullName, address, phone, email, password, avatar, "");
+  }
+
+  public boolean updateUser(
+      String username,
+      String fullName,
+      String address,
+      String phone,
+      String email,
+      String password,
+      String avatar,
+      String bio) {
     if (isBlank(username)) return false;
 
     ContentValues values = new ContentValues();
@@ -269,6 +286,7 @@ public class DatabaseHelper extends ModuleDatabaseHelper {
     values.put(COL_PHONE, safe(phone));
     values.put(COL_EMAIL, safe(email));
     values.put(COL_AVATAR, safe(avatar));
+    values.put(COL_BIO, safe(bio));
 
     // Keep the current password when the field is empty. When a new password
     // is supplied, store it using the same BCrypt policy as registration.

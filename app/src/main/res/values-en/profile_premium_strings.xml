@@ -1,32 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="profile_eyebrow">PROFILE</string>
-    <string name="profile_premium_grade">Grade %1$d Student</string>
+    <string name="profile_grade_label">Grade %1$d</string>
     <string name="profile_grade_missing">No grade selected</string>
     <string name="profile_focus_title">Learning Focus &amp; Progress</string>
     <string name="profile_subjects_empty">You have not chosen any subjects yet.</string>
     <string name="profile_choose_subjects">Select subjects</string>
     <string name="profile_progress_offline">Progress data is offline. You can still open your lessons.</string>
-    <string name="profile_stats_title">Your progress</string>
-    <string name="profile_stats_pending">No learning progress numbers to show yet.</string>
-    <string name="profile_saved_data">Numbers saved on this device</string>
     <string name="profile_streak_label">Streak</string>
     <string name="profile_xp_label">Total experience</string>
     <string name="profile_lessons_label">Lessons completed</string>
-    <string name="profile_today_label">XP today</string>
-    <string name="profile_days_unit">days</string>
     <string name="profile_lessons_unit">lessons</string>
-    <string name="profile_badges_title">Badges</string>
-    <string name="profile_badges_empty">No badge data available. Achievements will appear here when ready.</string>
     <string name="profile_friends_title">Study friends</string>
     <string name="profile_friends_empty">No friends connected to display a shared study streak.</string>
     <string name="profile_editor_details">Account details</string>
-    <string name="profile_joined_date">JOINED %1$s</string>
     <string name="profile_quick_subjects">%1$d Subjects</string>
-    <string name="profile_following_label">Following</string>
-    <string name="profile_followers_label">Followers</string>
-    <string name="profile_add_friends">Add friends</string>
-    <string name="profile_qr_code">Profile QR Code</string>
+    <string name="profile_note_title">A little about you</string>
+    <string name="profile_note_hint">Share a learning goal or something you enjoy…</string>
+    <string name="profile_note_empty">No note yet. Share a learning goal or something you enjoy.</string>
+    <string name="profile_add_note">Add a note</string>
+    <string name="profile_bio_too_long">Notes can be up to 500 characters.</string>
     <string name="profile_overview_title">OVERVIEW</string>
     <string name="profile_streak_stat">%1$d days</string>
     <string name="profile_xp_stat">%1$d XP</string>
@@ -36,8 +29,15 @@
     <string name="profile_rank_silver">Silver</string>
     <string name="profile_rank_bronze">Bronze</string>
     <string name="profile_rank_pending">Unranked</string>
-    <string name="profile_lead_stat">%1$d times leading</string>
     <string name="profile_friends_streak_title">FRIENDS STREAK</string>
-    <string name="profile_challenge_title">MONTHLY CHALLENGE BADGES</string>
-    <string name="profile_feature_coming_soon">Feature is connecting with server</string>
+    <string name="profile_challenge_title">BADGE COLLECTION</string>
+    <string name="profile_badge_unlocked">Unlocked</string>
+    <string name="profile_badge_locked">Locked</string>
+    <string name="profile_badge_unavailable">Badges could not be loaded. Check your connection and refresh your profile.</string>
+    <string name="profile_badge_empty">No badges are available for this account yet.</string>
+    <string name="profile_study_time_title">Study time</string>
+    <string name="profile_study_time_empty">No study-time data is available for this account.</string>
+    <string name="profile_study_time_seconds">%1$d seconds recorded</string>
+    <string name="profile_study_time_minutes">%1$d minutes recorded</string>
+    <string name="profile_study_time_hours">%1$d hr %2$d min recorded</string>
 </resources>

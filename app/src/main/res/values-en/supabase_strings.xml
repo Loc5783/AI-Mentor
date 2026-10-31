@@ -1,0 +1,5 @@
+<resources>
+<string name="supabase_confirm_email">Please confirm your email using the Supabase email, then return and sign in with your email address.</string>
+<string name="supabase_email_required">Use your email address to sign in to your online account.</string>
+<string name="supabase_email_sender_required">This project cannot send to this address yet. For testing, use a Supabase team member email or configure SMTP.</string>
+</resources>

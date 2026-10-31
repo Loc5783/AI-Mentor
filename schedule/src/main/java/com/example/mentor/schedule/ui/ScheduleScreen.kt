@@ -90,6 +90,10 @@ fun ScheduleScreen(
         containerColor = androidx.compose.ui.graphics.Color.Transparent
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
+            if (viewModel.error.value) {
+                Text(stringResource(R.string.schedule_connection_error), Modifier.padding(16.dp), color = MaterialTheme.colorScheme.error)
+                TextButton(onClick = { viewModel.loadData() }) { Text(stringResource(R.string.schedule_retry)) }
+            }
             // Tabs cho Lịch học vs Nhiệm vụ
             TabRow(selectedTabIndex = selectedTabIndex,
                 containerColor = MaterialTheme.colorScheme.surface.copy(alpha = .9f)) {

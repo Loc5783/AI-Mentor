@@ -1,0 +1,1137 @@
+{
+  "subjectId": "economics_law",
+  "grade": 10,
+  "version": "intro-2026.1",
+  "title": "Giáo dục kinh tế và pháp luật: lựa chọn kinh tế và công dân",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_10",
+  "extendedReviews": false,
+  "sourceNote": "15 bài nhập môn lớp 10 do AI Mentor biên soạn theo yêu cầu cần đạt chung của Chương trình GDPT 2018; không sao chép một bộ SGK và chưa phủ toàn bộ năm học. Bài đầu vào dùng hai câu mỗi bài đã xuất bản để ước lượng nền tảng và đề xuất bài có thể bỏ qua. Nội dung cần giáo viên rà soát trước khi dùng chính thức.",
+  "lessons": [
+    {
+      "id": "economics_law-10-scarcity-choice",
+      "title": "Nhu cầu, khan hiếm và chi phí cơ hội",
+      "guidance": [
+        "Nguồn lực có hạn trong khi nhu cầu đa dạng. Lựa chọn một phương án thường làm mất lợi ích tốt nhất của phương án bị bỏ qua; đó là chi phí cơ hội."
+      ],
+      "examples": [
+        "Dùng hai giờ đi làm thêm thay vì ôn bài có chi phí cơ hội là phần học tập tốt nhất bị bỏ lỡ."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-scarcity-choice-q1",
+          "prompt": "Chi phí cơ hội là gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Lợi ích tốt nhất bị bỏ qua khi lựa chọn"
+            },
+            {
+              "id": "b",
+              "text": "Tổng mọi khoản tiền đã chi"
+            },
+            {
+              "id": "c",
+              "text": "Giá rẻ nhất trên thị trường"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nó phản ánh phương án tốt nhất đã không chọn."
+        },
+        {
+          "id": "economics_law-10-scarcity-choice-q2",
+          "prompt": "Nguồn lực khan hiếm có nghĩa là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không tồn tại"
+            },
+            {
+              "id": "b",
+              "text": "Luôn miễn phí"
+            },
+            {
+              "id": "c",
+              "text": "Không đủ để đáp ứng mọi nhu cầu cùng lúc"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Khan hiếm làm nảy sinh lựa chọn và phân bổ nguồn lực."
+        },
+        {
+          "id": "economics_law-10-scarcity-choice-q3",
+          "prompt": "Bạn có 100 nghìn, chọn mua sách thay vì vé xem phim. Chi phí cơ hội gần nhất là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Giá cuốn sách luôn luôn"
+            },
+            {
+              "id": "b",
+              "text": "Lợi ích của buổi xem phim đã không chọn"
+            },
+            {
+              "id": "c",
+              "text": "100 nghìn tự biến mất"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Chi phí cơ hội là giá trị phương án tốt nhất bị bỏ qua."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-economic-actors",
+      "title": "Các chủ thể của nền kinh tế",
+      "guidance": [
+        "Hộ gia đình tiêu dùng và cung cấp nguồn lực; doanh nghiệp sản xuất; Nhà nước ban hành chính sách, cung cấp dịch vụ công; các chủ thể tương tác qua thị trường."
+      ],
+      "examples": [
+        "Một hộ gia đình mua thực phẩm từ doanh nghiệp và cung cấp lao động cho thị trường việc làm."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-economic-actors-q1",
+          "prompt": "Doanh nghiệp thường có vai trò nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ ban hành luật"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ tiêu dùng cuối cùng"
+            },
+            {
+              "id": "c",
+              "text": "Tổ chức sản xuất hàng hóa hoặc dịch vụ"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Doanh nghiệp kết hợp nguồn lực để tạo sản phẩm hoặc dịch vụ."
+        },
+        {
+          "id": "economics_law-10-economic-actors-q2",
+          "prompt": "Nhà nước có thể cung cấp dịch vụ công nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ quảng cáo"
+            },
+            {
+              "id": "b",
+              "text": "Giáo dục công lập"
+            },
+            {
+              "id": "c",
+              "text": "Mọi hàng hóa tư nhân miễn phí"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Dịch vụ công phục vụ lợi ích chung và được tổ chức theo chính sách."
+        },
+        {
+          "id": "economics_law-10-economic-actors-q3",
+          "prompt": "Người lao động vừa là hộ tiêu dùng vừa cung cấp sức lao động. Điều này cho thấy?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Một chủ thể có thể tham gia nhiều thị trường"
+            },
+            {
+              "id": "b",
+              "text": "Thị trường chỉ có doanh nghiệp"
+            },
+            {
+              "id": "c",
+              "text": "Vai trò kinh tế không thể giao nhau"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Các chủ thể đảm nhiệm vai trò khác nhau tùy quan hệ trao đổi."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-market",
+      "title": "Thị trường và giá cả",
+      "guidance": [
+        "Thị trường là quan hệ trao đổi giữa người mua và người bán. Giá cả truyền tín hiệu về mức khan hiếm và nhu cầu nhưng có thể chịu tác động của quy định và điều kiện khác."
+      ],
+      "examples": [
+        "Khi một mặt hàng được ưa chuộng hơn trong khi cung ngắn hạn chưa đổi, giá có thể chịu áp lực tăng."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-market-q1",
+          "prompt": "Thị trường cần có yếu tố nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ Nhà nước"
+            },
+            {
+              "id": "b",
+              "text": "Người mua, người bán và trao đổi"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ một nhà kho"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Thị trường hình thành từ các quan hệ trao đổi hàng hóa, dịch vụ."
+        },
+        {
+          "id": "economics_law-10-market-q2",
+          "prompt": "Giá cả có thể truyền tín hiệu gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thông tin về cung cầu và mức khan hiếm"
+            },
+            {
+              "id": "b",
+              "text": "Mọi thông tin cá nhân của người mua"
+            },
+            {
+              "id": "c",
+              "text": "Bảo đảm chất lượng tuyệt đối"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giá là tín hiệu hữu ích nhưng không phản ánh đầy đủ mọi thuộc tính."
+        },
+        {
+          "id": "economics_law-10-market-q3",
+          "prompt": "Cầu tăng nhanh còn lượng hàng ngắn hạn ít đổi. Điều gì có thể xảy ra với giá?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chắc chắn giảm về 0"
+            },
+            {
+              "id": "b",
+              "text": "Không thể biến động"
+            },
+            {
+              "id": "c",
+              "text": "Có áp lực tăng"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nhu cầu tăng trong khi cung chưa điều chỉnh có thể đẩy giá lên."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-supply-demand",
+      "title": "Cung, cầu và cân bằng thị trường",
+      "guidance": [
+        "Cầu là lượng người mua sẵn sàng và có khả năng mua ở các mức giá; cung là lượng người bán sẵn sàng bán. Cân bằng xảy ra khi lượng cung bằng lượng cầu."
+      ],
+      "examples": [
+        "Nếu giá bán cao hơn mức cân bằng, lượng cung có thể vượt lượng cầu."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-supply-demand-q1",
+          "prompt": "Cầu có bao gồm điều gì ngoài mong muốn mua?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khả năng thanh toán"
+            },
+            {
+              "id": "b",
+              "text": "Sở thích không liên quan giá"
+            },
+            {
+              "id": "c",
+              "text": "Nguồn cung của doanh nghiệp"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Cầu kinh tế gắn với mong muốn và khả năng mua."
+        },
+        {
+          "id": "economics_law-10-supply-demand-q2",
+          "prompt": "Cân bằng thị trường khi nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Giá bằng 0"
+            },
+            {
+              "id": "b",
+              "text": "Mọi người mua cùng một món"
+            },
+            {
+              "id": "c",
+              "text": "Lượng cung bằng lượng cầu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tại cân bằng, kế hoạch mua và bán tương thích về lượng."
+        },
+        {
+          "id": "economics_law-10-supply-demand-q3",
+          "prompt": "Nếu mùa bão làm nguồn rau giảm, đường cung rau có thể?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không đổi trong mọi trường hợp"
+            },
+            {
+              "id": "b",
+              "text": "Dịch trái"
+            },
+            {
+              "id": "c",
+              "text": "Dịch phải"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Sản xuất ít hơn ở mỗi mức giá biểu thị cung giảm."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-competition",
+      "title": "Cạnh tranh và lựa chọn kinh doanh",
+      "guidance": [
+        "Cạnh tranh khuyến khích cải tiến và lựa chọn nhưng cần tuân thủ pháp luật. Hành vi gian lận, thông đồng hoặc gây hại người tiêu dùng không trở nên hợp lí chỉ vì mục tiêu lợi nhuận."
+      ],
+      "examples": [
+        "Hai cửa hàng cạnh tranh bằng chất lượng và dịch vụ lành mạnh hơn việc tung tin sai về đối thủ."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-competition-q1",
+          "prompt": "Một lợi ích tiềm năng của cạnh tranh là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bảo đảm mọi doanh nghiệp luôn lời"
+            },
+            {
+              "id": "b",
+              "text": "Xóa nhu cầu pháp luật"
+            },
+            {
+              "id": "c",
+              "text": "Khuyến khích nâng chất lượng và đổi mới"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Cạnh tranh có thể thúc đẩy cải tiến nhưng kết quả không được bảo đảm."
+        },
+        {
+          "id": "economics_law-10-competition-q2",
+          "prompt": "Tung tin sai về đối thủ là hành vi nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bảo vệ người tiêu dùng"
+            },
+            {
+              "id": "b",
+              "text": "Cạnh tranh không lành mạnh"
+            },
+            {
+              "id": "c",
+              "text": "Cạnh tranh bằng chất lượng"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Thông tin gian dối làm méo mó quyết định và gây thiệt hại."
+        },
+        {
+          "id": "economics_law-10-competition-q3",
+          "prompt": "Một doanh nghiệp muốn giữ khách bền vững, nên ưu tiên?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chất lượng, minh bạch và dịch vụ"
+            },
+            {
+              "id": "b",
+              "text": "Che giấu mọi điều kiện bán"
+            },
+            {
+              "id": "c",
+              "text": "Giả mạo đánh giá"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Uy tín dựa trên giá trị thực và thông tin trung thực."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-money-banking",
+      "title": "Tiền, thanh toán và ngân hàng",
+      "guidance": [
+        "Tiền làm phương tiện trao đổi, đơn vị đo giá trị và phương tiện cất giữ giá trị. Ngân hàng nhận tiền gửi, cung cấp dịch vụ thanh toán và cấp tín dụng theo điều kiện."
+      ],
+      "examples": [
+        "Chuyển khoản giúp thanh toán không dùng tiền mặt nhưng người dùng cần bảo vệ mã xác thực."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-money-banking-q1",
+          "prompt": "Một chức năng cơ bản của tiền là?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bảo đảm mọi khoản đầu tư sinh lời"
+            },
+            {
+              "id": "b",
+              "text": "Phương tiện trao đổi"
+            },
+            {
+              "id": "c",
+              "text": "Thay thế mọi quy định"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Tiền giúp trao đổi hàng hóa, dịch vụ thuận tiện hơn."
+        },
+        {
+          "id": "economics_law-10-money-banking-q2",
+          "prompt": "Mã OTP nên được xử lí thế nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không chia sẻ cho người khác"
+            },
+            {
+              "id": "b",
+              "text": "Gửi cho người tự xưng nhân viên"
+            },
+            {
+              "id": "c",
+              "text": "Đăng công khai"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Mã xác thực có thể cho phép giao dịch, cần bảo mật."
+        },
+        {
+          "id": "economics_law-10-money-banking-q3",
+          "prompt": "Tin nhắn lạ yêu cầu chuyển tiền để “mở khóa tài khoản”. Nên làm gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bấm liên kết ngay"
+            },
+            {
+              "id": "b",
+              "text": "Gửi mật khẩu để xác minh"
+            },
+            {
+              "id": "c",
+              "text": "Liên hệ ngân hàng qua kênh chính thức trước khi thao tác"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Kênh chính thức giúp kiểm tra yêu cầu và tránh lừa đảo."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-credit",
+      "title": "Tín dụng và vay có trách nhiệm",
+      "guidance": [
+        "Tín dụng là quan hệ vay và hoàn trả theo thỏa thuận, thường gồm lãi và thời hạn. Trước khi vay cần tính tổng nghĩa vụ, khả năng trả và đọc điều kiện hợp đồng."
+      ],
+      "examples": [
+        "Khoản vay nhỏ với phí cao có thể tốn kém hơn dự kiến nếu chỉ nhìn số tiền nhận."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-credit-q1",
+          "prompt": "Trước khi vay, cần xem điều gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Lãi, phí, thời hạn và khả năng trả"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ khoản tiền nhận"
+            },
+            {
+              "id": "c",
+              "text": "Lời hứa miệng duy nhất"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tổng nghĩa vụ thanh toán quyết định tính phù hợp của khoản vay."
+        },
+        {
+          "id": "economics_law-10-credit-q2",
+          "prompt": "Lãi suất thấp nhưng có nhiều phí ẩn. Người vay nên?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ so con số quảng cáo"
+            },
+            {
+              "id": "b",
+              "text": "Ký ngay"
+            },
+            {
+              "id": "c",
+              "text": "Đọc toàn bộ điều khoản và hỏi rõ tổng chi phí"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Phí ảnh hưởng tổng chi phí thực."
+        },
+        {
+          "id": "economics_law-10-credit-q3",
+          "prompt": "Bạn không chắc có thể trả khoản vay đúng hạn. Lựa chọn an toàn hơn là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bỏ qua hợp đồng"
+            },
+            {
+              "id": "b",
+              "text": "Hoãn quyết định và lập lại ngân sách"
+            },
+            {
+              "id": "c",
+              "text": "Vay thêm nơi khác ngay"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Đánh giá sức trả trước giúp tránh vòng xoáy nợ."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-state-budget",
+      "title": "Ngân sách nhà nước",
+      "guidance": [
+        "Ngân sách nhà nước là dự toán thu, chi được cơ quan có thẩm quyền quyết định theo luật. Chi ngân sách hướng tới nhiệm vụ công và phải được quản lí, giám sát."
+      ],
+      "examples": [
+        "Thu ngân sách có thể dùng cho trường học, y tế và hạ tầng theo kế hoạch được phê duyệt."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-state-budget-q1",
+          "prompt": "Ngân sách nhà nước chủ yếu phản ánh gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thu nhập của một gia đình"
+            },
+            {
+              "id": "b",
+              "text": "Giá cổ phiếu"
+            },
+            {
+              "id": "c",
+              "text": "Các khoản thu và chi công theo kế hoạch"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Ngân sách công được lập và quyết định theo quy định."
+        },
+        {
+          "id": "economics_law-10-state-budget-q2",
+          "prompt": "Vì sao cần giám sát chi tiêu công?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Để không cần báo cáo"
+            },
+            {
+              "id": "b",
+              "text": "Bảo đảm đúng mục đích và trách nhiệm giải trình"
+            },
+            {
+              "id": "c",
+              "text": "Để bỏ mọi dịch vụ công"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giám sát giúp sử dụng nguồn lực công minh bạch."
+        },
+        {
+          "id": "economics_law-10-state-budget-q3",
+          "prompt": "Một dự án công tăng chi phí so với dự toán. Cần làm gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Công khai căn cứ, điều chỉnh theo quy định và giám sát"
+            },
+            {
+              "id": "b",
+              "text": "Che giấu số liệu"
+            },
+            {
+              "id": "c",
+              "text": "Tự ý chuyển quỹ"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Điều chỉnh chi cần căn cứ và tuân thủ quy trình pháp luật."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-taxes",
+      "title": "Thuế và trách nhiệm công dân",
+      "guidance": [
+        "Thuế là khoản nộp bắt buộc theo luật để tạo nguồn lực cho nhiệm vụ công. Loại thuế, người nộp và cách tính phụ thuộc quy định pháp luật; không suy diễn nghĩa vụ từ lời truyền miệng."
+      ],
+      "examples": [
+        "Khi mua hàng, hóa đơn giúp ghi nhận giao dịch và quyền lợi bảo hành, đồng thời hỗ trợ kê khai đúng."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-taxes-q1",
+          "prompt": "Thuế có đặc điểm nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ do người nước ngoài nộp"
+            },
+            {
+              "id": "b",
+              "text": "Được quy định và thu theo pháp luật"
+            },
+            {
+              "id": "c",
+              "text": "Luôn là khoản tự nguyện"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Nghĩa vụ thuế được xác lập trong quy định pháp luật."
+        },
+        {
+          "id": "economics_law-10-taxes-q2",
+          "prompt": "Khi chưa rõ nghĩa vụ thuế cá nhân, nên tìm thông tin ở đâu?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cơ quan thuế hoặc văn bản chính thức"
+            },
+            {
+              "id": "b",
+              "text": "Tin nhắn không nguồn"
+            },
+            {
+              "id": "c",
+              "text": "Bình luận ẩn danh"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nguồn chính thức giúp xác định quy định hiện hành."
+        },
+        {
+          "id": "economics_law-10-taxes-q3",
+          "prompt": "Một cửa hàng đề nghị không xuất hóa đơn để giảm giá. Người mua nên cân nhắc?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đồng ý mọi điều kiện"
+            },
+            {
+              "id": "b",
+              "text": "Cung cấp OTP"
+            },
+            {
+              "id": "c",
+              "text": "Yêu cầu chứng từ hợp lệ để bảo vệ quyền lợi và tuân thủ quy định"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Chứng từ giúp chứng minh giao dịch; nghĩa vụ cụ thể theo luật áp dụng."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-production",
+      "title": "Sản xuất, chi phí và năng suất",
+      "guidance": [
+        "Sản xuất kết hợp lao động, vốn, tài nguyên và công nghệ để tạo hàng hóa, dịch vụ. Năng suất là kết quả tạo ra trên một đơn vị đầu vào trong khoảng thời gian xác định."
+      ],
+      "examples": [
+        "Nếu cùng số giờ làm tạo nhiều sản phẩm đạt chuẩn hơn, năng suất lao động tăng."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-production-q1",
+          "prompt": "Năng suất lao động thường so sánh gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Sản lượng với lượng lao động hoặc thời gian"
+            },
+            {
+              "id": "b",
+              "text": "Giá bán với màu bao bì"
+            },
+            {
+              "id": "c",
+              "text": "Thuế với dân số"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Cần xác định đầu ra và đầu vào để tính năng suất."
+        },
+        {
+          "id": "economics_law-10-production-q2",
+          "prompt": "Chi phí cố định thường thay đổi thế nào khi sản lượng ngắn hạn đổi?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Luôn tăng gấp đôi"
+            },
+            {
+              "id": "b",
+              "text": "Bằng 0"
+            },
+            {
+              "id": "c",
+              "text": "Không đổi ngay theo từng đơn vị sản phẩm"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Chi phí cố định không phụ thuộc trực tiếp sản lượng trong phạm vi nhất định."
+        },
+        {
+          "id": "economics_law-10-production-q3",
+          "prompt": "Xưởng muốn tăng lợi nhuận mà vẫn giữ chất lượng. Hướng phù hợp là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ghi sai khối lượng"
+            },
+            {
+              "id": "b",
+              "text": "Giảm lãng phí và cải thiện quy trình"
+            },
+            {
+              "id": "c",
+              "text": "Bớt nguyên liệu dưới chuẩn"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Nâng hiệu quả không nên vi phạm chất lượng hay quyền lợi khách hàng."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-consumer-rights",
+      "title": "Quyền và trách nhiệm người tiêu dùng",
+      "guidance": [
+        "Người tiêu dùng cần được cung cấp thông tin trung thực, an toàn và có cơ chế khiếu nại theo quy định. Cũng cần sử dụng hàng hóa đúng hướng dẫn và cung cấp phản ánh trung thực."
+      ],
+      "examples": [
+        "Giữ hóa đơn và ảnh lỗi sản phẩm giúp trình bày khiếu nại có căn cứ."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-consumer-rights-q1",
+          "prompt": "Thông tin nào người mua nên xem trước khi chọn sản phẩm?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ màu quảng cáo"
+            },
+            {
+              "id": "b",
+              "text": "Mật khẩu người bán"
+            },
+            {
+              "id": "c",
+              "text": "Thành phần, hướng dẫn, giá và cảnh báo"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Thông tin sản phẩm giúp quyết định an toàn và phù hợp."
+        },
+        {
+          "id": "economics_law-10-consumer-rights-q2",
+          "prompt": "Sản phẩm có lỗi, bước hữu ích là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đăng thông tin cá nhân của nhân viên"
+            },
+            {
+              "id": "b",
+              "text": "Giữ bằng chứng mua hàng và liên hệ kênh khiếu nại"
+            },
+            {
+              "id": "c",
+              "text": "Xóa hóa đơn"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Bằng chứng và kênh chính thức hỗ trợ xử lí minh bạch."
+        },
+        {
+          "id": "economics_law-10-consumer-rights-q3",
+          "prompt": "Quảng cáo hứa hẹn kết quả “chắc chắn” nhưng không có căn cứ. Người tiêu dùng nên?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Kiểm tra thông tin, điều kiện và nguồn độc lập"
+            },
+            {
+              "id": "b",
+              "text": "Tin vì có nhiều lượt thích"
+            },
+            {
+              "id": "c",
+              "text": "Chuyển tiền đặt cọc ngay"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Số lượt thích không thay thế bằng chứng về chất lượng."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-law-and-norms",
+      "title": "Pháp luật và quy tắc xã hội",
+      "guidance": [
+        "Pháp luật là hệ thống quy tắc xử sự chung do Nhà nước ban hành hoặc thừa nhận và bảo đảm thực hiện. Đạo đức, tập quán và nội quy cũng điều chỉnh hành vi nhưng không đồng nhất với luật."
+      ],
+      "examples": [
+        "Đi học muộn có thể vi phạm nội quy; hành vi chỉ là vi phạm pháp luật khi thỏa quy định pháp luật tương ứng."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-law-and-norms-q1",
+          "prompt": "Pháp luật khác tập quán ở điểm nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không áp dụng chung"
+            },
+            {
+              "id": "b",
+              "text": "Có hiệu lực và cơ chế bảo đảm theo Nhà nước"
+            },
+            {
+              "id": "c",
+              "text": "Luôn do một gia đình đặt ra"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Pháp luật có tính bắt buộc chung và cơ chế thực thi."
+        },
+        {
+          "id": "economics_law-10-law-and-norms-q2",
+          "prompt": "Mọi hành vi bị chê trách có tự động là vi phạm pháp luật không?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không"
+            },
+            {
+              "id": "b",
+              "text": "Có"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ khi lên mạng"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Đánh giá đạo đức và xác định vi phạm luật là hai việc khác nhau."
+        },
+        {
+          "id": "economics_law-10-law-and-norms-q3",
+          "prompt": "Một hành vi trái nội quy trường nhưng không đủ căn cứ là tội phạm. Nên mô tả thế nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chắc chắn phạm tội"
+            },
+            {
+              "id": "b",
+              "text": "Không cần xác minh"
+            },
+            {
+              "id": "c",
+              "text": "Vi phạm nội quy; không tự gán nhãn tội phạm"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Dùng đúng khái niệm tránh gây hiểu lầm về trách nhiệm pháp lí."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-legal-responsibility",
+      "title": "Thực hiện pháp luật và trách nhiệm",
+      "guidance": [
+        "Cá nhân cần tìm hiểu quy định liên quan, thực hiện quyền-nghĩa vụ và chịu trách nhiệm khi có hành vi vi phạm được xác định theo trình tự. Không tự kết luận trách nhiệm của người khác chỉ từ một đoạn tin."
+      ],
+      "examples": [
+        "Khi xảy ra va chạm, lưu thông tin an toàn và báo cơ quan phù hợp thay vì đăng kết luận chưa kiểm chứng."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-legal-responsibility-q1",
+          "prompt": "Trách nhiệm pháp lí nên được xác định dựa trên?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Quy định và trình tự có thẩm quyền"
+            },
+            {
+              "id": "b",
+              "text": "Tin đồn"
+            },
+            {
+              "id": "c",
+              "text": "Lượt bình chọn mạng"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Việc xác định cần chứng cứ và quy trình theo luật."
+        },
+        {
+          "id": "economics_law-10-legal-responsibility-q2",
+          "prompt": "Khi chứng kiến sự việc chưa rõ, nên làm gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đăng tên người bị nghi ngay"
+            },
+            {
+              "id": "b",
+              "text": "Tự xử phạt"
+            },
+            {
+              "id": "c",
+              "text": "Ghi nhận thông tin cần thiết và báo kênh phù hợp"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Cách tiếp cận an toàn tôn trọng quy trình và quyền cá nhân."
+        },
+        {
+          "id": "economics_law-10-legal-responsibility-q3",
+          "prompt": "Một bạn chia sẻ ảnh riêng tư của người khác để “cảnh cáo”. Vấn đề cần cân nhắc là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Màu ảnh"
+            },
+            {
+              "id": "b",
+              "text": "Quyền riêng tư và cách xử lí qua kênh hợp pháp"
+            },
+            {
+              "id": "c",
+              "text": "Lượt thích"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mục đích tốt không tự động biện minh cho việc xâm phạm quyền."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-rights-duties",
+      "title": "Quyền và nghĩa vụ công dân",
+      "guidance": [
+        "Quyền và nghĩa vụ được quy định trong Hiến pháp, luật và văn bản liên quan. Thực hiện quyền cần tôn trọng quyền của người khác và điều kiện pháp luật."
+      ],
+      "examples": [
+        "Quyền tự do biểu đạt không đồng nghĩa quyền bịa đặt hoặc xâm phạm danh dự người khác."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-rights-duties-q1",
+          "prompt": "Thực hiện quyền của mình cần tôn trọng điều gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ ý muốn cá nhân"
+            },
+            {
+              "id": "b",
+              "text": "Tin chưa kiểm chứng"
+            },
+            {
+              "id": "c",
+              "text": "Quyền và lợi ích hợp pháp của người khác"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Quyền đi cùng trách nhiệm và giới hạn theo pháp luật."
+        },
+        {
+          "id": "economics_law-10-rights-duties-q2",
+          "prompt": "Nguồn nào xác định khung quyền cơ bản của công dân Việt Nam?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bình luận cá nhân"
+            },
+            {
+              "id": "b",
+              "text": "Hiến pháp và pháp luật liên quan"
+            },
+            {
+              "id": "c",
+              "text": "Một quảng cáo"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hiến pháp là luật cơ bản, các luật cụ thể hóa quyền và nghĩa vụ."
+        },
+        {
+          "id": "economics_law-10-rights-duties-q3",
+          "prompt": "Một bài đăng công khai thông tin sai gây ảnh hưởng danh dự. Quyền nào có thể bị liên quan?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Quyền được bảo vệ danh dự, nhân phẩm"
+            },
+            {
+              "id": "b",
+              "text": "Quyền sở hữu đất của mọi người"
+            },
+            {
+              "id": "c",
+              "text": "Quyền đổi múi giờ"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Thông tin sai có thể xâm hại quyền nhân thân; cần xử lí theo quy định."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-10-digital-citizenship",
+      "title": "Công dân số và an toàn giao dịch",
+      "guidance": [
+        "Trong môi trường số, cần bảo vệ dữ liệu cá nhân, kiểm tra nguồn và thận trọng với yêu cầu chuyển tiền. Quyền riêng tư và trách nhiệm pháp luật vẫn áp dụng trên mạng."
+      ],
+      "examples": [
+        "Không gửi mật khẩu, mã OTP hoặc ảnh giấy tờ cho tài khoản chưa xác minh."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-10-digital-citizenship-q1",
+          "prompt": "Thông tin nào không nên gửi cho người lạ qua chat?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chủ đề học tập"
+            },
+            {
+              "id": "b",
+              "text": "Mật khẩu và mã OTP"
+            },
+            {
+              "id": "c",
+              "text": "Tên một cuốn sách"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mật khẩu và OTP có thể cho phép truy cập hoặc giao dịch."
+        },
+        {
+          "id": "economics_law-10-digital-citizenship-q2",
+          "prompt": "Một đường link yêu cầu đăng nhập lại ngân hàng và tạo cảm giác khẩn cấp. Nên?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mở ứng dụng/kênh chính thức để kiểm tra độc lập"
+            },
+            {
+              "id": "b",
+              "text": "Nhập thông tin ngay"
+            },
+            {
+              "id": "c",
+              "text": "Gửi mã xác thực cho người gửi"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tạo áp lực khẩn cấp là dấu hiệu cần thận trọng."
+        },
+        {
+          "id": "economics_law-10-digital-citizenship-q3",
+          "prompt": "Bạn nhận được ảnh chụp tin đồn về một bạn học. Cách ứng xử phù hợp là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chia sẻ để mọi người tự đoán"
+            },
+            {
+              "id": "b",
+              "text": "Thêm số điện thoại vào bài"
+            },
+            {
+              "id": "c",
+              "text": "Không phát tán; xác minh và tôn trọng quyền riêng tư"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Không lan truyền thông tin chưa kiểm chứng giúp hạn chế gây hại."
+        }
+      ]
+    }
+  ]
+}

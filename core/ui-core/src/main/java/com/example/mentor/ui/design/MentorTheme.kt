@@ -38,8 +38,8 @@ object MentorTokens {
     val NavyCard = Color(0xFF24334C)
     val NavyElevated = Color(0xFF30415F)
     val NavyOutline = Color(0xFF475A79)
-    val NavyOnSurface = Color(0xFFF4F7FC)
-    val NavyOnSurfaceVariant = Color(0xFFBBC9DF)
+    val NavyOnSurface = Color(0xFFFFFFFF)
+    val NavyOnSurfaceVariant = Color(0xFFE2EBF8)
     val LightCanvas = Color(0xFFEDF2FC)
     val LightSoft = Color(0xFFEDF1FB)
     val LightOutline = Color(0xFFD9E1F0)
@@ -124,7 +124,6 @@ object SubjectPalette {
     val Geography = Color(0xFF6FCFC4)
     val Literature = Color(0xFFF7998D)
     val English = Color(0xFFF2A6C8)
-    val Programming = Color(0xFFA3B4CC)
     val Economics = Color(0xFFE8B08A)
 
     fun getAccent(subjectId: String): Color {
@@ -137,7 +136,6 @@ object SubjectPalette {
             "geography" -> Geography
             "literature" -> Literature
             "english" -> English
-            "programming" -> Programming
             "economics_law", "economics" -> Economics
             else -> MentorTokens.Blue300
         }

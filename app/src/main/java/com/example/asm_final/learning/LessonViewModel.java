@@ -153,7 +153,7 @@ public final class LessonViewModel extends AndroidViewModel {
   }
 
   public static String normalizeSubject(String subject) {
-    return subject == null ? "" : subject.trim().toLowerCase();
+    return subject == null ? "" : subject.trim().toLowerCase(java.util.Locale.ROOT);
   }
 
   public static String scopeKey(int owner, String subject, int grade) {
@@ -332,7 +332,9 @@ public final class LessonViewModel extends AndroidViewModel {
     if (this.apiFactory != null) {
       this.api = this.apiFactory.create(account);
     } else if (getApplication() != null) {
-      this.api = new BackendClient(getApplication(), account);
+      this.api = com.example.asm_final.supabase.SupabaseHttp.enabled(getApplication())
+          ? new com.example.asm_final.supabase.SupabaseLessonApiClient(getApplication(), account)
+          : new BackendClient(getApplication(), account);
     }
 
     enrollKey = stableKey(currentScopeKey() + ":enrollKey");

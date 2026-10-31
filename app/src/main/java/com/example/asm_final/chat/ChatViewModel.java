@@ -103,6 +103,7 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
   }
 
   public static int error(Exception error) {
+    if (error.getCause() instanceof Exception) return error((Exception) error.getCause());
     if (error instanceof LocalChatFiles.FileFailure)
       return ((LocalChatFiles.FileFailure) error).tooLarge
           ? R.string.chat_file_large

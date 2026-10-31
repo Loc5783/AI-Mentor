@@ -1,0 +1,18 @@
+<resources>
+    <string name="friends_manage_title">Bạn bè học tập</string>
+    <string name="friends_manage_subtitle">Kết bạn từ bảng xếp hạng chung, xem và xử lý lời mời tại đây.</string>
+    <string name="friends_empty">Chưa có bạn bè hoặc lời mời nào.</string>
+    <string name="friends_load_error">Chưa tải được danh sách bạn bè. Thử tải lại.</string>
+    <string name="friends_action_error">Thao tác chưa thành công. Có thể lời mời đã thay đổi; hãy tải lại danh sách.</string>
+    <string name="friends_learner">Học viên</string>
+    <string name="friends_incoming">Lời mời kết bạn đang chờ</string>
+    <string name="friends_outgoing">Đã gửi lời mời</string>
+    <string name="friends_add">Kết bạn</string>
+    <string name="friends_accept">Chấp nhận</string>
+    <string name="friends_decline">Từ chối</string>
+    <string name="friends_remove">Xóa bạn</string>
+    <string name="friends_request_sent">Đã gửi lời mời kết bạn.</string>
+    <string name="friends_accepted">Đã chấp nhận lời mời.</string>
+    <string name="friends_declined">Đã từ chối lời mời.</string>
+    <string name="friends_removed">Đã xóa bạn bè.</string>
+</resources>

@@ -1,6 +1,6 @@
-# Nội dung Lý – Hóa – Sinh lớp 10–12
+# Kế hoạch nội dung chín môn — phạm vi đang làm: lớp 10
 
-Cập nhật 20/10/2026. Người dùng chọn nội dung các lớp 10, 11, 12 đang dùng hiện hành.
+Cập nhật 30/10/2026. App đã có lộ trình và nội dung nhập môn lớp 10 cho cả chín môn; coverage chương trình từng môn vẫn còn một phần. Lớp 11–12 để giai đoạn sau.
 
 ## Nguồn và mốc nội dung
 - Bám chương trình GDPT hiện hành và các cập nhật liên quan; Kết nối tri thức với cuộc sống làm mốc sắp xếp nội dung cho năm học 2026–2027.
@@ -9,13 +9,12 @@ Cập nhật 20/10/2026. Người dùng chọn nội dung các lớp 10, 11, 12 
 - [Chương trình tổng thể hợp nhất của Bộ GDĐT](https://moet.gov.vn/content/vanban/Lists/VBPQ/Attachments/1483/vbhn-chuong-trinh-tong-the.pdf) để đối chiếu cấu trúc. Chưa đủ thay cho chuẩn chi tiết từng môn.
 
 ## Trạng thái runtime
-| Môn | Lớp10 | Lớp11 | Lớp12 |
+| Môn | Lớp 10 | Lớp 11 | Lớp 12 |
 |---|---|---|---|
-| Vật lý | 20 bài/60 câu, 4 quiz ôn | Chưa biên soạn | Chưa biên soạn |
-| Hóa học | 20 bài/60 câu, 4 quiz ôn | Chưa biên soạn | Chưa biên soạn |
-| Sinh học | 20 bài/60 câu, 4 quiz ôn | Chưa biên soạn | Chưa biên soạn |
+| Vật lý, Hóa học, Sinh học | 20 bài/60 câu, 4 quiz ôn mỗi môn | Chưa biên soạn | Chưa biên soạn |
+| Toán, Ngữ văn, Tiếng Anh, Lịch sử, Địa lí, GDKT & Pháp luật | 15 bài/45 câu, 3 quiz ôn mỗi môn; nội dung nhập môn từng phần | Chưa biên soạn | Chưa biên soạn |
 
-Ba gói backend/curriculum hiện có chưa được ánh xạ là đủ mục lục Kết nối tri thức. Sáu môn khác vẫn chỉ giữ khung.
+Chín gói backend/curriculum chưa được ánh xạ là đủ mục lục một bộ SGK. Sáu gói 15 bài là phần nhập môn tự biên soạn theo yêu cầu cần đạt chung, chưa thay thế đầy đủ chương trình môn học.
 
 ## Bước xây dựng
 1. Đọc chuẩn môn học và mục lục tài liệu nhà xuất bản đúng chín tổ hợp môn/lớp; ghi nguồn/phiên bản vào bảng coverage.
@@ -26,6 +25,12 @@ Ba gói backend/curriculum hiện có chưa được ánh xạ là đủ mục l
 6. Giữ ID thưởng ổn định khi sửa nhỏ; thay cấu trúc phải có version/migration, không làm mất tiến độ hoặc nhận EXP lặp.
 
 Tài liệu này chốt nguồn và cách triển khai, chưa phải mục lục chi tiết đã đối chiếu hay nội dung đủ cả năm.
+
+## Sáu môn bổ sung lớp 10 — 30/10/2026
+
+Đã biên soạn 90 bài nhập môn (15 bài mỗi môn), 270 câu hỏi có giải thích và 18 quiz ôn (3 quiz 10 câu mỗi môn) cho Toán, Ngữ văn, Tiếng Anh, Lịch sử, Địa lí, Giáo dục kinh tế và pháp luật. Nội dung tự biên soạn theo chủ đề và yêu cầu cần đạt chung; chưa đối chiếu trọn mục lục Kết nối tri thức hay các bộ SGK khác. Cần giáo viên rà soát tính chính xác, thuật ngữ và độ khó trước khi dùng chính thức.
+
+Các gói được đưa vào backend local ngay khi build nội dung. Hai migration `202610300001_remaining_grade10_curricula.sql` và `202610300002_adaptive_placement.sql` đã được áp dụng lên project Supabase đã liên kết ngày 30/10/2026; trạng thái remote đã được xác nhận bằng `migration list`.
 
 ## Bổ sung 15 bài mỗi môn — 20/10/2026
 

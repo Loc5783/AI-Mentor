@@ -19,7 +19,7 @@
     <string name="auth_terms_link">Xem điều khoản và quyền riêng tư</string>
     <string name="auth_terms_required">Vui lòng đọc và chấp thuận điều khoản trước khi tạo tài khoản.</string>
     <string name="auth_terms_title">Sử dụng AI Mentor có trách nhiệm</string>
-    <string name="auth_terms_body">AI Mentor hỗ trợ học tập, không thay thế giáo viên hoặc việc tự suy nghĩ. Nội dung AI có thể chưa chính xác; hãy đối chiếu sách giáo khoa và nguồn đáng tin cậy.\n\nTài khoản và hồ sơ học hiện được lưu trên thiết bị. Mật khẩu được băm BCrypt, không lưu nguyên văn. Khi dùng tính năng AI có kết nối, câu hỏi và ảnh bạn chủ động gửi sẽ được chuyển tới dịch vụ AI được cấu hình. Không gửi dữ liệu riêng tư hoặc thông tin của người khác khi chưa được phép.\n\nKhối lớp, môn quan tâm và mục tiêu dùng để hiển thị hồ sơ học của bạn. Bạn có thể thay đổi thông tin tài khoản trong Hồ sơ. Hiện chưa có đồng bộ nhiều thiết bị hoặc xác minh email qua máy chủ. Đây là thông báo cho bản ứng dụng hiện tại; bản phát hành có máy chủ cần cập nhật chính sách tương ứng.</string>
+    <string name="auth_terms_body">AI Mentor hỗ trợ việc học, không thay thế giáo viên hoặc suy nghĩ của chính bạn. Câu trả lời AI có thể chưa chính xác; hãy đối chiếu với sách giáo khoa và nguồn đáng tin cậy.\n\nTài khoản, hồ sơ và tiến độ học được lưu qua dịch vụ Supabase; một số dữ liệu có thể được giữ tạm trên thiết bị để ứng dụng hoạt động thuận tiện hơn. Khi gửi câu hỏi hoặc ảnh cho AI, nội dung đó được chuyển tới dịch vụ AI đang cấu hình. Chỉ chia sẻ nội dung bạn có quyền sử dụng và tránh gửi thông tin riêng tư không cần thiết.\n\nTên hiển thị, khối lớp, môn học và ghi chú giúp cá nhân hóa trải nghiệm; ghi chú hồ sơ có thể hiển thị với người học khác. Bạn có thể chỉnh sửa các thông tin này trong Hồ sơ.</string>
     <string name="auth_email_help">Dùng email bạn đang sử dụng; không bắt buộc Gmail.</string>
     <string name="auth_password_rules">Từ 8 ký tự, có chữ hoa và số; tối đa 72 byte UTF-8.</string>
     <string name="auth_valid">Thông tin hợp lệ</string>
@@ -28,8 +28,12 @@
     <string name="auth_registration_failed">Chưa thể tạo tài khoản với thông tin này. Hãy kiểm tra lại hoặc thử đăng nhập.</string>
     <string name="auth_theme_toggle">Đổi sáng / tối</string>
     <string name="auth_language_toggle">Đổi ngôn ngữ</string>
+    <string name="auth_language_label">VI / EN</string>
+    <string name="auth_theme_label">◐</string>
     <string name="auth_back_login">Về đăng nhập</string>
     <string name="auth_back">Quay lại</string>
+    <string name="settings_logout_title">Kết thúc buổi học?</string>
+    <string name="settings_logout_message">Tài khoản của bạn sẽ được đăng xuất trên thiết bị này. Tiến độ đã đồng bộ vẫn được giữ lại.</string>
     <string name="auth_next">Tiếp tục</string>
     <string name="auth_skip">Bỏ qua giới thiệu</string>
     <string name="auth_start">Bắt đầu khám phá</string>
@@ -39,7 +43,7 @@
     <string name="auth_guide">Hướng dẫn sử dụng</string>
     <string name="onboard_step">Bước %1$d / 4</string>
     <string name="onboard_1_title">Chào mừng bạn đến với AI Mentor! 🌸</string>
-    <string name="onboard_1_body">Học thông minh hơn, theo tốc độ của bạn.\n\nKhám phá các môn học, với lộ trình Lý, Hóa và Sinh. Khi gặp câu hỏi khó, bạn có thêm một người bạn để cùng tìm hiểu.</string>
+    <string name="onboard_1_body">Học thông minh hơn, theo tốc độ của bạn.\n\nKhám phá các môn học lớp 10 với lộ trình riêng theo từng môn. Khi gặp câu hỏi khó, bạn có thêm một người bạn để cùng tìm hiểu.</string>
     <string name="onboard_2_title">Học cùng AI, hiểu bài theo cách của bạn</string>
     <string name="onboard_2_body">Đặt câu hỏi hoặc gửi ảnh đề bài.\n\nXem giải thích từng bước, lưu ghi chú và quay lại những cuộc trò chuyện cần thiết. Các tính năng AI cần kết nối và dịch vụ được cấu hình.</string>
     <string name="onboard_3_title">Mỗi học sinh đều có hành trình riêng</string>
@@ -83,6 +87,7 @@
     <string name="auth_resend_wait_timer">Gửi lại sau (%1$ds)</string>
     <string name="auth_token_required">Vui lòng nhập mã xác minh.</string>
     <string name="auth_route_error">Chưa thể tải trạng thái tài khoản. Hãy đăng nhập lại.</string>
+    <string name="supabase_email_confirmed_return">Email đã được xác thực. Đăng nhập để tiếp tục.</string>
     <string-array name="learner_goals">
         <item>@string/profile_goal_0</item>
         <item>@string/profile_goal_1</item>

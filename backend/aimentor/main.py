@@ -3,7 +3,6 @@ import asyncio
 import base64
 
 import json
-import os
 
 from pathlib import Path
 
@@ -32,19 +31,6 @@ from .overview import LearningOverview
 from .learning_stats import reward_summary, learning_day
 
 from .library import LibraryService
-from .exam import ExamService
-from .ai_practice import (
-    AiPracticeService,
-    FakeAiProvider,
-    GeminiAiProvider,
-    UnconfiguredAiProvider,
-    VALID_SUBJECTS,
-    VALID_DIFFICULTIES,
-    MIN_QUESTIONS,
-    MAX_QUESTIONS,
-    DEFAULT_QUESTIONS,
-    DEFAULT_GEMINI_MODEL,
-)
 
 from .admin_web import ADMIN_HTML
 
@@ -80,10 +66,6 @@ def create_app(settings=None):
 
     library.seed_sample_physics()
 
-    exam=ExamService(database)
-
-    exam.seed_sample_exams()
-
     app=FastAPI(title="AI Mentor API",version="0.2.0",
 
         description="Working account/chat/profile/event backend. Learning engine integration is in progress; six other subject modules remain framework-only.")
@@ -95,40 +77,6 @@ def create_app(settings=None):
     app.state.learning=learning
 
     app.state.library=library
-    app.state.exam=exam
-    ai_provider = getattr(settings, "ai_provider", None)
-    if ai_provider is None:
-        raw_key = os.environ.get("GEMINI_API_KEY", "")
-        gemini_key = raw_key.strip()
-        provider_type = os.environ.get('AI_PROVIDER_TYPE', 'auto').strip().lower()
-        raw_model = os.environ.get("GEMINI_MODEL", "")
-        if "GEMINI_MODEL" in os.environ and not raw_model.strip():
-            raise ValueError("GEMINI_MODEL không được để trống hoặc chỉ chứa khoảng trắng.")
-        gemini_model = raw_model.strip()
-
-        if provider_type == 'fake':
-            ai_provider = FakeAiProvider(demo_mode=True)
-        elif provider_type == 'unconfigured':
-            ai_provider = UnconfiguredAiProvider()
-        elif provider_type not in ('auto', 'gemini'):
-            raise ValueError('AI_PROVIDER_TYPE must be auto, gemini, fake or unconfigured')
-        elif provider_type == 'gemini':
-            if not gemini_key:
-                raise ValueError("GEMINI_API_KEY không được để trống khi AI_PROVIDER_TYPE=gemini.")
-            if not gemini_model:
-                raise ValueError("GEMINI_MODEL không được để trống khi AI_PROVIDER_TYPE=gemini. Do Google phân quyền model theo tài khoản, vui lòng thiết lập model khả dụng cho tài khoản của bạn (ví dụ gemini-3.8-flash hoặc gemini-2.5-flash).")
-            ai_provider = GeminiAiProvider(gemini_key, model=gemini_model)
-        elif gemini_key:
-            if not gemini_model:
-                raise ValueError("GEMINI_MODEL không được để trống khi cung cấp GEMINI_API_KEY. Vui lòng thiết lập model khả dụng cho tài khoản của bạn (ví dụ gemini-3.8-flash hoặc gemini-2.5-flash).")
-            ai_provider = GeminiAiProvider(gemini_key, model=gemini_model)
-        elif provider_type == 'auto' and getattr(settings, "demo_accounts", False):
-            ai_provider = FakeAiProvider(demo_mode=True)
-        else:
-            ai_provider = UnconfiguredAiProvider()
-
-    ai_practice = AiPracticeService(database, provider=ai_provider)
-    app.state.ai_practice = ai_practice
 
 
 
@@ -1068,106 +1016,6 @@ def create_app(settings=None):
 
 
 
-    # --- EXAM PREP ENDPOINTS ---
-
-    @app.get("/exams", tags=["Exam"])
-
-    def list_exams(
-
-        subject_id: str = Query("physics"),
-
-        grade: int = Query(10, ge=10, le=12),
-
-        exam_type: str | None = None,
-
-        semester: int | None = None,
-
-        user=Depends(current)
-
-    ):
-
-        return exam.list_exams(subject_id, grade, exam_type, semester)
-
-
-
-    @app.get("/exams/sessions", tags=["Exam"])
-
-    def list_exam_sessions(
-
-        exam_id: str | None = None,
-
-        subject_id: str | None = None,
-
-        grade: int | None = None,
-
-        state: str | None = None,
-
-        limit: int = Query(20, ge=1, le=100),
-
-        user=Depends(current)
-
-    ):
-
-        return exam.list_sessions(user["id"], exam_id, subject_id, grade, state, limit)
-
-
-
-    @app.get("/exams/{exam_id}", tags=["Exam"])
-
-    def get_exam(exam_id: str, user=Depends(current)):
-
-        return exam.get_exam_for_student(exam_id)
-
-
-
-    @app.post("/exams/sessions", status_code=201, tags=["Exam"])
-
-    def start_exam_session(
-
-        body: models.ExamSessionStart,
-
-        key: str | None = Header(None, alias="Idempotency-Key"),
-
-        user=Depends(current)
-
-    ):
-
-        return exam.start_session(user["id"], body.examId, idempotency_key=key)
-
-
-
-    @app.get("/exams/sessions/{session_id}", tags=["Exam"])
-
-    def get_exam_session(session_id: str, user=Depends(current)):
-
-        return exam.get_session(user["id"], session_id)
-
-
-
-    @app.post("/exams/sessions/{session_id}/answers", tags=["Exam"])
-
-    def save_exam_answer(session_id: str, body: models.ExamAnswerSave, user=Depends(current)):
-
-        return exam.save_answer(user["id"], session_id, body.questionId, body.selectedOption, body.revision)
-
-
-
-    @app.post("/exams/sessions/{session_id}/submit", tags=["Exam"])
-
-    def submit_exam_session(
-
-        session_id: str,
-
-        key: str | None = Header(None, alias="Idempotency-Key"),
-
-        user=Depends(current)
-
-    ):
-
-        return exam.submit_session(user["id"], session_id, idempotency_key=key)
-
-
-
     # --- ADMIN ENDPOINTS ---
 
     def admin_user(user=Depends(current)):
@@ -1212,31 +1060,11 @@ def create_app(settings=None):
 
 
 
-    @app.get("/admin/questions/{qid}", tags=["Admin"])
-
-    def admin_get_question(qid: str, admin=Depends(admin_user)):
-
-        return library.get_question_by_id(qid)
-
-
-
     @app.post("/admin/questions", tags=["Admin"])
 
-    def admin_upsert_question(body: models.AdminQuestionCreate, admin=Depends(admin_user), if_match: str | None = Header(None, alias="If-Match")):
+    def admin_upsert_question(body: models.AdminQuestionCreate, admin=Depends(admin_user)):
 
-        expected_ver = body.expectedVersion
-
-        if expected_ver is None and if_match:
-
-            try:
-
-                expected_ver = int(if_match.strip('"'))
-
-            except (ValueError, TypeError):
-
-                pass
-
-        return library.create_or_update_question_admin(admin["id"], body.model_dump(), expected_version=expected_ver)
+        return library.create_or_update_question_admin(admin["id"], body.model_dump())
 
 
 
@@ -1277,72 +1105,6 @@ def create_app(settings=None):
     def admin_get_quiz(quiz_id: str, admin=Depends(admin_user)):
 
         return library.get_quiz_admin_by_id(quiz_id)
-
-
-
-    @app.get("/admin/exams", tags=["Admin"])
-
-    def admin_list_exams(
-
-        subject_id: str | None = None,
-
-        grade: int | None = Query(None, ge=10, le=12),
-
-        exam_type: str | None = None,
-
-        semester: int | None = None,
-
-        status: str | None = None,
-
-        admin=Depends(admin_user)
-
-    ):
-
-        return exam.list_exams_admin(subject_id, grade, exam_type, semester, status)
-
-
-
-    @app.get("/admin/exams/{exam_id}", tags=["Admin"])
-
-    def admin_get_exam(exam_id: str, admin=Depends(admin_user)):
-
-        return exam.get_exam_admin_by_id(exam_id)
-
-
-
-    @app.post("/admin/exams", status_code=201, tags=["Admin"])
-
-    def admin_upsert_exam(
-
-        body: models.AdminExamCreate,
-
-        admin=Depends(admin_user),
-
-        if_match: str | None = Header(None, alias="If-Match")
-
-    ):
-
-        expected_ver = body.expectedVersion
-
-        if expected_ver is None and if_match:
-
-            try:
-
-                expected_ver = int(if_match.strip('"'))
-
-            except (ValueError, TypeError):
-
-                pass
-
-        return exam.create_or_update_exam_admin(admin["id"], body.model_dump(), expected_version=expected_ver)
-
-
-
-    @app.post("/admin/exams/{exam_id}/publish", tags=["Admin"])
-
-    def admin_publish_exam(exam_id: str, publish: bool = True, admin=Depends(admin_user)):
-
-        return exam.publish_exam_admin(exam_id, publish=publish)
 
 
 
@@ -1388,104 +1150,11 @@ def create_app(settings=None):
 
     @app.post("/admin/import/confirm", tags=["Admin"])
 
-    def admin_import_confirm(body: models.AdminImportConfirm, admin=Depends(admin_user), key: str | None = Header(None, alias="Idempotency-Key")):
+    def admin_import_confirm(body: models.AdminImportConfirm, admin=Depends(admin_user)):
 
-        return library.confirm_import(admin["id"], body.validRows, body.publish, idempotency_key=key or body.importKey)
-
-
+        return library.confirm_import(admin["id"], body.validRows, body.publish)
 
 
-    # --- AI PRACTICE ENDPOINTS ---
-    @app.get("/ai-practice/config", tags=["AI Practice"])
-    def ai_practice_config():
-        return {
-            "configured": ai_practice.provider.is_configured(),
-            "provider": 'demo' if isinstance(ai_practice.provider, FakeAiProvider) else 'gemini' if isinstance(ai_practice.provider, GeminiAiProvider) else 'unconfigured',
-            "generationLimit24h": 20,
-            "explanationLimit24h": 50,
-            "subjects": sorted(list(VALID_SUBJECTS)),
-            "difficulties": ["EASY", "MEDIUM", "HARD"],
-            "minQuestions": MIN_QUESTIONS,
-            "maxQuestions": MAX_QUESTIONS,
-            "defaultQuestions": DEFAULT_QUESTIONS,
-        }
-
-    @app.post("/ai-practice/sessions", status_code=201, tags=["AI Practice"])
-    def ai_practice_session_create(
-        body: models.AiPracticeSessionCreate,
-        user=Depends(current),
-        key: str | None = Header(None, alias="Idempotency-Key")
-    ):
-        return ai_practice.create_session(
-            user_id=user["id"],
-            subject_id=body.subjectId,
-            grade=body.grade,
-            topic=body.topic,
-            difficulty=body.difficulty,
-            question_count=body.questionCount,
-            idempotency_key=key,
-        )
-
-    @app.get("/ai-practice/sessions/{session_id}", tags=["AI Practice"])
-    def ai_practice_session_get(session_id: str, user=Depends(current)):
-        return ai_practice.get_session(user["id"], session_id)
-
-    @app.post("/ai-practice/sessions/{session_id}/answer", tags=["AI Practice"])
-    def ai_practice_answer_submit(
-        session_id: str,
-        body: models.AiPracticeAnswerSubmit,
-        user=Depends(current)
-    ):
-        return ai_practice.submit_answer(
-            user_id=user["id"],
-            session_id=session_id,
-            question_id=body.questionId,
-            selected_option=body.selectedOption,
-            submission_id=body.submissionId,
-        )
-
-    @app.post("/ai-practice/sessions/{session_id}/skip", tags=["AI Practice"])
-    def ai_practice_question_skip(
-        session_id: str,
-        body: models.AiPracticeQuestionSkip,
-        user=Depends(current)
-    ):
-        return ai_practice.skip_question(
-            user_id=user["id"],
-            session_id=session_id,
-            question_id=body.questionId,
-        )
-
-    @app.post("/ai-practice/sessions/{session_id}/complete", tags=["AI Practice"])
-    def ai_practice_session_complete(session_id: str, user=Depends(current)):
-        return ai_practice.complete_session(user["id"], session_id)
-
-    @app.post("/ai-practice/sessions/{session_id}/report", tags=["AI Practice"])
-    def ai_practice_question_report(
-        session_id: str,
-        body: models.AiPracticeQuestionReport,
-        user=Depends(current)
-    ):
-        return ai_practice.report_question(
-            user_id=user["id"],
-            session_id=session_id,
-            question_id=body.questionId,
-            reason=body.reason,
-            details=body.details,
-        )
-
-    @app.post("/ai-practice/sessions/{session_id}/explain-more", tags=["AI Practice"])
-    def ai_practice_explain_more(
-        session_id: str,
-        body: models.AiPracticeExplainMore,
-        user=Depends(current)
-    ):
-        return ai_practice.explain_more(
-            user_id=user["id"],
-            session_id=session_id,
-            question_id=body.questionId,
-            student_query=body.query,
-        )
 
     return app
 
@@ -1494,3 +1163,6 @@ def create_app(settings=None):
 
 
 app=create_app()
+
+
+

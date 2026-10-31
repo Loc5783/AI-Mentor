@@ -2,1151 +2,249 @@
   "subjectId": "math",
   "grade": 11,
   "version": "intro-2026.1",
-  "title": "Toán 11: Lượng giác, dãy số, giới hạn và hình học không gian",
+  "title": "Toán 11: Hàm số, Dãy số, Giới hạn và Hình học không gian",
   "published": true,
   "coverage": "PARTIAL_GRADE_11",
   "extendedReviews": false,
-  "sourceNote": "Biên soạn theo khung GDPT 2018. Toán 11 tập trung vào các khái niệm giải tích ban đầu và hình học không gian kinh điển.",
+  "sourceNote": "Bài học Lớp 11 do AI Mentor biên soạn theo yêu cầu cần đạt Chương trình GDPT 2018.",
   "lessons": [
     {
-      "id": "math-11-ham-so-luong-giac",
-      "title": "Hàm số lượng giác và đồ thị",
+      "id": "math-11-trig",
+      "title": "Hàm số lượng giác & Phương trình lượng giác",
       "guidance": [
-        "Hàm y=sinx, y=cosx có tập xác định R, tập giá trị [-1; 1]. Hàm sinx là hàm lẻ, cosx là hàm chẵn. Chu kì tuần hoàn của sinx và cosx là 2π."
+        "Hàm số sin, cos, tan có tính tuần hoàn. Phương trình sin x = sin a có nghiệm x = a + k2π hoặc x = π - a + k2π."
       ],
       "examples": [
-        "GTLN của y = 2sinx + 1 là 3, đạt được khi sinx = 1."
+        "Giải sin x = 1/2 => x = π/6 + k2π hoặc x = 5π/6 + k2π (k ∈ Z)."
       ],
       "questions": [
         {
-          "id": "math-11-ham-so-luong-giac-q1",
+          "id": "math-11-trig-q1",
+          "prompt": "Tập giá trị của hàm số y = sin x là?",
           "difficulty": "EASY",
-          "prompt": "Tập giá trị của hàm số y = cos x là?",
           "options": [
-            {
-              "id": "a",
-              "text": "[-1; 1]"
-            },
-            {
-              "id": "b",
-              "text": "(0; 1)"
-            },
-            {
-              "id": "c",
-              "text": "R"
-            }
+            { "id": "a", "text": "[-1; 1]" },
+            { "id": "b", "text": "[0; 1]" },
+            { "id": "c", "text": "R" }
           ],
           "correctOptionId": "a",
-          "explanation": "Hàm cosx luôn nhận giá trị từ -1 đến 1."
+          "explanation": "Giá trị sin x luôn nằm trong đoạn [-1; 1]."
         },
         {
-          "id": "math-11-ham-so-luong-giac-q2",
+          "id": "math-11-trig-q2",
+          "prompt": "Phương trình sin x = 0 có nghiệm tổng quát là?",
           "difficulty": "MEDIUM",
-          "prompt": "Chu kì tuần hoàn của hàm số y = tan x là?",
           "options": [
-            {
-              "id": "a",
-              "text": "2π"
-            },
-            {
-              "id": "b",
-              "text": "π"
-            },
-            {
-              "id": "c",
-              "text": "π/2"
-            }
+            { "id": "a", "text": "x = kπ" },
+            { "id": "b", "text": "x = k2π" },
+            { "id": "c", "text": "x = π/2 + kπ" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Hàm số y = tan x tuần hoàn với chu kì cơ sở T = π."
+          "correctOptionId": "a",
+          "explanation": "sin x = 0 tại các điểm x = kπ với k ∈ Z."
         },
         {
-          "id": "math-11-ham-so-luong-giac-q3",
+          "id": "math-11-trig-q3",
+          "prompt": "Chu kỳ tuần hoàn của hàm số y = tan x là?",
           "difficulty": "APPLIED",
-          "prompt": "Tìm GTLN của y = 3 - 2cos(x).",
           "options": [
-            {
-              "id": "a",
-              "text": "1"
-            },
-            {
-              "id": "b",
-              "text": "5"
-            },
-            {
-              "id": "c",
-              "text": "3"
-            }
+            { "id": "a", "text": "2π" },
+            { "id": "b", "text": "π" },
+            { "id": "c", "text": "π/2" }
           ],
           "correctOptionId": "b",
-          "explanation": "Ta có -1 ≤ cosx ≤ 1, do đó GTLN của -2cosx là 2. Suy ra y ≤ 3 + 2 = 5."
+          "explanation": "Hàm tan x lặp lại giá trị sau mỗi khoảng π."
         }
       ]
     },
     {
-      "id": "math-11-phuong-trinh-luong-giac",
-      "title": "Phương trình lượng giác cơ bản",
+      "id": "math-11-sequences",
+      "title": "Dãy số, Cấp số cộng & Cấp số nhân",
       "guidance": [
-        "Phương trình sinx = sina có nghiệm x = a + k2π hoặc x = π - a + k2π (k thuộc Z).",
-        "cosx = cosa có nghiệm x = ±a + k2π."
+        "Cấp số cộng có u_(n+1) = u_n + d. Cấp số nhân có u_(n+1) = u_n * q."
       ],
       "examples": [
-        "Giải PT sinx = 1/2. Vì sin(π/6) = 1/2 nên x = π/6 + k2π hoặc x = 5π/6 + k2π."
+        "Dãy 2, 5, 8, 11 là cấp số cộng có u_1 = 2, d = 3. Dãy 3, 6, 12, 24 là cấp số nhân có q = 2."
       ],
       "questions": [
         {
-          "id": "math-11-phuong-trinh-luong-giac-q1",
+          "id": "math-11-seq-q1",
+          "prompt": "Công thức số hạng tổng quát của cấp số cộng u_n là?",
           "difficulty": "EASY",
-          "prompt": "Nghiệm của phương trình cosx = 1 là?",
           "options": [
-            {
-              "id": "a",
-              "text": "x = kπ"
-            },
-            {
-              "id": "b",
-              "text": "x = k2π"
-            },
-            {
-              "id": "c",
-              "text": "x = π/2 + kπ"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "cos x = 1 tại các điểm x = k2π trên đường tròn lượng giác."
-        },
-        {
-          "id": "math-11-phuong-trinh-luong-giac-q2",
-          "difficulty": "MEDIUM",
-          "prompt": "Nghiệm của phương trình sinx = 0 là?",
-          "options": [
-            {
-              "id": "a",
-              "text": "x = kπ"
-            },
-            {
-              "id": "b",
-              "text": "x = k2π"
-            },
-            {
-              "id": "c",
-              "text": "Vô nghiệm"
-            }
+            { "id": "a", "text": "u_n = u_1 + (n-1)d" },
+            { "id": "b", "text": "u_n = u_1 * d^(n-1)" },
+            { "id": "c", "text": "u_n = u_1 + nd" }
           ],
           "correctOptionId": "a",
-          "explanation": "sin x = 0 tại hai điểm 0 và π trên vòng tròn, tương đương x = kπ."
+          "explanation": "Mỗi bước cộng thêm d, sau n-1 bước thu được u_n."
         },
         {
-          "id": "math-11-phuong-trinh-luong-giac-q3",
-          "difficulty": "APPLIED",
-          "prompt": "Số nghiệm của PT sinx = 1/2 trên đoạn [0; 2π] là?",
+          "id": "math-11-seq-q2",
+          "prompt": "Cho cấp số nhân có u_1 = 3, công bội q = 2. Số hạng u_4 bằng bao nhiêu?",
+          "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "1"
-            },
-            {
-              "id": "b",
-              "text": "2"
-            },
-            {
-              "id": "c",
-              "text": "4"
-            }
+            { "id": "a", "text": "24" },
+            { "id": "b", "text": "18" },
+            { "id": "c", "text": "12" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Trên [0; 2π], sinx = 1/2 có 2 nghiệm là π/6 và 5π/6."
+          "correctOptionId": "a",
+          "explanation": "u_4 = u_1 * q^3 = 3 * 2^3 = 24."
+        },
+        {
+          "id": "math-11-seq-q3",
+          "prompt": "Tổng n số hạng đầu của cấp số cộng u_1 = 1, d = 2 (tổng các số lẻ) là?",
+          "difficulty": "APPLIED",
+          "options": [
+            { "id": "a", "text": "n^2" },
+            { "id": "b", "text": "2n" },
+            { "id": "c", "text": "n(n+1)" }
+          ],
+          "correctOptionId": "a",
+          "explanation": "S_n = n/2 * (2*1 + (n-1)*2) = n^2."
         }
       ]
     },
     {
-      "id": "math-11-day-so",
-      "title": "Dãy số",
+      "id": "math-11-limits",
+      "title": "Giới hạn của dãy số & Hàm số",
       "guidance": [
-        "Dãy số có thể cho bằng công thức tổng quát un = f(n) hoặc bằng hệ thức truy hồi.",
-        "Dãy số tăng nếu un+1 > un, giảm nếu un+1 < un với mọi n."
+        "lim (1/n) = 0 khi n -> ∞. Nếu |q| < 1 thì lim q^n = 0."
       ],
       "examples": [
-        "Xét dãy un = 2n + 1. Ta có un+1 - un = 2(n+1)+1 - (2n+1) = 2 > 0, dãy số tăng."
+        "lim (2n+1)/(n+3) = 2 khi n -> ∞."
       ],
       "questions": [
         {
-          "id": "math-11-day-so-q1",
+          "id": "math-11-lim-q1",
+          "prompt": "Giá trị lim (1/n) khi n tiến ra vô cùng là?",
           "difficulty": "EASY",
-          "prompt": "Cho dãy số un = 3n - 1. Số hạng u2 là?",
           "options": [
-            {
-              "id": "a",
-              "text": "2"
-            },
-            {
-              "id": "b",
-              "text": "5"
-            },
-            {
-              "id": "c",
-              "text": "8"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Thay n = 2 vào công thức: u2 = 3(2) - 1 = 5."
-        },
-        {
-          "id": "math-11-day-so-q2",
-          "difficulty": "MEDIUM",
-          "prompt": "Dãy số un = 1/n là dãy số?",
-          "options": [
-            {
-              "id": "a",
-              "text": "Tăng"
-            },
-            {
-              "id": "b",
-              "text": "Giảm"
-            },
-            {
-              "id": "c",
-              "text": "Không đổi"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "un+1 - un = 1/(n+1) - 1/n < 0 với mọi n nguyên dương, nên dãy số giảm."
-        },
-        {
-          "id": "math-11-day-so-q3",
-          "difficulty": "APPLIED",
-          "prompt": "Dãy số truy hồi u1 = 2, un+1 = 3un. Tìm u3?",
-          "options": [
-            {
-              "id": "a",
-              "text": "18"
-            },
-            {
-              "id": "b",
-              "text": "6"
-            },
-            {
-              "id": "c",
-              "text": "12"
-            }
+            { "id": "a", "text": "0" },
+            { "id": "b", "text": "1" },
+            { "id": "c", "text": "Vô cực" }
           ],
           "correctOptionId": "a",
-          "explanation": "u2 = 3(u1) = 6. u3 = 3(u2) = 18."
+          "explanation": "Khi mẫu số tiến ra vô cực thì phân số tiến về 0."
+        },
+        {
+          "id": "math-11-lim-q2",
+          "prompt": "lim (3n^2 + 2)/(n^2 - 1) khi n -> ∞ bằng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            { "id": "a", "text": "3" },
+            { "id": "b", "text": "2" },
+            { "id": "c", "text": "1" }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Chia cả tử và mẫu cho n^2 ta thu được 3/1 = 3."
+        },
+        {
+          "id": "math-11-lim-q3",
+          "prompt": "Hàm số f(x) liên tục tại x_0 khi nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            { "id": "a", "text": "lim x->x_0 f(x) = f(x_0)" },
+            { "id": "b", "text": "f(x_0) = 0" },
+            { "id": "c", "text": "lim x->x_0 f(x) = 0" }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Định nghĩa hàm số liên tục tại 1 điểm."
         }
       ]
     },
     {
-      "id": "math-11-cap-so-cong",
-      "title": "Cấp số cộng",
+      "id": "math-11-derivatives",
+      "title": "Đạo hàm & Ý nghĩa hình học",
       "guidance": [
-        "Cấp số cộng (CSC) là dãy số thỏa mãn un+1 = un + d (d là công sai).",
-        "Số hạng tổng quát: un = u1 + (n-1)d.",
-        "Tổng n số hạng đầu: Sn = n(u1 + un)/2."
+        "Đạo hàm f'(x_0) là hệ số góc của tiếp tuyến của đồ thị hàm số tại x_0. (x^n)' = n * x^(n-1)."
       ],
       "examples": [
-        "CSC có u1=2, d=3 thì u4 = 2 + (4-1)3 = 11."
+        "Đạo hàm của f(x) = x^3 - 2x là f'(x) = 3x^2 - 2."
       ],
       "questions": [
         {
-          "id": "math-11-cap-so-cong-q1",
+          "id": "math-11-der-q1",
+          "prompt": "Đạo hàm của hàm số f(x) = x^2 tại x = 3 là?",
           "difficulty": "EASY",
-          "prompt": "Cho CSC có u1 = 1, d = 2. Tìm u3?",
           "options": [
-            {
-              "id": "a",
-              "text": "3"
-            },
-            {
-              "id": "b",
-              "text": "5"
-            },
-            {
-              "id": "c",
-              "text": "7"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "u3 = u1 + 2d = 1 + 2(2) = 5."
-        },
-        {
-          "id": "math-11-cap-so-cong-q2",
-          "difficulty": "MEDIUM",
-          "prompt": "CSC có u2 = 5, u4 = 11. Tìm d?",
-          "options": [
-            {
-              "id": "a",
-              "text": "2"
-            },
-            {
-              "id": "b",
-              "text": "3"
-            },
-            {
-              "id": "c",
-              "text": "4"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Ta có u4 - u2 = 2d <=> 11 - 5 = 2d => d = 3."
-        },
-        {
-          "id": "math-11-cap-so-cong-q3",
-          "difficulty": "APPLIED",
-          "prompt": "Tính tổng 10 số hạng đầu của CSC có u1 = 2, d = 3.",
-          "options": [
-            {
-              "id": "a",
-              "text": "155"
-            },
-            {
-              "id": "b",
-              "text": "165"
-            },
-            {
-              "id": "c",
-              "text": "290"
-            }
+            { "id": "a", "text": "6" },
+            { "id": "b", "text": "9" },
+            { "id": "c", "text": "3" }
           ],
           "correctOptionId": "a",
-          "explanation": "S10 = 10[2u1 + 9d]/2 = 5[4 + 27] = 5*31 = 155."
+          "explanation": "f'(x) = 2x => f'(3) = 2 * 3 = 6."
+        },
+        {
+          "id": "math-11-der-q2",
+          "prompt": "Đạo hàm của sin x là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            { "id": "a", "text": "cos x" },
+            { "id": "b", "text": "-cos x" },
+            { "id": "c", "text": "-sin x" }
+          ],
+          "correctOptionId": "a",
+          "explanation": "(sin x)' = cos x."
+        },
+        {
+          "id": "math-11-der-q3",
+          "prompt": "Ý nghĩa hình học của đạo hàm f'(x_0) là?",
+          "difficulty": "APPLIED",
+          "options": [
+            { "id": "a", "text": "Hệ số góc của tiếp tuyến tại x_0" },
+            { "id": "b", "text": "Khoảng cách tới gốc tọa độ" },
+            { "id": "c", "text": "Diện tích hình phẳng" }
+          ],
+          "correctOptionId": "a",
+          "explanation": "f'(x_0) chính là k trong phương trình tiếp tuyến y = k(x - x_0) + y_0."
         }
       ]
     },
     {
-      "id": "math-11-cap-so-nhan",
-      "title": "Cấp số nhân",
+      "id": "math-11-geometry3d",
+      "title": "Đường thẳng & Mặt phẳng trong không gian",
       "guidance": [
-        "Cấp số nhân (CSN) là dãy thỏa mãn un+1 = un * q (q là công bội).",
-        "Số hạng tổng quát: un = u1 * q^(n-1)."
+        "Hai đường thẳng song song, cắt nhau hoặc chéo nhau. Đường thẳng vuông góc với mặt phẳng khi vuông góc với 2 đường cắt nhau trong mặt phẳng."
       ],
       "examples": [
-        "CSN có u1=2, q=3 thì u3 = 2 * 3^2 = 18."
+        "Trong hình lập phương ABCD.A'B'C'D', AA' vuông góc với mặt phẳng (ABCD)."
       ],
       "questions": [
         {
-          "id": "math-11-cap-so-nhan-q1",
+          "id": "math-11-geo-q1",
+          "prompt": "Hai đường thẳng không cùng thuộc một mặt phẳng gọi là?",
           "difficulty": "EASY",
-          "prompt": "Cho CSN có u1 = 3, q = 2. Tìm u2?",
           "options": [
-            {
-              "id": "a",
-              "text": "5"
-            },
-            {
-              "id": "b",
-              "text": "6"
-            },
-            {
-              "id": "c",
-              "text": "9"
-            }
+            { "id": "a", "text": "Chéo nhau" },
+            { "id": "b", "text": "Song song" },
+            { "id": "c", "text": "Cắt nhau" }
           ],
-          "correctOptionId": "b",
-          "explanation": "u2 = u1 * q = 3 * 2 = 6."
+          "correctOptionId": "a",
+          "explanation": "Định nghĩa hai đường thẳng chéo nhau trong không gian 3D."
         },
         {
-          "id": "math-11-cap-so-nhan-q2",
+          "id": "math-11-geo-q2",
+          "prompt": "Nếu d ⊥ a và d ⊥ b (a, b cắt nhau nằm trong (P)) thì?",
           "difficulty": "MEDIUM",
-          "prompt": "CSN có u1 = -1, q = -2. Số hạng u4 là?",
           "options": [
-            {
-              "id": "a",
-              "text": "8"
-            },
-            {
-              "id": "b",
-              "text": "-8"
-            },
-            {
-              "id": "c",
-              "text": "16"
-            }
+            { "id": "a", "text": "d ⊥ (P)" },
+            { "id": "b", "text": "d // (P)" },
+            { "id": "c", "text": "d ⊂ (P)" }
           ],
           "correctOptionId": "a",
-          "explanation": "u4 = u1 * q^3 = (-1) * (-2)^3 = (-1) * (-8) = 8."
+          "explanation": "Điều kiện đường thẳng vuông góc với mặt phẳng."
         },
         {
-          "id": "math-11-cap-so-nhan-q3",
+          "id": "math-11-geo-q3",
+          "prompt": "Góc giữa hai đường thẳng vuông góc nhau bằng?",
           "difficulty": "APPLIED",
-          "prompt": "Tính tổng 5 số hạng đầu của CSN có u1 = 1, q = 2.",
           "options": [
-            {
-              "id": "a",
-              "text": "15"
-            },
-            {
-              "id": "b",
-              "text": "31"
-            },
-            {
-              "id": "c",
-              "text": "63"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "S5 = u1(1-q^5)/(1-q) = 1(1-32)/(1-2) = 31."
-        }
-      ]
-    },
-    {
-      "id": "math-11-gioi-han-day-so",
-      "title": "Giới hạn của dãy số",
-      "guidance": [
-        "Giới hạn của dãy số đánh giá xu hướng của un khi n tiến tới vô cực.",
-        "lim(1/n) = 0. lim(q^n) = 0 nếu |q| < 1."
-      ],
-      "examples": [
-        "lim (2n+1)/(n+2) = lim (2 + 1/n)/(1 + 2/n) = 2/1 = 2."
-      ],
-      "questions": [
-        {
-          "id": "math-11-gioi-han-day-so-q1",
-          "difficulty": "EASY",
-          "prompt": "Giá trị của lim (1/n) bằng?",
-          "options": [
-            {
-              "id": "a",
-              "text": "0"
-            },
-            {
-              "id": "b",
-              "text": "1"
-            },
-            {
-              "id": "c",
-              "text": "+∞"
-            }
+            { "id": "a", "text": "90°" },
+            { "id": "b", "text": "180°" },
+            { "id": "c", "text": "0°" }
           ],
           "correctOptionId": "a",
-          "explanation": "Khi n tiến tới vô cực, 1 chia cho số vô cùng lớn sẽ tiến tới 0."
-        },
-        {
-          "id": "math-11-gioi-han-day-so-q2",
-          "difficulty": "MEDIUM",
-          "prompt": "Tính lim (3n^2 - 1)/(n^2 + 2).",
-          "options": [
-            {
-              "id": "a",
-              "text": "0"
-            },
-            {
-              "id": "b",
-              "text": "3"
-            },
-            {
-              "id": "c",
-              "text": "1"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Chia cả tử và mẫu cho n^2, ta được lim (3 - 1/n^2)/(1 + 2/n^2) = 3."
-        },
-        {
-          "id": "math-11-gioi-han-day-so-q3",
-          "difficulty": "APPLIED",
-          "prompt": "Tính tổng CSN lùi vô hạn: 1 + 1/2 + 1/4 + ...",
-          "options": [
-            {
-              "id": "a",
-              "text": "2"
-            },
-            {
-              "id": "b",
-              "text": "1.5"
-            },
-            {
-              "id": "c",
-              "text": "Vô cực"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "S = u1/(1-q) = 1 / (1 - 1/2) = 2."
-        }
-      ]
-    },
-    {
-      "id": "math-11-gioi-han-ham-so",
-      "title": "Giới hạn của hàm số và hàm liên tục",
-      "guidance": [
-        "Giới hạn hàm số xét sự hội tụ của f(x) khi x dần tới x0.",
-        "Hàm f(x) liên tục tại x0 nếu lim(x->x0) f(x) = f(x0)."
-      ],
-      "examples": [
-        "lim(x->2) (x^2 - 4)/(x - 2) = lim (x+2) = 4."
-      ],
-      "questions": [
-        {
-          "id": "math-11-gioi-han-ham-so-q1",
-          "difficulty": "EASY",
-          "prompt": "Tính lim(x->1) (2x + 3).",
-          "options": [
-            {
-              "id": "a",
-              "text": "5"
-            },
-            {
-              "id": "b",
-              "text": "2"
-            },
-            {
-              "id": "c",
-              "text": "0"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Thay trực tiếp x = 1 vào đa thức, kết quả là 5."
-        },
-        {
-          "id": "math-11-gioi-han-ham-so-q2",
-          "difficulty": "MEDIUM",
-          "prompt": "Tính lim(x->2) (x^2 - 4)/(x - 2).",
-          "options": [
-            {
-              "id": "a",
-              "text": "0"
-            },
-            {
-              "id": "b",
-              "text": "4"
-            },
-            {
-              "id": "c",
-              "text": "Không tồn tại"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Phân tích tử số: (x-2)(x+2). Rút gọn (x-2) còn x+2. Khi x->2 thì giới hạn bằng 4."
-        },
-        {
-          "id": "math-11-gioi-han-ham-so-q3",
-          "difficulty": "APPLIED",
-          "prompt": "Hàm số f(x) = (x^2-1)/(x-1) với x≠1 và f(1)=m. Tìm m để hàm liên tục tại x=1.",
-          "options": [
-            {
-              "id": "a",
-              "text": "1"
-            },
-            {
-              "id": "b",
-              "text": "2"
-            },
-            {
-              "id": "c",
-              "text": "0"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "lim(x->1) f(x) = lim (x+1) = 2. Để liên tục thì f(1) = m = 2."
-        }
-      ]
-    },
-    {
-      "id": "math-11-duong-thang-mat-phang",
-      "title": "Đường thẳng và mặt phẳng trong không gian",
-      "guidance": [
-        "Hình học không gian nghiên cứu các đối tượng 3 chiều.",
-        "Ba điểm không thẳng hàng xác định duy nhất một mặt phẳng."
-      ],
-      "examples": [
-        "Giao tuyến của 2 mặt phẳng phân biệt (có điểm chung) luôn là một đường thẳng."
-      ],
-      "questions": [
-        {
-          "id": "math-11-duong-thang-mat-phang-q1",
-          "difficulty": "EASY",
-          "prompt": "Có bao nhiêu mặt phẳng đi qua 3 điểm không thẳng hàng?",
-          "options": [
-            {
-              "id": "a",
-              "text": "1"
-            },
-            {
-              "id": "b",
-              "text": "2"
-            },
-            {
-              "id": "c",
-              "text": "Vô số"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Ba điểm không thẳng hàng là điều kiện xác định duy nhất 1 mặt phẳng."
-        },
-        {
-          "id": "math-11-duong-thang-mat-phang-q2",
-          "difficulty": "MEDIUM",
-          "prompt": "Hai mặt phẳng phân biệt có điểm chung thì giao nhau theo một?",
-          "options": [
-            {
-              "id": "a",
-              "text": "Điểm"
-            },
-            {
-              "id": "b",
-              "text": "Đường thẳng"
-            },
-            {
-              "id": "c",
-              "text": "Mặt phẳng"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giao tuyến của hai mặt phẳng phân biệt (nếu có) luôn là một đường thẳng."
-        },
-        {
-          "id": "math-11-duong-thang-mat-phang-q3",
-          "difficulty": "APPLIED",
-          "prompt": "Tứ diện ABCD có bao nhiêu mặt?",
-          "options": [
-            {
-              "id": "a",
-              "text": "3"
-            },
-            {
-              "id": "b",
-              "text": "4"
-            },
-            {
-              "id": "c",
-              "text": "6"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Tứ diện (hình chóp tam giác) có 4 mặt đều là các tam giác."
-        }
-      ]
-    },
-    {
-      "id": "math-11-hai-duong-thang",
-      "title": "Hai đường thẳng song song và chéo nhau",
-      "guidance": [
-        "Trong không gian, hai đường thẳng có 4 vị trí: cắt nhau, song song, trùng nhau, và chéo nhau.",
-        "Chéo nhau là không cùng nằm trên bất kỳ mặt phẳng nào."
-      ],
-      "examples": [
-        "Hai cạnh đối diện của một tứ diện luôn là hai đường thẳng chéo nhau."
-      ],
-      "questions": [
-        {
-          "id": "math-11-hai-duong-thang-q1",
-          "difficulty": "EASY",
-          "prompt": "Hai đường thẳng không có điểm chung và cùng nằm trong một mặt phẳng thì?",
-          "options": [
-            {
-              "id": "a",
-              "text": "Chéo nhau"
-            },
-            {
-              "id": "b",
-              "text": "Song song"
-            },
-            {
-              "id": "c",
-              "text": "Cắt nhau"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Đây là định nghĩa chuẩn của hai đường thẳng song song."
-        },
-        {
-          "id": "math-11-hai-duong-thang-q2",
-          "difficulty": "MEDIUM",
-          "prompt": "Hai đường thẳng chéo nhau khi chúng?",
-          "options": [
-            {
-              "id": "a",
-              "text": "Không có điểm chung"
-            },
-            {
-              "id": "b",
-              "text": "Không đồng phẳng"
-            },
-            {
-              "id": "c",
-              "text": "Cắt nhau"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Không đồng phẳng (không cùng nằm trên một mặt phẳng) là tính chất cốt lõi của hai đường chéo nhau."
-        },
-        {
-          "id": "math-11-hai-duong-thang-q3",
-          "difficulty": "APPLIED",
-          "prompt": "Trong tứ diện ABCD, hai cạnh AB và CD ở vị trí?",
-          "options": [
-            {
-              "id": "a",
-              "text": "Song song"
-            },
-            {
-              "id": "b",
-              "text": "Cắt nhau"
-            },
-            {
-              "id": "c",
-              "text": "Chéo nhau"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "AB và CD không cùng nằm trong bất kỳ mặt phẳng nào của tứ diện, nên chúng chéo nhau."
-        }
-      ]
-    },
-    {
-      "id": "math-11-duong-thang-mat-phang-song-song",
-      "title": "Đường thẳng và mặt phẳng song song",
-      "guidance": [
-        "Đường thẳng d song song với (P) nếu d không nằm trong (P) và d song song với một đường d' nằm trong (P)."
-      ],
-      "examples": [
-        "Nếu d // (P), mọi mặt phẳng chứa d mà cắt (P) thì giao tuyến sẽ song song với d."
-      ],
-      "questions": [
-        {
-          "id": "math-11-duong-thang-mat-phang-song-song-q1",
-          "difficulty": "EASY",
-          "prompt": "Đường thẳng d song song với (P) thì d và (P) có bao nhiêu điểm chung?",
-          "options": [
-            {
-              "id": "a",
-              "text": "0"
-            },
-            {
-              "id": "b",
-              "text": "1"
-            },
-            {
-              "id": "c",
-              "text": "Vô số"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Song song nghĩa là không có bất kỳ điểm chung nào."
-        },
-        {
-          "id": "math-11-duong-thang-mat-phang-song-song-q2",
-          "difficulty": "MEDIUM",
-          "prompt": "Nếu d // d' và d' nằm trong (P) thì d song song hoặc ... với (P).",
-          "options": [
-            {
-              "id": "a",
-              "text": "Cắt"
-            },
-            {
-              "id": "b",
-              "text": "Trùng"
-            },
-            {
-              "id": "c",
-              "text": "Nằm trong"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Nếu d không nằm trong (P) thì d // (P). Nếu d đã thuộc (P) thì d nằm trong (P)."
-        },
-        {
-          "id": "math-11-duong-thang-mat-phang-song-song-q3",
-          "difficulty": "APPLIED",
-          "prompt": "Cho hình chóp S.ABCD đáy hình bình hành. AB song song với mặt phẳng nào?",
-          "options": [
-            {
-              "id": "a",
-              "text": "(SCD)"
-            },
-            {
-              "id": "b",
-              "text": "(SBC)"
-            },
-            {
-              "id": "c",
-              "text": "(SAD)"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "AB // CD và CD nằm trong mp(SCD), nên AB // (SCD)."
-        }
-      ]
-    },
-    {
-      "id": "math-11-hai-mat-phang-song-song",
-      "title": "Hai mặt phẳng song song",
-      "guidance": [
-        "Hai mặt phẳng (P) và (Q) song song nếu chúng không có điểm chung.",
-        "Nếu (P) chứa hai đường cắt nhau cùng song song với (Q) thì (P) // (Q)."
-      ],
-      "examples": [
-        "Mặt trần nhà và mặt sàn nhà là hình ảnh của hai mặt phẳng song song."
-      ],
-      "questions": [
-        {
-          "id": "math-11-hai-mat-phang-song-song-q1",
-          "difficulty": "EASY",
-          "prompt": "Hai mặt phẳng song song có điểm chung không?",
-          "options": [
-            {
-              "id": "a",
-              "text": "Có"
-            },
-            {
-              "id": "b",
-              "text": "Không"
-            },
-            {
-              "id": "c",
-              "text": "Tùy trường hợp"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Theo định nghĩa, hai mặt phẳng song song tuyệt đối không có điểm chung."
-        },
-        {
-          "id": "math-11-hai-mat-phang-song-song-q2",
-          "difficulty": "MEDIUM",
-          "prompt": "Định lí Talet trong không gian áp dụng cho?",
-          "options": [
-            {
-              "id": "a",
-              "text": "3 MP song song"
-            },
-            {
-              "id": "b",
-              "text": "2 MP song song"
-            },
-            {
-              "id": "c",
-              "text": "3 MP cắt nhau"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Định lí Talet không gian phát biểu: 3 mặt phẳng song song chắn trên hai cát tuyến bất kì các đoạn thẳng tương ứng tỉ lệ."
-        },
-        {
-          "id": "math-11-hai-mat-phang-song-song-q3",
-          "difficulty": "APPLIED",
-          "prompt": "Cho lăng trụ ABC.A'B'C'. Mặt (ABC) song song với mặt nào?",
-          "options": [
-            {
-              "id": "a",
-              "text": "(A'B'C')"
-            },
-            {
-              "id": "b",
-              "text": "(ABB'A')"
-            },
-            {
-              "id": "c",
-              "text": "(BCC'B')"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Hai đáy của hình lăng trụ luôn nằm trên hai mặt phẳng song song với nhau."
-        }
-      ]
-    },
-    {
-      "id": "math-11-dao-ham-dinh-nghia",
-      "title": "Định nghĩa và ý nghĩa đạo hàm",
-      "guidance": [
-        "Đạo hàm của f(x) tại x0 là giới hạn của tỉ số biến thiên (f(x)-f(x0))/(x-x0) khi x tiến về x0.",
-        "Ý nghĩa hình học: f'(x0) là hệ số góc của tiếp tuyến."
-      ],
-      "examples": [
-        "Tiếp tuyến của y = f(x) tại điểm có hoành độ x0 có phương trình y = f'(x0)(x - x0) + f(x0)."
-      ],
-      "questions": [
-        {
-          "id": "math-11-dao-ham-dinh-nghia-q1",
-          "difficulty": "EASY",
-          "prompt": "Ý nghĩa hình học của f'(x0) là?",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hệ số góc tiếp tuyến"
-            },
-            {
-              "id": "b",
-              "text": "Vận tốc"
-            },
-            {
-              "id": "c",
-              "text": "Tọa độ đỉnh"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Đạo hàm tại một điểm bằng hệ số góc của tiếp tuyến với đồ thị tại điểm đó."
-        },
-        {
-          "id": "math-11-dao-ham-dinh-nghia-q2",
-          "difficulty": "MEDIUM",
-          "prompt": "Vận tốc tức thời v(t) của chuyển động s(t) bằng?",
-          "options": [
-            {
-              "id": "a",
-              "text": "s'(t)"
-            },
-            {
-              "id": "b",
-              "text": "s(t)/t"
-            },
-            {
-              "id": "c",
-              "text": "s''(t)"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Ý nghĩa vật lý: Vận tốc là đạo hàm bậc nhất của quãng đường theo thời gian."
-        },
-        {
-          "id": "math-11-dao-ham-dinh-nghia-q3",
-          "difficulty": "APPLIED",
-          "prompt": "Nếu f'(x0) = 0 thì tiếp tuyến tại điểm đó có đặc điểm gì?",
-          "options": [
-            {
-              "id": "a",
-              "text": "Song song trục tung"
-            },
-            {
-              "id": "b",
-              "text": "Song song/trùng trục hoành"
-            },
-            {
-              "id": "c",
-              "text": "Độ dốc bằng 1"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Hệ số góc bằng 0 tức là tiếp tuyến là đường thẳng y = hằng số, song song với trục hoành Ox."
-        }
-      ]
-    },
-    {
-      "id": "math-11-quy-tac-dao-ham",
-      "title": "Các quy tắc tính đạo hàm",
-      "guidance": [
-        "(u+v)' = u' + v'",
-        "(uv)' = u'v + uv'",
-        "(u/v)' = (u'v - uv') / v^2",
-        "(x^n)' = n.x^(n-1)"
-      ],
-      "examples": [
-        "y = x^3 => y' = 3x^2.",
-        "y = sin x => y' = cos x."
-      ],
-      "questions": [
-        {
-          "id": "math-11-quy-tac-dao-ham-q1",
-          "difficulty": "EASY",
-          "prompt": "Đạo hàm của hàm số y = x^4 là?",
-          "options": [
-            {
-              "id": "a",
-              "text": "4x^3"
-            },
-            {
-              "id": "b",
-              "text": "3x^4"
-            },
-            {
-              "id": "c",
-              "text": "x^3"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Áp dụng công thức (x^n)' = n.x^(n-1)."
-        },
-        {
-          "id": "math-11-quy-tac-dao-ham-q2",
-          "difficulty": "MEDIUM",
-          "prompt": "Đạo hàm của y = sin(2x) là?",
-          "options": [
-            {
-              "id": "a",
-              "text": "cos(2x)"
-            },
-            {
-              "id": "b",
-              "text": "2cos(2x)"
-            },
-            {
-              "id": "c",
-              "text": "-2cos(2x)"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Áp dụng đạo hàm hàm hợp: (sin u)' = u'.cos u => 2cos(2x)."
-        },
-        {
-          "id": "math-11-quy-tac-dao-ham-q3",
-          "difficulty": "APPLIED",
-          "prompt": "Đạo hàm của y = 1/x là?",
-          "options": [
-            {
-              "id": "a",
-              "text": "1/x^2"
-            },
-            {
-              "id": "b",
-              "text": "-1/x^2"
-            },
-            {
-              "id": "c",
-              "text": "ln(x)"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "(1/x)' = (x^-1)' = -1.x^-2 = -1/x^2."
-        }
-      ]
-    },
-    {
-      "id": "math-11-bien-co-hop-giao",
-      "title": "Biến cố hợp và biến cố giao",
-      "guidance": [
-        "Biến cố hợp (A U B) xảy ra khi A hoặc B xảy ra.",
-        "Biến cố giao (AB) xảy ra khi cả A và B cùng xảy ra."
-      ],
-      "examples": [
-        "Tung xúc xắc: A='chẵn', B='chia hết cho 3'. A giao B là biến cố tung được mặt 6 chấm."
-      ],
-      "questions": [
-        {
-          "id": "math-11-bien-co-hop-giao-q1",
-          "difficulty": "EASY",
-          "prompt": "Ký hiệu của biến cố giao giữa A và B là?",
-          "options": [
-            {
-              "id": "a",
-              "text": "A U B"
-            },
-            {
-              "id": "b",
-              "text": "AB"
-            },
-            {
-              "id": "c",
-              "text": "A \\ B"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Biến cố giao thường viết tắt là AB hoặc A ∩ B."
-        },
-        {
-          "id": "math-11-bien-co-hop-giao-q2",
-          "difficulty": "MEDIUM",
-          "prompt": "Hai biến cố xung khắc thì phần giao của chúng bằng?",
-          "options": [
-            {
-              "id": "a",
-              "text": "Biến cố chắc chắn"
-            },
-            {
-              "id": "b",
-              "text": "Tập rỗng"
-            },
-            {
-              "id": "c",
-              "text": "Tùy ý"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Xung khắc tức là không thể cùng xảy ra, nên phần giao là tập rỗng (biến cố không thể)."
-        },
-        {
-          "id": "math-11-bien-co-hop-giao-q3",
-          "difficulty": "APPLIED",
-          "prompt": "A='chẵn', B='nhỏ hơn 4'. Xúc xắc 6 mặt. Tập hợp A hợp B là?",
-          "options": [
-            {
-              "id": "a",
-              "text": "{2}"
-            },
-            {
-              "id": "b",
-              "text": "{1, 2, 3, 4, 6}"
-            },
-            {
-              "id": "c",
-              "text": "{2, 4, 6}"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "A={2,4,6}, B={1,2,3}. A hợp B là kết hợp tất cả: {1,2,3,4,6}."
-        }
-      ]
-    },
-    {
-      "id": "math-11-xac-suat-co-dieu-kien",
-      "title": "Xác suất có điều kiện và Quy tắc nhân",
-      "guidance": [
-        "Xác suất có điều kiện của A biết B đã xảy ra: P(A|B) = P(AB)/P(B).",
-        "Quy tắc nhân: P(AB) = P(A) * P(B) nếu độc lập."
-      ],
-      "examples": [
-        "Tung 2 đồng xu độc lập. XS mặt ngửa đồng xu 2 biết đồng xu 1 ngửa vẫn là 1/2 vì chúng độc lập."
-      ],
-      "questions": [
-        {
-          "id": "math-11-xac-suat-co-dieu-kien-q1",
-          "difficulty": "EASY",
-          "prompt": "Nếu A và B độc lập thì P(AB) bằng?",
-          "options": [
-            {
-              "id": "a",
-              "text": "P(A) + P(B)"
-            },
-            {
-              "id": "b",
-              "text": "P(A) * P(B)"
-            },
-            {
-              "id": "c",
-              "text": "P(A) / P(B)"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Theo quy tắc nhân xác suất cho 2 biến cố độc lập."
-        },
-        {
-          "id": "math-11-xac-suat-co-dieu-kien-q2",
-          "difficulty": "MEDIUM",
-          "prompt": "Công thức P(A|B) là?",
-          "options": [
-            {
-              "id": "a",
-              "text": "P(A)/P(B)"
-            },
-            {
-              "id": "b",
-              "text": "P(AB)/P(B)"
-            },
-            {
-              "id": "c",
-              "text": "P(AB)/P(A)"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Xác suất của A với điều kiện B bằng xác suất đồng thời chia cho xác suất của B."
-        },
-        {
-          "id": "math-11-xac-suat-co-dieu-kien-q3",
-          "difficulty": "APPLIED",
-          "prompt": "Có 3 bi đỏ, 2 bi xanh. Rút 2 bi không hoàn lại. XS rút 2 bi đỏ là?",
-          "options": [
-            {
-              "id": "a",
-              "text": "3/10"
-            },
-            {
-              "id": "b",
-              "text": "9/25"
-            },
-            {
-              "id": "c",
-              "text": "1/2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Lần 1 đỏ: 3/5. Lần 2 đỏ: 2/4. P = (3/5)*(2/4) = 6/20 = 3/10."
+          "explanation": "Hai đường thẳng vuông góc có góc bằng 90 độ."
         }
       ]
     }

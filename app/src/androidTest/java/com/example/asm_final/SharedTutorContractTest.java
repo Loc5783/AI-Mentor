@@ -152,12 +152,12 @@ public class SharedTutorContractTest {
             InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext();
     SubjectCatalog catalog = app.services().subjects();
     assertEquals(9, catalog.all().size());
-    assertEquals(3, catalog.lessonModules().size());
+    assertEquals(9, catalog.lessonModules().size());
     assertTrue(catalog.hasLessonScope(SubjectId.BIOLOGY));
     assertTrue(catalog.hasLessonScope(SubjectId.CHEMISTRY));
     assertTrue(catalog.hasLessonScope(SubjectId.PHYSICS));
-    assertFalse(catalog.hasLessonScope(SubjectId.MATH));
-    assertFalse(catalog.hasLessonScope(SubjectId.ENGLISH));
+    assertTrue(catalog.hasLessonScope(SubjectId.MATH));
+    assertTrue(catalog.hasLessonScope(SubjectId.ENGLISH));
     assertTrue(catalog.module(SubjectId.MATH).tools().contains(SubjectModule.Tool.CALCULATOR));
     assertFalse(catalog.module(SubjectId.HISTORY).tools().contains(SubjectModule.Tool.CALCULATOR));
     assertTrue(catalog.module(SubjectId.PHYSICS).tools().contains(SubjectModule.Tool.CIRCUIT));

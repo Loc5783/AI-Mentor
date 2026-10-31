@@ -1,0 +1,1137 @@
+{
+  "subjectId": "history",
+  "grade": 10,
+  "version": "intro-2026.1",
+  "title": "Lịch sử: tư liệu, văn minh và biến đổi xã hội",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_10",
+  "extendedReviews": false,
+  "sourceNote": "15 bài nhập môn lớp 10 do AI Mentor biên soạn theo yêu cầu cần đạt chung của Chương trình GDPT 2018; không sao chép một bộ SGK và chưa phủ toàn bộ năm học. Bài đầu vào dùng hai câu mỗi bài đã xuất bản để ước lượng nền tảng và đề xuất bài có thể bỏ qua. Nội dung cần giáo viên rà soát trước khi dùng chính thức.",
+  "lessons": [
+    {
+      "id": "history-10-historical-evidence",
+      "title": "Lịch sử và bằng chứng",
+      "guidance": [
+        "Lịch sử nghiên cứu quá khứ con người qua tư liệu. Tư liệu gốc được tạo trong thời kì hoặc sự kiện; tư liệu thứ cấp phân tích, tổng hợp tư liệu khác."
+      ],
+      "examples": [
+        "Một lá thư cùng thời là tư liệu gốc về người viết, nhưng vẫn cần kiểm tra người nhận, mục đích và độ xác thực."
+      ],
+      "questions": [
+        {
+          "id": "history-10-historical-evidence-q1",
+          "prompt": "Tư liệu gốc thường được tạo khi nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Trong hoặc gần thời kì được nghiên cứu"
+            },
+            {
+              "id": "b",
+              "text": "Luôn luôn nhiều thế kỉ sau"
+            },
+            {
+              "id": "c",
+              "text": "Sau khi mọi sử gia đồng ý"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tính gốc gắn với quan hệ gần thời gian, không tự bảo đảm tính chính xác."
+        },
+        {
+          "id": "history-10-historical-evidence-q2",
+          "prompt": "Một bài nghiên cứu tổng hợp nhiều biên niên sử thường là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hiện vật tiền sử"
+            },
+            {
+              "id": "b",
+              "text": "Địa hình tự nhiên"
+            },
+            {
+              "id": "c",
+              "text": "Tư liệu thứ cấp"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nó diễn giải các nguồn khác thay vì là hiện vật trực tiếp của sự kiện."
+        },
+        {
+          "id": "history-10-historical-evidence-q3",
+          "prompt": "Hai nguồn cùng thời đưa ra lời kể khác nhau. Cách làm phù hợp là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bỏ qua cả hai"
+            },
+            {
+              "id": "b",
+              "text": "So sánh nguồn gốc, mục đích và bằng chứng bổ sung"
+            },
+            {
+              "id": "c",
+              "text": "Chọn nguồn kể hấp dẫn hơn"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Đối chiếu giúp đánh giá giới hạn và điểm giao nhau giữa nguồn."
+        }
+      ]
+    },
+    {
+      "id": "history-10-chronology",
+      "title": "Niên đại và dòng thời gian",
+      "guidance": [
+        "Niên đại giúp sắp xếp trước-sau; quy đổi mốc cần chú ý hệ lịch và cách ghi. Dòng thời gian hỗ trợ thấy trình tự nhưng không tự giải thích nguyên nhân."
+      ],
+      "examples": [
+        "Nếu sự kiện A năm 120 trước Công nguyên và B năm 30 trước Công nguyên, A xảy ra trước B."
+      ],
+      "questions": [
+        {
+          "id": "history-10-chronology-q1",
+          "prompt": "Dòng thời gian chủ yếu giúp ích việc nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tự chứng minh nguyên nhân"
+            },
+            {
+              "id": "b",
+              "text": "Xác định cảm xúc tác giả"
+            },
+            {
+              "id": "c",
+              "text": "Sắp xếp trình tự sự kiện"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Trình tự thời gian không tự trả lời vì sao sự kiện xảy ra."
+        },
+        {
+          "id": "history-10-chronology-q2",
+          "prompt": "Trong mốc trước Công nguyên, năm 500 TCN hay 200 TCN xảy ra trước?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cùng lúc"
+            },
+            {
+              "id": "b",
+              "text": "500 TCN"
+            },
+            {
+              "id": "c",
+              "text": "200 TCN"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Số năm TCN lớn hơn nằm xa hơn về quá khứ."
+        },
+        {
+          "id": "history-10-chronology-q3",
+          "prompt": "Hai cải cách diễn ra lần lượt nhưng có nhiều nguyên nhân xã hội. Chỉ dựa vào dòng thời gian có đủ để kết luận cải cách đầu gây ra cải cách sau không?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không, cần thêm chứng cứ về quan hệ nhân quả"
+            },
+            {
+              "id": "b",
+              "text": "Có, vì cái trước luôn gây cái sau"
+            },
+            {
+              "id": "c",
+              "text": "Có, nếu dùng màu khác"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Trình tự là điều kiện xem xét nhưng không chứng minh quan hệ nhân quả."
+        }
+      ]
+    },
+    {
+      "id": "history-10-prehistory",
+      "title": "Khảo cổ học và đời sống tiền sử",
+      "guidance": [
+        "Khảo cổ học nghiên cứu dấu tích vật chất để tìm hiểu đời sống quá khứ. Một hiện vật cần bối cảnh phát hiện; vật liệu hay hình dáng riêng lẻ không cho biết toàn bộ xã hội."
+      ],
+      "examples": [
+        "Công cụ đá tìm trong lớp đất có niên đại xác định có thể gợi kỹ thuật, nhưng cần so sánh nhiều hiện vật."
+      ],
+      "questions": [
+        {
+          "id": "history-10-prehistory-q1",
+          "prompt": "Khảo cổ học chủ yếu dựa vào loại bằng chứng nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Dự báo thời tiết"
+            },
+            {
+              "id": "b",
+              "text": "Di tích và hiện vật vật chất"
+            },
+            {
+              "id": "c",
+              "text": "Tin đồn chưa kiểm chứng"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Đồ vật và di tích cung cấp bằng chứng vật chất về hoạt động con người."
+        },
+        {
+          "id": "history-10-prehistory-q2",
+          "prompt": "Vì sao bối cảnh tìm thấy hiện vật quan trọng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nó giúp xác định niên đại và mối liên hệ"
+            },
+            {
+              "id": "b",
+              "text": "Nó làm hiện vật tự nói mọi điều"
+            },
+            {
+              "id": "c",
+              "text": "Nó thay thế việc bảo quản"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Vị trí, lớp đất và vật đi kèm ảnh hưởng cách diễn giải."
+        },
+        {
+          "id": "history-10-prehistory-q3",
+          "prompt": "Tìm thấy một công cụ đá, kết luận chắc chắn nhất là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đã biết chính xác mọi nghề nghiệp"
+            },
+            {
+              "id": "b",
+              "text": "Chứng minh toàn bộ cư dân cùng sống một kiểu"
+            },
+            {
+              "id": "c",
+              "text": "Có hoạt động chế tác hoặc sử dụng công cụ; cần thêm dữ liệu để mô tả xã hội"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Một hiện vật hỗ trợ kết luận giới hạn, không đại diện toàn bộ đời sống."
+        }
+      ]
+    },
+    {
+      "id": "history-10-early-civilizations",
+      "title": "Những nền văn minh cổ đại ven sông",
+      "guidance": [
+        "Các nền văn minh sớm phát triển ở nhiều lưu vực sông nhờ nước, đất và giao thông. Không nên xem môi trường tự nhiên là nguyên nhân duy nhất; tổ chức xã hội và sáng tạo con người cũng quan trọng."
+      ],
+      "examples": [
+        "Tưới tiêu ở lưu vực sông có thể hỗ trợ nông nghiệp và đòi hỏi phối hợp cộng đồng."
+      ],
+      "questions": [
+        {
+          "id": "history-10-early-civilizations-q1",
+          "prompt": "Sông có thể hỗ trợ cư dân cổ đại bằng cách nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nước, đất canh tác và giao thông"
+            },
+            {
+              "id": "b",
+              "text": "Tự động tạo nhà nước hiện đại"
+            },
+            {
+              "id": "c",
+              "text": "Loại bỏ mọi thiên tai"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Sông tạo điều kiện nhưng xã hội vẫn cần tổ chức và thích nghi."
+        },
+        {
+          "id": "history-10-early-civilizations-q2",
+          "prompt": "Chữ viết cổ thường giúp gì cho nhà nước?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thay thế mọi hoạt động sản xuất"
+            },
+            {
+              "id": "b",
+              "text": "Bảo đảm mọi người biết đọc"
+            },
+            {
+              "id": "c",
+              "text": "Ghi chép giao dịch, luật lệ hoặc sự kiện"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Ghi chép hỗ trợ quản lý nhưng mức biết chữ khác nhau."
+        },
+        {
+          "id": "history-10-early-civilizations-q3",
+          "prompt": "Một đô thị xuất hiện bên sông. Muốn giải thích sự phát triển, cần xem thêm điều gì ngoài nguồn nước?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Màu sắc hiện vật"
+            },
+            {
+              "id": "b",
+              "text": "Sản xuất, trao đổi và thiết chế xã hội"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ hình dáng con sông"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Nhiều yếu tố tương tác tạo nên đô thị."
+        }
+      ]
+    },
+    {
+      "id": "history-10-india-china",
+      "title": "Văn minh Ấn Độ và Trung Hoa cổ",
+      "guidance": [
+        "Nam Á và Đông Á hình thành những truyền thống đa dạng về tư tưởng, chữ viết, chính trị và kỹ thuật. Cần xác định thời kì, địa bàn trước khi so sánh, tránh gom nhiều triều đại thành một."
+      ],
+      "examples": [
+        "So sánh một văn bản triết học với luật lệ cùng thời có thể cho thấy các hình thức tổ chức tư tưởng khác nhau."
+      ],
+      "questions": [
+        {
+          "id": "history-10-india-china-q1",
+          "prompt": "Khi so sánh hai nền văn minh, bước đầu nên làm gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Gộp mọi thế kỉ"
+            },
+            {
+              "id": "b",
+              "text": "Chọn một bên làm chuẩn duy nhất"
+            },
+            {
+              "id": "c",
+              "text": "Xác định thời kì và tiêu chí chung"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tiêu chí và mốc thời gian rõ giúp so sánh công bằng."
+        },
+        {
+          "id": "history-10-india-china-q2",
+          "prompt": "Một truyền thống tư tưởng kéo dài qua nhiều triều đại có nghĩa là?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mọi cư dân đều nghĩ giống nhau"
+            },
+            {
+              "id": "b",
+              "text": "Có sự kế thừa và biến đổi theo bối cảnh"
+            },
+            {
+              "id": "c",
+              "text": "Không bao giờ thay đổi"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Truyền thống thường được diễn giải lại trong các thời kì."
+        },
+        {
+          "id": "history-10-india-china-q3",
+          "prompt": "Muốn so sánh hệ thống chữ viết của hai xã hội, nên xem gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Dạng chữ, cách sử dụng và nhóm người dùng"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ số trang sách hiện đại"
+            },
+            {
+              "id": "c",
+              "text": "Tỷ giá tiền hôm nay"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "So sánh lịch sử cần chứng cứ cùng chức năng và bối cảnh."
+        }
+      ]
+    },
+    {
+      "id": "history-10-greece-rome",
+      "title": "Di sản Hy Lạp và La Mã",
+      "guidance": [
+        "Các xã hội Hy Lạp và La Mã cổ đại để lại dấu ấn trong triết học, kiến trúc, luật và chính trị. Di sản được tiếp nhận, biến đổi; không nên đồng nhất thể chế cổ với dân chủ hiện đại."
+      ],
+      "examples": [
+        "Một công trình mái vòm cho thấy kỹ thuật xây dựng, nhưng cần nguồn khác để hiểu đời sống chính trị."
+      ],
+      "questions": [
+        {
+          "id": "history-10-greece-rome-q1",
+          "prompt": "Một công trình kiến trúc cho biết chắc nhất điều gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mọi luật lệ của xã hội"
+            },
+            {
+              "id": "b",
+              "text": "Kỹ thuật và quan niệm xây dựng có thể quan sát"
+            },
+            {
+              "id": "c",
+              "text": "Toàn bộ quyền lợi của cư dân"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hiện vật cung cấp loại thông tin giới hạn, cần nguồn bổ sung."
+        },
+        {
+          "id": "history-10-greece-rome-q2",
+          "prompt": "Khi nói một xã hội cổ có hình thức tham gia chính trị, cần tránh điều gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đồng nhất ngay với dân chủ hiện đại"
+            },
+            {
+              "id": "b",
+              "text": "Xác định ai được tham gia"
+            },
+            {
+              "id": "c",
+              "text": "Đọc văn bản luật"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Quyền chính trị cổ đại có phạm vi và điều kiện riêng."
+        },
+        {
+          "id": "history-10-greece-rome-q3",
+          "prompt": "Một khái niệm luật được dùng nhiều thế kỉ sau. Cách giải thích tốt là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cho rằng nghĩa luôn không đổi"
+            },
+            {
+              "id": "b",
+              "text": "Bỏ qua người sử dụng"
+            },
+            {
+              "id": "c",
+              "text": "Theo dõi sự tiếp nhận và biến đổi trong từng bối cảnh"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Di sản có thể được tái diễn giải theo xã hội tiếp nhận."
+        }
+      ]
+    },
+    {
+      "id": "history-10-southeast-asia",
+      "title": "Giao lưu văn hóa Đông Nam Á",
+      "guidance": [
+        "Đông Nam Á là không gian đa dạng, kết nối qua biển và đất liền. Thương mại, di cư và tôn giáo góp phần giao lưu; mỗi cộng đồng tiếp nhận có chọn lọc và sáng tạo."
+      ],
+      "examples": [
+        "Một phong cách kiến trúc có ảnh hưởng bên ngoài nhưng vật liệu và trang trí địa phương tạo diện mạo riêng."
+      ],
+      "questions": [
+        {
+          "id": "history-10-southeast-asia-q1",
+          "prompt": "Đông Nam Á kết nối lịch sử qua những tuyến nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đường biển và đường bộ"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ một con đường duy nhất"
+            },
+            {
+              "id": "c",
+              "text": "Không có giao lưu"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Địa lí quần đảo và lục địa tạo nhiều tuyến tiếp xúc."
+        },
+        {
+          "id": "history-10-southeast-asia-q2",
+          "prompt": "Tiếp nhận ảnh hưởng văn hóa thường diễn ra ra sao?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Sao chép nguyên vẹn trong mọi trường hợp"
+            },
+            {
+              "id": "b",
+              "text": "Không để lại dấu vết"
+            },
+            {
+              "id": "c",
+              "text": "Có chọn lọc và biến đổi tại địa phương"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Cộng đồng điều chỉnh yếu tố ngoại lai theo nhu cầu và bản sắc."
+        },
+        {
+          "id": "history-10-southeast-asia-q3",
+          "prompt": "Một hiện vật có kiểu dáng ngoại lai nhưng chất liệu địa phương. Kết luận phù hợp là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không thể liên quan thương mại"
+            },
+            {
+              "id": "b",
+              "text": "Có thể phản ánh giao lưu và thích ứng; cần thêm bằng chứng"
+            },
+            {
+              "id": "c",
+              "text": "Chắc chắn được nhập khẩu nguyên chiếc"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Kết hợp đặc điểm gợi giả thuyết nhưng chưa đủ để kết luận chắc chắn."
+        }
+      ]
+    },
+    {
+      "id": "history-10-vietnam-civilizations",
+      "title": "Văn minh và văn hóa Việt Nam",
+      "guidance": [
+        "Lịch sử văn hóa Việt Nam hình thành từ nhiều cộng đồng, thời kì và giao lưu. Di vật khảo cổ, văn bản và truyền thống dân gian có phạm vi thông tin khác nhau."
+      ],
+      "examples": [
+        "Trống đồng có thể cung cấp dấu vết về kỹ thuật và biểu tượng; cách diễn giải cần đối chiếu địa điểm, niên đại và nguồn khác."
+      ],
+      "questions": [
+        {
+          "id": "history-10-vietnam-civilizations-q1",
+          "prompt": "Khi học một di vật, cần đặt câu hỏi nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nó có màu đẹp không?"
+            },
+            {
+              "id": "b",
+              "text": "Ai thích nó ngày nay?"
+            },
+            {
+              "id": "c",
+              "text": "Nó được tìm ở đâu, niên đại nào, dùng để làm gì?"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Bối cảnh tìm thấy giúp xác định giá trị chứng cứ."
+        },
+        {
+          "id": "history-10-vietnam-civilizations-q2",
+          "prompt": "Truyền thống dân gian nên được tiếp cận thế nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bỏ qua hoàn toàn"
+            },
+            {
+              "id": "b",
+              "text": "Tôn trọng giá trị văn hóa và đối chiếu khi dùng làm chứng cứ sự kiện"
+            },
+            {
+              "id": "c",
+              "text": "Coi mọi chi tiết là ghi chép nguyên văn"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Truyền khẩu lưu giữ ký ức nhưng biến đổi qua truyền kể."
+        },
+        {
+          "id": "history-10-vietnam-civilizations-q3",
+          "prompt": "Một nền văn hóa chịu nhiều ảnh hưởng nhưng vẫn có dấu ấn riêng. Điều đó cho thấy?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Giao lưu có thể đi cùng sáng tạo và thích nghi"
+            },
+            {
+              "id": "b",
+              "text": "Giao lưu luôn xóa bản sắc"
+            },
+            {
+              "id": "c",
+              "text": "Văn hóa không thay đổi"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Bản sắc và tiếp xúc có thể cùng tồn tại."
+        }
+      ]
+    },
+    {
+      "id": "history-10-heritage",
+      "title": "Di sản và bảo tồn lịch sử",
+      "guidance": [
+        "Di sản vật thể và phi vật thể lưu giữ giá trị quá khứ. Bảo tồn cần tư liệu hóa, chăm sóc và tôn trọng cộng đồng; khai thác du lịch phải hạn chế gây hư hại."
+      ],
+      "examples": [
+        "Ghi âm nghệ nhân kể một làn điệu giúp lưu giữ tri thức nhưng cần sự đồng thuận và ghi nguồn."
+      ],
+      "questions": [
+        {
+          "id": "history-10-heritage-q1",
+          "prompt": "Di sản phi vật thể có thể là gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Một thiết bị điện tử mới"
+            },
+            {
+              "id": "b",
+              "text": "Tri thức, thực hành và nghệ thuật truyền thống"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ một tòa nhà"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Di sản phi vật thể tồn tại qua thực hành và truyền dạy."
+        },
+        {
+          "id": "history-10-heritage-q2",
+          "prompt": "Trước khi ghi hình một nghệ nhân, cần làm gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Xin đồng thuận và ghi rõ bối cảnh"
+            },
+            {
+              "id": "b",
+              "text": "Tự ý đăng mọi nội dung"
+            },
+            {
+              "id": "c",
+              "text": "Cắt bỏ tên người kể"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tôn trọng quyền và tri thức của cộng đồng là phần của bảo tồn."
+        },
+        {
+          "id": "history-10-heritage-q3",
+          "prompt": "Lượng khách lớn làm mòn một di tích. Giải pháp phù hợp hướng tới điều gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tăng khách không giới hạn"
+            },
+            {
+              "id": "b",
+              "text": "Sơn phủ lên hiện vật"
+            },
+            {
+              "id": "c",
+              "text": "Điều tiết tham quan và bảo vệ cấu trúc di tích"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Bảo tồn cân bằng tiếp cận với sức chịu tải của di tích."
+        }
+      ]
+    },
+    {
+      "id": "history-10-historical-causation",
+      "title": "Nguyên nhân và hệ quả lịch sử",
+      "guidance": [
+        "Một biến cố thường có nhiều nguyên nhân gần, xa và điều kiện nền. Phân biệt nguyên nhân với cái cớ và xem hệ quả ngắn hạn, dài hạn."
+      ],
+      "examples": [
+        "Mất mùa có thể làm tăng bất mãn nhưng chính sách, phân phối và bối cảnh chính trị cũng ảnh hưởng khủng hoảng."
+      ],
+      "questions": [
+        {
+          "id": "history-10-historical-causation-q1",
+          "prompt": "Một biến cố lớn thường nên được giải thích bằng?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nhiều nguyên nhân tương tác"
+            },
+            {
+              "id": "b",
+              "text": "Một nguyên nhân duy nhất mặc định"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ một ngày xảy ra"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích đa nguyên nhân phù hợp độ phức tạp lịch sử."
+        },
+        {
+          "id": "history-10-historical-causation-q2",
+          "prompt": "Nguyên nhân gần khác điều kiện nền ở điểm nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hai khái niệm luôn giống nhau"
+            },
+            {
+              "id": "b",
+              "text": "Điều kiện nền là hậu quả"
+            },
+            {
+              "id": "c",
+              "text": "Nguyên nhân gần kích hoạt trực tiếp; điều kiện nền tạo bối cảnh"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Phân biệt giúp mô tả cơ chế của sự kiện."
+        },
+        {
+          "id": "history-10-historical-causation-q3",
+          "prompt": "Một chính sách tạo kết quả tốt ngay nhưng vấn đề mới sau nhiều năm. Cách đánh giá nào đầy đủ hơn?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ hỏi người đề xuất"
+            },
+            {
+              "id": "b",
+              "text": "Xem cả hệ quả ngắn hạn và dài hạn"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ xem ngày ban hành"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hệ quả có thể khác nhau theo thời gian và nhóm chịu tác động."
+        }
+      ]
+    },
+    {
+      "id": "history-10-industrial-revolution",
+      "title": "Các cuộc cách mạng công nghiệp",
+      "guidance": [
+        "Các cuộc cách mạng công nghiệp gắn với thay đổi công nghệ, năng lượng, sản xuất và lao động. Tốc độ và tác động khác nhau giữa khu vực, ngành nghề và nhóm dân cư."
+      ],
+      "examples": [
+        "Máy móc có thể tăng sản lượng nhưng cũng làm thay đổi kỹ năng và tổ chức lao động."
+      ],
+      "questions": [
+        {
+          "id": "history-10-industrial-revolution-q1",
+          "prompt": "Cách mạng công nghiệp thường làm biến đổi điều gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ tên các thành phố"
+            },
+            {
+              "id": "b",
+              "text": "Trọng lực"
+            },
+            {
+              "id": "c",
+              "text": "Phương thức sản xuất và tổ chức lao động"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Công nghệ tác động cả quy trình và quan hệ lao động."
+        },
+        {
+          "id": "history-10-industrial-revolution-q2",
+          "prompt": "Một công nghệ mới làm năng suất tăng. Tác động xã hội nào cần xem thêm?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không có tác động xã hội"
+            },
+            {
+              "id": "b",
+              "text": "Việc làm, kỹ năng và phân phối lợi ích"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ màu máy"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Lợi ích và chi phí có thể phân bố không đều."
+        },
+        {
+          "id": "history-10-industrial-revolution-q3",
+          "prompt": "Hai quốc gia tiếp nhận máy móc cùng thời nhưng kết quả khác. Cần xem thêm yếu tố nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hạ tầng, vốn, kỹ năng và thể chế"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ ngày phát minh"
+            },
+            {
+              "id": "c",
+              "text": "Tên nhà phát minh duy nhất"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Điều kiện địa phương ảnh hưởng cách công nghệ được áp dụng."
+        }
+      ]
+    },
+    {
+      "id": "history-10-modernization",
+      "title": "Hiện đại hóa và cải cách",
+      "guidance": [
+        "Hiện đại hóa là quá trình thay đổi kinh tế, xã hội và thiết chế, không đồng nghĩa sao chép một mô hình duy nhất. So sánh cần xem mục tiêu, nguồn lực và nhóm chịu tác động."
+      ],
+      "examples": [
+        "Cải cách giáo dục có thể mở rộng cơ hội nhưng kết quả còn phụ thuộc khả năng tiếp cận."
+      ],
+      "questions": [
+        {
+          "id": "history-10-modernization-q1",
+          "prompt": "Hiện đại hóa có phải một con đường giống hệt cho mọi xã hội không?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ là đổi trang phục"
+            },
+            {
+              "id": "b",
+              "text": "Không"
+            },
+            {
+              "id": "c",
+              "text": "Có, chỉ có một mô hình"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Quá trình chịu ảnh hưởng lịch sử và điều kiện địa phương."
+        },
+        {
+          "id": "history-10-modernization-q2",
+          "prompt": "Đánh giá một cải cách nên xét thêm điều gì ngoài mục tiêu?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Kết quả thực tế và nhóm được hoặc chịu tác động"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ tiêu đề"
+            },
+            {
+              "id": "c",
+              "text": "Màu tài liệu"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Kết quả và tác động phân phối giúp đánh giá toàn diện."
+        },
+        {
+          "id": "history-10-modernization-q3",
+          "prompt": "Một chính sách mở trường ở thành phố nhưng vùng xa khó đi học. Vấn đề cần xem là?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Số trang sách"
+            },
+            {
+              "id": "b",
+              "text": "Nhiệt độ lớp học duy nhất"
+            },
+            {
+              "id": "c",
+              "text": "Khả năng tiếp cận không đồng đều"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Cơ hội thực tế phụ thuộc địa lí và nguồn lực."
+        }
+      ]
+    },
+    {
+      "id": "history-10-global-exchange",
+      "title": "Giao lưu và kết nối thế giới",
+      "guidance": [
+        "Giao lưu làm lưu chuyển hàng hóa, tri thức, tín ngưỡng và con người. Tác động gồm cơ hội và căng thẳng; cần xem ai tham gia, ai kiểm soát và bên nào hưởng lợi."
+      ],
+      "examples": [
+        "Một tuyến thương mại đưa hàng hóa mới tới cảng, đồng thời tạo tiếp xúc ngôn ngữ và kỹ thuật."
+      ],
+      "questions": [
+        {
+          "id": "history-10-global-exchange-q1",
+          "prompt": "Giao lưu lịch sử có thể truyền tải những gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hàng hóa, tri thức và tập quán"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ một loại tiền"
+            },
+            {
+              "id": "c",
+              "text": "Không có thay đổi"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tiếp xúc diễn ra qua nhiều kênh."
+        },
+        {
+          "id": "history-10-global-exchange-q2",
+          "prompt": "Vì sao cần hỏi ai hưởng lợi từ mạng lưới thương mại?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Vì mọi người luôn hưởng lợi như nhau"
+            },
+            {
+              "id": "b",
+              "text": "Để bỏ qua nguồn hàng"
+            },
+            {
+              "id": "c",
+              "text": "Lợi ích và quyền lực có thể phân bố không đều"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Phân tích người tham gia giúp hiểu quan hệ xã hội."
+        },
+        {
+          "id": "history-10-global-exchange-q3",
+          "prompt": "Một kỹ thuật lan sang vùng khác rồi được điều chỉnh. Đây là ví dụ của?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Một hiện tượng tự nhiên"
+            },
+            {
+              "id": "b",
+              "text": "Tiếp nhận và biến đổi tri thức qua giao lưu"
+            },
+            {
+              "id": "c",
+              "text": "Không có giao lưu"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Sự tiếp nhận có thể tạo hình thức mới tại địa phương."
+        }
+      ]
+    },
+    {
+      "id": "history-10-historical-argument",
+      "title": "Viết nhận định lịch sử có căn cứ",
+      "guidance": [
+        "Nhận định lịch sử cần luận điểm, tư liệu và giải thích. Trích nguồn đúng, phân biệt điều nguồn ghi với cách người viết diễn giải."
+      ],
+      "examples": [
+        "“Nguồn A cho thấy…” là mô tả; “điều này gợi ý…” là diễn giải cần kiểm tra thêm."
+      ],
+      "questions": [
+        {
+          "id": "history-10-historical-argument-q1",
+          "prompt": "Một nhận định lịch sử thuyết phục cần gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ ý kiến cá nhân"
+            },
+            {
+              "id": "b",
+              "text": "Một niên đại không liên quan"
+            },
+            {
+              "id": "c",
+              "text": "Luận điểm, bằng chứng và giải thích"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Bằng chứng và lập luận kết nối giúp kiểm tra nhận định."
+        },
+        {
+          "id": "history-10-historical-argument-q2",
+          "prompt": "Khi nguồn chỉ nói về một địa phương, tránh điều gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ghi thời gian"
+            },
+            {
+              "id": "b",
+              "text": "Khái quát kết luận cho mọi nơi"
+            },
+            {
+              "id": "c",
+              "text": "Nêu địa danh"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Phạm vi kết luận không nên vượt quá phạm vi nguồn."
+        },
+        {
+          "id": "history-10-historical-argument-q3",
+          "prompt": "Hai tư liệu mâu thuẫn về một sự việc. Bài viết tốt nên?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nêu mâu thuẫn, đánh giá nguồn và giới hạn kết luận"
+            },
+            {
+              "id": "b",
+              "text": "Giấu nguồn bất tiện"
+            },
+            {
+              "id": "c",
+              "text": "Tự chọn ngày trung bình"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Minh bạch bất đồng giúp lập luận thận trọng."
+        }
+      ]
+    },
+    {
+      "id": "history-10-historical-periods",
+      "title": "Thời kì lịch sử và sự tiếp nối",
+      "guidance": [
+        "Chia thời kì giúp tổ chức việc học, nhưng ranh giới thời kì là công cụ phân tích. Các biến đổi thường diễn ra không đồng đều và có sự tiếp nối giữa trước với sau."
+      ],
+      "examples": [
+        "Khi chuyển từ một hình thái xã hội sang hình thái khác, có thể đồng thời tồn tại yếu tố cũ và mới."
+      ],
+      "questions": [
+        {
+          "id": "history-10-historical-periods-q1",
+          "prompt": "Chia lịch sử thành các thời kì chủ yếu để làm gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thay thế việc đọc tư liệu"
+            },
+            {
+              "id": "b",
+              "text": "Tổ chức và phân tích những biến đổi trong quá khứ"
+            },
+            {
+              "id": "c",
+              "text": "Khẳng định mọi nơi thay đổi cùng lúc"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Phân kì là cách nghiên cứu; cần xét khác biệt về không gian và nhịp độ biến đổi."
+        },
+        {
+          "id": "history-10-historical-periods-q2",
+          "prompt": "Một công cụ tiếp tục được dùng sau khi xuất hiện kỹ thuật mới cho thấy điều gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Yếu tố cũ và mới có thể cùng tồn tại"
+            },
+            {
+              "id": "b",
+              "text": "Mọi xã hội đã đổi hoàn toàn cùng lúc"
+            },
+            {
+              "id": "c",
+              "text": "Không có sự thay đổi nào"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Quá trình lịch sử thường có tiếp nối, không thay thế tức thì ở mọi nơi."
+        },
+        {
+          "id": "history-10-historical-periods-q3",
+          "prompt": "Khi so sánh hai xã hội trong cùng một thời kì, cần lưu ý gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tên thời kì đủ giải thích mọi khác biệt"
+            },
+            {
+              "id": "b",
+              "text": "Mọi cộng đồng có một trải nghiệm giống nhau"
+            },
+            {
+              "id": "c",
+              "text": "Bối cảnh và tốc độ biến đổi có thể khác nhau"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nhãn thời kì không thay thế việc khảo sát từng bối cảnh."
+        }
+      ]
+    }
+  ]
+}
