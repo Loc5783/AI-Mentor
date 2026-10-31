@@ -1,0 +1,1137 @@
+{
+  "subjectId": "chemistry",
+  "grade": 11,
+  "version": "intro-2026.1",
+  "title": "Hóa học 11: Cân bằng hóa học và Đại cương Hữu cơ",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_11",
+  "extendedReviews": false,
+  "sourceNote": "Nội dung đang ở dạng cấu trúc khung (Placeholder) được sinh tự động bởi hệ thống AI Mentor để đảm bảo đúng định dạng JSON 3 câu hỏi (EASY/MEDIUM/APPLIED). Giáo viên cần hiệu đính nội dung chi tiết.",
+  "lessons": [
+    {
+      "id": "chemistry-11-can-bang-hoa-hoc",
+      "title": "Cân bằng hóa học",
+      "guidance": [
+        "Nội dung trọng tâm bài Cân bằng hóa học theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Cân bằng hóa học vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-can-bang-hoa-hoc-chemistry-11-can-bang-hoa-hoc-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Cân bằng hóa học?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-can-bang-hoa-hoc-chemistry-11-can-bang-hoa-hoc-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Cân bằng hóa học?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-can-bang-hoa-hoc-chemistry-11-can-bang-hoa-hoc-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Cân bằng hóa học giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-hang-so-can-bang-kc",
+      "title": "Hằng số cân bằng Kc",
+      "guidance": [
+        "Nội dung trọng tâm bài Hằng số cân bằng Kc theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Hằng số cân bằng Kc vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-hang-so-can-bang-kc-chemistry-11-hang-so-can-bang-kc-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Hằng số cân bằng Kc?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-hang-so-can-bang-kc-chemistry-11-hang-so-can-bang-kc-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Hằng số cân bằng Kc?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-hang-so-can-bang-kc-chemistry-11-hang-so-can-bang-kc-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Hằng số cân bằng Kc giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-su-dien-li",
+      "title": "Sự điện li",
+      "guidance": [
+        "Nội dung trọng tâm bài Sự điện li theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Sự điện li vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-su-dien-li-chemistry-11-su-dien-li-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Sự điện li?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-su-dien-li-chemistry-11-su-dien-li-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Sự điện li?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-su-dien-li-chemistry-11-su-dien-li-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Sự điện li giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-thuyet-br-nsted-lowry",
+      "title": "Thuyết Brønsted-Lowry",
+      "guidance": [
+        "Nội dung trọng tâm bài Thuyết Brønsted-Lowry theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Thuyết Brønsted-Lowry vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-thuyet-br-nsted-lowry-chemistry-11-thuyet-br-nsted-lowry-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Thuyết Brønsted-Lowry?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-thuyet-br-nsted-lowry-chemistry-11-thuyet-br-nsted-lowry-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Thuyết Brønsted-Lowry?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-thuyet-br-nsted-lowry-chemistry-11-thuyet-br-nsted-lowry-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Thuyết Brønsted-Lowry giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-ph-va-chat-chi-thi",
+      "title": "pH và chất chỉ thị",
+      "guidance": [
+        "Nội dung trọng tâm bài pH và chất chỉ thị theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần pH và chất chỉ thị vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-ph-va-chat-chi-thi-chemistry-11-ph-va-chat-chi-thi-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài pH và chất chỉ thị?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-ph-va-chat-chi-thi-chemistry-11-ph-va-chat-chi-thi-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần pH và chất chỉ thị?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-ph-va-chat-chi-thi-chemistry-11-ph-va-chat-chi-thi-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức pH và chất chỉ thị giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-nitrogen",
+      "title": "Nitrogen",
+      "guidance": [
+        "Nội dung trọng tâm bài Nitrogen theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Nitrogen vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-nitrogen-chemistry-11-nitrogen-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Nitrogen?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-nitrogen-chemistry-11-nitrogen-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Nitrogen?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-nitrogen-chemistry-11-nitrogen-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Nitrogen giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-ammonia",
+      "title": "Ammonia",
+      "guidance": [
+        "Nội dung trọng tâm bài Ammonia theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Ammonia vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-ammonia-chemistry-11-ammonia-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Ammonia?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-ammonia-chemistry-11-ammonia-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Ammonia?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-ammonia-chemistry-11-ammonia-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Ammonia giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-nitric-acid",
+      "title": "Nitric acid",
+      "guidance": [
+        "Nội dung trọng tâm bài Nitric acid theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Nitric acid vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-nitric-acid-chemistry-11-nitric-acid-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Nitric acid?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-nitric-acid-chemistry-11-nitric-acid-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Nitric acid?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-nitric-acid-chemistry-11-nitric-acid-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Nitric acid giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-sulfur",
+      "title": "Sulfur",
+      "guidance": [
+        "Nội dung trọng tâm bài Sulfur theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Sulfur vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-sulfur-chemistry-11-sulfur-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Sulfur?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-sulfur-chemistry-11-sulfur-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Sulfur?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-sulfur-chemistry-11-sulfur-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Sulfur giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-sulfuric-acid",
+      "title": "Sulfuric acid",
+      "guidance": [
+        "Nội dung trọng tâm bài Sulfuric acid theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Sulfuric acid vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-sulfuric-acid-chemistry-11-sulfuric-acid-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Sulfuric acid?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-sulfuric-acid-chemistry-11-sulfuric-acid-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Sulfuric acid?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-sulfuric-acid-chemistry-11-sulfuric-acid-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Sulfuric acid giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-dai-cuong-hoa-huu-co",
+      "title": "Đại cương hóa hữu cơ",
+      "guidance": [
+        "Nội dung trọng tâm bài Đại cương hóa hữu cơ theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Đại cương hóa hữu cơ vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-dai-cuong-hoa-huu-co-chemistry-11-dai-cuong-hoa-huu-co-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Đại cương hóa hữu cơ?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-dai-cuong-hoa-huu-co-chemistry-11-dai-cuong-hoa-huu-co-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Đại cương hóa hữu cơ?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-dai-cuong-hoa-huu-co-chemistry-11-dai-cuong-hoa-huu-co-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Đại cương hóa hữu cơ giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-pho-hong-ngoai-ir",
+      "title": "Phổ hồng ngoại IR",
+      "guidance": [
+        "Nội dung trọng tâm bài Phổ hồng ngoại IR theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Phổ hồng ngoại IR vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-pho-hong-ngoai-ir-chemistry-11-pho-hong-ngoai-ir-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Phổ hồng ngoại IR?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-pho-hong-ngoai-ir-chemistry-11-pho-hong-ngoai-ir-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Phổ hồng ngoại IR?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-pho-hong-ngoai-ir-chemistry-11-pho-hong-ngoai-ir-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Phổ hồng ngoại IR giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-dong-dang-va-dong-phan",
+      "title": "Đồng đẳng và đồng phân",
+      "guidance": [
+        "Nội dung trọng tâm bài Đồng đẳng và đồng phân theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Đồng đẳng và đồng phân vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-dong-dang-va-dong-phan-chemistry-11-dong-dang-va-dong-phan-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Đồng đẳng và đồng phân?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-dong-dang-va-dong-phan-chemistry-11-dong-dang-va-dong-phan-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Đồng đẳng và đồng phân?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-dong-dang-va-dong-phan-chemistry-11-dong-dang-va-dong-phan-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Đồng đẳng và đồng phân giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-alkane",
+      "title": "Alkane",
+      "guidance": [
+        "Nội dung trọng tâm bài Alkane theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Alkane vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-alkane-chemistry-11-alkane-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Alkane?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-alkane-chemistry-11-alkane-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Alkane?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-alkane-chemistry-11-alkane-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Alkane giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "chemistry-11-alkene-va-alkyne",
+      "title": "Alkene và Alkyne",
+      "guidance": [
+        "Nội dung trọng tâm bài Alkene và Alkyne theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Alkene và Alkyne vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "chemistry-11-alkene-va-alkyne-chemistry-11-alkene-va-alkyne-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Alkene và Alkyne?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "chemistry-11-alkene-va-alkyne-chemistry-11-alkene-va-alkyne-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Alkene và Alkyne?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "chemistry-11-alkene-va-alkyne-chemistry-11-alkene-va-alkyne-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Alkene và Alkyne giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    }
+  ]
+}

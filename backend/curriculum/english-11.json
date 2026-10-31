@@ -1,0 +1,1137 @@
+{
+  "subjectId": "english",
+  "grade": 11,
+  "version": "intro-2026.1",
+  "title": "Tiếng Anh 11: Global Success & Lifelong Learning",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_11",
+  "extendedReviews": false,
+  "sourceNote": "Nội dung đang ở dạng cấu trúc khung (Placeholder) được sinh tự động bởi hệ thống AI Mentor để đảm bảo đúng định dạng JSON 3 câu hỏi (EASY/MEDIUM/APPLIED). Giáo viên cần hiệu đính nội dung chi tiết.",
+  "lessons": [
+    {
+      "id": "english-11-healthy-habits",
+      "title": "Healthy habits",
+      "guidance": [
+        "Nội dung trọng tâm bài Healthy habits theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Healthy habits vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-healthy-habits-english-11-healthy-habits-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Healthy habits?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-healthy-habits-english-11-healthy-habits-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Healthy habits?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-healthy-habits-english-11-healthy-habits-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Healthy habits giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-generation-gap",
+      "title": "Generation gap",
+      "guidance": [
+        "Nội dung trọng tâm bài Generation gap theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Generation gap vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-generation-gap-english-11-generation-gap-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Generation gap?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-generation-gap-english-11-generation-gap-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Generation gap?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-generation-gap-english-11-generation-gap-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Generation gap giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-cities-of-the-future",
+      "title": "Cities of the future",
+      "guidance": [
+        "Nội dung trọng tâm bài Cities of the future theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Cities of the future vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-cities-of-the-future-english-11-cities-of-the-future-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Cities of the future?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-cities-of-the-future-english-11-cities-of-the-future-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Cities of the future?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-cities-of-the-future-english-11-cities-of-the-future-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Cities of the future giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-asean-community",
+      "title": "ASEAN community",
+      "guidance": [
+        "Nội dung trọng tâm bài ASEAN community theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần ASEAN community vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-asean-community-english-11-asean-community-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài ASEAN community?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-asean-community-english-11-asean-community-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần ASEAN community?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-asean-community-english-11-asean-community-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức ASEAN community giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-global-warming",
+      "title": "Global warming",
+      "guidance": [
+        "Nội dung trọng tâm bài Global warming theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Global warming vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-global-warming-english-11-global-warming-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Global warming?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-global-warming-english-11-global-warming-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Global warming?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-global-warming-english-11-global-warming-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Global warming giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-preserving-heritage",
+      "title": "Preserving heritage",
+      "guidance": [
+        "Nội dung trọng tâm bài Preserving heritage theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Preserving heritage vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-preserving-heritage-english-11-preserving-heritage-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Preserving heritage?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-preserving-heritage-english-11-preserving-heritage-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Preserving heritage?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-preserving-heritage-english-11-preserving-heritage-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Preserving heritage giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-higher-education-options",
+      "title": "Higher education options",
+      "guidance": [
+        "Nội dung trọng tâm bài Higher education options theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Higher education options vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-higher-education-options-english-11-higher-education-options-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Higher education options?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-higher-education-options-english-11-higher-education-options-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Higher education options?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-higher-education-options-english-11-higher-education-options-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Higher education options giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-becoming-independent",
+      "title": "Becoming independent",
+      "guidance": [
+        "Nội dung trọng tâm bài Becoming independent theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Becoming independent vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-becoming-independent-english-11-becoming-independent-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Becoming independent?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-becoming-independent-english-11-becoming-independent-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Becoming independent?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-becoming-independent-english-11-becoming-independent-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Becoming independent giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-green-lifestyle",
+      "title": "Green lifestyle",
+      "guidance": [
+        "Nội dung trọng tâm bài Green lifestyle theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Green lifestyle vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-green-lifestyle-english-11-green-lifestyle-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Green lifestyle?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-green-lifestyle-english-11-green-lifestyle-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Green lifestyle?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-green-lifestyle-english-11-green-lifestyle-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Green lifestyle giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-electronic-devices",
+      "title": "Electronic devices",
+      "guidance": [
+        "Nội dung trọng tâm bài Electronic devices theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Electronic devices vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-electronic-devices-english-11-electronic-devices-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Electronic devices?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-electronic-devices-english-11-electronic-devices-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Electronic devices?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-electronic-devices-english-11-electronic-devices-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Electronic devices giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-the-world-of-work",
+      "title": "The world of work",
+      "guidance": [
+        "Nội dung trọng tâm bài The world of work theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần The world of work vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-the-world-of-work-english-11-the-world-of-work-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài The world of work?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-the-world-of-work-english-11-the-world-of-work-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần The world of work?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-the-world-of-work-english-11-the-world-of-work-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức The world of work giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-lifelong-learning",
+      "title": "Lifelong learning",
+      "guidance": [
+        "Nội dung trọng tâm bài Lifelong learning theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Lifelong learning vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-lifelong-learning-english-11-lifelong-learning-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Lifelong learning?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-lifelong-learning-english-11-lifelong-learning-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Lifelong learning?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-lifelong-learning-english-11-lifelong-learning-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Lifelong learning giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-cultural-diversity",
+      "title": "Cultural diversity",
+      "guidance": [
+        "Nội dung trọng tâm bài Cultural diversity theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Cultural diversity vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-cultural-diversity-english-11-cultural-diversity-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Cultural diversity?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-cultural-diversity-english-11-cultural-diversity-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Cultural diversity?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-cultural-diversity-english-11-cultural-diversity-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Cultural diversity giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-environmental-protection",
+      "title": "Environmental protection",
+      "guidance": [
+        "Nội dung trọng tâm bài Environmental protection theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Environmental protection vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-environmental-protection-english-11-environmental-protection-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Environmental protection?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-environmental-protection-english-11-environmental-protection-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Environmental protection?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-environmental-protection-english-11-environmental-protection-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Environmental protection giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "english-11-ai-in-education",
+      "title": "AI in education",
+      "guidance": [
+        "Nội dung trọng tâm bài AI in education theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần AI in education vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "english-11-ai-in-education-english-11-ai-in-education-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài AI in education?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "english-11-ai-in-education-english-11-ai-in-education-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần AI in education?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "english-11-ai-in-education-english-11-ai-in-education-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức AI in education giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    }
+  ]
+}

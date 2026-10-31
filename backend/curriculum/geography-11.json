@@ -1,0 +1,1137 @@
+{
+  "subjectId": "geography",
+  "grade": 11,
+  "version": "intro-2026.1",
+  "title": "Địa lí 11: Liên kết toàn cầu và Kinh tế khu vực",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_11",
+  "extendedReviews": false,
+  "sourceNote": "Nội dung đang ở dạng cấu trúc khung (Placeholder) được sinh tự động bởi hệ thống AI Mentor để đảm bảo đúng định dạng JSON 3 câu hỏi (EASY/MEDIUM/APPLIED). Giáo viên cần hiệu đính nội dung chi tiết.",
+  "lessons": [
+    {
+      "id": "geography-11-phat-trien-kinh-te-giua-cac-nuoc",
+      "title": "Phát triển kinh tế giữa các nước",
+      "guidance": [
+        "Nội dung trọng tâm bài Phát triển kinh tế giữa các nước theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Phát triển kinh tế giữa các nước vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-phat-trien-kinh-te-giua-cac-nuoc-geography-11-phat-trien-kinh-te-giua-cac-nuoc-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Phát triển kinh tế giữa các nước?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-phat-trien-kinh-te-giua-cac-nuoc-geography-11-phat-trien-kinh-te-giua-cac-nuoc-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Phát triển kinh tế giữa các nước?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-phat-trien-kinh-te-giua-cac-nuoc-geography-11-phat-trien-kinh-te-giua-cac-nuoc-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Phát triển kinh tế giữa các nước giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-toan-cau-hoa",
+      "title": "Toàn cầu hóa",
+      "guidance": [
+        "Nội dung trọng tâm bài Toàn cầu hóa theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Toàn cầu hóa vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-toan-cau-hoa-geography-11-toan-cau-hoa-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Toàn cầu hóa?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-toan-cau-hoa-geography-11-toan-cau-hoa-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Toàn cầu hóa?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-toan-cau-hoa-geography-11-toan-cau-hoa-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Toàn cầu hóa giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-to-chuc-lien-ket",
+      "title": "Tổ chức liên kết",
+      "guidance": [
+        "Nội dung trọng tâm bài Tổ chức liên kết theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Tổ chức liên kết vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-to-chuc-lien-ket-geography-11-to-chuc-lien-ket-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Tổ chức liên kết?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-to-chuc-lien-ket-geography-11-to-chuc-lien-ket-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Tổ chức liên kết?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-to-chuc-lien-ket-geography-11-to-chuc-lien-ket-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Tổ chức liên kết giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-an-ninh-luong-thuc",
+      "title": "An ninh lương thực",
+      "guidance": [
+        "Nội dung trọng tâm bài An ninh lương thực theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần An ninh lương thực vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-an-ninh-luong-thuc-geography-11-an-ninh-luong-thuc-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài An ninh lương thực?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-an-ninh-luong-thuc-geography-11-an-ninh-luong-thuc-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần An ninh lương thực?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-an-ninh-luong-thuc-geography-11-an-ninh-luong-thuc-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức An ninh lương thực giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-an-ninh-nang-luong",
+      "title": "An ninh năng lượng",
+      "guidance": [
+        "Nội dung trọng tâm bài An ninh năng lượng theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần An ninh năng lượng vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-an-ninh-nang-luong-geography-11-an-ninh-nang-luong-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài An ninh năng lượng?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-an-ninh-nang-luong-geography-11-an-ninh-nang-luong-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần An ninh năng lượng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-an-ninh-nang-luong-geography-11-an-ninh-nang-luong-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức An ninh năng lượng giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-tu-nhien-my-latinh",
+      "title": "Tự nhiên Mỹ Latinh",
+      "guidance": [
+        "Nội dung trọng tâm bài Tự nhiên Mỹ Latinh theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Tự nhiên Mỹ Latinh vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-tu-nhien-my-latinh-geography-11-tu-nhien-my-latinh-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Tự nhiên Mỹ Latinh?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-tu-nhien-my-latinh-geography-11-tu-nhien-my-latinh-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Tự nhiên Mỹ Latinh?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-tu-nhien-my-latinh-geography-11-tu-nhien-my-latinh-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Tự nhiên Mỹ Latinh giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-xa-hoi-my-latinh",
+      "title": "Xã hội Mỹ Latinh",
+      "guidance": [
+        "Nội dung trọng tâm bài Xã hội Mỹ Latinh theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Xã hội Mỹ Latinh vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-xa-hoi-my-latinh-geography-11-xa-hoi-my-latinh-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Xã hội Mỹ Latinh?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-xa-hoi-my-latinh-geography-11-xa-hoi-my-latinh-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Xã hội Mỹ Latinh?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-xa-hoi-my-latinh-geography-11-xa-hoi-my-latinh-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Xã hội Mỹ Latinh giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-kinh-te-my-latinh",
+      "title": "Kinh tế Mỹ Latinh",
+      "guidance": [
+        "Nội dung trọng tâm bài Kinh tế Mỹ Latinh theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Kinh tế Mỹ Latinh vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-kinh-te-my-latinh-geography-11-kinh-te-my-latinh-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Kinh tế Mỹ Latinh?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-kinh-te-my-latinh-geography-11-kinh-te-my-latinh-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Kinh tế Mỹ Latinh?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-kinh-te-my-latinh-geography-11-kinh-te-my-latinh-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Kinh tế Mỹ Latinh giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-lien-minh-chau-au-eu",
+      "title": "Liên minh châu Âu EU",
+      "guidance": [
+        "Nội dung trọng tâm bài Liên minh châu Âu EU theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Liên minh châu Âu EU vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-lien-minh-chau-au-eu-geography-11-lien-minh-chau-au-eu-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Liên minh châu Âu EU?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-lien-minh-chau-au-eu-geography-11-lien-minh-chau-au-eu-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Liên minh châu Âu EU?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-lien-minh-chau-au-eu-geography-11-lien-minh-chau-au-eu-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Liên minh châu Âu EU giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-thi-truong-chung-euro",
+      "title": "Thị trường chung Euro",
+      "guidance": [
+        "Nội dung trọng tâm bài Thị trường chung Euro theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Thị trường chung Euro vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-thi-truong-chung-euro-geography-11-thi-truong-chung-euro-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Thị trường chung Euro?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-thi-truong-chung-euro-geography-11-thi-truong-chung-euro-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Thị trường chung Euro?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-thi-truong-chung-euro-geography-11-thi-truong-chung-euro-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Thị trường chung Euro giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-tu-nhien-dong-nam-a",
+      "title": "Tự nhiên Đông Nam Á",
+      "guidance": [
+        "Nội dung trọng tâm bài Tự nhiên Đông Nam Á theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Tự nhiên Đông Nam Á vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-tu-nhien-dong-nam-a-geography-11-tu-nhien-dong-nam-a-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Tự nhiên Đông Nam Á?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-tu-nhien-dong-nam-a-geography-11-tu-nhien-dong-nam-a-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Tự nhiên Đông Nam Á?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-tu-nhien-dong-nam-a-geography-11-tu-nhien-dong-nam-a-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Tự nhiên Đông Nam Á giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-dan-cu-dong-nam-a",
+      "title": "Dân cư Đông Nam Á",
+      "guidance": [
+        "Nội dung trọng tâm bài Dân cư Đông Nam Á theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Dân cư Đông Nam Á vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-dan-cu-dong-nam-a-geography-11-dan-cu-dong-nam-a-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Dân cư Đông Nam Á?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-dan-cu-dong-nam-a-geography-11-dan-cu-dong-nam-a-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Dân cư Đông Nam Á?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-dan-cu-dong-nam-a-geography-11-dan-cu-dong-nam-a-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Dân cư Đông Nam Á giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-kinh-te-dong-nam-a",
+      "title": "Kinh tế Đông Nam Á",
+      "guidance": [
+        "Nội dung trọng tâm bài Kinh tế Đông Nam Á theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Kinh tế Đông Nam Á vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-kinh-te-dong-nam-a-geography-11-kinh-te-dong-nam-a-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Kinh tế Đông Nam Á?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-kinh-te-dong-nam-a-geography-11-kinh-te-dong-nam-a-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Kinh tế Đông Nam Á?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-kinh-te-dong-nam-a-geography-11-kinh-te-dong-nam-a-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Kinh tế Đông Nam Á giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-asean",
+      "title": "ASEAN",
+      "guidance": [
+        "Nội dung trọng tâm bài ASEAN theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần ASEAN vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-asean-geography-11-asean-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài ASEAN?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-asean-geography-11-asean-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần ASEAN?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-asean-geography-11-asean-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức ASEAN giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "geography-11-vi-the-hoa-ky-nhat-ban-trung-quoc",
+      "title": "Vị thế Hoa Kỳ Nhật Bản Trung Quốc",
+      "guidance": [
+        "Nội dung trọng tâm bài Vị thế Hoa Kỳ Nhật Bản Trung Quốc theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Vị thế Hoa Kỳ Nhật Bản Trung Quốc vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "geography-11-vi-the-hoa-ky-nhat-ban-trung-quoc-geography-11-vi-the-hoa-ky-nhat-ban-trung-quoc-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Vị thế Hoa Kỳ Nhật Bản Trung Quốc?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "geography-11-vi-the-hoa-ky-nhat-ban-trung-quoc-geography-11-vi-the-hoa-ky-nhat-ban-trung-quoc-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Vị thế Hoa Kỳ Nhật Bản Trung Quốc?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "geography-11-vi-the-hoa-ky-nhat-ban-trung-quoc-geography-11-vi-the-hoa-ky-nhat-ban-trung-quoc-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Vị thế Hoa Kỳ Nhật Bản Trung Quốc giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    }
+  ]
+}
