@@ -20,7 +20,8 @@ public final class LocalUserProfileRepository implements UserProfileRepository {
           c.getString(c.getColumnIndexOrThrow(DatabaseHelper.COL_ADDRESS)),
           c.getString(c.getColumnIndexOrThrow(DatabaseHelper.COL_PHONE)),
           c.getString(c.getColumnIndexOrThrow(DatabaseHelper.COL_EMAIL)),
-          c.getString(c.getColumnIndexOrThrow(DatabaseHelper.COL_AVATAR)));
+          c.getString(c.getColumnIndexOrThrow(DatabaseHelper.COL_AVATAR)),
+          c.getString(c.getColumnIndexOrThrow(DatabaseHelper.COL_BIO)));
     }
   }
 
@@ -33,7 +34,8 @@ public final class LocalUserProfileRepository implements UserProfileRepository {
           profile.phone,
           profile.email,
           newPassword,
-          profile.avatar);
+          profile.avatar,
+          profile.bio);
     }
   }
 }

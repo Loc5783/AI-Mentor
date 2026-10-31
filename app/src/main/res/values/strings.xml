@@ -8,6 +8,8 @@
   <string name="settings_preferences">Tùy chọn học tập</string>
   <string name="settings_reminders">Nhắc nhở học tập</string>
   <string name="settings_dark_mode">Chế độ ban đêm</string>
+  <string name="settings_change_background">Thay đổi hình nền</string>
+  <string name="settings_background_default">Mặc định</string>
   <string name="settings_others">Khác</string>
   <string name="settings_language">Ngôn ngữ</string>
   <string name="settings_share">Chia sẻ ứng dụng</string>

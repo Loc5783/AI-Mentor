@@ -36,7 +36,11 @@ val supabaseConfig = Properties().apply {
 }
 val supabaseUrl = supabaseConfig.getProperty("SUPABASE_URL", "").trim()
 val supabaseKey = supabaseConfig.getProperty("SUPABASE_PUBLISHABLE_KEY", "").trim()
-val supabaseEnabled = supabaseConfig.getProperty("SUPABASE_ENABLED", "false") == "true"
+// Opt-in switch for local UI tests; normal builds still use the configured Supabase project.
+val disableSupabaseForTests =
+    providers.gradleProperty("disableSupabaseForTests").orNull?.toBoolean() ?: false
+val supabaseEnabled =
+    supabaseConfig.getProperty("SUPABASE_ENABLED", "false") == "true" && !disableSupabaseForTests
 require(!supabaseEnabled || (supabaseUrl.matches(Regex("https://[a-z0-9-]+\\.supabase\\.co")) && supabaseKey.matches(Regex("sb_publishable_[A-Za-z0-9_-]+")))) { "Invalid Supabase public configuration" }
 
 android {
@@ -114,7 +118,6 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.material)
     implementation("at.favre.lib:bcrypt:0.10.2")
-    implementation("com.google.zxing:core:3.5.3")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.drawerlayout:drawerlayout:1.2.0")

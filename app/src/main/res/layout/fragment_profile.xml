@@ -77,17 +77,21 @@
             android:hint="@string/prof_hint_fullname"
             android:inputType="textPersonName" />
 
-        <EditText
-            android:id="@+id/edtProfileAddress"
-            style="@style/ProfileEditorField"
-            android:hint="@string/prof_hint_address"
-            android:inputType="textPostalAddress" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/profile_note_title"
+            android:textColor="@color/profile_editor_text"
+            android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/edtProfilePhone"
+            android:id="@+id/edtProfileBio"
             style="@style/ProfileEditorField"
-            android:hint="@string/prof_hint_phone"
-            android:inputType="phone" />
+            android:hint="@string/profile_note_hint"
+            android:inputType="textCapSentences|textMultiLine"
+            android:minLines="3"
+            android:maxLength="500" />
 
         <EditText
             android:id="@+id/edtProfileEmail"

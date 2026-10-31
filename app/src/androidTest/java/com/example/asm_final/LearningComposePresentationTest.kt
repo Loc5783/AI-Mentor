@@ -43,10 +43,11 @@ class LearningComposePresentationTest {
                 }
             }
         }
-        listOf("unit-0", "unit-1").forEach { id ->
-            compose.onNode(hasClickAction() and hasAnyAncestor(hasTestTag("path-unit:$id"))).performScrollTo().performClick()
-        }
-        compose.onNode(hasClickAction() and hasAnyAncestor(hasTestTag("path-unit:unit-2"))).performScrollTo().performClick()
+        compose.onNodeWithTag("path-unit:unit-0").performScrollTo().performClick()
+        compose.onNodeWithTag("path-sheet-open").performClick()
+        compose.onNodeWithTag("path-unit:unit-1").performScrollTo().performClick()
+        compose.onNodeWithTag("path-sheet-open").performClick()
+        compose.onNodeWithTag("path-unit:unit-2").performScrollTo().performClick()
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         compose.onNodeWithText(context.getString(R.string.course_placement_skipped_status)).assertExists()
         compose.onNodeWithText(context.getString(R.string.course_unlock_note)).assertExists()

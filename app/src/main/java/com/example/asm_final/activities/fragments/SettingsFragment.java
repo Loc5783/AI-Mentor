@@ -291,8 +291,15 @@ public class SettingsFragment extends Fragment {
     Button btnLogout = view.findViewById(R.id.btn_logout);
     btnLogout.setOnClickListener(
         v -> {
-          ((com.example.asm_final.activities.HomeActivity) requireActivity()).logout();
-          Toast.makeText(requireContext(), R.string.menu_logout, Toast.LENGTH_SHORT).show();
+          new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+              .setTitle(R.string.settings_logout_title)
+              .setMessage(R.string.settings_logout_message)
+              .setNegativeButton(R.string.auth_back, null)
+              .setPositiveButton(
+                  R.string.menu_logout,
+                  (dialog, which) ->
+                      ((com.example.asm_final.activities.HomeActivity) requireActivity()).logout())
+              .show();
         });
   }
 }

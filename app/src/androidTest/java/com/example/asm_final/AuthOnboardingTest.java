@@ -169,14 +169,31 @@ public class AuthOnboardingTest {
   }
 
   private void awaitIntro(int page) {
-    waitFor(
-        a ->
-            a instanceof OnboardingActivity
-                && a.findViewById(R.id.onboarding_next).isEnabled()
-                && ((TextView) a.findViewById(R.id.onboarding_step))
-                    .getText()
-                    .toString()
-                    .equals(a.getString(R.string.onboard_step, page + 1)));
+    try {
+      waitFor(
+          a ->
+              a instanceof OnboardingActivity
+                  && a.findViewById(R.id.onboarding_next).isEnabled()
+                  && ((TextView) a.findViewById(R.id.onboarding_step))
+                      .getText()
+                      .toString()
+                      .equals(a.getString(R.string.onboard_step, page + 1)));
+    } catch (AssertionError failure) {
+      String[] state = {"no resumed activity"};
+      main(
+          () -> {
+            Activity activity = current();
+            if (activity == null) return;
+            String messageId =
+                activity instanceof RegisterActivity ? "tvRegisterMessage"
+                    : activity instanceof MainActivity ? "tvLoginMessage"
+                    : activity instanceof OnboardingActivity ? "onboarding_body" : "";
+            int id = activity.getResources().getIdentifier(messageId, "id", context.getPackageName());
+            CharSequence message = id == 0 ? "" : ((TextView) activity.findViewById(id)).getText();
+            state[0] = activity.getClass().getSimpleName() + ": " + message;
+          });
+      throw new AssertionError("Intro route failed; current screen is " + state[0], failure);
+    }
   }
 
   private void chooseProfile() {

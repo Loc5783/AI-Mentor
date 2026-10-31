@@ -28,6 +28,7 @@ class ComposeRedesignTest {
     private val context = instrumentation.targetContext
     private lateinit var app: AiMentorApplication
     private lateinit var scenario: ActivityScenario<HomeActivity>
+    private lateinit var qaUsername: String
     private var owner = 0
     private var previous = 0
     private var originalDark = false
@@ -38,13 +39,13 @@ class ComposeRedesignTest {
         previous = ActiveUser.get(context)
         originalDark = ThemeHelper.isDarkMode(context)
         originalLanguage = LocaleHelper.getLanguage(context)
-        val username = "compose_qa_${System.nanoTime()}"
-        owner = app.services().registration().register(username, "Mentor01!2026", "qa@gmail.com", "0901234567").toInt()
+        qaUsername = "compose_qa_${System.nanoTime()}"
+        owner = app.services().registration().register(qaUsername, "Mentor01!2026", "qa@gmail.com", "0901234567").toInt()
         Assert.assertTrue(owner > 0)
         app.services().learners().complete(LearnerProfile(owner, 5, "Compose QA", 11, "BIOLOGY,PHYSICS", 0, 0, 0))
         LearningSetupStore(context).use { it.save(owner, 11, setOf(SubjectId.BIOLOGY, SubjectId.PHYSICS)) }
         ActiveUser.set(context, owner)
-        scenario = ActivityScenario.launch(Intent(context, HomeActivity::class.java).putExtra("USERNAME", username))
+        scenario = ActivityScenario.launch(Intent(context, HomeActivity::class.java).putExtra("USERNAME", qaUsername))
         waitForTag("dashboard-subject:biology")
     }
 
@@ -104,7 +105,7 @@ class ComposeRedesignTest {
         capture("home")
         compose.onNodeWithTag("dashboard-subject:physics").assertExists()
         compose.onNodeWithTag("dashboard-subject:chemistry").assertDoesNotExist()
-        compose.onAllNodesWithText(label(R.string.design_chart_hint)).onFirst().assertExists()
+        compose.onAllNodesWithText(label(R.string.design_week_empty)).onFirst().assertExists()
         navigate(R.id.nav_competition)
         compose.onNodeWithText(label(R.string.competition_title)).assertExists()
         navigate(R.id.nav_profile)
@@ -146,6 +147,33 @@ class ComposeRedesignTest {
         capture("profile-editor")
     }
 
+    @Test(timeout = 30000) fun profileNeverShowsInternalLoginIdentifierAsDisplayName() {
+        navigate(R.id.nav_profile)
+        compose.onAllNodesWithText(qaUsername).assertCountEquals(0)
+        compose.onAllNodesWithText("@${qaUsername.uppercase()}").assertCountEquals(0)
+        waitForTag("profile-display-name")
+        compose.onNodeWithTag("profile-display-name").assertTextEquals("Compose QA")
+        compose.onAllNodesWithText("@${qaUsername.uppercase()}").assertCountEquals(0)
+        compose.onAllNodesWithText(qaUsername).assertCountEquals(0)
+    }
+
+    @Test(timeout = 30000) fun profileDoesNotUseLoginNameWhenDisplayNameIsMissing() {
+        val current = app.services().profiles().load(qaUsername)!!
+        Assert.assertTrue(
+            app.services().profiles().update(
+                qaUsername,
+                com.example.asm_final.accounts.UserProfile(
+                    qaUsername, current.address, current.phone, current.email, current.avatar
+                ),
+                ""
+            )
+        )
+        navigate(R.id.nav_profile)
+        waitForTag("profile-display-name")
+        compose.onNodeWithTag("profile-display-name").assertTextEquals(label(R.string.profile_eyebrow))
+        compose.onAllNodesWithText(qaUsername).assertCountEquals(0)
+    }
+
     @Test(timeout = 60000) fun chatDraftSurvivesTabsAndRecreation() {
         navigate(R.id.nav_chat)
         waitForTag("chat-input")
@@ -159,16 +187,16 @@ class ComposeRedesignTest {
         compose.onNodeWithTag("chat-input").assertTextContains("Giữ câu hỏi đang soạn")
     }
 
-    @Test(timeout = 60000) fun subjectChangesAndToolsSurviveRecreation() {
+    @Test(timeout = 60000) fun subjectChangesSurviveRecreation() {
         LearningSetupStore(context).use { it.save(owner, 11, setOf(SubjectId.CHEMISTRY, SubjectId.PHYSICS)) }
         navigate(R.id.nav_category)
+        compose.onNodeWithText("Lộ trình học 9 môn").performClick()
         waitForTag("subject-list")
         compose.onNodeWithTag("subject-list").performScrollToNode(hasTestTag("subject:physics"))
-        compose.onNodeWithText(label(R.string.lesson_circuit)).assertExists()
         scenario.recreate()
         waitForTag("subject-list")
         compose.onNodeWithTag("subject-list").performScrollToNode(hasTestTag("subject:physics"))
-        compose.onNodeWithText(label(R.string.lesson_circuit)).assertExists()
+        compose.onNodeWithTag("subject:physics").assertExists()
         compose.onNodeWithTag("subject-list").performScrollToNode(hasTestTag("subject:chemistry"))
         compose.onNodeWithTag("subject:chemistry").assertExists()
         navigate(R.id.nav_home)

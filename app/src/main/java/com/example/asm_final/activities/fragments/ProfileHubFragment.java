@@ -34,7 +34,6 @@ public final class ProfileHubFragment extends Fragment {
             () -> shell().navigateTo(R.id.nav_category, false),
             () -> shell().navigateTo(R.id.nav_competition, false));
     String username = getArguments() == null ? "" : getArguments().getString("USERNAME", "");
-    presenter.identity(username, username, null);
     return presenter.view();
   }
 
@@ -115,13 +114,9 @@ public final class ProfileHubFragment extends Fragment {
                               || ActiveUser.get(context) != owner) return;
                           needsLogin = result.needsLogin;
                           presenter.identity(
-                              profile != null
-                                      && profile.fullName != null
-                                      && !profile.fullName.isBlank()
-                                  ? profile.fullName
-                                  : username,
-                              username,
-                              profile == null ? null : profile.avatar);
+                              userVisibleName(profile, username),
+                              profile == null ? null : profile.avatar,
+                              profile == null ? "" : profile.bio);
                           presenter.learning(grade, learning == null ? -1 : learning.goal, chosen);
                           presenter.render(result);
                           presenter.activity(finalStudySummary, finalBadgeSummary);
@@ -137,6 +132,16 @@ public final class ProfileHubFragment extends Fragment {
                         });
               }
             });
+  }
+
+  /** A login handle or email is not a display name and must never appear on the profile. */
+  private static String userVisibleName(
+      com.example.asm_final.accounts.UserProfile profile, String loginName) {
+    if (profile == null || profile.fullName == null || profile.fullName.isBlank()) return "";
+    String name = profile.fullName.trim();
+    if (name.equalsIgnoreCase(loginName == null ? "" : loginName.trim())
+        || name.equalsIgnoreCase(profile.email == null ? "" : profile.email.trim())) return "";
+    return name;
   }
 
   @Override

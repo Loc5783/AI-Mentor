@@ -333,14 +333,14 @@ fun RoadmapSubjectList(
         }
 
         LazyColumn(
-            Modifier.fillMaxSize().padding(16.dp),
+            Modifier.fillMaxSize().padding(16.dp).testTag("subject-list"),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(allSubjects, key = { it.wireId }) { subject ->
                 val isEnrolled = subject in selectedSubjects
 
                 Surface(
-                    Modifier.fillMaxWidth(),
+                    Modifier.fillMaxWidth().testTag("subject:${subject.wireId}"),
                     shape = RoundedCornerShape(16.dp),
                     color = MaterialTheme.colorScheme.surface,
                     border = BorderStroke(1.dp, if (isEnrolled) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outlineVariant),
