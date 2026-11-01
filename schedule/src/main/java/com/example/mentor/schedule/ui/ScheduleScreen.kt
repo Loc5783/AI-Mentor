@@ -33,7 +33,7 @@ fun ScheduleScreen(
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
-    val factory = remember { pushScheduleViewModelFactory(context.applicationContext as Application, accountId, repository) }
+    val factory = remember { ScheduleViewModelFactory(context.applicationContext as Application, accountId, repository) }
     val viewModel: ScheduleViewModel = viewModel(factory = factory)
     
     val daysArray = stringResource(R.string.schedule_days).split(",")
