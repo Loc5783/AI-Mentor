@@ -41,7 +41,6 @@ public class LocalRecoveryService implements RecoveryService {
     }
 
     private Result generateAndSendOTP(String email) {
-        // Sinh OTP ngẫu nhiên 6 chữ số
         String otp = String.format(java.util.Locale.US, "%06d", new Random().nextInt(999999));
         long expiryTime = System.currentTimeMillis() + OTP_VALIDITY_MILLIS;
 
@@ -50,7 +49,6 @@ public class LocalRecoveryService implements RecoveryService {
              .putLong(KEY_OTP_EXPIRY, expiryTime)
              .apply();
 
-        // Hiển thị Toast thông báo mã OTP
         mainHandler.post(() -> 
             Toast.makeText(context, 
                 "AI Mentor: Mã xác nhận của bạn là " + otp + " (Hiệu lực 5 phút)", 
@@ -73,10 +71,9 @@ public class LocalRecoveryService implements RecoveryService {
             return Result.INVALID_TOKEN;
         }
 
-        // Đánh dấu xác minh thành công. Do LocalRecoveryService không biết user hiện tại, 
-        // ta giả định việc gọi service này từ AuthRecoveryActivity đã kèm theo context đăng nhập 
-        // nên ta xoá token đi. Logic mark verified sẽ gọi ở ViewModel/Activity.
-        prefs.edit().remove(KEY_OTP).remove(KEY_OTP_EXPIRY).apply();
+        prefs.edit().remove(KEY_OTP).remove(KEY_OTP_EXPIRY)
+             .putBoolean(KEY_EMAIL_VERIFIED_PREFIX + email, true)
+             .apply();
 
         return Result.VERIFIED;
     }
@@ -84,7 +81,6 @@ public class LocalRecoveryService implements RecoveryService {
     @Override
     public Result reset(String email, String token, String password) {
         if (verify(email, token) == Result.VERIFIED) {
-            // Demo only: We just accept the reset locally
             return Result.PASSWORD_RESET;
         }
         return Result.INVALID_TOKEN;
