@@ -50,7 +50,9 @@ class SupabaseHttp : SupabaseTransport {
             if (status !in 200..299) {
                 val failure = runCatching { JSONObject(text) }.getOrDefault(JSONObject())
                 val code = failure.optString("error_code", failure.optString("code", ""))
+                val detail = failure.optString("msg", failure.optString("message", ""))
                 val mapped = when {
+                    status == 429 && (code.contains("email", ignoreCase = true) || detail.contains("email", ignoreCase = true)) -> "EMAIL_RATE_LIMITED"
                     code in listOf("NOT_CONFIGURED","RATE_LIMITED","INVALID_REQUEST","EMPTY_RESPONSE","PROVIDER","UNAUTHORIZED") -> code
                     code.matches(Regex("PT[0-9]{3}")) && failure.optString("message").matches(Regex("[A-Z_]{1,80}")) -> failure.getString("message")
                     code == "email_address_not_authorized" -> "EMAIL_SENDING_NOT_CONFIGURED"
