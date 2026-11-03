@@ -50,22 +50,13 @@ def begin(client, session, enrollment, unit, content):
                    "lessonId": unit, "curriculumVersion": content["version"]}))
 
 
-<<<<<<< HEAD
 def prepare(client, session, content, grade=10):
     enrollment = ok(post(client, session, "/enrollments", {"subjectId": content["subjectId"], "grade": grade}))
-=======
-def prepare(client, session, content):
-    enrollment = ok(post(client, session, "/enrollments", {"subjectId": content["subjectId"], "grade": content["grade"]}))
->>>>>>> c5f2011 (feat: add authentic Grade 11 SGK KNTT curriculum, dollar-quoted Supabase migration, and fix backend unit test assertions)
     placement = ok(post(client, session, "/placements", {"enrollmentId": enrollment["id"]}))
     solutions = {q["id"]: q["correctOptionId"] for l in content["lessons"] for q in l["questions"]}
     answers = [{"questionId": question["id"],
                 "selectedOptionId": next(option["id"] for option in question["options"]
-<<<<<<< HEAD
-                                          if option["id"] != solutions[question["id"]]),
-=======
                                           if option["id"] != solutions.get(question["id"])),
->>>>>>> c5f2011 (feat: add authentic Grade 11 SGK KNTT curriculum, dollar-quoted Supabase migration, and fix backend unit test assertions)
                 "submissionId": key()} for question in placement["questions"]]
     completed = finish(client, session, answer(client, session, placement, answers))
     assert completed["xpAwarded"] == 0 and not completed["streakLit"]
@@ -150,7 +141,7 @@ def test_packs_preserve_old_questions_and_cover_four_disjoint_blocks(subject):
         for q in lesson["questions"]:
             texts = [o["text"].strip().casefold() for o in q["options"]]
             assert len(texts) == len(set(texts)), q["id"]
-    assert (subject, 12) not in catalog.courses
+    assert (subject, 10) in catalog.courses and (subject, 11) in catalog.courses and (subject, 12) in catalog.courses
 
 
 @pytest.mark.parametrize("subject", ORIGINAL_DIGESTS)
