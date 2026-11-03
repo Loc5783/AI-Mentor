@@ -9,9 +9,40 @@ import java.util.Calendar;
 public final class ReminderHelper {
   private static final String PREFS_NAME = "settings";
   private static final String KEY_REMINDERS_ENABLED = "reminders_enabled";
-  private static final int REQUEST_CODE = 1001;
+  public static final String KEY_HAS_PROMPTED_NOTIFICATION = "has_prompted_notification";
+  
+  public static final int REQUEST_CODE_EVENING = 1001;
+  public static final int REQUEST_CODE_MORNING = 1002;
+  
+  public static final String ACTION_EVENING_REMINDER = "com.example.asm_final.ACTION_EVENING_REMINDER";
+  public static final String ACTION_MORNING_REMINDER = "com.example.asm_final.ACTION_MORNING_REMINDER";
 
   private ReminderHelper() {}
+
+  public static boolean hasPromptedNotification(Context context) {
+    return context
+        .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        .getBoolean(KEY_HAS_PROMPTED_NOTIFICATION, false);
+  }
+
+  public static void setHasPromptedNotification(Context context, boolean prompted) {
+    context
+        .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        .edit()
+        .putBoolean(KEY_HAS_PROMPTED_NOTIFICATION, prompted)
+        .apply();
+  }
+
+  public static boolean shouldPromptPolicy(boolean hasPrompted, boolean isReminderEnabled) {
+    if (hasPrompted) {
+      return false;
+    }
+    return !isReminderEnabled;
+  }
+
+  public static boolean shouldPromptNotification(Context context) {
+    return shouldPromptPolicy(hasPromptedNotification(context), isReminderEnabled(context));
+  }
 
   public static boolean isReminderEnabled(Context context) {
     return context
@@ -25,57 +56,93 @@ public final class ReminderHelper {
         .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         .edit()
         .putBoolean(KEY_REMINDERS_ENABLED, enabled)
+        .putBoolean(KEY_HAS_PROMPTED_NOTIFICATION, true)
         .apply();
 
     if (enabled) {
-      scheduleDailyReminder(context);
+      scheduleReminders(context);
     } else {
-      cancelReminder(context);
+      cancelReminders(context);
     }
   }
+  
+  public static void reschedule(Context context) {
+      if (isReminderEnabled(context)) {
+          scheduleReminders(context);
+      }
+  }
 
-  public static void scheduleDailyReminder(Context context) {
+  public static void scheduleReminders(Context context) {
     AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     if (alarmManager == null) return;
 
-    Intent intent = new Intent(context, ReminderReceiver.class);
-    PendingIntent pendingIntent =
-        PendingIntent.getBroadcast(
+    // Evening Reminder (20:00)
+    Intent eveningIntent = new Intent(context, ReminderReceiver.class);
+    eveningIntent.setAction(ACTION_EVENING_REMINDER);
+    PendingIntent eveningPending = PendingIntent.getBroadcast(
             context,
-            REQUEST_CODE,
-            intent,
+            REQUEST_CODE_EVENING,
+            eveningIntent,
             PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTimeInMillis(System.currentTimeMillis());
-    calendar.set(Calendar.HOUR_OF_DAY, 20); // 8:00 PM
-    calendar.set(Calendar.MINUTE, 0);
-    calendar.set(Calendar.SECOND, 0);
+    Calendar eveningCal = Calendar.getInstance();
+    eveningCal.setTimeInMillis(System.currentTimeMillis());
+    eveningCal.set(Calendar.HOUR_OF_DAY, 20); // 20:00
+    eveningCal.set(Calendar.MINUTE, 0);
+    eveningCal.set(Calendar.SECOND, 0);
 
-    // If time is in the past, schedule for tomorrow
-    if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
-      calendar.add(Calendar.DAY_OF_YEAR, 1);
+    if (eveningCal.getTimeInMillis() <= System.currentTimeMillis()) {
+      eveningCal.add(Calendar.DAY_OF_YEAR, 1);
     }
 
     alarmManager.setInexactRepeating(
         AlarmManager.RTC_WAKEUP,
-        calendar.getTimeInMillis(),
+        eveningCal.getTimeInMillis(),
         AlarmManager.INTERVAL_DAY,
-        pendingIntent);
+        eveningPending);
+
+    // Morning Reminder (06:45)
+    Intent morningIntent = new Intent(context, ReminderReceiver.class);
+    morningIntent.setAction(ACTION_MORNING_REMINDER);
+    PendingIntent morningPending = PendingIntent.getBroadcast(
+            context,
+            REQUEST_CODE_MORNING,
+            morningIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+    Calendar morningCal = Calendar.getInstance();
+    morningCal.setTimeInMillis(System.currentTimeMillis());
+    morningCal.set(Calendar.HOUR_OF_DAY, 6); // 06:45
+    morningCal.set(Calendar.MINUTE, 45);
+    morningCal.set(Calendar.SECOND, 0);
+
+    if (morningCal.getTimeInMillis() <= System.currentTimeMillis()) {
+      morningCal.add(Calendar.DAY_OF_YEAR, 1);
+    }
+
+    alarmManager.setInexactRepeating(
+        AlarmManager.RTC_WAKEUP,
+        morningCal.getTimeInMillis(),
+        AlarmManager.INTERVAL_DAY,
+        morningPending);
   }
 
-  private static void cancelReminder(Context context) {
+  private static void cancelReminders(Context context) {
     AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     if (alarmManager == null) return;
 
-    Intent intent = new Intent(context, ReminderReceiver.class);
-    PendingIntent pendingIntent =
-        PendingIntent.getBroadcast(
-            context,
-            REQUEST_CODE,
-            intent,
+    Intent eveningIntent = new Intent(context, ReminderReceiver.class);
+    eveningIntent.setAction(ACTION_EVENING_REMINDER);
+    PendingIntent eveningPending = PendingIntent.getBroadcast(
+            context, REQUEST_CODE_EVENING, eveningIntent,
             PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    alarmManager.cancel(eveningPending);
 
-    alarmManager.cancel(pendingIntent);
+    Intent morningIntent = new Intent(context, ReminderReceiver.class);
+    morningIntent.setAction(ACTION_MORNING_REMINDER);
+    PendingIntent morningPending = PendingIntent.getBroadcast(
+            context, REQUEST_CODE_MORNING, morningIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    alarmManager.cancel(morningPending);
   }
 }

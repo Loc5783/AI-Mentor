@@ -1,0 +1,1137 @@
+{
+  "subjectId": "physics",
+  "grade": 11,
+  "version": "intro-2026.1",
+  "title": "Vật lí 11: Dao động, Sóng và Điện từ trường",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_11",
+  "extendedReviews": false,
+  "sourceNote": "Nội dung đang ở dạng cấu trúc khung (Placeholder) được sinh tự động bởi hệ thống AI Mentor để đảm bảo đúng định dạng JSON 3 câu hỏi (EASY/MEDIUM/APPLIED). Giáo viên cần hiệu đính nội dung chi tiết.",
+  "lessons": [
+    {
+      "id": "physics-11-dao-dong-dieu-hoa",
+      "title": "Dao động điều hòa",
+      "guidance": [
+        "Nội dung trọng tâm bài Dao động điều hòa theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Dao động điều hòa vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-dao-dong-dieu-hoa-physics-11-dao-dong-dieu-hoa-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Dao động điều hòa?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-dao-dong-dieu-hoa-physics-11-dao-dong-dieu-hoa-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Dao động điều hòa?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-dao-dong-dieu-hoa-physics-11-dao-dong-dieu-hoa-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Dao động điều hòa giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-cac-dai-luong-li-do-van-toc-gia-toc",
+      "title": "Các đại lượng li độ - vận tốc - gia tốc",
+      "guidance": [
+        "Nội dung trọng tâm bài Các đại lượng li độ - vận tốc - gia tốc theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Các đại lượng li độ - vận tốc - gia tốc vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-cac-dai-luong-li-do-van-toc-gia-toc-physics-11-cac-dai-luong-li-do-van-toc-gia-toc-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Các đại lượng li độ - vận tốc - gia tốc?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-cac-dai-luong-li-do-van-toc-gia-toc-physics-11-cac-dai-luong-li-do-van-toc-gia-toc-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Các đại lượng li độ - vận tốc - gia tốc?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-cac-dai-luong-li-do-van-toc-gia-toc-physics-11-cac-dai-luong-li-do-van-toc-gia-toc-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Các đại lượng li độ - vận tốc - gia tốc giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-nang-luong-trong-dao-dong",
+      "title": "Năng lượng trong dao động",
+      "guidance": [
+        "Nội dung trọng tâm bài Năng lượng trong dao động theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Năng lượng trong dao động vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-nang-luong-trong-dao-dong-physics-11-nang-luong-trong-dao-dong-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Năng lượng trong dao động?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-nang-luong-trong-dao-dong-physics-11-nang-luong-trong-dao-dong-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Năng lượng trong dao động?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-nang-luong-trong-dao-dong-physics-11-nang-luong-trong-dao-dong-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Năng lượng trong dao động giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-dao-dong-tat-dan-va-cuong-buc",
+      "title": "Dao động tắt dần và cưỡng bức",
+      "guidance": [
+        "Nội dung trọng tâm bài Dao động tắt dần và cưỡng bức theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Dao động tắt dần và cưỡng bức vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-dao-dong-tat-dan-va-cuong-buc-physics-11-dao-dong-tat-dan-va-cuong-buc-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Dao động tắt dần và cưỡng bức?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-dao-dong-tat-dan-va-cuong-buc-physics-11-dao-dong-tat-dan-va-cuong-buc-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Dao động tắt dần và cưỡng bức?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-dao-dong-tat-dan-va-cuong-buc-physics-11-dao-dong-tat-dan-va-cuong-buc-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Dao động tắt dần và cưỡng bức giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-hien-tuong-cong-huong",
+      "title": "Hiện tượng cộng hưởng",
+      "guidance": [
+        "Nội dung trọng tâm bài Hiện tượng cộng hưởng theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Hiện tượng cộng hưởng vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-hien-tuong-cong-huong-physics-11-hien-tuong-cong-huong-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Hiện tượng cộng hưởng?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-hien-tuong-cong-huong-physics-11-hien-tuong-cong-huong-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Hiện tượng cộng hưởng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-hien-tuong-cong-huong-physics-11-hien-tuong-cong-huong-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Hiện tượng cộng hưởng giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-song-co-va-su-truyen-song",
+      "title": "Sóng cơ và sự truyền sóng",
+      "guidance": [
+        "Nội dung trọng tâm bài Sóng cơ và sự truyền sóng theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Sóng cơ và sự truyền sóng vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-song-co-va-su-truyen-song-physics-11-song-co-va-su-truyen-song-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Sóng cơ và sự truyền sóng?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-song-co-va-su-truyen-song-physics-11-song-co-va-su-truyen-song-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Sóng cơ và sự truyền sóng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-song-co-va-su-truyen-song-physics-11-song-co-va-su-truyen-song-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Sóng cơ và sự truyền sóng giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-cac-dac-trung-cua-song",
+      "title": "Các đặc trưng của sóng",
+      "guidance": [
+        "Nội dung trọng tâm bài Các đặc trưng của sóng theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Các đặc trưng của sóng vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-cac-dac-trung-cua-song-physics-11-cac-dac-trung-cua-song-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Các đặc trưng của sóng?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-cac-dac-trung-cua-song-physics-11-cac-dac-trung-cua-song-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Các đặc trưng của sóng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-cac-dac-trung-cua-song-physics-11-cac-dac-trung-cua-song-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Các đặc trưng của sóng giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-giao-thoa-song-co",
+      "title": "Giao thoa sóng cơ",
+      "guidance": [
+        "Nội dung trọng tâm bài Giao thoa sóng cơ theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Giao thoa sóng cơ vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-giao-thoa-song-co-physics-11-giao-thoa-song-co-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Giao thoa sóng cơ?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-giao-thoa-song-co-physics-11-giao-thoa-song-co-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Giao thoa sóng cơ?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-giao-thoa-song-co-physics-11-giao-thoa-song-co-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Giao thoa sóng cơ giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-song-dung",
+      "title": "Sóng dừng",
+      "guidance": [
+        "Nội dung trọng tâm bài Sóng dừng theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Sóng dừng vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-song-dung-physics-11-song-dung-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Sóng dừng?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-song-dung-physics-11-song-dung-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Sóng dừng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-song-dung-physics-11-song-dung-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Sóng dừng giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-song-dien-tu",
+      "title": "Sóng điện từ",
+      "guidance": [
+        "Nội dung trọng tâm bài Sóng điện từ theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Sóng điện từ vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-song-dien-tu-physics-11-song-dien-tu-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Sóng điện từ?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-song-dien-tu-physics-11-song-dien-tu-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Sóng điện từ?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-song-dien-tu-physics-11-song-dien-tu-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Sóng điện từ giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-dien-truong-va-cuong-do-dien-truong",
+      "title": "Điện trường và cường độ điện trường",
+      "guidance": [
+        "Nội dung trọng tâm bài Điện trường và cường độ điện trường theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Điện trường và cường độ điện trường vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-dien-truong-va-cuong-do-dien-truong-physics-11-dien-truong-va-cuong-do-dien-truong-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Điện trường và cường độ điện trường?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-dien-truong-va-cuong-do-dien-truong-physics-11-dien-truong-va-cuong-do-dien-truong-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Điện trường và cường độ điện trường?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-dien-truong-va-cuong-do-dien-truong-physics-11-dien-truong-va-cuong-do-dien-truong-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Điện trường và cường độ điện trường giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-the-nang-va-dien-the",
+      "title": "Thế năng và điện thế",
+      "guidance": [
+        "Nội dung trọng tâm bài Thế năng và điện thế theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Thế năng và điện thế vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-the-nang-va-dien-the-physics-11-the-nang-va-dien-the-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Thế năng và điện thế?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-the-nang-va-dien-the-physics-11-the-nang-va-dien-the-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Thế năng và điện thế?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-the-nang-va-dien-the-physics-11-the-nang-va-dien-the-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Thế năng và điện thế giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-tu-dien-va-dien-dung",
+      "title": "Tụ điện và điện dung",
+      "guidance": [
+        "Nội dung trọng tâm bài Tụ điện và điện dung theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Tụ điện và điện dung vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-tu-dien-va-dien-dung-physics-11-tu-dien-va-dien-dung-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Tụ điện và điện dung?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-tu-dien-va-dien-dung-physics-11-tu-dien-va-dien-dung-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Tụ điện và điện dung?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-tu-dien-va-dien-dung-physics-11-tu-dien-va-dien-dung-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Tụ điện và điện dung giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-cuong-do-dong-dien",
+      "title": "Cường độ dòng điện",
+      "guidance": [
+        "Nội dung trọng tâm bài Cường độ dòng điện theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Cường độ dòng điện vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-cuong-do-dong-dien-physics-11-cuong-do-dong-dien-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Cường độ dòng điện?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-cuong-do-dong-dien-physics-11-cuong-do-dong-dien-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Cường độ dòng điện?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-cuong-do-dong-dien-physics-11-cuong-do-dong-dien-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Cường độ dòng điện giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "physics-11-nang-luong-dien",
+      "title": "Năng lượng điện",
+      "guidance": [
+        "Nội dung trọng tâm bài Năng lượng điện theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Năng lượng điện vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "physics-11-nang-luong-dien-physics-11-nang-luong-dien-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Năng lượng điện?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "physics-11-nang-luong-dien-physics-11-nang-luong-dien-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Năng lượng điện?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "physics-11-nang-luong-dien-physics-11-nang-luong-dien-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Năng lượng điện giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    }
+  ]
+}

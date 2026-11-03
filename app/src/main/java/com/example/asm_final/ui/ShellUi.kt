@@ -16,7 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
-import coil3.compose.AsyncImage
+
 import androidx.fragment.compose.AndroidFragment
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavHostController
@@ -30,6 +30,10 @@ import com.example.mentor.ui.design.*
 class ShellUi(private val activity: HomeActivity, private val username: String, private val initial: Int) {
     private var navigation: NavHostController? = null
     private var pending: Pair<Int, Boolean>? = null
+
+    fun currentRoute(): String? {
+        return navigation?.currentDestination?.route
+    }
 
     fun navigate(id: Int, remember: Boolean) {
         val route = destinations.firstOrNull { it.id == id }?.route ?: return
@@ -67,32 +71,23 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
         val motion = motionEnabled()
         val duration = if (motion) MentorTokens.MotionMillis else 0
         val arguments = remember(username) { Bundle().apply { putString("USERNAME", username) } }
-        val backgroundPath = remember { com.example.asm_final.utils.ThemeHelper.getCustomBackground(activity) }
         BackHandler(enabled = route in tabs.map { it.route } && route != destinations.first { it.id == initial }.route) {
             navigate(initial, false)
         }
         val keyboard = WindowInsets.ime.getBottom(LocalDensity.current) > 0
         
         Box(Modifier.fillMaxSize()) {
-            if (backgroundPath != null) {
-                AsyncImage(
-                    model = java.io.File(backgroundPath),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = androidx.compose.ui.layout.ContentScale.Crop
-                )
-            }
             
             Scaffold(
-                containerColor = if (backgroundPath != null) Color.Transparent else MaterialTheme.colorScheme.background,
+                containerColor = MaterialTheme.colorScheme.background,
                 bottomBar = {
                   if (!keyboard) {
-                    NavigationBar(containerColor = if (backgroundPath != null) MaterialTheme.colorScheme.surface.copy(alpha = 0.8f) else MaterialTheme.colorScheme.surface) {
+                    NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
                         tabs.forEach { tab ->
                             NavigationBarItem(selected = selectedRoute == tab.route,
                                 onClick = { navigate(tab.id, false) },
                                 colors = NavigationBarItemDefaults.colors(
-                                    indicatorColor = if (backgroundPath != null) MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f) else MaterialTheme.colorScheme.secondaryContainer,
+                                    indicatorColor = MaterialTheme.colorScheme.secondaryContainer,
                                     selectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                                     selectedTextColor = MaterialTheme.colorScheme.onSurface,
                                 ),
@@ -105,7 +100,7 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
             ) { padding ->
                 Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
                     if (top != null && top !in tabs && route != "schedule") Row(Modifier.fillMaxWidth()
-                        .background(if (backgroundPath != null) Color.Transparent else MaterialTheme.colorScheme.background)) {
+                        .background(MaterialTheme.colorScheme.background)) {
                         TextButton({ nav.popBackStack() }) {
                             Text(stringResource(R.string.course_back))
                         }

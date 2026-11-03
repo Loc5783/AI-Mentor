@@ -30,7 +30,26 @@ let jsCode = scriptMatch[1]
     .replace('let isCandidateLoading = false;', 'var isCandidateLoading = false;')
     .replace('let quizModalOpenGen = 0;', 'var quizModalOpenGen = 0;')
     .replace('let quizModalActiveGen = 0;', 'var quizModalActiveGen = 0;')
-    .replace('let modalClosingGen = 0;', 'var modalClosingGen = 0;');
+    .replace('let modalClosingGen = 0;', 'var modalClosingGen = 0;')
+    .replace('let questionModalOpenGen = 0;', 'var questionModalOpenGen = 0;')
+    .replace('let questionModalActiveGen = 0;', 'var questionModalActiveGen = 0;')
+    .replace('let questionModalActiveQid = null;', 'var questionModalActiveQid = null;')
+    .replace('let questionModalClosingGen = 0;', 'var questionModalClosingGen = 0;')
+    .replace('let currentQuestionSaveId = 0;', 'var currentQuestionSaveId = 0;')
+    .replace('let activeQuestionSaveOwner = null;', 'var activeQuestionSaveOwner = null;')
+    .replace('let examModalOpenGen = 0;', 'var examModalOpenGen = 0;')
+    .replace('let examModalActiveGen = 0;', 'var examModalActiveGen = 0;')
+    .replace('let examModalActiveId = null;', 'var examModalActiveId = null;')
+    .replace('let examModalClosingGen = 0;', 'var examModalClosingGen = 0;')
+    .replace('let currentExamSaveId = 0;', 'var currentExamSaveId = 0;')
+    .replace('let activeExamSaveOwner = null;', 'var activeExamSaveOwner = null;')
+    .replace('let selectedExamQuestionIds = new Set();', 'var selectedExamQuestionIds = new Set();')
+    .replace('let candidateExamQuestionsList = [];', 'var candidateExamQuestionsList = [];')
+    .replace('let examCandidateLoadSeq = 0;', 'var examCandidateLoadSeq = 0;')
+    .replace('let isCandidateExamLoading = false;', 'var isCandidateExamLoading = false;')
+    .replace('let isSubmittingExam = false;', 'var isSubmittingExam = false;')
+    .replace("let examModalSubject = 'physics';", "var examModalSubject = 'physics';")
+    .replace("let examModalGrade = '10';", "var examModalGrade = '10';");
 
 // Verify product code has Number.isSafeInteger and previewSequence
 if (!jsCode.includes('Number.isSafeInteger(result.importedCount)')) {
@@ -79,6 +98,82 @@ const mockQuizzesList = { innerHTML: '', children: [], appendChild: function(el)
 const mockFilterQuizSubject = { value: 'physics' };
 const mockFilterQuizGrade = { value: '10' };
 const mockFilterQuizStatus = { value: '' };
+
+const qModalListeners = {};
+const mockQuestionEditModal = {
+    style: { display: 'none' },
+    classList: { add: () => {}, remove: () => {} },
+    addEventListener: function(ev, fn) {
+        qModalListeners[ev] = qModalListeners[ev] || [];
+        qModalListeners[ev].push(fn);
+    },
+    removeEventListener: function(ev, fn) {
+        if (qModalListeners[ev]) {
+            qModalListeners[ev] = qModalListeners[ev].filter(f => f !== fn);
+        }
+    },
+    dispatchEvent: function(eventObj) {
+        const type = typeof eventObj === 'string' ? eventObj : eventObj.type;
+        if (qModalListeners[type]) {
+            qModalListeners[type].slice().forEach(fn => fn(eventObj));
+        }
+    }
+};
+const mockQuestionEditModalError = { style: { display: 'none' }, textContent: '' };
+const mockQuestionEditModalTitle = { textContent: '' };
+const mockBtnSaveQuestion = { disabled: false, textContent: '💾 Lưu thay đổi' };
+const mockExamElements = {
+    'exam-modal-title': { textContent: '' },
+    'exam-id': { value: '' },
+    'exam-version': { value: '1' },
+    'exam-title': { value: '' },
+    'exam-subject': { value: 'physics' },
+    'exam-grade': { value: '10' },
+    'exam-type': { value: 'MIDTERM' },
+    'exam-semester': { value: '1' },
+    'exam-duration': { value: '45' },
+    'exam-modal-error': { style: { display: 'none' }, textContent: '' },
+    'btn-exam-save-draft': { disabled: false, textContent: '' },
+    'btn-exam-save-publish': { disabled: false, textContent: '' },
+    'exam-selected-count': { textContent: '' },
+    'exam-candidate-questions': { innerHTML: '', appendChild: () => {} },
+    'exams-list': { innerHTML: '', appendChild: () => {} },
+    'examModal': {
+        addEventListener: (event, handler) => {
+            if (!modalListeners['examModal']) modalListeners['examModal'] = {};
+            modalListeners['examModal'][event] = handler;
+        },
+        dispatchEvent: (e) => {
+            if (modalListeners['examModal'] && modalListeners['examModal'][e.type]) {
+                modalListeners['examModal'][e.type](e);
+            }
+        }
+    }
+};
+
+const mockQEditFields = {
+    'q-edit-id': { value: '' },
+    'q-edit-version': { value: '1' },
+    'q-edit-status': { value: 'DRAFT' },
+    'q-edit-code': { value: '' },
+    'q-edit-subject': { value: 'physics' },
+    'q-edit-grade': { value: '10' },
+    'q-edit-chapter': { value: '' },
+    'q-edit-topic': { value: '' },
+    'q-edit-textbook': { value: '' },
+    'q-edit-prompt': { value: '' },
+    'q-edit-opt-a': { value: '' },
+    'q-edit-opt-b': { value: '' },
+    'q-edit-opt-c': { value: '' },
+    'q-edit-opt-d': { value: '' },
+    'q-edit-correct': { value: 'A' },
+    'q-edit-difficulty': { value: 'MEDIUM' },
+    'q-edit-points': { value: '10' },
+    'q-edit-explanation': { value: '' },
+    'q-edit-source': { value: '' },
+    'q-edit-author': { value: '' },
+    'q-edit-license': { value: '' }
+};
 const mockQuizModalError = { style: { display: 'none' }, textContent: '' };
 const mockQuizModalTitle = { textContent: '' };
 const mockQuizId = { value: '' };
@@ -197,7 +292,13 @@ global.document = {
         if (id === 'btn-quiz-save-draft') return mockBtnQuizSaveDraft;
         if (id === 'btn-quiz-save-publish') return mockBtnQuizSavePublish;
         if (id === 'quizModal') return mockQuizModal;
-        return { style: {}, value: '', innerHTML: '', innerText: '', textContent: '' };
+        if (id === 'questionEditModal') return mockQuestionEditModal;
+        if (id === 'question-edit-modal-error') return mockQuestionEditModalError;
+        if (id === 'question-edit-modal-title') return mockQuestionEditModalTitle;
+        if (id === 'btn-save-question') return mockBtnSaveQuestion;
+        if (mockQEditFields[id]) return mockQEditFields[id];
+        if (mockExamElements[id]) return mockExamElements[id];
+        return { style: {}, value: '', innerHTML: '', innerText: '', textContent: '', addEventListener: () => {}, removeEventListener: () => {} };
     },
     querySelectorAll: () => []
 };
@@ -1658,8 +1759,473 @@ async function runTests() {
     assert.strictEqual(mockQuizModalError.style.display, 'none');
     console.log("✅ Test 45 Passed: Valid response for new quiz with matched DRAFT status succeeds.");
 
+    // =========================================================================
+    // QUESTION EDIT MODAL REGRESSION TESTS (CASES A THROUGH L)
+    // =========================================================================
+    console.log("\n--- RUNNING QUESTION EDIT MODAL TESTS (CASES A THROUGH L) ---");
+
+    function deferred() {
+        let resolve, reject;
+        const promise = new Promise((res, rej) => { resolve = res; reject = rej; });
+        return { promise, resolve, reject };
+    }
+
+    let loadQuestionsCalledCount = 0;
+    global.loadQuestions = async () => { loadQuestionsCalledCount++; };
+
+    const sampleQA = {
+        id: 'q_test_A',
+        code: 'PHY_A',
+        version: 1,
+        status: 'DRAFT',
+        subjectId: 'physics',
+        grade: 10,
+        chapter: 'Chương 1',
+        topic: 'Chủ đề 1',
+        textbook: 'KNTT',
+        prompt: 'Nội dung câu hỏi A?',
+        optionA: 'A1', optionB: 'B1', optionC: 'C1', optionD: 'D1',
+        correctOption: 'A',
+        explanation: 'Giải thích A',
+        difficulty: 'EASY',
+        points: 10
+    };
+
+    const sampleQB = {
+        id: 'q_test_B',
+        code: 'PHY_B',
+        version: 1,
+        status: 'PUBLISHED',
+        subjectId: 'chemistry',
+        grade: 11,
+        chapter: 'Chương 2',
+        topic: 'Chủ đề 2',
+        textbook: 'Cánh Diều',
+        prompt: 'Nội dung câu hỏi B?',
+        optionA: 'A2', optionB: 'B2', optionC: 'C2', optionD: 'D2',
+        correctOption: 'B',
+        explanation: 'Giải thích B',
+        difficulty: 'HARD',
+        points: 20
+    };
+
+    // Case A: Đóng modal trước khi fetch hoàn tất -> không thông báo, không đóng, không cập nhật modal từ phản hồi cũ
+    alertCalls = [];
+    loadQuestionsCalledCount = 0;
+    const fetchDefA = deferred();
+    mockFetchHandler = (url, opts) => fetchDefA.promise;
+
+    openQuestionEditModal(sampleQA);
+    const saveQPromiseA = saveQuestionEdit();
+    // User closes modal before fetch completes
+    closeQuestionEditModal();
+    assert.strictEqual(questionModalActiveGen, 0);
+
+    fetchDefA.resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({ id: sampleQA.id, code: sampleQA.code, version: 2 })
+    });
+    await saveQPromiseA;
+
+    assert.strictEqual(alertCalls.length, 0, "Case A Failed: Alert was shown after modal closed!");
+    assert.strictEqual(loadQuestionsCalledCount, 0, "Case A Failed: loadQuestions was called after modal closed!");
+    assert.strictEqual(questionModalActiveGen, 0, "Case A Failed: activeGen changed unexpectedly!");
+    console.log("✅ Test 46 Passed (Case A): Closing modal before fetch completes safely discards old response.");
+
+    // Case B: Mở B trong lúc response.json() của A còn chờ -> A không tác động B
+    alertCalls = [];
+    loadQuestionsCalledCount = 0;
+    const jsonDefB = deferred();
+    let jsonBStarted = deferred();
+
+    mockFetchHandler = (url, opts) => Promise.resolve({
+        ok: true,
+        status: 200,
+        json: () => {
+            jsonBStarted.resolve();
+            return jsonDefB.promise;
+        }
+    });
+
+    openQuestionEditModal(sampleQA);
+    const savePromiseB = saveQuestionEdit();
+    await jsonBStarted.promise;
+
+    // While response.json() of A is pending, open modal for B
+    openQuestionEditModal(sampleQB);
+    const activeGenB = questionModalActiveGen;
+    assert.strictEqual(questionModalActiveQid, sampleQB.id);
+
+    // Now response.json() of A resolves
+    jsonDefB.resolve({ id: sampleQA.id, code: sampleQA.code, version: 2 });
+    await savePromiseB;
+
+    assert.strictEqual(questionModalActiveGen, activeGenB, "Case B Failed: Modal B was closed by A!");
+    assert.strictEqual(questionModalActiveQid, sampleQB.id, "Case B Failed: Active QID corrupted by A!");
+    assert.strictEqual(alertCalls.length, 0, "Case B Failed: Alert for A fired while B was open!");
+    console.log("✅ Test 47 Passed (Case B): Opening B while response.json() of A is pending does not affect B.");
+
+    // Case C: Mở B trong lúc parseApiErrorMessage của A còn chờ -> lỗi A không xuất hiện trong B
+    alertCalls = [];
+    mockQuestionEditModalError.textContent = '';
+    mockQuestionEditModalError.style.display = 'none';
+    const errJsonDefC = deferred();
+    let errCStarted = deferred();
+
+    mockFetchHandler = (url, opts) => Promise.resolve({
+        ok: false,
+        status: 400,
+        json: () => {
+            errCStarted.resolve();
+            return errJsonDefC.promise;
+        }
+    });
+
+    openQuestionEditModal(sampleQA);
+    const savePromiseC = saveQuestionEdit();
+    await errCStarted.promise;
+
+    // While parseApiErrorMessage of A is pending, open modal for B
+    openQuestionEditModal(sampleQB);
+    const activeGenC = questionModalActiveGen;
+
+    // Now error json for A resolves
+    errJsonDefC.resolve({ detail: { message: "Lỗi validation riêng của câu A" } });
+    await savePromiseC;
+
+    assert.strictEqual(questionModalActiveGen, activeGenC, "Case C Failed: Modal B gen changed!");
+    assert.strictEqual(questionModalActiveQid, sampleQB.id);
+    assert.ok(!mockQuestionEditModalError.textContent.includes("Lỗi validation riêng của câu A"), "Case C Failed: A error leaked into B!");
+    console.log("✅ Test 48 Passed (Case C): Opening B while error parser of A is pending does not leak error into B.");
+
+    // Case D: Đóng rồi mở lại chính A -> phản hồi lượt cũ không tác động lượt mới
+    alertCalls = [];
+    const fetchDefD = deferred();
+    mockFetchHandler = (url, opts) => fetchDefD.promise;
+
+    openQuestionEditModal(sampleQA);
+    const genD1 = questionModalActiveGen;
+    const savePromiseD = saveQuestionEdit();
+
+    // Close A, then re-open A
+    closeQuestionEditModal();
+    openQuestionEditModal(sampleQA);
+    const genD2 = questionModalActiveGen;
+    assert.notStrictEqual(genD1, genD2);
+
+    // Old request from genD1 resolves
+    fetchDefD.resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({ id: sampleQA.id, code: sampleQA.code, version: 2 })
+    });
+    await savePromiseD;
+
+    assert.strictEqual(alertCalls.length, 0, "Case D Failed: Stale session 1 triggered alert on session 2!");
+    assert.strictEqual(questionModalActiveGen, genD2, "Case D Failed: Re-opened session 2 was closed by session 1!");
+    console.log("✅ Test 49 Passed (Case D): Closing and re-opening question A isolates sessions properly.");
+
+    // Case E: Request A hoàn tất khi B đang lưu -> finally của A không mở khóa hoặc xóa trạng thái lưu B
+    const fetchDefE1 = deferred();
+    const fetchDefE2 = deferred();
+
+    mockFetchHandler = (url, opts) => {
+        const body = JSON.parse(opts.body);
+        if (body.id === sampleQA.id) return fetchDefE1.promise;
+        if (body.id === sampleQB.id) return fetchDefE2.promise;
+    };
+
+    openQuestionEditModal(sampleQA);
+    const savePromiseE1 = saveQuestionEdit();
+
+    // Open B and save B
+    openQuestionEditModal(sampleQB);
+    const savePromiseE2 = saveQuestionEdit();
+
+    // B is now actively saving
+    assert.strictEqual(mockBtnSaveQuestion.disabled, true, "Case E: B button should be disabled");
+    assert.strictEqual(mockBtnSaveQuestion.textContent, '⏳ Đang lưu...');
+    assert.ok(activeQuestionSaveOwner && activeQuestionSaveOwner.qid === sampleQB.id);
+
+    // Request A finishes (triggers A's finally)
+    fetchDefE1.resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({ id: sampleQA.id, code: sampleQA.code, version: 2 })
+    });
+    await savePromiseE1;
+
+    // Assert B's save state is STILL intact and NOT unlocked by A's finally!
+    assert.strictEqual(mockBtnSaveQuestion.disabled, true, "Case E Failed: A's finally unlocked B prematurely!");
+    assert.strictEqual(mockBtnSaveQuestion.textContent, '⏳ Đang lưu...');
+    assert.ok(activeQuestionSaveOwner && activeQuestionSaveOwner.qid === sampleQB.id, "Case E Failed: A's finally cleared B owner!");
+
+    // Now B finishes
+    fetchDefE2.resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({ id: sampleQB.id, code: sampleQB.code, version: 2 })
+    });
+    await savePromiseE2;
+
+    assert.strictEqual(questionModalActiveGen, 0, "Case E: B finished and closed");
+    console.log("✅ Test 50 Passed (Case E): A completing while B is saving does not disrupt B's save lock.");
+
+    // Case F: Lưu thành công trong lượt hiện tại -> đóng đúng modal, thông báo đúng và tải lại danh sách
+    alertCalls = [];
+    fetchCalls = [];
+    mockFetchHandler = (url, opts) => {
+        if (opts && opts.method === 'POST') {
+            return {
+                ok: true,
+                status: 200,
+                json: async () => ({ id: sampleQA.id, code: sampleQA.code, version: 3 })
+            };
+        }
+        return {
+            ok: true,
+            status: 200,
+            json: async () => []
+        };
+    };
+
+    openQuestionEditModal(sampleQA);
+    await saveQuestionEdit();
+
+    assert.strictEqual(questionModalActiveGen, 0, "Case F Failed: Modal was not closed");
+    assert.strictEqual(alertCalls.length, 1, "Case F Failed: Alert was not called");
+    assert.ok(alertCalls[0].includes('PHY_A') && alertCalls[0].includes('v3'), "Case F Failed: Alert content mismatch");
+    const loadQuestionsFetch = fetchCalls.find(c => c.url && c.url.includes('/admin/questions') && (!c.opts || !c.opts.method || c.opts.method === 'GET'));
+    assert.ok(loadQuestionsFetch, "Case F Failed: loadQuestions() was not called to reload questions!");
+    console.log("✅ Test 51 Passed (Case F): Successful save in current session updates UI, closes modal and reloads.");
+
+    // Case G: Lỗi mạng/HTTP/JSON của lượt hiện tại -> giữ dữ liệu nhập, hiển thị lỗi, khôi phục nút phù hợp
+    mockQuestionEditModalError.textContent = '';
+    mockQuestionEditModalError.style.display = 'none';
+    mockFetchHandler = (url, opts) => Promise.reject(new Error("Simulated connection timeout"));
+
+    openQuestionEditModal(sampleQA);
+    await saveQuestionEdit();
+
+    assert.strictEqual(mockQuestionEditModalError.style.display, 'block', "Case G: Error box should be visible");
+    assert.ok(mockQuestionEditModalError.textContent.includes('Lỗi kết nối mạng'), "Case G: Error message mismatch");
+    assert.strictEqual(mockQEditFields['q-edit-prompt'].value, sampleQA.prompt, "Case G: Inputs must be preserved");
+    assert.strictEqual(mockBtnSaveQuestion.disabled, false, "Case G: Button must be re-enabled for retry");
+    console.log("✅ Test 52 Passed (Case G): Network error preserves form fields and re-enables retry button.");
+
+    // Case H: Bấm Lưu hai lần nhanh trong cùng lượt -> chỉ một request được gửi
+    let fetchHCount = 0;
+    const fetchDefH = deferred();
+    mockFetchHandler = (url, opts) => {
+        fetchHCount++;
+        return fetchDefH.promise;
+    };
+
+    openQuestionEditModal(sampleQA);
+    const saveH1 = saveQuestionEdit();
+    const saveH2 = saveQuestionEdit();
+
+    assert.strictEqual(fetchHCount, 1, "Case H Failed: Multiple fetch calls sent on rapid clicks!");
+    fetchDefH.resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({ id: sampleQA.id, code: sampleQA.code, version: 4 })
+    });
+    await Promise.all([saveH1, saveH2]);
+    console.log("✅ Test 53 Passed (Case H): Rapid double-click on save is safely blocked to 1 request.");
+
+    // Case I: Response sai ID/cấu trúc -> không báo thành công
+    alertCalls = [];
+    mockQuestionEditModalError.textContent = '';
+    mockQuestionEditModalError.style.display = 'none';
+    mockFetchHandler = (url, opts) => Promise.resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({ id: 'WRONG_ID_RETURNED', code: 'FAKE', version: 5 })
+    });
+
+    openQuestionEditModal(sampleQA);
+    await saveQuestionEdit();
+
+    assert.strictEqual(alertCalls.length, 0, "Case I Failed: Alert was shown for invalid ID response!");
+    assert.ok(mockQuestionEditModalError.textContent.includes('không khớp định danh câu hỏi'), "Case I Failed: Error message mismatch");
+    assert.notStrictEqual(questionModalActiveGen, 0, "Case I Failed: Modal should remain open on contract mismatch");
+    console.log("✅ Test 54 Passed (Case I): Response with mismatched question ID is rejected cleanly.");
+
+    // Case J: Xung đột version (HTTP 409 VERSION_CONFLICT) -> thông báo phù hợp, không tự ghi đè dữ liệu
+    mockQuestionEditModalError.textContent = '';
+    mockFetchHandler = (url, opts) => Promise.resolve({
+        ok: false,
+        status: 409,
+        json: async () => ({
+            code: 'VERSION_CONFLICT',
+            message: 'Xung đột phiên bản: Câu hỏi đã được cập nhật lên v2 bởi người khác.'
+        })
+    });
+
+    openQuestionEditModal(sampleQA);
+    await saveQuestionEdit();
+
+    assert.ok(mockQuestionEditModalError.textContent.includes('Xung đột phiên bản'), "Case J Failed: Version conflict error missing");
+    assert.strictEqual(mockQEditFields['q-edit-prompt'].value, sampleQA.prompt);
+    assert.strictEqual(mockBtnSaveQuestion.disabled, false);
+    console.log("✅ Test 55 Passed (Case J): Version conflict HTTP 409 displays user warning and preserves inputs.");
+
+    // Case K: Modal mở mới không bị khóa vĩnh viễn do request cũ
+    openQuestionEditModal(sampleQA);
+    mockFetchHandler = (url, opts) => new Promise(() => {}); // never resolves
+    saveQuestionEdit();
+    assert.strictEqual(mockBtnSaveQuestion.disabled, true);
+
+    // User closes modal A and opens B
+    closeQuestionEditModal();
+    openQuestionEditModal(sampleQB);
+
+    assert.strictEqual(mockBtnSaveQuestion.disabled, false, "Case K Failed: New modal B is permanently locked!");
+    assert.strictEqual(mockBtnSaveQuestion.textContent, '💾 Lưu thay đổi');
+    console.log("✅ Test 56 Passed (Case K): Opening new modal is immediately unlocked regardless of pending old request.");
+
+    // Case L: Sự kiện đóng modal cũ đến muộn không làm mất lượt mở mới
+    openQuestionEditModal(sampleQA);
+    const genL1 = questionModalActiveGen;
+
+    // hide.bs.modal fires for A
+    mockQuestionEditModal.dispatchEvent({ type: 'hide.bs.modal' });
+
+    // User opens B while modal A is transitioning
+    openQuestionEditModal(sampleQB);
+    const genL2 = questionModalActiveGen;
+
+    // Delayed hidden.bs.modal for A arrives
+    mockQuestionEditModal.dispatchEvent({ type: 'hidden.bs.modal' });
+
+    assert.strictEqual(questionModalActiveGen, genL2, "Case L Failed: Delayed hidden.bs.modal wiped out active modal B!");
+    assert.strictEqual(questionModalActiveQid, sampleQB.id);
+    console.log("✅ Test 57 Passed (Case L): Delayed hidden.bs.modal from previous session does not disturb new session.");
+
+    // =========================================================================
+    // EXAM MANAGEMENT MODAL & OPTIMISTIC CONCURRENCY TESTS (TESTS 58 - 65)
+    // =========================================================================
+    console.log("\n--- RUNNING EXAM MANAGEMENT TESTS (TESTS 58 THROUGH 65) ---");
+
+    // Test 58: openExamModal(null) initializes new exam with proper defaults
+    openExamModal(null);
+    assert.strictEqual(mockExamElements['exam-id'].value, '');
+    assert.strictEqual(mockExamElements['exam-version'].value, '1');
+    assert.strictEqual(mockExamElements['exam-modal-title'].textContent, 'Tạo Đề thi mới');
+    assert.strictEqual(selectedExamQuestionIds.size, 0);
+    console.log("✅ Test 58 Passed: openExamModal(null) resets form with clean state and empty question selection.");
+
+    // Test 59: openExamModal(existingExam) loads existing values and questionIds
+    const sampleExam = {
+        id: 'exam-123',
+        title: 'Đề kiểm tra giữa kỳ 1',
+        subjectId: 'physics',
+        grade: 10,
+        examType: 'MIDTERM',
+        semester: 1,
+        durationMinutes: 45,
+        version: 2,
+        questionIds: ['Q1', 'Q2']
+    };
+    openExamModal(sampleExam);
+    assert.strictEqual(mockExamElements['exam-id'].value, 'exam-123');
+    assert.strictEqual(mockExamElements['exam-version'].value, 2);
+    assert.strictEqual(mockExamElements['exam-title'].value, 'Đề kiểm tra giữa kỳ 1');
+    assert.strictEqual(selectedExamQuestionIds.size, 2);
+    assert.ok(selectedExamQuestionIds.has('Q1'));
+    assert.ok(selectedExamQuestionIds.has('Q2'));
+    console.log("✅ Test 59 Passed: openExamModal(existingExam) pre-populates fields and preserves question selection.");
+
+    // Test 60: saveExam client-side validation rejects empty title
+    mockExamElements['exam-title'].value = '   ';
+    await saveExam('DRAFT');
+    assert.ok(mockExamElements['exam-modal-error'].textContent.includes('tiêu đề'));
+    assert.strictEqual(mockExamElements['exam-modal-error'].style.display, 'block');
+    console.log("✅ Test 60 Passed: saveExam rejects empty or whitespace-only title.");
+
+    // Test 61: saveExam client-side validation rejects 0 questions
+    mockExamElements['exam-title'].value = 'Đề thi Vật lí 10';
+    selectedExamQuestionIds.clear();
+    await saveExam('DRAFT');
+    assert.ok(mockExamElements['exam-modal-error'].textContent.includes('câu hỏi'));
+    console.log("✅ Test 61 Passed: saveExam rejects exam with 0 selected questions.");
+
+    // Test 62: saveExam sends expectedVersion in payload and If-Match header
+    selectedExamQuestionIds.add('Q1');
+    mockExamElements['exam-id'].value = 'exam-123';
+    mockExamElements['exam-version'].value = '3';
+    let lastExamPayload = null;
+    let lastExamHeaders = null;
+    mockFetchHandler = (url, opts) => {
+        if (url === '/admin/exams') {
+            lastExamPayload = JSON.parse(opts.body);
+            lastExamHeaders = opts.headers;
+            return new Response(JSON.stringify({
+                id: 'exam-123',
+                title: 'Đề thi Vật lí 10',
+                version: 4,
+                status: 'DRAFT'
+            }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+        }
+    };
+    await saveExam('DRAFT');
+    assert.strictEqual(lastExamPayload.expectedVersion, 3);
+    assert.strictEqual(lastExamHeaders['If-Match'], '"3"');
+    console.log("✅ Test 62 Passed: saveExam includes expectedVersion and If-Match header.");
+
+    // Test 63: Version conflict (HTTP 409) displays error message and keeps modal open
+    mockFetchHandler = (url, opts) => {
+        if (url === '/admin/exams') {
+            return new Response(JSON.stringify({
+                code: 'CONCURRENT_MODIFICATION',
+                message: 'Đề thi đã được chỉnh sửa bởi người khác (version xung đột).'
+            }), { status: 409, headers: { 'Content-Type': 'application/json' } });
+        }
+    };
+    openExamModal(sampleExam);
+    await saveExam('DRAFT');
+    assert.ok(mockExamElements['exam-modal-error'].textContent.includes('xung đột') || mockExamElements['exam-modal-error'].textContent.includes('CONCURRENT_MODIFICATION'));
+    assert.strictEqual(mockExamElements['btn-exam-save-draft'].disabled, false);
+    console.log("✅ Test 63 Passed: Version conflict HTTP 409 displays user warning and preserves inputs.");
+
+    // Test 64: Stale response isolation - closing modal A and opening modal B ignores delayed response of A
+    openExamModal(sampleExam);
+    let delayedResolve;
+    mockFetchHandler = (url, opts) => {
+        if (url === '/admin/exams') {
+            return new Promise(resolve => { delayedResolve = resolve; });
+        }
+    };
+    saveExam('DRAFT');
+    assert.strictEqual(mockExamElements['btn-exam-save-draft'].disabled, true);
+
+    closeExamModal();
+    const otherExam = { id: 'exam-456', title: 'Đề thi Hoá học', subjectId: 'chemistry', grade: 11, questionIds: ['Q3'] };
+    openExamModal(otherExam);
+    assert.strictEqual(mockExamElements['btn-exam-save-draft'].disabled, false);
+
+    delayedResolve(new Response(JSON.stringify({ id: 'exam-123', version: 5 }), { status: 200 }));
+    await new Promise(r => setTimeout(r, 10));
+
+    assert.strictEqual(mockExamElements['exam-id'].value, 'exam-456');
+    console.log("✅ Test 64 Passed: Delayed save response from closed modal A is safely ignored in modal B.");
+
+    // Test 65: toggleExamPublish calls /admin/exams/{id}/publish?publish=...
+    let toggleUrl = null;
+    mockFetchHandler = (url, opts) => {
+        if (url.includes('/publish')) {
+            toggleUrl = url;
+            return new Response(JSON.stringify({ status: 'PUBLISHED' }), { status: 200 });
+        }
+    };
+    await toggleExamPublish('exam-123', true);
+    assert.ok(toggleUrl.includes('/admin/exams/exam-123/publish?publish=true'));
+    console.log("✅ Test 65 Passed: toggleExamPublish calls publish endpoint correctly.");
+
     console.log("\nALL PRODUCT JAVASCRIPT TESTS PASSED SUCCESSFULLY!");
-    console.log("ALL 47 JAVASCRIPT & DOM TESTS PASSED SUCCESSFULLY!");
+    console.log("ALL 67 JAVASCRIPT & DOM TESTS PASSED SUCCESSFULLY!");
 }
 
 runTests().catch(err => {

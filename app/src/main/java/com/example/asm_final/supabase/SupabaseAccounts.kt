@@ -60,6 +60,14 @@ class SupabaseAccounts @JvmOverloads constructor(context: Context, private val h
     fun register(name: String,email: String,password: String): AuthTicket {
         val result=JSONObject(http.request("POST",SupabaseAuthRedirect.withCallback("/auth/v1/signup"),JSONObject().put("email",email.trim()).put("password",password)
             .put("data",JSONObject().put("nickname",name.trim()))))
+        // Supabase may return an obfuscated user with no identities for an existing email
+        // when email confirmation is enabled. It has no access token, but it is not a
+        // pending confirmation: no new account or confirmation message was created.
+        val user = result.optJSONObject("user") ?: result
+        val identities = user.optJSONArray("identities")
+        if (identities != null && identities.length() == 0) {
+            throw BackendClient.Failure("ACCOUNT_ALREADY_EXISTS", 409)
+        }
         if(result.optString("access_token").isEmpty()) throw BackendClient.Failure("EMAIL_CONFIRMATION_REQUIRED",202)
         // Never authenticate by local password; verify the server identity through the normal path.
         return signIn(email,password)

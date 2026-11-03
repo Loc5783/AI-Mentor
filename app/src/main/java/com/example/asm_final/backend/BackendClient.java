@@ -19,8 +19,6 @@ public final class BackendClient implements com.example.asm_final.learning.Lesso
   private final Object sessionLock;
 
   public static String endpoint(Context context) {
-    // Supabase tokens cannot authenticate against the legacy Python API.
-    if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) return BuildConfig.SUPABASE_URL;
     String value =
         BuildConfig.DEBUG
             ? context
@@ -199,7 +197,6 @@ public final class BackendClient implements com.example.asm_final.learning.Lesso
   }
 
   public boolean signedIn() throws Exception {
-    if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) return new com.example.asm_final.supabase.SupabaseAccounts(context).hasSession(owner);
     synchronized (sessionLock) {
       guard();
       return sessions.load() != null;
@@ -226,8 +223,6 @@ public final class BackendClient implements com.example.asm_final.learning.Lesso
 
   public JSONObject request(
       String method, String path, JSONObject body, String key, Integer revision) throws Exception {
-    if (com.example.asm_final.supabase.SupabaseHttp.enabled(context))
-      return new com.example.asm_final.supabase.SupabaseApi(context, owner).request(method, path, body, key, revision);
     synchronized (sessionLock) {
       guard();
       JSONObject session = sessions.load();

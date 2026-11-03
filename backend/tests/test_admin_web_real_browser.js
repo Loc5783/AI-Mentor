@@ -2,6 +2,7 @@ const http = require('http');
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const assert = require('assert');
 
 // 1. Read admin_web.py and extract ADMIN_HTML
@@ -31,6 +32,40 @@ const injectionScript = `
 htmlSource = htmlSource.replace('<head>', '<head>' + injectionScript);
 
 let pendingSaveResolvers = [];
+let pendingQuestionSaveResolvers = [];
+
+const questionsStore = [
+    {
+        id: 'q_browser_01',
+        code: 'PHY10_01',
+        prompt: 'Chuyển động thẳng biến đổi đều là gì?',
+        subjectId: 'physics',
+        grade: 10,
+        difficulty: 'EASY',
+        status: 'PUBLISHED',
+        optionA: 'Vận tốc không đổi',
+        optionB: 'Gia tốc không đổi',
+        optionC: 'Quãng đường không đổi',
+        optionD: 'Không có gia tốc',
+        correctOption: 'B',
+        version: 1
+    },
+    {
+        id: 'q_browser_02',
+        code: 'PHY10_02',
+        prompt: 'Định luật I Newton còn gọi là gì?',
+        subjectId: 'physics',
+        grade: 10,
+        difficulty: 'MEDIUM',
+        status: 'DRAFT',
+        optionA: 'Định luật quán tính',
+        optionB: 'Định luật vạn vật hấp dẫn',
+        optionC: 'Định luật bảo toàn cơ năng',
+        optionD: 'Định luật bảo toàn động lượng',
+        correctOption: 'A',
+        version: 2
+    }
+];
 
 // 2. Setup mock HTTP server
 const server = http.createServer((req, res) => {
@@ -60,24 +95,34 @@ const server = http.createServer((req, res) => {
     }
 
     if (url.pathname === '/admin/questions') {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify([
-            {
-                id: 'q_browser_01',
-                code: 'PHY10_01',
-                prompt: 'Chuyển động thẳng biến đổi đều là gì?',
-                subjectId: 'physics',
-                grade: 10,
-                difficulty: 'EASY',
-                status: 'PUBLISHED',
-                optionA: 'Vận tốc không đổi',
-                optionB: 'Gia tốc không đổi',
-                optionC: 'Quãng đường không đổi',
-                optionD: 'Không có gia tốc',
-                correctOption: 'B'
-            }
-        ]));
-        return;
+        if (req.method === 'GET') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(questionsStore));
+            return;
+        }
+
+        if (req.method === 'POST') {
+            let body = '';
+            req.on('data', chunk => body += chunk);
+            req.on('end', () => {
+                const parsedBody = JSON.parse(body || '{}');
+                console.log(`[SERVER] Received POST /admin/questions for ID: ${parsedBody.id}`);
+
+                if (pendingQuestionSaveResolvers.length > 0) {
+                    const resolver = pendingQuestionSaveResolvers.shift();
+                    resolver({ res, body: parsedBody });
+                } else {
+                    const updated = {
+                        ...parsedBody,
+                        id: parsedBody.id || 'q_browser_01',
+                        version: (parsedBody.version || 1) + 1
+                    };
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify(updated));
+                }
+            });
+            return;
+        }
     }
 
     if (url.pathname === '/admin/quizzes') {
@@ -120,7 +165,7 @@ async function runBrowserTest() {
     console.log('[SERVER] Mock web server listening on http://127.0.0.1:8765');
 
     const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-    const profileDir = path.join(process.env.MENTOR_DATA_DIR ? path.dirname(process.env.MENTOR_DATA_DIR) : 'C:/Users/TGPM/.gemini/antigravity/brain/786fc9fc-2b88-4e04-a492-1d22c326451a/scratch', 'chrome_real_test_profile');
+    const profileDir = path.join(process.env.MENTOR_DATA_DIR ? path.dirname(process.env.MENTOR_DATA_DIR) : os.tmpdir(), 'chrome_real_test_profile');
     if (!fs.existsSync(profileDir)) fs.mkdirSync(profileDir, { recursive: true });
 
     const port = 9337;
@@ -190,8 +235,25 @@ async function runBrowserTest() {
             return res.result ? res.result.value : null;
         }
 
+        async function waitForModalClosed(modalId) {
+            await new Promise(r => setTimeout(r, 800));
+            const stillShown = await evalInPage(`document.getElementById('${modalId}').classList.contains('show')`);
+            if (stillShown) {
+                await new Promise(r => setTimeout(r, 400));
+            }
+        }
+
         await cdp('Page.enable');
         await cdp('Runtime.enable');
+
+        pageWs.addEventListener('message', (msg) => {
+            try {
+                const parsed = JSON.parse(msg.data);
+                if (parsed.method === 'Runtime.exceptionThrown') {
+                    console.error('[BROWSER EXCEPTION]', JSON.stringify(parsed.params.exceptionDetails));
+                }
+            } catch(e) {}
+        });
 
         // Wait for page load and auth check to complete
         await new Promise(r => setTimeout(r, 2000));
@@ -342,6 +404,231 @@ async function runBrowserTest() {
         assert.strictEqual(modalCTitle, '', "Modal C title must be clean");
 
         console.log("✅ REAL BROWSER TEST 2 PASSED: Close via real Escape key successfully isolates in-flight save.");
+
+        // Switch to Questions tab
+        await evalInPage(`showSection('questions')`);
+        await new Promise(r => setTimeout(r, 600));
+
+                // =========================================================================
+        // REAL BROWSER TEST 3: Close questionEditModal via real [X] button while save request in-flight
+        // =========================================================================
+        console.log("\n--- REAL BROWSER TEST 3: Close question modal via real [X] button during in-flight save ---");
+
+        let serverQSaveDeferred = null;
+        const qSaveArrivedPromise = new Promise(resolve => {
+            pendingQuestionSaveResolvers.push(({ res, body }) => {
+                serverQSaveDeferred = { res, body };
+                resolve();
+            });
+        });
+
+        // Click ✏️ Sửa for Question 1
+        await evalInPage(`
+            const editBtns = Array.from(document.querySelectorAll('#questions-list button')).filter(b => b.textContent.includes('Sửa'));
+            if (editBtns.length > 0) editBtns[0].click();
+        `);
+        await new Promise(r => setTimeout(r, 600));
+
+        let isQModalShown = await evalInPage(`document.getElementById('questionEditModal').classList.contains('show')`);
+        assert.strictEqual(isQModalShown, true, "Question Edit modal must be shown via Bootstrap");
+
+        const qId1 = await evalInPage(`document.getElementById('q-edit-id').value`);
+        assert.strictEqual(qId1, 'q_browser_01', "Question Edit modal must load q_browser_01");
+
+        // Edit question prompt
+        await evalInPage(`
+            document.getElementById('q-edit-prompt').value = 'Chuyển động thẳng biến đổi đều có gia tốc thế nào? (Updated)';
+            document.getElementById('btn-save-question').click();
+        `);
+
+        // Wait for server to receive POST /admin/questions
+        await qSaveArrivedPromise;
+        console.log('[TEST] Server received POST /admin/questions. Question 1 save is actively in-flight.');
+
+        const btnQSaveDisabled = await evalInPage(`document.getElementById('btn-save-question').disabled`);
+        assert.strictEqual(btnQSaveDisabled, true, "Save button must be disabled during in-flight save");
+
+        // Click real [X] button (.btn-close) on questionEditModal
+        await evalInPage(`document.querySelector('#questionEditModal .btn-close').click()`);
+        console.log('[TEST] Clicked real .btn-close [X] button on questionEditModal.');
+
+        // Wait for modal and backdrop to fully close
+        await waitForModalClosed('questionEditModal');
+
+        isQModalShown = await evalInPage(`document.getElementById('questionEditModal').classList.contains('show')`);
+        assert.strictEqual(isQModalShown, false, "Question Edit modal must be hidden after clicking [X]");
+
+        // Resolve delayed save request
+        console.log('[TEST] Resolving delayed save request for Question 1...');
+        serverQSaveDeferred.res.writeHead(200, { 'Content-Type': 'application/json' });
+        serverQSaveDeferred.res.end(JSON.stringify({
+            id: 'q_browser_01',
+            code: 'PHY10_01',
+            prompt: 'Chuyển động thẳng biến đổi đều có gia tốc thế nào? (Updated)',
+            subjectId: 'physics',
+            grade: 10,
+            difficulty: 'EASY',
+            status: 'PUBLISHED',
+            optionA: 'Vận tốc không đổi',
+            optionB: 'Gia tốc không đổi',
+            optionC: 'Quãng đường không đổi',
+            optionD: 'Không có gia tốc',
+            correctOption: 'B',
+            version: 2
+        }));
+
+        await new Promise(r => setTimeout(r, 300));
+
+        // Verify NO alert fired
+        alerts = await evalInPage(`window.__recordedAlerts`);
+        assert.strictEqual(alerts.length, 0, "No success alert must be fired for closed question modal");
+
+        // Open Question 2 modal
+        const clickQ2Res = await evalInPage(`(() => {
+            const editBtns = Array.from(document.querySelectorAll('#questions-list button')).filter(b => b.textContent.includes('Sửa'));
+            if (editBtns.length <= 1) return 'NOT_ENOUGH_BTNS_' + editBtns.length;
+            try {
+                editBtns[1].click();
+                return 'CLICKED_OK';
+            } catch(e) {
+                return 'CLICK_ERR: ' + e.message;
+            }
+        })()`);
+        console.log('[TEST] Click Q2 button result:', clickQ2Res);
+        await new Promise(r => setTimeout(r, 600));
+
+        isQModalShown = await evalInPage(`document.getElementById('questionEditModal').classList.contains('show')`);
+        assert.strictEqual(isQModalShown, true, "Question Edit modal for Question 2 must open cleanly");
+
+        const qId2 = await evalInPage(`document.getElementById('q-edit-id').value`);
+        assert.strictEqual(qId2, 'q_browser_02', "Question Edit modal must load q_browser_02");
+
+        alerts = await evalInPage(`window.__recordedAlerts`);
+        assert.strictEqual(alerts.length, 0, "Question 2 modal must not receive stale alert from Question 1");
+
+        const btnQ2Ready = await evalInPage(`!document.getElementById('btn-save-question').disabled && document.getElementById('btn-save-question').textContent.includes('Lưu thay đổi')`);
+        assert.strictEqual(btnQ2Ready, true, "Save button in Question 2 modal must be ready and enabled");
+
+        // Close Question 2 cleanly
+        await evalInPage(`document.querySelector('#questionEditModal .btn-close').click()`);
+        await waitForModalClosed('questionEditModal');
+        console.log("✅ REAL BROWSER TEST 3 PASSED: Close question edit modal via real [X] button successfully isolates in-flight save.");
+
+        // =========================================================================
+        // REAL BROWSER TEST 4: Close questionEditModal via real Escape key while save request in-flight
+        // =========================================================================
+        console.log("\n--- REAL BROWSER TEST 4: Close question modal via real Escape key during in-flight save ---");
+
+        let serverQSaveDeferred2 = null;
+        const qSaveArrivedPromise2 = new Promise(resolve => {
+            pendingQuestionSaveResolvers.push(({ res, body }) => {
+                serverQSaveDeferred2 = { res, body };
+                resolve();
+            });
+        });
+
+        // Reopen Question 1
+        const clickT4Res = await evalInPage(`(() => {
+            const editBtns = Array.from(document.querySelectorAll('#questions-list button')).filter(b => b.textContent.includes('Sửa'));
+            if (editBtns.length === 0) return 'NO_BTNS';
+            try {
+                editBtns[0].click();
+                return 'CLICKED_T4_OK_LEN_' + editBtns.length;
+            } catch(e) {
+                return 'CLICK_T4_ERR: ' + e.message;
+            }
+        })()`);
+        console.log('[TEST 4] Click Question 1 result:', clickT4Res);
+        await new Promise(r => setTimeout(r, 600));
+
+        isQModalShown = await evalInPage(`document.getElementById('questionEditModal').classList.contains('show')`);
+        assert.strictEqual(isQModalShown, true, "Question Edit modal must open");
+
+        // Click save
+        await evalInPage(`document.getElementById('btn-save-question').click()`);
+
+        // Wait for server to receive POST /admin/questions
+        await qSaveArrivedPromise2;
+        console.log('[TEST] Server received POST /admin/questions for Escape test.');
+
+        // Dispatch real Escape key via CDP
+        await cdp('Input.dispatchKeyEvent', { type: 'rawKeyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+        await cdp('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+        console.log('[TEST] Dispatched real Escape key via CDP on questionEditModal.');
+
+        // Wait for modal and backdrop to fully close
+        await waitForModalClosed('questionEditModal');
+
+        isQModalShown = await evalInPage(`document.getElementById('questionEditModal').classList.contains('show')`);
+        assert.strictEqual(isQModalShown, false, "Question Edit modal must be hidden after pressing Escape");
+
+        // Resolve delayed save request
+        console.log('[TEST] Resolving delayed save request for Question 1 (Escape test)...');
+        serverQSaveDeferred2.res.writeHead(200, { 'Content-Type': 'application/json' });
+        serverQSaveDeferred2.res.end(JSON.stringify({
+            id: 'q_browser_01',
+            code: 'PHY10_01',
+            prompt: 'Chuyển động thẳng biến đổi đều là gì?',
+            subjectId: 'physics',
+            grade: 10,
+            difficulty: 'EASY',
+            status: 'PUBLISHED',
+            optionA: 'Vận tốc không đổi',
+            optionB: 'Gia tốc không đổi',
+            optionC: 'Quãng đường không đổi',
+            optionD: 'Không có gia tốc',
+            correctOption: 'B',
+            version: 3
+        }));
+
+        await new Promise(r => setTimeout(r, 300));
+
+        alerts = await evalInPage(`window.__recordedAlerts`);
+        assert.strictEqual(alerts.length, 0, "No success alert must be fired for question modal dismissed via Escape");
+
+        // Reopen Question 1 modal cleanly to verify system remains fully functional
+        const preReopen = await evalInPage(`({
+            openGen: typeof questionModalOpenGen !== 'undefined' ? questionModalOpenGen : 'undef',
+            activeGen: typeof questionModalActiveGen !== 'undefined' ? questionModalActiveGen : 'undef',
+            modalClass: document.getElementById('questionEditModal').className,
+            backdrop: !!document.querySelector('.modal-backdrop'),
+            btnCount: document.querySelectorAll('#questions-list button').length
+        })`);
+        console.log('[TEST 4 PRE-REOPEN]', JSON.stringify(preReopen));
+
+        const clickReopenRes = await evalInPage(`(() => {
+            const editBtns = Array.from(document.querySelectorAll('#questions-list button')).filter(b => b.textContent.includes('Sửa'));
+            if (editBtns.length === 0) return 'NO_BTNS';
+            try {
+                editBtns[0].click();
+                return 'CLICKED_REOPEN_OK';
+            } catch(e) {
+                return 'CLICK_ERR: ' + e.message;
+            }
+        })()`);
+        console.log('[TEST 4 CLICK REOPEN RES]', clickReopenRes);
+
+        await new Promise(r => setTimeout(r, 600));
+
+        const postReopen = await evalInPage(`({
+            openGen: typeof questionModalOpenGen !== 'undefined' ? questionModalOpenGen : 'undef',
+            activeGen: typeof questionModalActiveGen !== 'undefined' ? questionModalActiveGen : 'undef',
+            modalClass: document.getElementById('questionEditModal').className,
+            isShown: document.getElementById('questionEditModal').classList.contains('show')
+        })`);
+        console.log('[TEST 4 POST-REOPEN]', JSON.stringify(postReopen));
+
+        isQModalShown = postReopen.isShown;
+        assert.strictEqual(isQModalShown, true, "Question Edit modal must reopen cleanly");
+
+        const btnQReadyEsc = await evalInPage(`!document.getElementById('btn-save-question').disabled && document.getElementById('btn-save-question').textContent.includes('Lưu thay đổi')`);
+        assert.strictEqual(btnQReadyEsc, true, "Save button must be ready and enabled");
+
+        // Close cleanly
+        await evalInPage(`document.querySelector('#questionEditModal .btn-close').click()`);
+        await waitForModalClosed('questionEditModal');
+
+        console.log("✅ REAL BROWSER TEST 4 PASSED: Close question edit modal via real Escape key successfully isolates in-flight save.");
 
         console.log("\nALL REAL BROWSER CDP TESTS PASSED SUCCESSFULLY!");
     } finally {

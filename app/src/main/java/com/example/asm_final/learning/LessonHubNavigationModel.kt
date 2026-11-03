@@ -13,7 +13,8 @@ enum class HubSection {
     LIBRARY,
     EXAM_PREP,
     ROADMAP,
-    NOTEBOOK
+    NOTEBOOK,
+    AI_PRACTICE
 }
 
 /**
@@ -96,6 +97,10 @@ class LessonHubNavigationModel(
                 true
             }
             HubSection.ROADMAP -> {
+                currentSection = HubSection.MAIN_HUB
+                true
+            }
+            HubSection.AI_PRACTICE -> {
                 currentSection = HubSection.MAIN_HUB
                 true
             }

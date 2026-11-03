@@ -131,6 +131,7 @@ public final class SubjectToolsInteractionTest {
                                   com.example.mentor.chemistry.R.id.rvPeriodicTable))
                           .getAdapter()
                           .getItemCount()));
+      scenario.onActivity(activity -> assertEquals(null, activity.findViewById(android.R.id.content).findViewWithTag(com.example.mathmodule.calculator.MathCalculator.TAG)));
       Espresso.onView(ViewMatchers.withId(com.example.mentor.chemistry.R.id.etElementSearch))
           .perform(ViewActions.replaceText("26"), ViewActions.closeSoftKeyboard());
       Espresso.onView(ViewMatchers.withId(com.example.mentor.chemistry.R.id.btnElementSearch))

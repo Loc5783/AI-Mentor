@@ -1,0 +1,1137 @@
+{
+  "subjectId": "history",
+  "grade": 11,
+  "version": "intro-2026.1",
+  "title": "Lịch sử 11: Lịch sử thế giới hiện đại và Văn minh Đông Nam Á",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_11",
+  "extendedReviews": false,
+  "sourceNote": "Nội dung đang ở dạng cấu trúc khung (Placeholder) được sinh tự động bởi hệ thống AI Mentor để đảm bảo đúng định dạng JSON 3 câu hỏi (EASY/MEDIUM/APPLIED). Giáo viên cần hiệu đính nội dung chi tiết.",
+  "lessons": [
+    {
+      "id": "history-11-cach-mang-tu-san-anh-phap",
+      "title": "Cách mạng tư sản Anh Pháp",
+      "guidance": [
+        "Nội dung trọng tâm bài Cách mạng tư sản Anh Pháp theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Cách mạng tư sản Anh Pháp vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-cach-mang-tu-san-anh-phap-history-11-cach-mang-tu-san-anh-phap-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Cách mạng tư sản Anh Pháp?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-cach-mang-tu-san-anh-phap-history-11-cach-mang-tu-san-anh-phap-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Cách mạng tư sản Anh Pháp?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-cach-mang-tu-san-anh-phap-history-11-cach-mang-tu-san-anh-phap-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Cách mạng tư sản Anh Pháp giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-su-xac-lap-tbcn",
+      "title": "Sự xác lập TBCN",
+      "guidance": [
+        "Nội dung trọng tâm bài Sự xác lập TBCN theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Sự xác lập TBCN vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-su-xac-lap-tbcn-history-11-su-xac-lap-tbcn-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Sự xác lập TBCN?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-su-xac-lap-tbcn-history-11-su-xac-lap-tbcn-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Sự xác lập TBCN?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-su-xac-lap-tbcn-history-11-su-xac-lap-tbcn-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Sự xác lập TBCN giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-cntb-hien-dai",
+      "title": "CNTB hiện đại",
+      "guidance": [
+        "Nội dung trọng tâm bài CNTB hiện đại theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần CNTB hiện đại vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-cntb-hien-dai-history-11-cntb-hien-dai-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài CNTB hiện đại?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-cntb-hien-dai-history-11-cntb-hien-dai-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần CNTB hiện đại?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-cntb-hien-dai-history-11-cntb-hien-dai-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức CNTB hiện đại giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-lien-bang-xo-viet",
+      "title": "Liên bang Xô viết",
+      "guidance": [
+        "Nội dung trọng tâm bài Liên bang Xô viết theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Liên bang Xô viết vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-lien-bang-xo-viet-history-11-lien-bang-xo-viet-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Liên bang Xô viết?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-lien-bang-xo-viet-history-11-lien-bang-xo-viet-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Liên bang Xô viết?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-lien-bang-xo-viet-history-11-lien-bang-xo-viet-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Liên bang Xô viết giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-y-nghia-cach-mang-thang-muoi",
+      "title": "Ý nghĩa Cách mạng tháng Mười",
+      "guidance": [
+        "Nội dung trọng tâm bài Ý nghĩa Cách mạng tháng Mười theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Ý nghĩa Cách mạng tháng Mười vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-y-nghia-cach-mang-thang-muoi-history-11-y-nghia-cach-mang-thang-muoi-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Ý nghĩa Cách mạng tháng Mười?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-y-nghia-cach-mang-thang-muoi-history-11-y-nghia-cach-mang-thang-muoi-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Ý nghĩa Cách mạng tháng Mười?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-y-nghia-cach-mang-thang-muoi-history-11-y-nghia-cach-mang-thang-muoi-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Ý nghĩa Cách mạng tháng Mười giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-thuc-dan-xam-luoc-dna",
+      "title": "Thực dân xâm lược ĐNA",
+      "guidance": [
+        "Nội dung trọng tâm bài Thực dân xâm lược ĐNA theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Thực dân xâm lược ĐNA vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-thuc-dan-xam-luoc-dna-history-11-thuc-dan-xam-luoc-dna-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Thực dân xâm lược ĐNA?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-thuc-dan-xam-luoc-dna-history-11-thuc-dan-xam-luoc-dna-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Thực dân xâm lược ĐNA?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-thuc-dan-xam-luoc-dna-history-11-thuc-dan-xam-luoc-dna-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Thực dân xâm lược ĐNA giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-giai-phong-dan-toc-dna",
+      "title": "Giải phóng dân tộc ĐNA",
+      "guidance": [
+        "Nội dung trọng tâm bài Giải phóng dân tộc ĐNA theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Giải phóng dân tộc ĐNA vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-giai-phong-dan-toc-dna-history-11-giai-phong-dan-toc-dna-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Giải phóng dân tộc ĐNA?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-giai-phong-dan-toc-dna-history-11-giai-phong-dan-toc-dna-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Giải phóng dân tộc ĐNA?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-giai-phong-dan-toc-dna-history-11-giai-phong-dan-toc-dna-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Giải phóng dân tộc ĐNA giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-cttg-thu-nhat",
+      "title": "CTTG thứ nhất",
+      "guidance": [
+        "Nội dung trọng tâm bài CTTG thứ nhất theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần CTTG thứ nhất vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-cttg-thu-nhat-history-11-cttg-thu-nhat-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài CTTG thứ nhất?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-cttg-thu-nhat-history-11-cttg-thu-nhat-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần CTTG thứ nhất?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-cttg-thu-nhat-history-11-cttg-thu-nhat-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức CTTG thứ nhất giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-cttg-thu-hai",
+      "title": "CTTG thứ hai",
+      "guidance": [
+        "Nội dung trọng tâm bài CTTG thứ hai theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần CTTG thứ hai vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-cttg-thu-hai-history-11-cttg-thu-hai-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài CTTG thứ hai?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-cttg-thu-hai-history-11-cttg-thu-hai-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần CTTG thứ hai?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-cttg-thu-hai-history-11-cttg-thu-hai-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức CTTG thứ hai giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-trat-tu-hai-cuc-i-an-ta",
+      "title": "Trật tự hai cực I-an-ta",
+      "guidance": [
+        "Nội dung trọng tâm bài Trật tự hai cực I-an-ta theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Trật tự hai cực I-an-ta vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-trat-tu-hai-cuc-i-an-ta-history-11-trat-tu-hai-cuc-i-an-ta-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Trật tự hai cực I-an-ta?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-trat-tu-hai-cuc-i-an-ta-history-11-trat-tu-hai-cuc-i-an-ta-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Trật tự hai cực I-an-ta?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-trat-tu-hai-cuc-i-an-ta-history-11-trat-tu-hai-cuc-i-an-ta-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Trật tự hai cực I-an-ta giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-van-minh-dna-co-trung-dai",
+      "title": "Văn minh ĐNA cổ trung đại",
+      "guidance": [
+        "Nội dung trọng tâm bài Văn minh ĐNA cổ trung đại theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Văn minh ĐNA cổ trung đại vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-van-minh-dna-co-trung-dai-history-11-van-minh-dna-co-trung-dai-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Văn minh ĐNA cổ trung đại?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-van-minh-dna-co-trung-dai-history-11-van-minh-dna-co-trung-dai-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Văn minh ĐNA cổ trung đại?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-van-minh-dna-co-trung-dai-history-11-van-minh-dna-co-trung-dai-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Văn minh ĐNA cổ trung đại giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-van-minh-van-lang",
+      "title": "Văn minh Văn Lang",
+      "guidance": [
+        "Nội dung trọng tâm bài Văn minh Văn Lang theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Văn minh Văn Lang vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-van-minh-van-lang-history-11-van-minh-van-lang-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Văn minh Văn Lang?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-van-minh-van-lang-history-11-van-minh-van-lang-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Văn minh Văn Lang?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-van-minh-van-lang-history-11-van-minh-van-lang-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Văn minh Văn Lang giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-van-minh-champa-phu-nam",
+      "title": "Văn minh Champa Phù Nam",
+      "guidance": [
+        "Nội dung trọng tâm bài Văn minh Champa Phù Nam theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Văn minh Champa Phù Nam vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-van-minh-champa-phu-nam-history-11-van-minh-champa-phu-nam-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Văn minh Champa Phù Nam?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-van-minh-champa-phu-nam-history-11-van-minh-champa-phu-nam-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Văn minh Champa Phù Nam?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-van-minh-champa-phu-nam-history-11-van-minh-champa-phu-nam-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Văn minh Champa Phù Nam giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-van-minh-dai-viet",
+      "title": "Văn minh Đại Việt",
+      "guidance": [
+        "Nội dung trọng tâm bài Văn minh Đại Việt theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Văn minh Đại Việt vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-van-minh-dai-viet-history-11-van-minh-dai-viet-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Văn minh Đại Việt?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-van-minh-dai-viet-history-11-van-minh-dai-viet-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Văn minh Đại Việt?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-van-minh-dai-viet-history-11-van-minh-dai-viet-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Văn minh Đại Việt giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    },
+    {
+      "id": "history-11-bao-ton-di-san",
+      "title": "Bảo tồn di sản",
+      "guidance": [
+        "Nội dung trọng tâm bài Bảo tồn di sản theo khung CT GDPT 2018."
+      ],
+      "examples": [
+        "Ví dụ ứng dụng kiến thức phần Bảo tồn di sản vào thực tiễn."
+      ],
+      "questions": [
+        {
+          "id": "history-11-bao-ton-di-san-history-11-bao-ton-di-san-q1",
+          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Bảo tồn di sản?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khái niệm đúng"
+            },
+            {
+              "id": "b",
+              "text": "Sai lầm 1"
+            },
+            {
+              "id": "c",
+              "text": "Sai lầm 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+        },
+        {
+          "id": "history-11-bao-ton-di-san-history-11-bao-ton-di-san-q2",
+          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Bảo tồn di sản?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phương án nhiễu 1"
+            },
+            {
+              "id": "b",
+              "text": "Đáp án chính xác"
+            },
+            {
+              "id": "c",
+              "text": "Phương án nhiễu 2"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+        },
+        {
+          "id": "history-11-bao-ton-di-san-history-11-bao-ton-di-san-q3",
+          "prompt": "Tình huống thực tế áp dụng kiến thức Bảo tồn di sản giải quyết vấn đề?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đi sai lệch"
+            },
+            {
+              "id": "b",
+              "text": "Giải pháp chưa triệt để"
+            },
+            {
+              "id": "c",
+              "text": "Phương pháp tối ưu"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+        }
+      ]
+    }
+  ]
+}

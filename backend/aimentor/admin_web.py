@@ -32,6 +32,7 @@ ADMIN_HTML = """<!DOCTYPE html>
                     <a class="nav-link" href="#" onclick="showSection('import')">📥 Import Excel</a>
                     <a class="nav-link" href="#" onclick="showSection('questions')">📝 Quản lý câu hỏi</a>
                     <a class="nav-link" href="#" onclick="showSection('quizzes')">📚 Quản lý bộ đề</a>
+                    <a class="nav-link" href="#" onclick="showSection('exams')">📋 Quản lý đề thi</a>
                 </nav>
             </div>
 
@@ -223,12 +224,200 @@ ADMIN_HTML = """<!DOCTYPE html>
 
                     <div id="quizzes-list"></div>
                 </div>
+
+                <!-- Exams List Section -->
+                <div id="section-exams" class="content-section" style="display:none;">
+                    <div class="card p-3 mb-3">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold mb-1">Môn học</label>
+                                <select id="filter-exam-subject" class="form-select" onchange="loadExams()">
+                                    <option value="">Tất cả môn</option>
+                                    <option value="physics" selected>Vật lý</option>
+                                    <option value="chemistry">Hóa học</option>
+                                    <option value="biology">Sinh học</option>
+                                    <option value="math">Toán</option>
+                                    <option value="literature">Ngữ văn</option>
+                                    <option value="english">Tiếng Anh</option>
+                                    <option value="history">Lịch sử</option>
+                                    <option value="geography">Địa lý</option>
+                                    <option value="economics_law">GDKT & PL</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold mb-1">Khối lớp</label>
+                                <select id="filter-exam-grade" class="form-select" onchange="loadExams()">
+                                    <option value="">Tất cả khối lớp</option>
+                                    <option value="10" selected>Lớp 10</option>
+                                    <option value="11">Lớp 11</option>
+                                    <option value="12">Lớp 12</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold mb-1">Kỳ thi</label>
+                                <select id="filter-exam-type" class="form-select" onchange="loadExams()">
+                                    <option value="">Tất cả kỳ thi</option>
+                                    <option value="MIDTERM">Giữa kỳ</option>
+                                    <option value="FINAL">Cuối kỳ</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold mb-1">Học kỳ</label>
+                                <select id="filter-exam-semester" class="form-select" onchange="loadExams()">
+                                    <option value="">Tất cả học kỳ</option>
+                                    <option value="1">Học kỳ 1</option>
+                                    <option value="2">Học kỳ 2</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold mb-1">Trạng thái</label>
+                                <select id="filter-exam-status" class="form-select" onchange="loadExams()">
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="PUBLISHED">Đã xuất bản</option>
+                                    <option value="DRAFT">Bản nháp</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex gap-2 align-items-end pt-3">
+                                <button class="btn btn-outline-secondary w-50" onclick="loadExams()">🔄 Tải lại</button>
+                                <button class="btn btn-primary w-50" id="btn-open-create-exam" onclick="openExamModal()">➕ Tạo đề</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="exams-list"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Quiz Modal -->
-    <div class="modal fade" id="quizModal" tabindex="-1">
+            <!-- Question Edit Modal -->
+        <div class="modal fade" id="questionEditModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="question-edit-modal-title">✏️ Chỉnh sửa câu hỏi</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="closeQuestionEditModal()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="question-edit-modal-error" class="alert alert-danger" style="display:none;"></div>
+                        <input type="hidden" id="q-edit-id">
+                        <input type="hidden" id="q-edit-version">
+                        <input type="hidden" id="q-edit-status">
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Mã câu hỏi <span class="text-danger">*</span></label>
+                                <input type="text" id="q-edit-code" class="form-control" maxlength="64">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Môn học <span class="text-danger">*</span></label>
+                                <select id="q-edit-subject" class="form-select">
+                                    <option value="physics">Vật lý</option>
+                                    <option value="chemistry">Hóa học</option>
+                                    <option value="biology">Sinh học</option>
+                                    <option value="math">Toán</option>
+                                    <option value="literature">Ngữ văn</option>
+                                    <option value="english">Tiếng Anh</option>
+                                    <option value="history">Lịch sử</option>
+                                    <option value="geography">Địa lý</option>
+                                    <option value="economics_law">GDKT & PL</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Khối lớp <span class="text-danger">*</span></label>
+                                <select id="q-edit-grade" class="form-select">
+                                    <option value="10">Lớp 10</option>
+                                    <option value="11">Lớp 11</option>
+                                    <option value="12">Lớp 12</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Chương</label>
+                                <input type="text" id="q-edit-chapter" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Chủ đề</label>
+                                <input type="text" id="q-edit-topic" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Bộ sách</label>
+                                <input type="text" id="q-edit-textbook" class="form-control">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Nội dung câu hỏi <span class="text-danger">*</span></label>
+                                <textarea id="q-edit-prompt" class="form-control" rows="3" maxlength="5000"></textarea>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Phương án A <span class="text-danger">*</span></label>
+                                <input type="text" id="q-edit-opt-a" class="form-control" maxlength="2000">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Phương án B <span class="text-danger">*</span></label>
+                                <input type="text" id="q-edit-opt-b" class="form-control" maxlength="2000">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Phương án C <span class="text-danger">*</span></label>
+                                <input type="text" id="q-edit-opt-c" class="form-control" maxlength="2000">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Phương án D <span class="text-danger">*</span></label>
+                                <input type="text" id="q-edit-opt-d" class="form-control" maxlength="2000">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Đáp án đúng <span class="text-danger">*</span></label>
+                                <select id="q-edit-correct" class="form-select">
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Độ khó <span class="text-danger">*</span></label>
+                                <select id="q-edit-difficulty" class="form-select">
+                                    <option value="EASY">Dễ (EASY)</option>
+                                    <option value="MEDIUM">Trung bình (MEDIUM)</option>
+                                    <option value="HARD">Khó (HARD)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Điểm số (1-100)</label>
+                                <input type="number" id="q-edit-points" class="form-control" min="1" max="100" value="10">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Lời giải chi tiết</label>
+                                <textarea id="q-edit-explanation" class="form-control" rows="2"></textarea>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Nguồn câu hỏi</label>
+                                <input type="text" id="q-edit-source" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Tác giả</label>
+                                <input type="text" id="q-edit-author" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Bản quyền</label>
+                                <input type="text" id="q-edit-license" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeQuestionEditModal()">Đóng</button>
+                        <button type="button" class="btn btn-primary" id="btn-save-question" onclick="saveQuestionEdit()">💾 Lưu thay đổi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div class="modal fade" id="quizModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -306,6 +495,88 @@ ADMIN_HTML = """<!DOCTYPE html>
         </div>
     </div>
 
+    <!-- Exam Modal -->
+    <div class="modal fade" id="examModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="exam-modal-title">Tạo / Chỉnh sửa Đề thi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="closeExamModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="exam-modal-error" class="alert alert-danger" style="display:none;"></div>
+                    <form id="exam-form" onsubmit="event.preventDefault()">
+                        <input type="hidden" id="exam-id" value="">
+                        <input type="hidden" id="exam-version" value="1">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tiêu đề đề thi: <span class="text-danger">*</span></label>
+                            <input type="text" id="exam-title" class="form-control" required placeholder="Ví dụ: Đề thi Giữa Học kỳ 1 Vật lý 10">
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Môn học: <span class="text-danger">*</span></label>
+                                <select id="exam-subject" class="form-select" onchange="handleExamSubjectGradeChange()">
+                                    <option value="physics">Vật lý</option>
+                                    <option value="chemistry">Hóa học</option>
+                                    <option value="biology">Sinh học</option>
+                                    <option value="math">Toán</option>
+                                    <option value="literature">Ngữ văn</option>
+                                    <option value="english">Tiếng Anh</option>
+                                    <option value="history">Lịch sử</option>
+                                    <option value="geography">Địa lý</option>
+                                    <option value="economics_law">GDKT & PL</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Khối lớp: <span class="text-danger">*</span></label>
+                                <select id="exam-grade" class="form-select" onchange="handleExamSubjectGradeChange()">
+                                    <option value="10">Lớp 10</option>
+                                    <option value="11">Lớp 11</option>
+                                    <option value="12">Lớp 12</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Loại kỳ thi: <span class="text-danger">*</span></label>
+                                <select id="exam-type" class="form-select">
+                                    <option value="MIDTERM" selected>Giữa kỳ (MIDTERM)</option>
+                                    <option value="FINAL">Cuối kỳ (FINAL)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Học kỳ: <span class="text-danger">*</span></label>
+                                <select id="exam-semester" class="form-select">
+                                    <option value="1" selected>Học kỳ 1</option>
+                                    <option value="2">Học kỳ 2</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Thời lượng làm bài (phút): <span class="text-danger">*</span></label>
+                                <input type="number" id="exam-duration" class="form-control" value="45" min="5" max="300" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label fw-bold mb-0">Chọn câu hỏi trong kho: <span class="text-danger">*</span></label>
+                                <span class="badge bg-primary">Đã chọn: <span id="exam-selected-count">0</span> câu hỏi (<span id="exam-selected-points">0</span> điểm)</span>
+                            </div>
+                            <div class="form-text mb-2">Lưu ý: Chỉ các câu hỏi cùng Môn và cùng Lớp mới hợp lệ. Khi xuất bản đề thi, mọi câu hỏi được chọn phải ở trạng thái ĐÃ XUẤT BẢN.</div>
+                            <div id="exam-candidate-questions" style="max-height: 260px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 6px; padding: 10px; background: #fff;">
+                                <div class="text-muted text-center py-2">Đang tải danh sách câu hỏi...</div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeExamModal()">Đóng</button>
+                            <button type="button" id="btn-exam-save-draft" class="btn btn-warning" onclick="saveExam('DRAFT')">💾 Lưu bản nháp (Draft)</button>
+                            <button type="button" id="btn-exam-save-publish" class="btn btn-success" onclick="saveExam('PUBLISHED')">🚀 Xuất bản ngay (Publish)</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Login Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1">
         <div class="modal-dialog">
@@ -341,6 +612,13 @@ ADMIN_HTML = """<!DOCTYPE html>
         let loginModalObj = null;
         let isImporting = false;
         let isPublishing = false;
+        let questionEditModalObj = null;
+        let questionModalOpenGen = 0;
+        let questionModalActiveGen = 0;
+        let questionModalActiveQid = null;
+        let questionModalClosingGen = 0;
+        let currentQuestionSaveId = 0;
+        let activeQuestionSaveOwner = null;
         let quizModalObj = null;
         let isSubmittingQuiz = false;
         let submittingModalGen = null;
@@ -349,6 +627,21 @@ ADMIN_HTML = """<!DOCTYPE html>
         let candidateQuestionsList = [];
         let quizModalSubject = 'physics';
         let quizModalGrade = '10';
+
+        let examModalObj = null;
+        let examModalOpenGen = 0;
+        let examModalActiveGen = 0;
+        let examModalActiveId = null;
+        let examModalClosingGen = 0;
+        let currentExamSaveId = 0;
+        let activeExamSaveOwner = null;
+        let selectedExamQuestionIds = new Set();
+        let candidateExamQuestionsList = [];
+        let examCandidateLoadSeq = 0;
+        let isCandidateExamLoading = false;
+        let isSubmittingExam = false;
+        let examModalSubject = 'physics';
+        let examModalGrade = '10';
         let candidateLoadSeq = 0;
         let isCandidateLoading = false;
         let quizModalOpenGen = 0;
@@ -413,6 +706,23 @@ ADMIN_HTML = """<!DOCTYPE html>
 
         document.addEventListener('DOMContentLoaded', () => {
             loginModalObj = new bootstrap.Modal(document.getElementById('loginModal'));
+            let qmEditEl = document.getElementById('questionEditModal');
+            if (qmEditEl && qmEditEl.addEventListener && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                questionEditModalObj = new bootstrap.Modal(qmEditEl);
+                qmEditEl.addEventListener('hide.bs.modal', function() {
+                    questionModalClosingGen = questionModalActiveGen;
+                    questionModalActiveGen = 0;
+                    questionModalActiveQid = null;
+                });
+                qmEditEl.addEventListener('hidden.bs.modal', function() {
+                    if (questionModalClosingGen && questionModalClosingGen === questionModalOpenGen) {
+                        questionModalActiveGen = 0;
+                        questionModalActiveQid = null;
+                    }
+                    questionModalClosingGen = 0;
+                });
+            }
+
             let qmEl = document.getElementById('quizModal');
             if (qmEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
                 quizModalObj = new bootstrap.Modal(qmEl);
@@ -425,6 +735,23 @@ ADMIN_HTML = """<!DOCTYPE html>
                         handleModalDismiss(modalClosingGen);
                     }
                     modalClosingGen = 0;
+                });
+            }
+
+            let emEl = document.getElementById('examModal');
+            if (emEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                examModalObj = new bootstrap.Modal(emEl);
+                emEl.addEventListener('hide.bs.modal', () => {
+                    examModalClosingGen = examModalActiveGen;
+                    examModalActiveGen = 0;
+                    examModalActiveId = null;
+                });
+                emEl.addEventListener('hidden.bs.modal', () => {
+                    if (examModalClosingGen && examModalClosingGen === examModalOpenGen) {
+                        examModalActiveGen = 0;
+                        examModalActiveId = null;
+                    }
+                    examModalClosingGen = 0;
                 });
             }
             if (token) {
@@ -562,6 +889,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             if (name === 'dashboard') loadStats();
             if (name === 'questions') loadQuestions();
             if (name === 'quizzes') loadQuizzes();
+            if (name === 'exams') loadExams();
         }
 
         async function loadStats() {
@@ -683,6 +1011,12 @@ ADMIN_HTML = """<!DOCTYPE html>
 
             // Render preview results safely
             lastPreviewData = data;
+            if (lastPreviewData && !lastPreviewData.operationKeys) {
+                lastPreviewData.operationKeys = {
+                    draft: 'imp_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9),
+                    publish: 'imp_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9)
+                };
+            }
             if (resDiv) resDiv.style.display = 'block';
 
             let summaryEl = document.getElementById('import-summary');
@@ -779,13 +1113,19 @@ ADMIN_HTML = """<!DOCTYPE html>
             if (fileInput) fileInput.disabled = true;
 
             try {
+                const opKey = (lastPreviewData && lastPreviewData.operationKeys) ?
+                    (publish ? lastPreviewData.operationKeys.publish : lastPreviewData.operationKeys.draft) :
+                    ('imp_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9));
+
                 let res = await fetch('/admin/import/confirm', {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + token,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Idempotency-Key': opKey
                     },
                     body: JSON.stringify({
+                        importKey: opKey,
                         validRows: rowsToConfirm,
                         publish: publish
                     })
@@ -908,13 +1248,24 @@ ADMIN_HTML = """<!DOCTYPE html>
                     <small class="text-muted ms-2">Mã: <code>${escapeHtml(q.code)}</code> (v${q.version})</small>
                 `;
 
+                let actionGroup = document.createElement('div');
+                actionGroup.className = 'd-flex align-items-center gap-2';
+
+                let btnEdit = document.createElement('button');
+                btnEdit.className = 'btn btn-sm btn-outline-primary';
+                btnEdit.textContent = '✏️ Sửa';
+                btnEdit.addEventListener('click', () => openQuestionEditModal(q));
+
                 let btnToggle = document.createElement('button');
                 btnToggle.className = `btn btn-sm ${isPub ? 'btn-outline-warning' : 'btn-outline-success'}`;
                 btnToggle.textContent = isPub ? 'Ẩn bản nháp' : '🚀 Xuất bản';
                 btnToggle.addEventListener('click', () => togglePublish(q.id, !isPub));
 
+                actionGroup.appendChild(btnEdit);
+                actionGroup.appendChild(btnToggle);
+
                 headerRow.appendChild(badgeGroup);
-                headerRow.appendChild(btnToggle);
+                headerRow.appendChild(actionGroup);
 
                 let promptEl = document.createElement('h6');
                 promptEl.className = 'fw-bold mb-2';
@@ -943,6 +1294,276 @@ ADMIN_HTML = """<!DOCTYPE html>
                 card.appendChild(previewBox);
                 container.appendChild(card);
             });
+        }
+
+        function isQuestionModalSessionActive(session) {
+            return (
+                session &&
+                questionModalActiveGen !== 0 &&
+                session.gen === questionModalActiveGen &&
+                session.qid === questionModalActiveQid
+            );
+        }
+
+        function openQuestionEditModal(q) {
+            if (!q) return;
+            questionModalOpenGen++;
+            const currentGen = questionModalOpenGen;
+            questionModalActiveGen = currentGen;
+            questionModalActiveQid = q.id || '';
+            questionModalClosingGen = 0;
+
+            // Clear any active save ownership so new modal is immediately unlocked
+            activeQuestionSaveOwner = null;
+            let btnSave = document.getElementById('btn-save-question');
+            if (btnSave) {
+                btnSave.disabled = false;
+                btnSave.textContent = '💾 Lưu thay đổi';
+            }
+
+            let errDiv = document.getElementById('question-edit-modal-error');
+            if (errDiv) {
+                errDiv.style.display = 'none';
+                errDiv.textContent = '';
+            }
+
+            document.getElementById('q-edit-id').value = q.id || '';
+            document.getElementById('q-edit-version').value = q.version != null ? q.version : 1;
+            document.getElementById('q-edit-status').value = q.status || 'DRAFT';
+            document.getElementById('q-edit-code').value = q.code || '';
+            document.getElementById('q-edit-subject').value = q.subjectId || 'physics';
+            document.getElementById('q-edit-grade').value = String(q.grade || 10);
+            document.getElementById('q-edit-chapter').value = q.chapter || '';
+            document.getElementById('q-edit-topic').value = q.topic || '';
+            document.getElementById('q-edit-textbook').value = q.textbook || '';
+            document.getElementById('q-edit-prompt').value = q.prompt || '';
+            document.getElementById('q-edit-opt-a').value = q.optionA || '';
+            document.getElementById('q-edit-opt-b').value = q.optionB || '';
+            document.getElementById('q-edit-opt-c').value = q.optionC || '';
+            document.getElementById('q-edit-opt-d').value = q.optionD || '';
+            document.getElementById('q-edit-correct').value = (q.correctOption || 'A').toUpperCase();
+            document.getElementById('q-edit-difficulty').value = q.difficulty || 'MEDIUM';
+            document.getElementById('q-edit-points').value = q.points != null ? q.points : 10;
+            document.getElementById('q-edit-explanation').value = q.explanation || '';
+            document.getElementById('q-edit-source').value = q.source || '';
+            document.getElementById('q-edit-author').value = q.author || '';
+            document.getElementById('q-edit-license').value = q.license || '';
+
+            let modalTitle = document.getElementById('question-edit-modal-title');
+            if (modalTitle) {
+                modalTitle.textContent = `✏️ Chỉnh sửa câu hỏi [${q.code || q.id}] (v${q.version != null ? q.version : 1})`;
+            }
+
+            if (questionEditModalObj) {
+                questionEditModalObj.show();
+            } else {
+                let el = document.getElementById('questionEditModal');
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    questionEditModalObj = new bootstrap.Modal(el);
+                    questionEditModalObj.show();
+                } else if (el) {
+                    el.style.display = 'block';
+                    el.classList.add('show');
+                }
+            }
+        }
+
+        function closeQuestionEditModal() {
+            questionModalActiveGen = 0;
+            questionModalActiveQid = null;
+            if (questionEditModalObj) {
+                questionEditModalObj.hide();
+            } else {
+                let el = document.getElementById('questionEditModal');
+                if (el) {
+                    el.style.display = 'none';
+                    el.classList.remove('show');
+                }
+            }
+        }
+
+        async function saveQuestionEdit() {
+            if (questionModalActiveGen === 0 || !questionModalActiveQid) return;
+            const sessionGen = questionModalActiveGen;
+            const sessionQid = document.getElementById('q-edit-id').value;
+            if (sessionQid !== questionModalActiveQid) return;
+
+            // Anti-double-click guard for active modal session
+            if (activeQuestionSaveOwner && activeQuestionSaveOwner.gen === sessionGen) {
+                return;
+            }
+
+            let errDiv = document.getElementById('question-edit-modal-error');
+            if (errDiv) {
+                errDiv.style.display = 'none';
+                errDiv.textContent = '';
+            }
+
+            let expectedVer = parseInt(document.getElementById('q-edit-version').value, 10);
+            let code = document.getElementById('q-edit-code').value.trim();
+            let prompt = document.getElementById('q-edit-prompt').value.trim();
+            let optA = document.getElementById('q-edit-opt-a').value.trim();
+            let optB = document.getElementById('q-edit-opt-b').value.trim();
+            let optC = document.getElementById('q-edit-opt-c').value.trim();
+            let optD = document.getElementById('q-edit-opt-d').value.trim();
+            let correct = document.getElementById('q-edit-correct').value.trim().toUpperCase();
+            let points = parseInt(document.getElementById('q-edit-points').value, 10);
+
+            if (!prompt) {
+                if (errDiv) { errDiv.textContent = 'Nội dung câu hỏi không được để trống.'; errDiv.style.display = 'block'; }
+                return;
+            }
+            if (!optA || !optB || !optC || !optD) {
+                if (errDiv) { errDiv.textContent = 'Đủ 4 phương án A, B, C, D không được để trống.'; errDiv.style.display = 'block'; }
+                return;
+            }
+            if (!['A', 'B', 'C', 'D'].includes(correct)) {
+                if (errDiv) { errDiv.textContent = 'Phương án đúng phải là một trong 4 ký tự: A, B, C hoặc D.'; errDiv.style.display = 'block'; }
+                return;
+            }
+
+            let payload = {
+                id: sessionQid,
+                expectedVersion: isNaN(expectedVer) ? null : expectedVer,
+                code: code,
+                subjectId: document.getElementById('q-edit-subject').value,
+                grade: parseInt(document.getElementById('q-edit-grade').value, 10),
+                chapter: document.getElementById('q-edit-chapter').value.trim(),
+                topic: document.getElementById('q-edit-topic').value.trim(),
+                textbook: document.getElementById('q-edit-textbook').value.trim(),
+                prompt: prompt,
+                optionA: optA,
+                optionB: optB,
+                optionC: optC,
+                optionD: optD,
+                correctOption: correct,
+                explanation: document.getElementById('q-edit-explanation').value.trim(),
+                difficulty: document.getElementById('q-edit-difficulty').value,
+                points: isNaN(points) ? 10 : points,
+                source: document.getElementById('q-edit-source').value.trim(),
+                author: document.getElementById('q-edit-author').value.trim(),
+                license: document.getElementById('q-edit-license').value.trim(),
+                status: document.getElementById('q-edit-status').value
+            };
+
+            currentQuestionSaveId++;
+            const thisSaveId = currentQuestionSaveId;
+            const saveSession = {
+                saveId: thisSaveId,
+                gen: sessionGen,
+                qid: sessionQid,
+                expectedVer: isNaN(expectedVer) ? null : expectedVer
+            };
+            activeQuestionSaveOwner = saveSession;
+
+            let btnSave = document.getElementById('btn-save-question');
+            if (btnSave) {
+                btnSave.disabled = true;
+                btnSave.textContent = '⏳ Đang lưu...';
+            }
+
+            try {
+                let res;
+                try {
+                    res = await fetch('/admin/questions', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                            'Content-Type': 'application/json',
+                            'If-Match': saveSession.expectedVer != null ? `"${saveSession.expectedVer}"` : ''
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                } catch (netErr) {
+                    if (!isQuestionModalSessionActive(saveSession)) return;
+                    if (errDiv) {
+                        errDiv.textContent = 'Lỗi kết nối mạng: Không thể lưu câu hỏi. Hãy thử lại.';
+                        errDiv.style.display = 'block';
+                    }
+                    return;
+                }
+
+                // Guard after fetch
+                if (!isQuestionModalSessionActive(saveSession)) return;
+
+                if (res.status === 401) {
+                    handleLogout();
+                    alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                    return;
+                }
+
+                if (res.status === 403) {
+                    if (errDiv) {
+                        errDiv.textContent = 'Tài khoản không có quyền chỉnh sửa câu hỏi (HTTP 403).';
+                        errDiv.style.display = 'block';
+                    }
+                    return;
+                }
+
+                if (!res.ok) {
+                    let errMsg;
+                    try {
+                        errMsg = await parseApiErrorMessage(res, 'Lỗi lưu câu hỏi');
+                    } catch(e) {
+                        errMsg = 'Lỗi lưu câu hỏi (HTTP ' + res.status + ')';
+                    }
+
+                    // Guard after parseApiErrorMessage
+                    if (!isQuestionModalSessionActive(saveSession)) return;
+
+                    if (errDiv) {
+                        errDiv.textContent = errMsg;
+                        errDiv.style.display = 'block';
+                    }
+                    return;
+                }
+
+                let updatedQ;
+                try {
+                    updatedQ = await res.json();
+                } catch (jsonErr) {
+                    // Guard after json parse failure
+                    if (!isQuestionModalSessionActive(saveSession)) return;
+                    if (errDiv) {
+                        errDiv.textContent = 'Máy chủ trả dữ liệu JSON không hợp lệ. Vui lòng kiểm tra lại danh sách câu hỏi.';
+                        errDiv.style.display = 'block';
+                    }
+                    return;
+                }
+
+                // Guard after json parse
+                if (!isQuestionModalSessionActive(saveSession)) return;
+
+                // Strict contract validation
+                if (!updatedQ || typeof updatedQ !== 'object' || updatedQ.id !== sessionQid || updatedQ.version == null || typeof updatedQ.version !== 'number') {
+                    if (errDiv) {
+                        errDiv.textContent = 'Phản hồi từ máy chủ không khớp định danh câu hỏi hoặc cấu trúc không hợp lệ.';
+                        errDiv.style.display = 'block';
+                    }
+                    return;
+                }
+
+                closeQuestionEditModal();
+                alert(`Đã lưu thành công câu hỏi [${updatedQ.code || sessionQid}] (phiên bản v${updatedQ.version})!`);
+                await loadQuestions();
+
+            } catch (err) {
+                if (!isQuestionModalSessionActive(saveSession)) return;
+                if (errDiv) {
+                    errDiv.textContent = 'Lỗi không xác định: ' + (err.message || 'Lỗi thao tác');
+                    errDiv.style.display = 'block';
+                }
+            } finally {
+                // Only unlock button if this save operation is still the active owner
+                if (activeQuestionSaveOwner && activeQuestionSaveOwner.saveId === thisSaveId) {
+                    activeQuestionSaveOwner = null;
+                    let currentBtn = document.getElementById('btn-save-question');
+                    if (currentBtn) {
+                        currentBtn.disabled = false;
+                        currentBtn.textContent = '💾 Lưu thay đổi';
+                    }
+                }
+            }
         }
 
         async function togglePublish(qid, publish) {
@@ -1644,6 +2265,495 @@ ADMIN_HTML = """<!DOCTYPE html>
                 alert('Lỗi kết nối khi cập nhật trạng thái bộ đề: ' + (err.message || 'Lỗi mạng'));
             } finally {
                 isPublishingQuiz = false;
+            }
+        }
+
+        // =========================================================================
+        // EXAM MANAGEMENT JAVASCRIPT LOGIC
+        // =========================================================================
+
+        function isExamModalSessionActive(session) {
+            if (!session) return false;
+            return (
+                session.gen === examModalOpenGen &&
+                session.gen === examModalActiveGen
+            );
+        }
+
+        async function loadExams() {
+            if (!token) return;
+            let subj = document.getElementById('filter-exam-subject') ? document.getElementById('filter-exam-subject').value : '';
+            let gr = document.getElementById('filter-exam-grade') ? document.getElementById('filter-exam-grade').value : '';
+            let et = document.getElementById('filter-exam-type') ? document.getElementById('filter-exam-type').value : '';
+            let sem = document.getElementById('filter-exam-semester') ? document.getElementById('filter-exam-semester').value : '';
+            let st = document.getElementById('filter-exam-status') ? document.getElementById('filter-exam-status').value : '';
+
+            let url = '/admin/exams?';
+            if (subj) url += 'subject_id=' + encodeURIComponent(subj) + '&';
+            if (gr) url += 'grade=' + encodeURIComponent(gr) + '&';
+            if (et) url += 'exam_type=' + encodeURIComponent(et) + '&';
+            if (sem) url += 'semester=' + encodeURIComponent(sem) + '&';
+            if (st) url += 'status=' + encodeURIComponent(st) + '&';
+
+            let container = document.getElementById('exams-list');
+            if (!container) return;
+            container.innerHTML = '<div class="text-center py-3 text-muted">Đang tải danh sách đề thi...</div>';
+
+            try {
+                let res = await fetch(url, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                if (res.status === 401) {
+                    handleLogout();
+                    showAuthAlert('Phiên làm việc hết hạn. Vui lòng đăng nhập lại.');
+                    return;
+                }
+
+                if (!res.ok) {
+                    container.innerHTML = '<div class="alert alert-warning text-center">Không thể tải danh sách đề thi (HTTP ' + res.status + ').</div>';
+                    return;
+                }
+
+                let exams = await res.json();
+                container.innerHTML = '';
+
+                if (!Array.isArray(exams) || exams.length === 0) {
+                    container.innerHTML = '<div class="alert alert-secondary text-center">Chưa có đề thi nào phù hợp bộ lọc.</div>';
+                    return;
+                }
+
+                exams.forEach(ex => {
+                    let card = document.createElement('div');
+                    card.className = 'card p-3 mb-3';
+                    let isPub = ex.status === 'PUBLISHED';
+                    let examTypeLabel = ex.examType === 'MIDTERM' ? 'Giữa kỳ' : 'Cuối kỳ';
+                    let semesterLabel = ex.semester === 1 ? 'HK1' : 'HK2';
+
+                    let headerRow = document.createElement('div');
+                    headerRow.className = 'd-flex justify-content-between align-items-center mb-2';
+
+                    let badgeGroup = document.createElement('div');
+                    badgeGroup.innerHTML = `
+                        <span class="badge bg-secondary">${escapeHtml(ex.subjectId).toUpperCase()}</span>
+                        <span class="badge bg-dark">Lớp ${ex.grade}</span>
+                        <span class="badge bg-info text-dark">${examTypeLabel} (${semesterLabel})</span>
+                        <span class="badge ${isPub ? 'badge-published' : 'badge-draft'}">${escapeHtml(ex.status)}</span>
+                        <span class="badge bg-light text-dark border">⏱️ ${ex.durationMinutes} phút</span>
+                        <span class="badge bg-primary">📝 ${ex.questionCount} câu (${ex.totalPoints} đ)</span>
+                        <small class="text-muted ms-2">v${ex.version || 1}</small>
+                    `;
+
+                    let actionGroup = document.createElement('div');
+                    actionGroup.className = 'd-flex align-items-center gap-2';
+
+                    let btnEdit = document.createElement('button');
+                    btnEdit.className = 'btn btn-sm btn-outline-primary';
+                    btnEdit.textContent = '✏️ Sửa';
+                    btnEdit.addEventListener('click', () => openExamModal(ex));
+
+                    let btnToggle = document.createElement('button');
+                    btnToggle.className = `btn btn-sm ${isPub ? 'btn-outline-warning' : 'btn-outline-success'}`;
+                    btnToggle.textContent = isPub ? 'Ẩn bản nháp' : '🚀 Xuất bản';
+                    btnToggle.addEventListener('click', () => toggleExamPublish(ex.id, !isPub));
+
+                    actionGroup.appendChild(btnEdit);
+                    actionGroup.appendChild(btnToggle);
+
+                    headerRow.appendChild(badgeGroup);
+                    headerRow.appendChild(actionGroup);
+
+                    let titleEl = document.createElement('h5');
+                    titleEl.className = 'fw-bold mb-1';
+                    titleEl.textContent = ex.title;
+
+                    card.appendChild(headerRow);
+                    card.appendChild(titleEl);
+                    container.appendChild(card);
+                });
+            } catch(e) {
+                container.innerHTML = '<div class="alert alert-danger text-center">Lỗi kết nối khi tải danh sách đề thi.</div>';
+            }
+        }
+
+        async function openExamModal(examData) {
+            examModalOpenGen++;
+            examModalActiveGen = examModalOpenGen;
+            examModalClosingGen = 0;
+            examCandidateLoadSeq++;
+            isSubmittingExam = false;
+            activeExamSaveOwner = null;
+
+            let btnDraft = document.getElementById('btn-exam-save-draft');
+            let btnPub = document.getElementById('btn-exam-save-publish');
+            if (btnDraft) { btnDraft.disabled = false; btnDraft.textContent = '💾 Lưu bản nháp (Draft)'; }
+            if (btnPub) { btnPub.disabled = false; btnPub.textContent = '🚀 Xuất bản ngay (Publish)'; }
+
+            let errBox = document.getElementById('exam-modal-error');
+            if (errBox) errBox.style.display = 'none';
+
+            let titleEl = document.getElementById('exam-modal-title');
+            let idEl = document.getElementById('exam-id');
+            let verEl = document.getElementById('exam-version');
+            let nameEl = document.getElementById('exam-title');
+            let subjEl = document.getElementById('exam-subject');
+            let grEl = document.getElementById('exam-grade');
+            let typeEl = document.getElementById('exam-type');
+            let semEl = document.getElementById('exam-semester');
+            let durEl = document.getElementById('exam-duration');
+
+            if (examData) {
+                if (titleEl) titleEl.textContent = `Chỉnh sửa Đề thi [v${examData.version || 1}]`;
+                if (idEl) idEl.value = examData.id || '';
+                if (verEl) verEl.value = examData.version != null ? examData.version : 1;
+                if (nameEl) nameEl.value = examData.title || '';
+                examModalSubject = examData.subjectId || 'physics';
+                examModalGrade = String(examData.grade || 10);
+                if (typeEl) typeEl.value = examData.examType || 'MIDTERM';
+                if (semEl) semEl.value = String(examData.semester || 1);
+                if (durEl) durEl.value = examData.durationMinutes || 45;
+                selectedExamQuestionIds = new Set(examData.questionIds || []);
+                examModalActiveId = examData.id || '';
+            } else {
+                if (titleEl) titleEl.textContent = 'Tạo Đề thi mới';
+                if (idEl) idEl.value = '';
+                if (verEl) verEl.value = '1';
+                if (nameEl) nameEl.value = '';
+                examModalSubject = 'physics';
+                examModalGrade = '10';
+                if (typeEl) typeEl.value = 'MIDTERM';
+                if (semEl) semEl.value = '1';
+                if (durEl) durEl.value = 45;
+                selectedExamQuestionIds = new Set();
+                examModalActiveId = '';
+            }
+
+            if (subjEl) subjEl.value = examModalSubject;
+            if (grEl) grEl.value = examModalGrade;
+
+            candidateExamQuestionsList = [];
+            updateSelectedExamCount();
+
+            if (examModalObj) {
+                examModalObj.show();
+            } else {
+                let modalEl = document.getElementById('examModal');
+                if (modalEl) modalEl.style.display = 'block';
+            }
+
+            await loadExamCandidateQuestions(examModalSubject, examModalGrade, selectedExamQuestionIds);
+        }
+
+        function closeExamModal() {
+            examModalActiveGen = 0;
+            examModalActiveId = null;
+            if (examModalObj) {
+                examModalObj.hide();
+            } else {
+                let modalEl = document.getElementById('examModal');
+                if (modalEl) modalEl.style.display = 'none';
+            }
+        }
+
+        async function handleExamSubjectGradeChange() {
+            let subjEl = document.getElementById('exam-subject');
+            let grEl = document.getElementById('exam-grade');
+            let newSubj = subjEl ? subjEl.value : 'physics';
+            let newGr = grEl ? grEl.value : '10';
+
+            if (newSubj === examModalSubject && newGr === examModalGrade) return;
+
+            if (selectedExamQuestionIds.size > 0) {
+                if (!confirm('Thay đổi Môn hoặc Khối lớp sẽ bỏ chọn các câu hỏi hiện tại. Bạn có chắc chắn muốn đổi không?')) {
+                    if (subjEl) subjEl.value = examModalSubject;
+                    if (grEl) grEl.value = examModalGrade;
+                    return;
+                }
+                selectedExamQuestionIds.clear();
+            }
+
+            examModalSubject = newSubj;
+            examModalGrade = newGr;
+            updateSelectedExamCount();
+            await loadExamCandidateQuestions(examModalSubject, examModalGrade, selectedExamQuestionIds);
+        }
+
+        async function loadExamCandidateQuestions(subj, gr, preselectedIds) {
+            let container = document.getElementById('exam-candidate-questions');
+            if (!container) return;
+
+            examCandidateLoadSeq++;
+            const thisSeq = examCandidateLoadSeq;
+            isCandidateExamLoading = true;
+            container.innerHTML = '<div class="text-center py-2 text-muted">Đang tải câu hỏi trong kho...</div>';
+
+            try {
+                let res = await fetch(`/admin/questions?subject_id=${encodeURIComponent(subj)}&grade=${encodeURIComponent(gr)}&status=PUBLISHED`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                if (thisSeq !== examCandidateLoadSeq || examModalActiveGen === 0) return;
+
+                if (!res.ok) {
+                    container.innerHTML = '<div class="text-danger text-center py-2">Không thể tải danh sách câu hỏi ứng viên (HTTP ' + res.status + ').</div>';
+                    return;
+                }
+
+                let questions = await res.json();
+                if (thisSeq !== examCandidateLoadSeq || examModalActiveGen === 0) return;
+
+                candidateExamQuestionsList = Array.isArray(questions) ? questions : [];
+                container.innerHTML = '';
+
+                if (candidateExamQuestionsList.length === 0) {
+                    container.innerHTML = '<div class="text-muted text-center py-2">Chưa có câu hỏi ĐÃ XUẤT BẢN nào cho môn và lớp này. Vui lòng xuất bản câu hỏi trước khi tạo đề.</div>';
+                    updateSelectedExamCount();
+                    return;
+                }
+
+                candidateExamQuestionsList.forEach(q => {
+                    let div = document.createElement('div');
+                    div.className = 'form-check border-bottom py-2';
+
+                    let chk = document.createElement('input');
+                    chk.type = 'checkbox';
+                    chk.className = 'form-check-input';
+                    chk.id = 'chk-exam-q-' + q.id;
+                    chk.value = q.id;
+                    chk.checked = preselectedIds.has(q.id);
+
+                    chk.addEventListener('change', () => {
+                        if (chk.checked) selectedExamQuestionIds.add(q.id);
+                        else selectedExamQuestionIds.delete(q.id);
+                        updateSelectedExamCount();
+                    });
+
+                    let label = document.createElement('label');
+                    label.className = 'form-check-label d-block';
+                    label.htmlFor = chk.id;
+                    label.innerHTML = `
+                        <div class="d-flex justify-content-between">
+                            <strong>${escapeHtml(q.code || q.id)}</strong>
+                            <span class="badge bg-light text-dark border">${q.points || 10} điểm</span>
+                        </div>
+                        <div class="text-muted small text-truncate">${escapeHtml(q.prompt)}</div>
+                    `;
+
+                    div.appendChild(chk);
+                    div.appendChild(label);
+                    container.appendChild(div);
+                });
+
+                updateSelectedExamCount();
+            } catch(e) {
+                if (thisSeq === examCandidateLoadSeq && examModalActiveGen !== 0) {
+                    container.innerHTML = '<div class="text-danger text-center py-2">Lỗi kết nối khi tải danh sách câu hỏi.</div>';
+                }
+            } finally {
+                if (thisSeq === examCandidateLoadSeq) {
+                    isCandidateExamLoading = false;
+                }
+            }
+        }
+
+        function updateSelectedExamCount() {
+            let countEl = document.getElementById('exam-selected-count');
+            let pointsEl = document.getElementById('exam-selected-points');
+            if (countEl) countEl.textContent = selectedExamQuestionIds.size;
+
+            if (pointsEl) {
+                let totalPts = 0;
+                candidateExamQuestionsList.forEach(q => {
+                    if (selectedExamQuestionIds.has(q.id)) {
+                        totalPts += (q.points || 10);
+                    }
+                });
+                pointsEl.textContent = totalPts;
+            }
+        }
+
+        async function saveExam(targetStatus) {
+            currentExamSaveId++;
+            const thisSaveId = currentExamSaveId;
+            const currentGen = examModalOpenGen;
+
+            if (activeExamSaveOwner !== null) return;
+            if (examModalActiveGen === 0 || currentGen !== examModalActiveGen) return;
+
+            let errBox = document.getElementById('exam-modal-error');
+            if (errBox) errBox.style.display = 'none';
+
+            let titleEl = document.getElementById('exam-title');
+            let title = titleEl ? titleEl.value.trim() : '';
+            if (!title) {
+                let msg = 'Vui lòng nhập tiêu đề đề thi!';
+                if (errBox) { errBox.textContent = msg; errBox.style.display = 'block'; }
+                else { alert(msg); }
+                return;
+            }
+
+            if (selectedExamQuestionIds.size === 0) {
+                let msg = 'Vui lòng chọn ít nhất 1 câu hỏi cho đề thi!';
+                if (errBox) { errBox.textContent = msg; errBox.style.display = 'block'; }
+                else { alert(msg); }
+                return;
+            }
+
+            let durEl = document.getElementById('exam-duration');
+            let duration = durEl ? parseInt(durEl.value, 10) : 45;
+            if (isNaN(duration) || duration < 5 || duration > 300) {
+                let msg = 'Thời lượng làm bài phải từ 5 đến 300 phút!';
+                if (errBox) { errBox.textContent = msg; errBox.style.display = 'block'; }
+                else { alert(msg); }
+                return;
+            }
+
+            let idEl = document.getElementById('exam-id');
+            let verEl = document.getElementById('exam-version');
+            let subjEl = document.getElementById('exam-subject');
+            let grEl = document.getElementById('exam-grade');
+            let typeEl = document.getElementById('exam-type');
+            let semEl = document.getElementById('exam-semester');
+
+            let examId = idEl ? idEl.value : '';
+            let expectedVer = (verEl && verEl.value) ? parseInt(verEl.value, 10) : null;
+
+            let payload = {
+                id: examId || null,
+                title: title,
+                subjectId: subjEl ? subjEl.value : 'physics',
+                grade: grEl ? parseInt(grEl.value, 10) : 10,
+                examType: typeEl ? typeEl.value : 'MIDTERM',
+                semester: semEl ? parseInt(semEl.value, 10) : 1,
+                durationMinutes: duration,
+                questionIds: Array.from(selectedExamQuestionIds),
+                status: targetStatus,
+                expectedVersion: expectedVer
+            };
+
+            const saveSession = {
+                saveId: thisSaveId,
+                gen: currentGen,
+                examId: examId,
+                expectedVer: expectedVer
+            };
+
+            activeExamSaveOwner = saveSession;
+            let btnDraft = document.getElementById('btn-exam-save-draft');
+            let btnPub = document.getElementById('btn-exam-save-publish');
+            if (btnDraft) { btnDraft.disabled = true; btnDraft.textContent = '⏳ Đang lưu...'; }
+            if (btnPub) { btnPub.disabled = true; btnPub.textContent = '⏳ Đang lưu...'; }
+
+            try {
+                let res;
+                try {
+                    res = await fetch('/admin/exams', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                            'Content-Type': 'application/json',
+                            'If-Match': expectedVer != null ? `"${expectedVer}"` : ''
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                } catch(netErr) {
+                    if (!isExamModalSessionActive(saveSession)) return;
+                    if (errBox) {
+                        errBox.textContent = 'Lỗi kết nối mạng: Không thể lưu đề thi. Hãy thử lại.';
+                        errBox.style.display = 'block';
+                    }
+                    return;
+                }
+
+                if (!isExamModalSessionActive(saveSession)) return;
+
+                if (res.status === 401) {
+                    handleLogout();
+                    alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                    return;
+                }
+
+                if (res.status === 403) {
+                    if (errBox) {
+                        errBox.textContent = 'Tài khoản không có quyền tạo/chỉnh sửa đề thi (HTTP 403).';
+                        errBox.style.display = 'block';
+                    }
+                    return;
+                }
+
+                if (!res.ok) {
+                    let errMsg;
+                    try {
+                        errMsg = await parseApiErrorMessage(res, 'Lỗi lưu đề thi');
+                    } catch(e) {
+                        errMsg = 'Lỗi lưu đề thi (HTTP ' + res.status + ')';
+                    }
+
+                    if (!isExamModalSessionActive(saveSession)) return;
+                    if (errBox) {
+                        errBox.textContent = errMsg;
+                        errBox.style.display = 'block';
+                    }
+                    return;
+                }
+
+                let updatedExam;
+                try {
+                    updatedExam = await res.json();
+                } catch(jsonErr) {
+                    if (!isExamModalSessionActive(saveSession)) return;
+                    if (errBox) {
+                        errBox.textContent = 'Máy chủ trả dữ liệu JSON không hợp lệ.';
+                        errBox.style.display = 'block';
+                    }
+                    return;
+                }
+
+                if (!isExamModalSessionActive(saveSession)) return;
+
+                if (!updatedExam || typeof updatedExam !== 'object' || !updatedExam.id || updatedExam.version == null) {
+                    if (errBox) {
+                        errBox.textContent = 'Phản hồi từ máy chủ không hợp lệ.';
+                        errBox.style.display = 'block';
+                    }
+                    return;
+                }
+
+                closeExamModal();
+                alert(`Đã lưu thành công đề thi [${updatedExam.title}] (${updatedExam.status === 'PUBLISHED' ? 'Đã xuất bản' : 'Bản nháp'}, v${updatedExam.version})!`);
+                await loadExams();
+
+            } catch(err) {
+                if (!isExamModalSessionActive(saveSession)) return;
+                if (errBox) {
+                    errBox.textContent = 'Lỗi không xác định: ' + (err.message || 'Lỗi thao tác');
+                    errBox.style.display = 'block';
+                }
+            } finally {
+                if (activeExamSaveOwner && activeExamSaveOwner.saveId === thisSaveId) {
+                    activeExamSaveOwner = null;
+                    let curDraft = document.getElementById('btn-exam-save-draft');
+                    let curPub = document.getElementById('btn-exam-save-publish');
+                    if (curDraft) { curDraft.disabled = false; curDraft.textContent = '💾 Lưu bản nháp (Draft)'; }
+                    if (curPub) { curPub.disabled = false; curPub.textContent = '🚀 Xuất bản ngay (Publish)'; }
+                }
+            }
+        }
+
+        async function toggleExamPublish(examId, publish) {
+            try {
+                let res = await fetch(`/admin/exams/${examId}/publish?publish=${publish}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!res.ok) {
+                    let errMsg = await parseApiErrorMessage(res, 'Lỗi cập nhật trạng thái xuất bản đề thi');
+                    alert(errMsg);
+                    return;
+                }
+                loadExams();
+            } catch(e) {
+                alert('Lỗi kết nối khi cập nhật trạng thái xuất bản đề thi');
             }
         }
     </script>

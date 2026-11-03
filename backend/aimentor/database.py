@@ -73,7 +73,8 @@ class Database:
               unit_id TEXT NOT NULL, kind TEXT NOT NULL,
               curriculum_version TEXT NOT NULL, step INTEGER NOT NULL DEFAULT 0,
               answers TEXT NOT NULL DEFAULT '[]', state TEXT NOT NULL DEFAULT 'IN_PROGRESS',
-              revision INTEGER NOT NULL DEFAULT 1, updated_at REAL NOT NULL);
+              revision INTEGER NOT NULL DEFAULT 1, updated_at REAL NOT NULL,
+              unit_snapshot TEXT);
             CREATE TABLE IF NOT EXISTS completions(
               id TEXT PRIMARY KEY, attempt_id TEXT NOT NULL UNIQUE REFERENCES attempts(id),
               user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -170,7 +171,6 @@ class Database:
               new_role TEXT NOT NULL,
               source TEXT NOT NULL DEFAULT 'CLI_MANAGE_ROLES',
               changed_at REAL NOT NULL);
-
             CREATE TABLE IF NOT EXISTS exams(
               id TEXT PRIMARY KEY,
               title TEXT NOT NULL,
@@ -250,6 +250,9 @@ class Database:
               UNIQUE(user_id, operation, operation_key));
             """)
             # --- STEP 4 MIGRATIONS & INDEXES ---
+            attempt_cols = {col['name'] for col in db.execute('PRAGMA table_info(attempts)').fetchall()}
+            if 'unit_snapshot' not in attempt_cols:
+                db.execute('ALTER TABLE attempts ADD COLUMN unit_snapshot TEXT')
             cols = {col["name"] for col in db.execute("PRAGMA table_info(wrong_questions_notebook)").fetchall()}
             if "question_snapshot" not in cols:
                 db.execute("ALTER TABLE wrong_questions_notebook ADD COLUMN question_snapshot TEXT")
@@ -264,6 +267,9 @@ class Database:
             db.execute("CREATE INDEX IF NOT EXISTS idx_ai_practice_user_state ON ai_practice_sessions(user_id, state, created_at)")
             db.execute("CREATE INDEX IF NOT EXISTS idx_ai_reports_user ON ai_question_reports(user_id, created_at)")
             db.execute("CREATE INDEX IF NOT EXISTS idx_ai_provider_usage ON ai_provider_operations(user_id, operation, created_at)")
+            wq_cols = {col['name'] for col in db.execute('PRAGMA table_info(wrong_questions_notebook)').fetchall()}
+            if 'source' not in wq_cols:
+                db.execute("ALTER TABLE wrong_questions_notebook ADD COLUMN source TEXT NOT NULL DEFAULT 'LIBRARY'")
             db.commit()
 
     @staticmethod
