@@ -1,0 +1,1137 @@
+{
+  "subjectId": "economics_law",
+  "grade": 12,
+  "version": "intro-2026.1",
+  "title": "Giáo dục kinh tế và pháp luật 12: Hội nhập kinh tế, chính sách an sinh và pháp luật quốc tế",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_12",
+  "extendedReviews": false,
+  "sourceNote": "Tài liệu học tập lớp 12 do AI Mentor biên soạn theo yêu cầu cần đạt của Chương trình GDPT 2018 (định hướng bộ sách Kết nối tri thức với cuộc sống); đây là tuyển chọn chuyên đề nền tảng, không phải bản sao nguyên văn SGK và chưa bao phủ toàn bộ năm học. Bài đầu vào sử dụng 2 câu hỏi từ mỗi bài học để hỗ trợ chẩn đoán năng lực. Nội dung cần được giáo viên chuyên môn thẩm định trước khi áp dụng chính thức.",
+  "lessons": [
+    {
+      "id": "economics_law-12-economic-growth-development",
+      "title": "Tăng trưởng kinh tế và phát triển kinh tế bền vững",
+      "guidance": [
+        "Tăng trưởng kinh tế là sự gia tăng về quy mô sản lượng hàng hóa và dịch vụ của nền kinh tế trong một thời kì nhất định, đo bằng GDP (Tổng sản phẩm quốc nội), GNI (Tổng thu nhập quốc gia) hoặc GDP bình quân đầu người. Phát triển kinh tế là khái niệm rộng hơn: bao gồm tăng trưởng kinh tế đi đôi với hoàn thiện cơ cấu kinh tế tiến bộ, nâng cao chất lượng cuộc sống và bảo đảm công bằng xã hội (đo bằng chỉ số phát triển con người HDI). Phát triển bền vững đòi hỏi kết hợp hài hòa giữa tăng trưởng kinh tế, tiến bộ xã hội và bảo vệ môi trường sinh thái cho các thế hệ tương lai."
+      ],
+      "examples": [
+        "Một quốc gia có GDP tăng trưởng 8% mỗi năm nhưng môi trường bị hủy hoại nghiêm trọng và khoảng cách giàu nghèo đào sâu thì chưa đạt được sự phát triển bền vững."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-economic-growth-development-q1",
+          "prompt": "Chỉ tiêu kinh tế vĩ mô nào sau đây phản ánh tổng giá trị thị trường của toàn bộ hàng hóa và dịch vụ cuối cùng được sản xuất ra trên lãnh thổ một quốc gia trong năm?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tổng sản phẩm quốc nội (GDP)"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ số giá tiêu dùng (CPI)"
+            },
+            {
+              "id": "c",
+              "text": "Tỉ lệ lạm phát hàng tháng"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "GDP (Gross Domestic Product) đo lường toàn bộ giá trị gia tăng tạo ra bên trong biên giới địa lí của quốc gia."
+        },
+        {
+          "id": "economics_law-12-economic-growth-development-q2",
+          "prompt": "Điểm khác biệt căn bản giữa 'phát triển kinh tế' và 'tăng trưởng kinh tế' là gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phát triển kinh tế chỉ tính riêng số lượng máy móc sản xuất trong một ngày"
+            },
+            {
+              "id": "b",
+              "text": "Tăng trưởng kinh tế có phạm vi rộng lớn hơn phát triển kinh tế"
+            },
+            {
+              "id": "c",
+              "text": "Phát triển kinh tế bao hàm tăng trưởng kinh tế kết hợp với tiến bộ cơ cấu xã hội, cải thiện đời sống và bảo vệ môi trường"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tăng trưởng thuần túy về mặt số lượng (quy mô GDP), còn phát triển bao hàm cả sự biến đổi về chất lượng cuộc sống (giáo dục, y tế, bình đẳng xã hội)."
+        },
+        {
+          "id": "economics_law-12-economic-growth-development-q3",
+          "prompt": "Chỉ số phát triển con người (HDI) của một quốc gia được tính toán dựa trên tổng hợp ba tiêu chí cơ bản nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Quy mô lực lượng quân đội, số lượng vũ khí và ngân sách quốc phòng"
+            },
+            {
+              "id": "b",
+              "text": "Thu nhập bình quân đầu người, tuổi thọ kì vọng (sức khỏe) và trình độ học vấn (giáo dục)"
+            },
+            {
+              "id": "c",
+              "text": "Số lượng xe ô tô cá nhân, diện tích nhà ở và số lượng siêu thị"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "HDI do Liên hợp quốc phát triển kết hợp ba yếu tố: mức sống (GNI/người), sức khỏe (tuổi thọ sinh ra) và tri thức (số năm đi học kì vọng và trung bình)."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-international-economic-integration",
+      "title": "Hội nhập kinh tế quốc tế và các hiệp định thương mại tự do",
+      "guidance": [
+        "Hội nhập kinh tế quốc tế là quá trình một quốc gia chủ động gắn kết nền kinh tế của mình với nền kinh tế khu vực và thế giới thông qua các nỗ lực tự do hóa thương mại, đầu tư và tài chính. Các cấp độ hội nhập: song phương (BTA Việt - Mĩ), khu vực (Cộng đồng Kinh tế ASEAN - AEC), đa phương toàn cầu (WTO). Các hiệp định thương mại tự do thế hệ mới tiêu biểu: CPTPP, EVFTA, RCEP với cam kết cắt giảm gần như toàn bộ thuế quan, bảo hộ sở hữu trí tuệ, tiêu chuẩn lao động và môi trường. Cơ hội: mở rộng xuất khẩu, thu hút FDI; Thách thức: cạnh tranh khốc liệt và nguy cơ phụ thuộc chuỗi cung ứng."
+      ],
+      "examples": [
+        "Nhờ Hiệp định EVFTA, các mặt hàng nông sản xuất khẩu của Việt Nam như hạt điều, cà phê, thủy sản khi nhập khẩu vào Liên minh châu Âu (EU) được hưởng thuế suất ưu đãi 0%, tạo lợi thế cạnh tranh vượt trội."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-international-economic-integration-q1",
+          "prompt": "Tổ chức kinh tế đa phương toàn cầu lớn nhất mà Việt Nam gia nhập năm 2007 để hòa mạng sâu rộng vào thương mại quốc tế là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Quỹ Tiền tệ Quốc tế (IMF)"
+            },
+            {
+              "id": "b",
+              "text": "Tổ chức Các nước Xuất khẩu Dầu mỏ (OPEC)"
+            },
+            {
+              "id": "c",
+              "text": "Tổ chức Thương mại Thế giới (WTO)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Việt Nam trở thành thành viên thứ 150 của WTO vào ngày 11/1/2007 sau hơn 11 năm đàm phán."
+        },
+        {
+          "id": "economics_law-12-international-economic-integration-q2",
+          "prompt": "Đặc điểm nổi bật của các hiệp định thương mại tự do thế hệ mới (như CPTPP, EVFTA) so với các hiệp định truyền thống là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bắt buộc các nước tham gia phải sử dụng chung một loại tiền tệ duy nhất"
+            },
+            {
+              "id": "b",
+              "text": "Có phạm vi cam kết sâu rộng hơn, bao gồm cả các vấn đề phi thương mại như môi trường, quyền lao động và sở hữu trí tuệ"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ cam kết trao đổi hàng hóa nông sản thô mà không có dịch vụ"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "FTA thế hệ mới không chỉ xóa bỏ dòng thuế quan mà còn đặt ra các tiêu chuẩn minh bạch hóa, bảo vệ người lao động và phát triển xanh."
+        },
+        {
+          "id": "economics_law-12-international-economic-integration-q3",
+          "prompt": "Thách thức lớn nhất đối với các doanh nghiệp sản xuất trong nước khi Việt Nam mở cửa hội nhập kinh tế sâu rộng là gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phải cạnh tranh gay gắt với hàng hóa, dịch vụ ngoại nhập có chất lượng cao và giá thành cạnh tranh ngay tại thị trường nội địa"
+            },
+            {
+              "id": "b",
+              "text": "Không được phép xuất khẩu hàng hóa ra thị trường thế giới"
+            },
+            {
+              "id": "c",
+              "text": "Bị cấm hoàn toàn việc ứng dụng công nghệ nước ngoài vào sản xuất"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Hàng rào thuế quan hạ về 0% khiến hàng hóa ngoại nhập tràn vào, đòi hỏi doanh nghiệp trong nước phải nâng cao năng suất và chất lượng để tồn tại."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-insurance-welfare-system",
+      "title": "Bảo hiểm và hệ thống an sinh xã hội",
+      "guidance": [
+        "Bảo hiểm là phương thức phân tán rủi ro tài chính giữa những người cùng tham gia đóng góp vào quỹ bảo hiểm để bồi thường cho người gặp tổn thất. Các loại bảo hiểm: Bảo hiểm xã hội (BHXH bắt buộc và BHXH tự nguyện gồm các chế độ: ốm đau, thai sản, tai nạn lao động, hưu trí, tử tuất); Bảo hiểm y tế (BHYT hỗ trợ chi phí khám chữa bệnh); Bảo hiểm thất nghiệp (BHTN hỗ trợ khi mất việc làm); Bảo hiểm thương mại (nhân thọ, phi nhân thọ vì mục đích kinh doanh). Hệ thống an sinh xã hội là trụ cột bảo đảm quyền cơ bản của mọi công dân về thu nhập tối thiểu và trợ giúp xã hội khi gặp rủi ro."
+      ],
+      "examples": [
+        "Khi không may bị ốm đau phải nằm viện phẫu thuật tốn hàng chục triệu đồng, thẻ Bảo hiểm y tế (BHYT) đã chi trả tới 80% - 100% chi phí điều trị, giúp gia đình người bệnh vượt qua gánh nặng tài chính."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-insurance-welfare-system-q1",
+          "prompt": "Loại hình bảo hiểm phi lợi nhuận do Nhà nước tổ chức nhằm bảo đảm quyền lợi khám chữa bệnh cho người dân là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bảo hiểm cháy nổ nhà xưởng tư nhân"
+            },
+            {
+              "id": "b",
+              "text": "Bảo hiểm y tế (BHYT)"
+            },
+            {
+              "id": "c",
+              "text": "Bảo hiểm ô tô thương mại"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "BHYT là chính sách an sinh xã hội ưu việt của Đảng và Nhà nước nhằm chăm sóc sức khỏe cộng đồng, không vì mục đích kiếm lợi nhuận."
+        },
+        {
+          "id": "economics_law-12-insurance-welfare-system-q2",
+          "prompt": "Người lao động tham gia Bảo hiểm xã hội bắt buộc đủ điều kiện theo quy định được hưởng những chế độ cốt lõi nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ốm đau, thai sản, tai nạn lao động - bệnh nghề nghiệp, hưu trí và tử tuất"
+            },
+            {
+              "id": "b",
+              "text": "Chế độ thưởng du lịch châu Âu hàng năm"
+            },
+            {
+              "id": "c",
+              "text": "Được cấp miễn phí nhà ở cao cấp và xe hơi cá nhân"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Luật BHXH quy định rõ 5 chế độ của BHXH bắt buộc nhằm bảo đảm an sinh trọn đời cho người lao động từ khi đi làm đến lúc về già."
+        },
+        {
+          "id": "economics_law-12-insurance-welfare-system-q3",
+          "prompt": "Ý nghĩa xã hội to lớn nhất của chính sách Bảo hiểm thất nghiệp (BHTN) đối với người lao động là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khuyến khích người lao động nghỉ việc ở nhà không cần đi làm nữa"
+            },
+            {
+              "id": "b",
+              "text": "Bắt buộc người sử dụng lao động phải trả lương vĩnh viễn cho người đã nghỉ việc"
+            },
+            {
+              "id": "c",
+              "text": "Hỗ trợ một phần thu nhập, tư vấn học nghề và giới thiệu việc làm mới để người lao động sớm ổn định lại cuộc sống"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "BHTN là phao cứu sinh bù đắp tài chính tạm thời và hỗ trợ học nghề chuyển đổi việc làm khi người lao động không may bị mất việc."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-business-plan-startup",
+      "title": "Lập kế hoạch kinh doanh và khởi nghiệp sáng tạo",
+      "guidance": [
+        "Kế hoạch kinh doanh là văn bản phác thảo chi tiết mục tiêu, chiến lược và các bước triển khai ý tưởng kinh doanh trong một khoảng thời gian xác định. Các cấu phần chính: Ý tưởng kinh doanh và sự khác biệt; Phân tích thị trường và khách hàng mục tiêu; Kế hoạch sản phẩm/dịch vụ và vận hành; Kế hoạch marketing và bán hàng; Kế hoạch tài chính (vốn đầu tư ban đầu, dự toán doanh thu, chi phí cố định/biến đổi, điểm hòa vốn và dòng tiền). Khởi nghiệp đổi mới sáng tạo (Startup) dựa trên công nghệ mới hoặc mô hình kinh doanh đột phá, chấp nhận rủi ro để tăng trưởng nhanh."
+      ],
+      "examples": [
+        "Hai bạn trẻ sáng lập ứng dụng kết nối nông dân với các cửa hàng rau sạch đô thị đã lập kế hoạch kinh doanh tính toán hòa vốn sau 12 tháng với 500 khách hàng thường xuyên, gọi vốn thành công từ nhà đầu tư thiên thần."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-business-plan-startup-q1",
+          "prompt": "Bước đầu tiên và giữ vai trò định hướng trong quá trình xây dựng một bản kế hoạch kinh doanh là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Xác định ý tưởng kinh doanh và giá trị độc đáo mang lại cho khách hàng"
+            },
+            {
+              "id": "b",
+              "text": "Đi vay ngân hàng số tiền tối đa có thể"
+            },
+            {
+              "id": "c",
+              "text": "Thuê ngay mặt bằng đắt nhất ở trung tâm thành phố"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Ý tưởng kinh doanh xuất phát từ việc phát hiện nhu cầu chưa được đáp ứng tốt trên thị trường là nền tảng khởi đầu của kế hoạch."
+        },
+        {
+          "id": "economics_law-12-business-plan-startup-q2",
+          "prompt": "Điểm hòa vốn (Break-even point) trong kế hoạch tài chính của một cơ sở kinh doanh là thời điểm:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Lợi nhuận ròng đạt mức cao nhất trong toàn bộ chu kì"
+            },
+            {
+              "id": "b",
+              "text": "Doanh nghiệp bị phá sản và phải bán thanh lí tài sản"
+            },
+            {
+              "id": "c",
+              "text": "Tổng doanh thu thu về vừa đủ bù đắp toàn bộ tổng chi phí bỏ ra (lợi nhuận bằng 0)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tại điểm hòa vốn, doanh thu bằng chi phí (TR = TC); vượt qua điểm này doanh nghiệp bắt đầu có lãi ròng."
+        },
+        {
+          "id": "economics_law-12-business-plan-startup-q3",
+          "prompt": "Đặc trưng quan trọng nhất phân biệt 'khởi nghiệp đổi mới sáng tạo' (Startup) với việc mở một cửa hàng kinh doanh truyền thống là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hoàn toàn không cần nghiên cứu thị trường hay xây dựng sản phẩm"
+            },
+            {
+              "id": "b",
+              "text": "Tính đột phá về công nghệ hoặc mô hình kinh doanh mới, có tiềm năng tăng trưởng quy mô thần tốc nhưng đi kèm rủi ro cao"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ sử dụng tiền vốn do Nhà nước tài trợ 100% không hoàn lại"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Startup ứng dụng công nghệ hoặc giải pháp sáng tạo để giải quyết một bài toán thị trường lớn với khả năng nhân rộng quy mô nhanh chóng."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-corporate-social-responsibility",
+      "title": "Trách nhiệm xã hội của doanh nghiệp (CSR) và đạo đức kinh doanh",
+      "guidance": [
+        "Trách nhiệm xã hội của doanh nghiệp (CSR) là sự cam kết tự nguyện của doanh nghiệp đóng góp vào sự phát triển bền vững thông qua việc bảo đảm lợi ích của người lao động, khách hàng, cộng đồng và môi trường. Tháp trách nhiệm CSR gồm: Trách nhiệm kinh tế (tạo lợi nhuận lành mạnh), Trách nhiệm pháp lí (tuân thủ luật pháp), Trách nhiệm đạo đức (kinh doanh công bằng, trung thực), Trách nhiệm nhân văn/từ thiện (đóng góp cộng đồng). Đạo đức kinh doanh tạo dựng uy tín, niềm tin khách hàng và nâng cao năng lực cạnh tranh dài hạn."
+      ],
+      "examples": [
+        "Một doanh nghiệp may mặc lắp đặt hệ thống điện mặt trời mái nhà và xử lí 100% nước thải nhuộm đạt chuẩn sinh thái đã nhận được nhiều đơn hàng lớn từ các đối tác khó tính ở châu Âu."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-corporate-social-responsibility-q1",
+          "prompt": "Tầng nền tảng cơ bản đầu tiên trong tháp trách nhiệm xã hội của một doanh nghiệp là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Trách nhiệm tài trợ nghệ thuật quốc tế"
+            },
+            {
+              "id": "b",
+              "text": "Trách nhiệm tặng quà miễn phí cho tất cả mọi người"
+            },
+            {
+              "id": "c",
+              "text": "Trách nhiệm kinh tế (hoạt động kinh doanh có hiệu quả, tạo ra sản phẩm và việc làm)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Doanh nghiệp trước hết phải vận hành hiệu quả, tạo ra lợi nhuận và việc làm chính đáng thì mới có nguồn lực thực hiện các trách nhiệm cao hơn."
+        },
+        {
+          "id": "economics_law-12-corporate-social-responsibility-q2",
+          "prompt": "Hành vi nào sau đây biểu hiện sự vi phạm nghiêm trọng đạo đức kinh doanh và trách nhiệm xã hội?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cung cấp thông tin trung thực về hạn sử dụng và thành phần sản phẩm"
+            },
+            {
+              "id": "b",
+              "text": "Xả chất thải độc hại chưa qua xử lí ra sông hồ để cắt giảm chi phí sản xuất"
+            },
+            {
+              "id": "c",
+              "text": "Trả lương và đóng bảo hiểm xã hội đầy đủ cho nhân viên"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hành vi lén lút xả thải gây ô nhiễm môi trường hủy hoại hệ sinh thái và sức khỏe cộng đồng là vi phạm pháp luật và đạo đức nghiêm trọng."
+        },
+        {
+          "id": "economics_law-12-corporate-social-responsibility-q3",
+          "prompt": "Lợi ích lâu dài lớn nhất mà việc thực hiện tốt trách nhiệm xã hội (CSR) mang lại cho doanh nghiệp là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Xây dựng hình ảnh thương hiệu uy tín, gia tăng niềm tin của khách hàng và thu hút nhà đầu tư chất lượng"
+            },
+            {
+              "id": "b",
+              "text": "Làm cho sản phẩm hoàn toàn không cần kiểm định chất lượng"
+            },
+            {
+              "id": "c",
+              "text": "Giúp doanh nghiệp được miễn hoàn toàn mọi loại thuế suốt đời"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "CSR nâng cao giá trị vô hình của thương hiệu, tạo sự gắn kết của người lao động và mở ra cơ hội tham gia chuỗi cung ứng toàn cầu."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-personal-household-budget",
+      "title": "Quản lí tài chính cá nhân và kế hoạch tài chính hộ gia đình",
+      "guidance": [
+        "Quản lí tài chính cá nhân là quá trình lập kế hoạch thu chi, tiết kiệm và đầu tư để đạt được các mục tiêu tài chính tự do và an toàn. Quy tắc ngân sách thông dụng 50/30/20: 50% cho nhu cầu thiết yếu (ăn uống, nhà ở, học tập), 30% cho mong muốn cá nhân (giải trí, mua sắm), 20% cho tiết kiệm và đầu tư trả nợ. Các nguyên tắc: lập quỹ dự phòng khẩn cấp (tương đương 3 - 6 tháng chi phí thiết yếu), tránh bẫy nợ tín dụng tiêu dùng lãi suất cao, chi tiêu dưới mức thu nhập và thiết lập kế hoạch tài chính hộ gia đình dài hạn."
+      ],
+      "examples": [
+        "Với thu nhập 10 triệu đồng/tháng, bạn trẻ dành 5 triệu cho sinh hoạt phí, 3 triệu cho học tập giải trí và kiên trì trích ngay 2 triệu đồng vào tài khoản tiết kiệm tích lũy đầu tháng."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-personal-household-budget-q1",
+          "prompt": "Theo quy tắc quản lí ngân sách tài chính cá nhân 50/30/20, tỉ lệ 20% thu nhập nên được ưu tiên cho mục tiêu nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chi trả tiền thuê nhà và tiền ăn uống hàng ngày"
+            },
+            {
+              "id": "b",
+              "text": "Tiết kiệm, lập quỹ dự phòng khẩn cấp hoặc đầu tư trả nợ"
+            },
+            {
+              "id": "c",
+              "text": "Đi du lịch nghỉ dưỡng cao cấp hàng tháng"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "20% khoản tiền này là đòn bẩy tích lũy tạo sự an tâm tài chính và sinh lời dài hạn trong tương lai."
+        },
+        {
+          "id": "economics_law-12-personal-household-budget-q2",
+          "prompt": "Mục đích cốt lõi của việc xây dựng 'quỹ dự phòng khẩn cấp' (tương đương 3 - 6 tháng chi phí) là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chủ động ứng phó tài chính trước các biến cố bất ngờ như ốm đau, mất việc làm hoặc hư hỏng thiết bị thiết yếu mà không phải vay nợ lãi cao"
+            },
+            {
+              "id": "b",
+              "text": "Dùng toàn bộ để tham gia các trò chơi may rủi trên mạng xã hội"
+            },
+            {
+              "id": "c",
+              "text": "Mua sắm những món đồ xa xỉ giảm giá nhất thời"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Quỹ khẩn cấp bảo vệ cá nhân khỏi nguy cơ vỡ nợ khi xảy ra rủi ro gián đoạn nguồn thu nhập chính."
+        },
+        {
+          "id": "economics_law-12-personal-household-budget-q3",
+          "prompt": "Một thói quen chi tiêu tài chính thông minh giúp tránh rơi vào bẫy nợ nần là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thấy món đồ mình thích là vay tiền mua ngay lập tức bất kể giá cả"
+            },
+            {
+              "id": "b",
+              "text": "Chi tiêu hết toàn bộ tiền lương ngay trong tuần đầu tiên của tháng"
+            },
+            {
+              "id": "c",
+              "text": "Luôn lập ngân sách trước khi chi tiêu, phân biệt rõ giữa 'nhu cầu cần thiết' (Needs) và 'mong muốn nhất thời' (Wants)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Kiểm soát cảm xúc mua sắm và cân nhắc giữa nhu cầu thiết yếu với sở thích nhất thời giúp duy trì dòng tiền cá nhân luôn dương."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-business-tax-citizenship",
+      "title": "Quyền và nghĩa vụ của công dân về kinh doanh và nộp thuế",
+      "guidance": [
+        "Theo Hiến pháp năm 2013, Luật Doanh nghiệp và Luật Quản lý thuế, công dân có quyền tự do kinh doanh những ngành, nghề mà luật không cấm; tự chủ lựa chọn ngành nghề, hình thức tổ chức kinh doanh, quy mô và đối tác. Đi đôi với quyền tự do kinh doanh là nghĩa vụ đăng kí kinh doanh đúng quy định; kê khai trung thực, chính xác và nộp đầy đủ, đúng hạn các khoản thuế, phí vào ngân sách nhà nước; tuân thủ quy chuẩn về an toàn vệ sinh lao động, bảo vệ môi trường và quyền lợi khách hàng. Pháp luật nghiêm cấm các hành vi trốn thuế, gian lận thuế và kinh doanh hàng cấm."
+      ],
+      "examples": [
+        "Chị Mai đăng kí thành lập hộ kinh doanh nông sản sạch tại địa phương, sử dụng hóa đơn điện tử và nộp thuế giá trị gia tăng, thuế thu nhập cá nhân định kì qua ứng dụng thuế điện tử đúng hạn."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-business-tax-citizenship-q1",
+          "prompt": "Theo quy định của Hiến pháp năm 2013 và pháp luật Việt Nam, công dân có quyền tự do kinh doanh trong phạm vi nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Trong những ngành, nghề và lĩnh vực mà luật không cấm"
+            },
+            {
+              "id": "b",
+              "text": "Trong tất cả mọi lĩnh vực kể cả kinh doanh chất ma túy và vũ khí quân dụng"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ được phép kinh doanh các mặt hàng nông sản truyền thống tại địa phương"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Điều 33 Hiến pháp 2013 quy định mọi người có quyền tự do kinh doanh trong những ngành nghề mà pháp luật không cấm."
+        },
+        {
+          "id": "economics_law-12-business-tax-citizenship-q2",
+          "prompt": "Nghĩa vụ hiến định mang tính bắt buộc hàng đầu của mọi tổ chức, cá nhân khi tiến hành hoạt động kinh doanh đối với Nhà nước là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tự ý ấn định mức thuế phải nộp dựa trên mức lợi nhuận mong muốn của cá nhân"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ nộp thuế khi có sự kiểm tra trực tiếp của cơ quan thuế tại cơ sở kinh doanh"
+            },
+            {
+              "id": "c",
+              "text": "Kê khai trung thực, chính xác và nộp đầy đủ, đúng thời hạn các khoản thuế theo luật định"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nộp thuế là nghĩa vụ hiến định của công dân nhằm tạo nguồn lực tài chính công để Nhà nước xây dựng hạ tầng, bảo đảm an sinh và bảo vệ Tổ quốc."
+        },
+        {
+          "id": "economics_law-12-business-tax-citizenship-q3",
+          "prompt": "Anh Bình mở cơ sở chế biến thực phẩm nhưng không làm thủ tục đăng kí kinh doanh, sử dụng hóa chất ngoài danh mục cho phép và cố tình không kê khai thuế. Hành vi của anh Bình vi phạm các nghĩa vụ nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hoàn toàn hợp pháp vì công dân được quyền tự do sản xuất mọi loại thực phẩm"
+            },
+            {
+              "id": "b",
+              "text": "Vi phạm nghĩa vụ đăng kí kinh doanh, nghĩa vụ bảo đảm an toàn thực phẩm và nghĩa vụ nộp thuế"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ vi phạm quy tắc ứng xử nội bộ gia đình mà không vi phạm quy định pháp luật"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hành vi kinh doanh không phép, trốn thuế và vi phạm vệ sinh an toàn thực phẩm xâm phạm trật tự quản lí kinh tế và an toàn sức khỏe cộng đồng."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-property-ownership-rights-obligations",
+      "title": "Quyền và nghĩa vụ về sở hữu tài sản và tôn trọng tài sản của người khác",
+      "guidance": [
+        "Theo Bộ luật Dân sự năm 2015, quyền sở hữu bao gồm ba quyền năng cơ bản của chủ sở hữu: quyền chiếm hữu (nắm giữ, chi phối tài sản), quyền sử dụng (khai thác công dụng, hưởng hoa lợi, lợi tức từ tài sản) và quyền định đoạt (chuyển giao quyền sở hữu, cho mượn, từ bỏ hoặc tiêu hủy tài sản). Mọi công dân có nghĩa vụ tôn trọng tài sản hợp pháp của người khác và tài sản công cộng của Nhà nước; khi gây thiệt hại đến tài sản của chủ thể khác thì phải bồi thường theo luật định. Pháp luật nghiêm cấm hành vi trộm cắp, lừa đảo, hủy hoại tài sản."
+      ],
+      "examples": [
+        "Anh Tuấn thuê xe máy của cửa hàng trong 3 ngày; anh có quyền chiếm hữu và sử dụng xe để đi lại hợp pháp, nhưng không có quyền bán xe cho người khác và phải hoàn trả xe nguyên vẹn kèm bồi thường nếu làm hư hỏng."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-property-ownership-rights-obligations-q1",
+          "prompt": "Theo quy định của Bộ luật Dân sự năm 2015, quyền sở hữu của chủ sở hữu bao gồm ba quyền năng cơ bản nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Quyền phong tỏa, quyền phát mại và quyền chiếm đoạt tài sản"
+            },
+            {
+              "id": "b",
+              "text": "Quyền vay mượn, quyền thế chấp và quyền giấu giếm tài sản"
+            },
+            {
+              "id": "c",
+              "text": "Quyền chiếm hữu, quyền sử dụng và quyền định đoạt tài sản"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Điều 158 Bộ luật Dân sự 2015 quy định quyền sở hữu bao gồm quyền chiếm hữu, quyền sử dụng và quyền định đoạt tài sản của chủ sở hữu."
+        },
+        {
+          "id": "economics_law-12-property-ownership-rights-obligations-q2",
+          "prompt": "Nghĩa vụ tôn trọng tài sản của người khác đòi hỏi mỗi công dân phải thực hiện hành vi nào sau đây khi nhặt được tài sản đánh rơi?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đem vứt bỏ tài sản đó xuống sông hồ để không ai tìm thấy"
+            },
+            {
+              "id": "b",
+              "text": "Thông báo hoặc trả lại ngay cho người đánh rơi, hoặc giao nộp cho cơ quan công an gần nhất"
+            },
+            {
+              "id": "c",
+              "text": "Tự ý cất giữ làm của riêng và mang bán lấy tiền chi tiêu cá nhân"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Pháp luật dân sự quy định người nhặt được của rơi có nghĩa vụ thông báo, trả lại cho chủ sở hữu hoặc giao nộp cơ quan có thẩm quyền."
+        },
+        {
+          "id": "economics_law-12-property-ownership-rights-obligations-q3",
+          "prompt": "Do mâu thuẫn cá nhân, Nam đã cố ý đập vỡ máy tính xách tay của Minh có giá trị 18 triệu đồng. Về mặt pháp lí, hành vi cố ý phá hoại tài sản của Nam sẽ bị xử lí như thế nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bị buộc bồi thường toàn bộ thiệt hại vật chất và có thể bị truy cứu trách nhiệm hình sự về tội cố ý làm hư hỏng tài sản"
+            },
+            {
+              "id": "b",
+              "text": "Không phải chịu bất kì trách nhiệm bồi thường nào vì sự việc xảy ra trong độ tuổi học sinh"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ cần công khai xin lỗi Minh trước lớp mà không phải đền bù giá trị máy tính"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Hành vi cố ý làm hư hỏng tài sản của người khác từ 2 triệu đồng trở lên cấu thành tội phạm theo Điều 178 Bộ luật Hình sự và phải bồi thường dân sự toàn bộ thiệt hại."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-marriage-family-rights-obligations",
+      "title": "Quyền và nghĩa vụ của công dân trong hôn nhân và gia đình",
+      "guidance": [
+        "Luật Hôn nhân và Gia đình năm 2014 quy định các nguyên tắc cơ bản: hôn nhân tự nguyện, tiến bộ, một vợ một chồng, vợ chồng bình đẳng và tôn trọng lẫn nhau. Quyền và nghĩa vụ giữa vợ và chồng: bình đẳng về quyền, nghĩa vụ trong mọi mặt gia đình; cùng bàn bạc quyết định tài sản chung và kế hoạch chăm sóc gia đình. Quan hệ giữa cha mẹ và con: cha mẹ có nghĩa vụ nuôi dưỡng, giáo dục con phát triển lành mạnh; con cái có bổn phận yêu quý, kính trọng, chăm sóc và phụng dưỡng cha mẹ. Pháp luật nghiêm cấm bạo lực gia đình, tảo hôn, cưỡng ép kết hôn và phân biệt đối xử giữa các con."
+      ],
+      "examples": [
+        "Vợ chồng anh Long cùng bàn bạc dân chủ, thống nhất kế hoạch chi tiêu tài chính gia đình và phân chia thời gian dạy dỗ các con mà không có sự áp đặt một chiều từ một phía."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-marriage-family-rights-obligations-q1",
+          "prompt": "Nguyên tắc cốt lõi hàng đầu của chế độ hôn nhân và gia đình theo pháp luật Việt Nam hiện hành là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cho phép kết hôn với nhiều người cùng một lúc để mở rộng quan hệ họ hàng"
+            },
+            {
+              "id": "b",
+              "text": "Hôn nhân tự nguyện, tiến bộ, một vợ một chồng, vợ chồng bình đẳng"
+            },
+            {
+              "id": "c",
+              "text": "Hôn nhân hoàn toàn do cha mẹ sắp đặt và người chồng nắm toàn quyền quyết định"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Điều 2 Luật Hôn nhân và Gia đình 2014 xác định nguyên tắc hôn nhân tự nguyện, tiến bộ, một vợ một chồng, vợ chồng bình đẳng."
+        },
+        {
+          "id": "economics_law-12-marriage-family-rights-obligations-q2",
+          "prompt": "Bổn phận và nghĩa vụ pháp lí quan trọng hàng đầu của con cái đối với cha mẹ theo luật định là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Yêu quý, kính trọng, biết ơn, hiếu thảo và chăm sóc, phụng dưỡng cha mẹ khi già yếu, ốm đau"
+            },
+            {
+              "id": "b",
+              "text": "Có quyền từ chối phụng dưỡng cha mẹ nếu cha mẹ không chia phần tài sản thừa kế"
+            },
+            {
+              "id": "c",
+              "text": "Tự ý định đoạt và sang tên toàn bộ nhà đất của cha mẹ mà không cần cha mẹ đồng ý"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Luật Hôn nhân và Gia đình quy định con cái có nghĩa vụ yêu quý, chăm sóc, nuôi dưỡng cha mẹ, đặc biệt khi cha mẹ mất sức lao động hoặc ốm đau."
+        },
+        {
+          "id": "economics_law-12-marriage-family-rights-obligations-q3",
+          "prompt": "Ông Thắng bắt ép con gái 16 tuổi phải nghỉ học để kết hôn với người giàu theo ý muốn của ông, đồng thời tuyên bố chỉ để lại tài sản cho con trai. Hành vi của ông Thắng vi phạm quy định pháp luật nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hoàn toàn phù hợp với quyền tự quyết gia trưởng của người đứng đầu gia đình"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ vi phạm phong tục tập quán làng xã mà không trái với bất kì luật nào"
+            },
+            {
+              "id": "c",
+              "text": "Vi phạm quy định cấm cưỡng ép kết hôn, tảo hôn, cấm phân biệt đối xử giữa các con và xâm phạm quyền học tập của con"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Pháp luật nghiêm cấm hành vi cưỡng ép kết hôn, tảo hôn (kết hôn khi chưa đủ tuổi luật định: nữ từ đủ 18 tuổi) và cấm phân biệt đối xử giữa con trai và con gái."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-learning-education-rights-obligations",
+      "title": "Quyền và nghĩa vụ của công dân trong học tập",
+      "guidance": [
+        "Theo Hiến pháp năm 2013 và Luật Giáo dục năm 2019, học tập là quyền và nghĩa vụ cơ bản của mỗi công dân. Quyền học tập: mọi công dân không phân biệt dân tộc, tôn giáo, giới tính, hoàn cảnh kinh tế đều có quyền bình đẳng về cơ hội học tập; được học không hạn chế từ giáo dục mầm non, phổ thông đến đại học và sau đại học; được tự do lựa chọn ngành nghề, hình thức học tập phù hợp năng lực bản thân. Nghĩa vụ học tập: hoàn thành phổ cập giáo dục tiểu học và trung học cơ sở; tôn trọng nhà giáo, cán bộ quản lí giáo dục và chấp hành nội quy, điều lệ nhà trường."
+      ],
+      "examples": [
+        "Bạn Lan đạt giải học sinh giỏi quốc gia được xét tuyển thẳng vào trường đại học sư phạm và được Nhà nước hỗ trợ sinh hoạt phí theo chính sách đào tạo giáo viên."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-learning-education-rights-obligations-q1",
+          "prompt": "Quy định công dân có thể học từ bậc tiểu học lên đến tiến sĩ theo các hình thức đào tạo khác nhau thể hiện nội dung quyền nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Quyền học tập không hạn chế của công dân"
+            },
+            {
+              "id": "b",
+              "text": "Quyền độc quyền nghiên cứu khoa học của nhà nước"
+            },
+            {
+              "id": "c",
+              "text": "Nghĩa vụ bắt buộc mọi công dân phải đạt học vị tiến sĩ"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Quyền học tập không hạn chế cho phép công dân học từ thấp đến cao phù hợp với năng lực, điều kiện và nguyện vọng cá nhân suốt đời."
+        },
+        {
+          "id": "economics_law-12-learning-education-rights-obligations-q2",
+          "prompt": "Chính sách của Nhà nước miễn học phí cho học sinh tiểu học và cấp học bổng cho học sinh vùng đồng bào dân tộc thiểu số thể hiện nguyên tắc gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tạo sự phân biệt đối xử bất lợi đối với học sinh sinh sống tại các đô thị lớn"
+            },
+            {
+              "id": "b",
+              "text": "Cắt giảm chỉ tiêu đào tạo đại học và cao đẳng trên phạm vi toàn quốc"
+            },
+            {
+              "id": "c",
+              "text": "Bảo đảm sự bình đẳng và công bằng xã hội về cơ hội tiếp cận giáo dục cho mọi công dân"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nhà nước ưu tiên hỗ trợ các đối tượng yếu thế nhằm xóa bỏ rào cản kinh tế, hiện thực hóa quyền bình đẳng trong tiếp cận giáo dục cho mọi trẻ em."
+        },
+        {
+          "id": "economics_law-12-learning-education-rights-obligations-q3",
+          "prompt": "Một trường học ngoài công lập từ chối tiếp nhận hồ sơ đăng kí xét tuyển của em Nam với lí do Nam là người dân tộc thiểu số và gia đình nghèo. Quyết định từ chối này vi phạm điều gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ vi phạm thỏa thuận dân sự mà không vi phạm các quyền cơ bản của công dân"
+            },
+            {
+              "id": "b",
+              "text": "Vi phạm quyền bình đẳng về cơ hội học tập của công dân theo quy định của Hiến pháp và Luật Giáo dục"
+            },
+            {
+              "id": "c",
+              "text": "Phù hợp với quyền tự do tuyệt đối trong việc lựa chọn học sinh của các trường tư thục"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Điều 9 Luật Giáo dục 2019 khẳng định mọi công dân không phân biệt dân tộc, tín ngưỡng, thành phần gia đình đều bình đẳng về cơ hội học tập."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-healthcare-social-security-rights",
+      "title": "Quyền và nghĩa vụ của công dân trong bảo vệ sức khỏe và an sinh xã hội",
+      "guidance": [
+        "Theo Hiến pháp năm 2013, công dân có quyền được bảo vệ, chăm sóc sức khỏe, bình đẳng trong việc sử dụng các dịch vụ y tế và có quyền được bảo đảm an sinh xã hội. Quyền về sức khỏe: được khám bệnh, chữa bệnh, tiếp cận thuốc thiết yếu và thông tin y tế, tham gia Bảo hiểm y tế (BHYT) để chia sẻ rủi ro viện phí. Nghĩa vụ về sức khỏe: tuân thủ các quy định phòng chống dịch bệnh truyền nhiễm, tiêm chủng theo quy định, giữ vệ sinh công cộng và không làm lây lan mầm bệnh nguy hại cho xã hội. Quyền an sinh xã hội bảo đảm người dân được hỗ trợ tài chính khi giảm sút hoặc mất thu nhập (ốm đau, tai nạn, thất nghiệp, tuổi già) qua hệ thống BHXH và trợ giúp xã hội."
+      ],
+      "examples": [
+        "Bác Hùng tham gia Bảo hiểm y tế hộ gia đình; khi phải phẫu thuật điều trị dài ngày tại bệnh viện đa khoa, quỹ BHYT đã thanh toán phần lớn viện phí, giúp gia đình vượt qua khó khăn tài chính."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-healthcare-social-security-rights-q1",
+          "prompt": "Chính sách an sinh xã hội trụ cột do Nhà nước tổ chức nhằm chăm sóc sức khỏe cộng đồng và chia sẻ chi phí khám chữa bệnh là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Quỹ đầu tư bất động sản thương mại"
+            },
+            {
+              "id": "b",
+              "text": "Hợp đồng bảo hiểm tài sản doanh nghiệp"
+            },
+            {
+              "id": "c",
+              "text": "Bảo hiểm y tế (BHYT)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Bảo hiểm y tế là chính sách an sinh xã hội quan trọng nhằm huy động sự đóng góp cộng đồng, bảo đảm quyền chăm sóc sức khỏe cho nhân dân."
+        },
+        {
+          "id": "economics_law-12-healthcare-social-security-rights-q2",
+          "prompt": "Trong công tác phòng, chống bệnh truyền nhiễm nguy hiểm, nghĩa vụ bắt buộc của mỗi cá nhân đối với cộng đồng là gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Che giấu tình trạng nhiễm bệnh truyền nhiễm của bản thân và từ chối điều trị"
+            },
+            {
+              "id": "b",
+              "text": "Khai báo y tế trung thực, thực hiện nghiêm các biện pháp cách ly và tiêm chủng phòng dịch theo hướng dẫn y tế"
+            },
+            {
+              "id": "c",
+              "text": "Tự ý trốn khỏi khu vực phong tỏa cách ly y tế để tiếp xúc đông người nơi công cộng"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Luật Phòng, chống bệnh truyền nhiễm quy định cá nhân có nghĩa vụ chấp hành nghiêm các biện pháp phòng dịch để bảo đảm an toàn sức khỏe chung."
+        },
+        {
+          "id": "economics_law-12-healthcare-social-security-rights-q3",
+          "prompt": "Doanh nghiệp Bình An kí hợp đồng lao động chính thức với 40 công nhân nhưng trốn tránh nghĩa vụ đóng Bảo hiểm xã hội và Bảo hiểm y tế bắt buộc suốt hai năm. Hành vi của doanh nghiệp này vi phạm quyền gì của công nhân?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Xâm phạm quyền được bảo đảm an sinh xã hội và quyền chăm sóc y tế hợp pháp của người lao động"
+            },
+            {
+              "id": "b",
+              "text": "Không vi phạm vì việc đóng bảo hiểm hoàn toàn tùy thuộc vào quyết định của giám đốc doanh nghiệp"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ vi phạm quy chế thi đua khen thưởng nội bộ của doanh nghiệp"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Đóng BHXH và BHYT là nghĩa vụ pháp lí bắt buộc của người sử dụng lao động; hành vi trốn đóng bảo hiểm tước đoạt quyền an sinh của người lao động và sẽ bị xử lí nghiêm khắc."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-cultural-environmental-protection-rights",
+      "title": "Quyền và nghĩa vụ về bảo vệ di sản văn hóa, môi trường và tài nguyên thiên nhiên",
+      "guidance": [
+        "Theo Luật Di sản văn hóa và Luật Bảo vệ môi trường năm 2020, công dân có quyền sống trong môi trường trong lành; quyền hưởng thụ, tiếp cận và phát huy các giá trị di sản văn hóa dân tộc; quyền tố cáo các hành vi vi phạm pháp luật về môi trường và tài nguyên. Nghĩa vụ của công dân: giữ gìn, bảo vệ di tích lịch sử - văn hóa, danh lam thắng cảnh; thực hiện phân loại rác thải sinh hoạt tại nguồn, tiết kiệm năng lượng; khai thác, sử dụng hợp lí, tiết kiệm nguồn nước, khoáng sản và tài nguyên rừng. Pháp luật nghiêm cấm hành vi chiếm đoạt cổ vật, phá hoại cảnh quan di tích, lén lút xả thải chất độc hại và săn bắt trái phép động vật hoang dã."
+      ],
+      "examples": [
+        "Nhóm học sinh THPT tích cực tham gia phong trào ngày Chủ nhật xanh, dọn dẹp rác thải quanh di tích đình làng cổ và gửi phản ánh tới chính quyền khi phát hiện bãi tập kết rác thải tự phát gây ô nhiễm."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-cultural-environmental-protection-rights-q1",
+          "prompt": "Quyền cơ bản của mọi người dân đối với môi trường sống được ghi nhận rõ nét tại Điều 43 Hiến pháp năm 2013 là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Mọi người được phép xả chất thải công nghiệp trực tiếp ra nguồn nước sinh hoạt chung"
+            },
+            {
+              "id": "b",
+              "text": "Mọi người có quyền được sống trong môi trường trong lành và có nghĩa vụ bảo vệ môi trường"
+            },
+            {
+              "id": "c",
+              "text": "Mọi người có quyền tự do khai thác cạn kiệt tài nguyên rừng phòng hộ mà không cần xin phép"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hiến pháp 2013 khẳng định quyền được sống trong môi trường trong lành đi đôi với nghĩa vụ bảo vệ môi trường của mọi cá nhân."
+        },
+        {
+          "id": "economics_law-12-cultural-environmental-protection-rights-q2",
+          "prompt": "Hành vi nào sau đây xâm phạm nghiêm trọng các quy định pháp luật về bảo vệ di sản văn hóa dân tộc?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tự ý đập phá, lấn chiếm khuôn viên, đào bới trái phép hoặc làm biến dạng kiến trúc gốc của di tích lịch sử"
+            },
+            {
+              "id": "b",
+              "text": "Tích cực tham gia vệ sinh môi trường và trồng hoa tạo cảnh quan đẹp cho khu di tích"
+            },
+            {
+              "id": "c",
+              "text": "Sưu tầm và giới thiệu các tư liệu lịch sử chính thống về di tích cho du khách tham quan"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Luật Di sản văn hóa nghiêm cấm các hành vi chiếm đoạt, hủy hoại hoặc làm sai lệch hiện vật, cảnh quan di tích lịch sử - văn hóa."
+        },
+        {
+          "id": "economics_law-12-cultural-environmental-protection-rights-q3",
+          "prompt": "Một xưởng sản xuất cơ khí lén lút xả nước thải chứa kim loại nặng chưa qua xử lí xuống dòng kênh dân sinh, làm ô nhiễm nguồn nước tưới tiêu. Cơ sở này phải gánh chịu những chế tài pháp lí nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ bị lập biên bản nhắc nhở nội bộ mà không phải bồi thường thiệt hại"
+            },
+            {
+              "id": "b",
+              "text": "Được cơ quan chức năng hỗ trợ kinh phí để tiếp tục xả thải công khai"
+            },
+            {
+              "id": "c",
+              "text": "Bị xử phạt vi phạm hành chính với số tiền lớn, đình chỉ hoạt động, buộc khắc phục ô nhiễm và bồi thường thiệt hại thực tế"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hành vi xả chất thải chưa qua xử lí gây ô nhiễm môi trường bị xử phạt hành chính nặng, đình chỉ hoạt động, buộc bồi thường dân sự và có thể bị xử lí hình sự."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-general-international-law-foundations",
+      "title": "Một số vấn đề cơ bản của pháp luật quốc tế",
+      "guidance": [
+        "Pháp luật quốc tế (Luật quốc tế) là hệ thống các nguyên tắc và quy phạm pháp luật do các quốc gia và các chủ thể quốc tế khác cùng thỏa thuận xây dựng nhằm điều chỉnh các quan hệ quốc tế trên nhiều phương diện (chính trị, an ninh, kinh tế, môi trường). Các chủ thể chủ yếu: quốc gia có chủ quyền (chủ thể nền tảng), tổ chức quốc tế liên chính phủ, và dân tộc đang đấu tranh giành độc lập. Nguồn của luật quốc tế: điều ước quốc tế (các công ước, hiệp định đa phương hoặc song phương) và tập quán quốc tế. Các nguyên tắc cơ bản: bình đẳng chủ quyền; cấm đe dọa hoặc sử dụng vũ lực; giải quyết hòa bình các tranh chấp; không can thiệp vào công việc nội bộ; tận tâm thực hiện cam kết quốc tế (Pacta sunt servanda)."
+      ],
+      "examples": [
+        "Việt Nam và các quốc gia láng giềng tiến hành đàm phán cắm mốc biên giới trên đất liền dựa trên nguyên tắc bình đẳng chủ quyền và tôn trọng các hiệp ước biên giới song phương phù hợp với luật pháp quốc tế."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-general-international-law-foundations-q1",
+          "prompt": "Chủ thể cơ bản, ban đầu và giữ vai trò trung tâm nhất trong hệ thống pháp luật quốc tế hiện đại là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Các quốc gia độc lập có chủ quyền"
+            },
+            {
+              "id": "b",
+              "text": "Các cá nhân công dân mang quốc tịch bất kì"
+            },
+            {
+              "id": "c",
+              "text": "Các câu lạc bộ thể thao và tập đoàn tư nhân đa quốc gia"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Quốc gia có chủ quyền là chủ thể chủ yếu và cơ bản nhất của luật quốc tế, có đầy đủ thẩm quyền kí kết và thực thi các cam kết quốc tế."
+        },
+        {
+          "id": "economics_law-12-general-international-law-foundations-q2",
+          "prompt": "Nguyên tắc 'Pacta sunt servanda' - một trong những nguyên tắc nền tảng linh hồn của luật pháp quốc tế đòi hỏi các quốc gia phải:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Được quyền đơn phương hủy bỏ các điều ước quốc tế bất cứ lúc nào cảm thấy bất lợi cho riêng mình"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ cần thực hiện các cam kết nếu nhận được sự đồng ý của tất cả các tập đoàn tư nhân"
+            },
+            {
+              "id": "c",
+              "text": "Tận tâm, thiện chí thực hiện đầy đủ các cam kết và nghĩa vụ trong các điều ước quốc tế mà mình đã kí kết hoặc gia nhập"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Pacta sunt servanda là nguyên tắc thượng tôn các cam kết quốc tế, bảo đảm tính ổn định, tin cậy và pháp quyền trong trật tự quan hệ quốc tế."
+        },
+        {
+          "id": "economics_law-12-general-international-law-foundations-q3",
+          "prompt": "Khi phát sinh tranh chấp về chủ quyền lãnh thổ hoặc ranh giới biển giữa các quốc gia, biện pháp giải quyết nào sau đây phù hợp với các nguyên tắc cơ bản của luật quốc tế?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đơn phương phong tỏa đường hàng hải quốc tế mà không có nghị quyết của Hội đồng Bảo an Liên hợp quốc"
+            },
+            {
+              "id": "b",
+              "text": "Đàm phán ngoại giao hòa bình, trung gian hòa giải hoặc sử dụng các cơ quan tài phán quốc tế theo thỏa thuận"
+            },
+            {
+              "id": "c",
+              "text": "Sử dụng ngay lực lượng quân sự tấn công bất ngờ nhằm thôn tính vùng đất tranh chấp"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Nguyên tắc giải quyết hòa bình các tranh chấp quốc tế buộc các bên phải lựa chọn biện pháp thương lượng, hòa giải hoặc tòa án quốc tế, nghiêm cấm sử dụng vũ lực."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-public-international-law-territory-sovereignty",
+      "title": "Dân cư, lãnh thổ và chủ quyền quốc gia trong công pháp quốc tế",
+      "guidance": [
+        "Trong công pháp quốc tế, lãnh thổ quốc gia là không gian địa lí xác định thuộc chủ quyền hoàn toàn và riêng biệt của một quốc gia, bao gồm bốn bộ phận: vùng đất (đất liền và hải đảo), vùng nước (nội thủy và lãnh hải), vùng trời và vùng lòng đất bên dưới chúng. Chủ quyền quốc gia là quyền tối cao của nhà nước trong phạm vi lãnh thổ của mình và quyền độc lập trong quan hệ quốc tế, có tính chất bất khả xâm phạm. Dân cư của một quốc gia gồm công dân mang quốc tịch nước sở tại, người nước ngoài và người không quốc tịch; quốc gia thực thi quyền tài phán đối với dân cư trên lãnh thổ. Nguyên tắc toàn vẹn lãnh thổ và bất khả xâm phạm đường biên giới là nền tảng bảo vệ chủ quyền quốc gia."
+      ],
+      "examples": [
+        "Lực lượng Cảnh sát biển Việt Nam tuần tra, kiểm soát và thực thi pháp luật nghiêm minh trên vùng lãnh hải 12 hải lí để bảo vệ chủ quyền biển đảo thiêng liêng của Tổ quốc phù hợp với UNCLOS 1982."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-public-international-law-territory-sovereignty-q1",
+          "prompt": "Theo công pháp quốc tế, lãnh thổ quốc gia hoàn chỉnh được cấu thành từ bốn bộ phận không gian địa lí nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Vùng đất liền canh tác nông nghiệp và không tính vùng trời"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ bao gồm các hải đảo nằm ngoài vùng đặc quyền kinh tế"
+            },
+            {
+              "id": "c",
+              "text": "Vùng đất, vùng nước, vùng trời và vùng lòng đất"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Lãnh thổ quốc gia là một thể thống nhất gồm 4 bộ phận: vùng đất, vùng nước (nội thủy, lãnh hải), vùng lòng đất và vùng trời phía trên."
+        },
+        {
+          "id": "economics_law-12-public-international-law-territory-sovereignty-q2",
+          "prompt": "Tính chất 'bất khả xâm phạm' của chủ quyền và lãnh thổ quốc gia trong luật pháp quốc tế mang ý nghĩa cốt lõi là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Quốc gia ven biển không có quyền quản lí tàu thuyền hoạt động trong vùng biển thuộc chủ quyền của mình"
+            },
+            {
+              "id": "b",
+              "text": "Mọi hành vi xâm lấn biên giới, đe dọa độc lập và toàn vẹn lãnh thổ của một quốc gia đều là hành vi vi phạm pháp luật quốc tế nghiêm trọng"
+            },
+            {
+              "id": "c",
+              "text": "Các cường quốc lớn có quyền tự do can thiệp quân sự vào vùng trời của các quốc gia nhỏ hơn"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Luật pháp quốc tế nghiêm cấm mọi hành vi xâm lấn, chiếm đoạt lãnh thổ hoặc can thiệp lật đổ chủ quyền thiêng liêng của một quốc gia độc lập."
+        },
+        {
+          "id": "economics_law-12-public-international-law-territory-sovereignty-q3",
+          "prompt": "Một tàu cá nước ngoài tự ý tiến sâu vào vùng nội thủy của Việt Nam để đánh bắt thủy sản trái phép mà không được cấp phép. Cơ quan chức năng Việt Nam có quyền xử lí như thế nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bắt giữ tàu vi phạm, dẫn giải về đất liền và xử phạt nghiêm minh theo quy định của pháp luật Việt Nam vì nội thủy thuộc chủ quyền tuyệt đối của nước ta"
+            },
+            {
+              "id": "b",
+              "text": "Không có quyền ngăn chặn vì vùng nội thủy mở cửa tự do cho tàu cá mọi quốc gia"
+            },
+            {
+              "id": "c",
+              "text": "Bắt buộc phải chờ sự cho phép của thuyền trưởng tàu nước ngoài mới được lên tàu kiểm tra"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Vùng nội thủy thuộc chủ quyền hoàn toàn và tuyệt đối của quốc gia ven biển; mọi hành vi xâm phạm nội thủy trái phép đều bị xử lí theo thẩm quyền tài phán quốc gia."
+        }
+      ]
+    },
+    {
+      "id": "economics_law-12-wto-principles-international-commercial-contracts",
+      "title": "Nguyên tắc cơ bản của WTO và hợp đồng thương mại quốc tế",
+      "guidance": [
+        "Tổ chức Thương mại Thế giới (WTO) thiết lập các nguyên tắc nền tảng điều chỉnh thương mại toàn cầu: Nguyên tắc Tối huệ quốc (MFN - Most-Favoured-Nation: bất kì sự ưu đãi thuế quan nào dành cho một nước thành viên phải được áp dụng ngay lập tức, vô điều kiện cho mọi thành viên khác); Nguyên tắc Đãi ngộ quốc gia (NT - National Treatment: hàng hóa, dịch vụ nhập khẩu sau khi hoàn tất thủ tục hải quan phải được đối xử bình đẳng như hàng hóa, dịch vụ nội địa cùng loại); tự do hóa thương mại và cạnh tranh công bằng, minh bạch. Hợp đồng thương mại quốc tế là sự thỏa thuận giữa các bên có trụ sở thương mại tại các quốc gia khác nhau nhằm mua bán hàng hóa hoặc cung ứng dịch vụ xuyên biên giới; bao gồm các điều khoản cơ bản: tên hàng, số lượng, chất lượng, giá cả, điều kiện giao hàng (Incoterms như FOB, CIF), phương thức thanh toán (L/C, T/T), luật áp dụng và cơ chế giải quyết tranh chấp (trọng tài thương mại quốc tế)."
+      ],
+      "examples": [
+        "Một doanh nghiệp cà phê Việt Nam kí kết hợp đồng thương mại quốc tế xuất khẩu 100 tấn cà phê Robusta sang Đức theo điều kiện CIF Hamburg, thanh toán qua Thư tín dụng chứng từ (L/C) và chọn trọng tài VIAC để giải quyết tranh chấp nếu có phát sinh."
+      ],
+      "questions": [
+        {
+          "id": "economics_law-12-wto-principles-international-commercial-contracts-q1",
+          "prompt": "Nguyên tắc 'Đãi ngộ tối huệ quốc' (MFN) trong hệ thống thương mại đa phương của WTO quy định điều gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cho phép các nước giàu áp thuế nhập khẩu cao gấp mười lần đối với hàng hóa xuất xứ từ các nước nghèo"
+            },
+            {
+              "id": "b",
+              "text": "Nếu một thành viên dành ưu đãi thương mại cho một quốc gia thì phải dành ưu đãi tương tự cho tất cả các thành viên khác của WTO"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ dành ưu đãi thuế quan đặc biệt cho các quốc gia láng giềng có chung đường biên giới đất liền"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Nguyên tắc MFN bảo đảm không phân biệt đối xử giữa các đối tác thương mại: lợi thế dành cho một nước phải được trao bình đẳng cho toàn bộ thành viên WTO."
+        },
+        {
+          "id": "economics_law-12-wto-principles-international-commercial-contracts-q2",
+          "prompt": "Nguyên tắc 'Đãi ngộ quốc gia' (NT) của WTO nghiêm cấm hành vi nào sau đây của nước nhập khẩu đối với hàng hóa nước ngoài?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Áp đặt mức thuế tiêu thụ nội địa hoặc quy chuẩn kĩ thuật khắt khe hơn đối với hàng hóa nhập khẩu so với hàng hóa cùng loại sản xuất trong nước"
+            },
+            {
+              "id": "b",
+              "text": "Thực hiện kiểm tra an toàn thực phẩm bình đẳng đối với mọi lô hàng lưu thông trên thị trường nội địa"
+            },
+            {
+              "id": "c",
+              "text": "Cắt giảm biểu thuế quan nhập khẩu theo đúng lộ trình cam kết gia nhập WTO"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nguyên tắc NT yêu cầu hàng nhập khẩu sau khi qua cửa khẩu phải được đối xử công bằng ngang bằng với hàng nội địa, không bị phân biệt đối xử về thuế và quy chuẩn kĩ thuật."
+        },
+        {
+          "id": "economics_law-12-wto-principles-international-commercial-contracts-q3",
+          "prompt": "Doanh nghiệp Việt Nam kí hợp đồng bán 200 tấn gạo cho đối tác tại Pháp, thỏa thuận giao hàng theo điều kiện CIF cảng Marseille và thanh toán bằng phương thức L/C không hủy ngang. Yếu tố nào sau đây khẳng định đây là hợp đồng thương mại quốc tế?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hợp đồng được soạn thảo hoàn toàn bằng tiếng Việt và giao hàng tại một kho nội địa"
+            },
+            {
+              "id": "b",
+              "text": "Người bán và người mua đều mang quốc tịch Việt Nam và sinh sống cùng một địa phương"
+            },
+            {
+              "id": "c",
+              "text": "Các bên tham gia hợp đồng có trụ sở kinh doanh tại các quốc gia khác nhau và hàng hóa được vận chuyển dịch chuyển qua biên giới quốc gia"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Dấu hiệu pháp lí đặc trưng của hợp đồng thương mại quốc tế là sự dịch chuyển hàng hóa qua biên giới và các bên chủ thể có trụ sở thương mại ở các quốc gia khác nhau."
+        }
+      ]
+    }
+  ]
+}

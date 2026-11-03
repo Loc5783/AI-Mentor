@@ -67,9 +67,17 @@ def finish(c, s, a, k=None):
 
 
 def placed(c, s, e):
+    catalog = c.app.state.learning.catalog if hasattr(c, "app") and hasattr(c.app.state, "learning") else None
+    course = catalog.course(e["subjectId"], e["grade"]) if catalog else None
+    answer_key = {
+        q["id"]: q["correctOptionId"]
+        for lesson in course["lessons"]
+        for q in lesson["questions"]
+    } if course else {}
+
     a = ok(post(c, s, "/placements", {"enrollmentId": e["id"]}))
     values = [{"questionId": q["id"],
-               "selectedOptionId": next(option["id"] for option in q["options"] if option["id"] != q["correctOptionId"]),
+               "selectedOptionId": next(o["id"] for o in q["options"] if o["id"] != answer_key.get(q["id"], "a")),
                "submissionId": key()} for q in a["questions"]]
     result = finish(c, s, answer(c, s, a, values))
     assert result["xpAwarded"] == 0 and not result["streakLit"]
@@ -267,4 +275,3 @@ def test_attempt_dto_contains_verified_scope_metadata(api):
     assert a_chem["grade"] == 11
     assert a_chem["enrollmentId"] == e_chem["id"]
     assert a_chem["enrollmentId"] != a_phys["enrollmentId"]
-

@@ -41,6 +41,7 @@ val disableSupabaseForTests =
     providers.gradleProperty("disableSupabaseForTests").orNull?.toBoolean() ?: false
 val supabaseEnabled =
     supabaseConfig.getProperty("SUPABASE_ENABLED", "false") == "true" && !disableSupabaseForTests
+require(!supabaseUrl.contains("hnxphwuaccztzanjcuca")) { "Targeting deprecated project hnxphwuaccztzanjcuca is prohibited" }
 require(!supabaseEnabled || (supabaseUrl.matches(Regex("https://[a-z0-9-]+\\.supabase\\.co")) && supabaseKey.matches(Regex("sb_publishable_[A-Za-z0-9_-]+")))) { "Invalid Supabase public configuration" }
 
 android {
@@ -81,6 +82,11 @@ android {
         unitTests.isReturnDefaultValues = true
     }
     buildFeatures { buildConfig = true; compose = true }
+}
+
+configurations.all {
+    exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk7")
+    exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk8")
 }
 
 dependencies {

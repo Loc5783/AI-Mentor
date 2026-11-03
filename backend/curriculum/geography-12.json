@@ -1,0 +1,1137 @@
+{
+  "subjectId": "geography",
+  "grade": 12,
+  "version": "intro-2026.1",
+  "title": "Địa lí 12: Địa lí tự nhiên, dân cư và các vùng kinh tế Việt Nam",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_12",
+  "extendedReviews": false,
+  "sourceNote": "Tài liệu học tập lớp 12 do AI Mentor biên soạn theo yêu cầu cần đạt của Chương trình GDPT 2018 (định hướng bộ sách Kết nối tri thức với cuộc sống); đây là tuyển chọn chuyên đề nền tảng, không phải bản sao nguyên văn SGK và chưa bao phủ toàn bộ năm học. Bài đầu vào sử dụng 2 câu hỏi từ mỗi bài học để hỗ trợ chẩn đoán năng lực. Nội dung cần được giáo viên chuyên môn thẩm định trước khi áp dụng chính thức.",
+  "lessons": [
+    {
+      "id": "geography-12-vietnam-location-territory",
+      "title": "Vị trí địa lí, phạm vi lãnh thổ và ý nghĩa chiến lược của Việt Nam",
+      "guidance": [
+        "Lãnh thổ Việt Nam nằm ở rìa phía đông của bán đảo Đông Dương, gần trung tâm khu vực Đông Nam Á. Tọa độ địa lí trên đất liền: điểm cực Bắc tại Lũng Cú (Hà Giang, 23°23'B), cực Nam tại Đất Mũi (Cà Mau, 8°34'B), cực Tây tại A Pa Chải (Điện Biên, 102°09'Đ), cực Đông tại Mũi Đôi (Khánh Hòa, 109°28'Đ). Vùng biển có diện tích khoảng 1 triệu km² với 5 bộ phận: nội thủy, lãnh hải (12 hải lí), vùng tiếp giáp lãnh hải, vùng đặc quyền kinh tế (200 hải lí) và thềm lục địa. Vị trí nằm trong vùng nội chí tuyến bán cầu Bắc mang lại khí hậu nhiệt đới ẩm gió mùa và vị thế địa - chính trị quan trọng."
+      ],
+      "examples": [
+        "Mũi Đôi (Khánh Hòa) ở kinh độ 109°28'Đ là nơi đón ánh bình minh đầu tiên trên đất liền của Tổ quốc Việt Nam."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-vietnam-location-territory-q1",
+          "prompt": "Điểm cực Bắc trên đất liền của nước ta thuộc xã Lũng Cú (huyện Đồng Văn, tỉnh Hà Giang) nằm ở vĩ độ nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "23°23'B"
+            },
+            {
+              "id": "b",
+              "text": "8°34'B"
+            },
+            {
+              "id": "c",
+              "text": "102°09'Đ"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Điểm cực Bắc tại Lũng Cú (Hà Giang) ở vĩ độ 23°23'B; điểm cực Nam tại Ngọc Hiển (Cà Mau) ở vĩ độ 8°34'B."
+        },
+        {
+          "id": "geography-12-vietnam-location-territory-q2",
+          "prompt": "Vùng biển thuộc chủ quyền hoàn toàn và tuyệt đối của quốc gia ven biển, có chiều rộng 12 hải lí tính từ đường cơ sở gọi là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nội thủy"
+            },
+            {
+              "id": "b",
+              "text": "Vùng đặc quyền kinh tế"
+            },
+            {
+              "id": "c",
+              "text": "Lãnh hải"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Theo Luật Biển Việt Nam và UNCLOS 1982, lãnh hải là vùng biển có chiều rộng 12 hải lí tính từ đường cơ sở ra phía biển, thuộc chủ quyền quốc gia."
+        },
+        {
+          "id": "geography-12-vietnam-location-territory-q3",
+          "prompt": "Vị trí địa lí nằm ở ngã tư đường hàng hải và hàng không quốc tế mang lại cho Việt Nam thế mạnh kinh tế nổi bật nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Có khí hậu quanh năm băng giá thích hợp thể thao mùa đông"
+            },
+            {
+              "id": "b",
+              "text": "Thuận lợi phát triển giao lưu kinh tế quốc tế, kinh tế biển, logistics và thu hút đầu tư nước ngoài"
+            },
+            {
+              "id": "c",
+              "text": "Tránh được hoàn toàn mọi loại thiên tai bão nhiệt đới từ biển"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Nằm trên các tuyến hàng hải nhộn nhịp kết nối Ấn Độ Dương và Thái Bình Dương tạo điều kiện phát triển cảng biển nước sâu và mở cửa hội nhập."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-vietnam-relief-landforms",
+      "title": "Đặc điểm địa hình và sự phân hóa cảnh quan tự nhiên Việt Nam",
+      "guidance": [
+        "Địa hình nước ta có 4 đặc điểm cơ bản: Đồi núi chiếm 3/4 diện tích nhưng chủ yếu là đồi núi thấp (dưới 1000m chiếm 85%, núi cao trên 2000m chỉ chiếm 1%); cấu trúc địa hình được Tân kiến tạo trẻ hóa, có tính phân bậc rõ rệt; hướng nghiêng chung là tây bắc - đông nam; hai hướng núi chính là tây bắc - đông nam (vùng Tây Bắc, Trường Sơn Bắc) và vòng cung (vùng Đông Bắc, Trường Sơn Nam). Địa hình chia thành các khu vực: đồi núi (Đông Bắc, Tây Bắc, Trường Sơn Bắc, Trường Sơn Nam) và đồng bằng (Đồng bằng sông Hồng, Đồng bằng sông Cửu Long, dải đồng bằng ven biển miền Trung)."
+      ],
+      "examples": [
+        "Dãy Hoàng Liên Sơn với đỉnh Fansipan cao 3143 m được mệnh danh là 'nóc nhà Đông Dương', thuộc vùng núi Tây Bắc có hướng nghiêng tây bắc - đông nam."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-vietnam-relief-landforms-q1",
+          "prompt": "Đặc điểm nào sau đây phản ánh đúng nhất cấu trúc cơ bản của địa hình đồi núi Việt Nam?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Địa hình chủ yếu là núi cao hiểm trở trên 3000 m chiếm hơn một nửa diện tích"
+            },
+            {
+              "id": "b",
+              "text": "Đồng bằng châu thổ chiếm tới 75% toàn bộ diện tích đất liền"
+            },
+            {
+              "id": "c",
+              "text": "Đồi núi chiếm 3/4 diện tích lãnh thổ, nhưng chủ yếu là đồi núi thấp dưới 1000 m"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Đồi núi thấp dưới 1000 m chiếm tới 85% diện tích cả nước, núi cao trên 2000 m chỉ chiếm khoảng 1%."
+        },
+        {
+          "id": "geography-12-vietnam-relief-landforms-q2",
+          "prompt": "Hai hướng núi chính thể hiện rõ nét nhất trong cấu trúc sơn văn của lãnh thổ Việt Nam là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hướng đông bắc - tây nam và hướng kinh tuyến"
+            },
+            {
+              "id": "b",
+              "text": "Hướng tây bắc - đông nam và hướng vòng cung"
+            },
+            {
+              "id": "c",
+              "text": "Hướng bắc - nam và hướng đông - tây"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Các dãy núi Tây Bắc và Trường Sơn Bắc có hướng tây bắc - đông nam; vùng núi Đông Bắc có 4 cánh cung lớn chụm đầu ở Tam Đảo."
+        },
+        {
+          "id": "geography-12-vietnam-relief-landforms-q3",
+          "prompt": "Sự tương phản sâu sắc về tự nhiên giữa vùng núi Đông Bắc và Tây Bắc nước ta thể hiện ở chỗ:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đông Bắc đón gió mùa đông bắc sâu sắc nên mùa đông đến sớm và lạnh nhất cả nước; Tây Bắc có địa hình cao chắn gió nên mùa đông ấm hơn ở vùng thấp"
+            },
+            {
+              "id": "b",
+              "text": "Đông Bắc chỉ có đồng bằng ven biển không có đồi núi"
+            },
+            {
+              "id": "c",
+              "text": "Tây Bắc có lượng mưa gấp mười lần Đông Bắc trong suốt mùa đông"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Các cánh cung mở rộng về phía bắc ở Đông Bắc tạo điều kiện cho gió mùa Đông Bắc tràn sâu; dãy Hoàng Liên Sơn đồ sộ ngăn bớt ảnh hưởng của gió lạnh sang Tây Bắc."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-vietnam-tropical-monsoon-climate",
+      "title": "Khí hậu nhiệt đới ẩm gió mùa và tài nguyên khí hậu",
+      "guidance": [
+        "Tính chất nhiệt đới: tổng bức xạ lớn, cân bằng bức xạ dương quanh năm, nhiệt độ trung bình năm trên 20 °C (trừ vùng núi cao), số giờ nắng 1400 - 3000 giờ/năm. Tính chất ẩm: lượng mưa lớn trung bình 1500 - 2000 mm/năm, độ ẩm không khí cao trên 80%. Tính chất gió mùa: gió mùa mùa đông (gió mùa Đông Bắc từ tháng 11 đến tháng 4 năm sau; nửa đầu đông lạnh khô, nửa sau đông lạnh ẩm có mưa phùn) và gió mùa mùa hạ (gió Tây Nam từ tháng 5 đến tháng 10; đầu mùa gây mưa cho Nam Bộ, Tây Nguyên và gây hiệu ứng phơn khô nóng ở Trung Bộ; giữa và cuối mùa gió tây nam kết hợp dải hội tụ gây mưa lớn cả nước)."
+      ],
+      "examples": [
+        "Hiện tượng gió phơn Tây Nam (gió Lào) thổi vượt qua dãy Trường Sơn khiến khu vực Bắc Trung Bộ vào đầu mùa hạ có những đợt nắng nóng gay gắt trên 39 °C với độ ẩm giảm dưới 45%."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-vietnam-tropical-monsoon-climate-q1",
+          "prompt": "Biểu hiện rõ nét nhất của tính chất nhiệt đới trong khí hậu Việt Nam là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Lượng mưa hàng năm rất thấp dưới 200 mm giống như hoang mạc"
+            },
+            {
+              "id": "b",
+              "text": "Nhiệt độ trung bình năm trên hầu khắp cả nước đều vượt 20 °C và tổng số giờ nắng dồi dào"
+            },
+            {
+              "id": "c",
+              "text": "Quanh năm luôn có bão tuyết và nhiệt độ âm"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Nhờ nằm hoàn toàn trong vùng nội chí tuyến, lãnh thổ nhận được lượng bức xạ mặt trời lớn, cân bằng bức xạ dương quanh năm."
+        },
+        {
+          "id": "geography-12-vietnam-tropical-monsoon-climate-q2",
+          "prompt": "Đặc điểm thời tiết nổi bật của miền Bắc nước ta vào nửa sau mùa đông (từ tháng 2 đến tháng 4) là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thời tiết lạnh ẩm và có mưa phùn"
+            },
+            {
+              "id": "b",
+              "text": "Thời tiết khô hanh, trời quang mây và không mưa"
+            },
+            {
+              "id": "c",
+              "text": "Nắng nóng gay gắt kéo dài nhiều tuần liên tiếp"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nửa sau mùa đông khối không khí lạnh lệch đông đi qua biển vào đất liền mang theo lượng ẩm lớn, gây thời tiết lạnh ẩm và mưa phùn rải rác."
+        },
+        {
+          "id": "geography-12-vietnam-tropical-monsoon-climate-q3",
+          "prompt": "Hiệu ứng phơn khô nóng (gió Lào) thường xuất hiện vào đầu mùa hạ ở vùng Bắc Trung Bộ do nguyên nhân địa lí nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Gió mùa Đông Bắc mang hơi nước từ biển vào đất liền"
+            },
+            {
+              "id": "b",
+              "text": "Bão nhiệt đới gây lốc xoáy làm tăng nhiệt độ không khí"
+            },
+            {
+              "id": "c",
+              "text": "Gió mùa Tây Nam vượt qua các dãy núi Trường Sơn bị chắn lại gây mưa ở sườn tây, khi sang sườn đông bị biến tính trở nên khô nóng"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Không khí ẩm khi leo lên sườn tây dãy núi bị ngưng tụ gây mưa, khi hạ xuống sườn đông nhiệt độ tăng theo độ dốc đoạn nhiệt khô (100m tăng 1 °C) tạo gió rất khô nóng."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-vietnam-population-demographics",
+      "title": "Dân số, cơ cấu dân số và sự phân bố dân cư Việt Nam",
+      "guidance": [
+        "Dân số Việt Nam đã vượt mốc 100 triệu người (đứng thứ 3 Đông Nam Á, thứ 15 thế giới). Nước ta đang trong thời kì 'cơ cấu dân số vàng' (tỉ lệ người trong độ tuổi lao động từ 15-64 tuổi chiếm trên 65%) nhưng đồng thời tốc độ già hóa dân số diễn ra rất nhanh. Cơ cấu lao động theo ngành chuyển dịch tích cực: giảm tỉ trọng nông - lâm - thủy sản, tăng tỉ trọng công nghiệp - xây dựng và dịch vụ. Phân bố dân cư không đều: tập trung đông đúc ở đồng bằng và đô thị (Đồng bằng sông Hồng mật độ trên 1000 người/km²), thưa thớt ở vùng đồi núi (Tây Bắc, Tây Nguyên dưới 100 người/km²)."
+      ],
+      "examples": [
+        "Vùng Đồng bằng sông Hồng có mật độ dân số cao gấp gần 10 lần mức trung bình của cả nước, tạo áp lực lớn lên nhà ở, việc làm và môi trường đô thị."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-vietnam-population-demographics-q1",
+          "prompt": "Quy mô dân số Việt Nam hiện nay đã chính thức vượt qua mốc dân số nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Trên 100 triệu người"
+            },
+            {
+              "id": "b",
+              "text": "Khoảng 50 triệu người"
+            },
+            {
+              "id": "c",
+              "text": "Trên 200 triệu người"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Năm 2023, dân số Việt Nam đã chính thức vượt qua mốc 100 triệu người, xếp thứ 3 ở Đông Nam Á sau Indonesia và Philippines."
+        },
+        {
+          "id": "geography-12-vietnam-population-demographics-q2",
+          "prompt": "Cơ hội phát triển kinh tế - xã hội lớn nhất do thời kì 'cơ cấu dân số vàng' mang lại cho nước ta là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Làm giảm chi phí đầu tư cho hệ thống giáo dục tiểu học về mức 0"
+            },
+            {
+              "id": "b",
+              "text": "Loại bỏ hoàn toàn vấn đề thất nghiệp ở các vùng đô thị"
+            },
+            {
+              "id": "c",
+              "text": "Cung cấp lực lượng lao động trẻ dồi dào, thúc đẩy tăng trưởng kinh tế nhanh nếu được đào tạo tốt"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Dân số vàng nghĩa là cứ hai người đi làm nuôi dưới một người phụ thuộc, tạo lợi thế lớn về năng suất và tích lũy vốn phát triển."
+        },
+        {
+          "id": "geography-12-vietnam-population-demographics-q3",
+          "prompt": "Sự phân bố dân cư không đồng đều giữa vùng đồng bằng và miền núi ở Việt Nam gây ra khó khăn chủ yếu nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khiến mọi con sông ở đồng bằng đều bị nhiễm mặn quanh năm"
+            },
+            {
+              "id": "b",
+              "text": "Nơi đồng bằng đất chật người đông gây áp lực việc làm, còn miền núi giàu tài nguyên lại thiếu hụt lao động"
+            },
+            {
+              "id": "c",
+              "text": "Làm cho nguồn tài nguyên khoáng sản ở miền núi bị cạn kiệt trong thời gian ngắn"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mật độ dân số chênh lệch lớn cản trở việc khai thác hợp lí tiềm năng kinh tế phong phú của vùng núi và gây sức ép hạ tầng tại đồng bằng."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-vietnam-urbanization-process",
+      "title": "Quá trình đô thị hóa và mạng lưới đô thị ở Việt Nam",
+      "guidance": [
+        "Đặc điểm đô thị hóa ở Việt Nam: diễn ra với tốc độ nhanh nhưng trình độ đô thị hóa còn thấp so với các nước trong khu vực (tỉ lệ dân thành thị đạt khoảng 42%); mạng lưới đô thị phân bố không đều, tập trung nhiều ở các vùng đồng bằng và ven biển. Phân loại đô thị gồm: 2 đô thị loại đặc biệt (Hà Nội, TP. Hồ Chí Minh), đô thị loại I, II, III, IV, V. Đô thị đóng vai trò là hạt nhân thúc đẩy tăng trưởng kinh tế, chuyển dịch cơ cấu và đổi mới sáng tạo, nhưng đối mặt với thách thức ùn tắc giao thông, ô nhiễm môi trường và ngập úng."
+      ],
+      "examples": [
+        "Hà Nội và TP. Hồ Chí Minh là hai cực tăng trưởng kinh tế lớn nhất, đóng góp hơn 45% tổng thu ngân sách nhà nước của cả nước."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-vietnam-urbanization-process-q1",
+          "prompt": "Hai đô thị trực thuộc trung ương được xếp vào cấp đô thị loại đặc biệt ở Việt Nam là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đà Nẵng và Hải Phòng"
+            },
+            {
+              "id": "b",
+              "text": "Cần Thơ và Nha Trang"
+            },
+            {
+              "id": "c",
+              "text": "Hà Nội và Thành phố Hồ Chí Minh"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hà Nội (thủ đô) và TP. Hồ Chí Minh (đầu tàu kinh tế phía Nam) là hai đô thị loại đặc biệt của cả nước."
+        },
+        {
+          "id": "geography-12-vietnam-urbanization-process-q2",
+          "prompt": "Đặc điểm cơ bản của quá trình đô thị hóa ở Việt Nam hiện nay là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Các đô thị hoàn toàn không có sự đóng góp nào vào nguồn thu ngân sách"
+            },
+            {
+              "id": "b",
+              "text": "Tốc độ đô thị hóa diễn ra nhanh nhưng trình độ đô thị hóa nhìn chung vẫn còn thấp"
+            },
+            {
+              "id": "c",
+              "text": "Tỉ lệ dân số thành thị đã chiếm trên 90% tổng số dân cả nước"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Dù tỉ lệ dân thành thị tăng đều đặn qua các năm nhưng chất lượng cơ sở hạ tầng và dịch vụ đô thị còn nhiều hạn chế."
+        },
+        {
+          "id": "geography-12-vietnam-urbanization-process-q3",
+          "prompt": "Tác động tích cực hàng đầu của mạng lưới đô thị đối với sự phát triển kinh tế - xã hội các vùng là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đóng vai trò là các cực tăng trưởng, lan tỏa công nghiệp hóa, hiện đại hóa và thu hút vốn đầu tư"
+            },
+            {
+              "id": "b",
+              "text": "Làm tăng tỉ trọng nông nghiệp truyền thống trong cơ cấu GDP vùng"
+            },
+            {
+              "id": "c",
+              "text": "Làm giảm nhu cầu sử dụng mạng lưới điện và viễn thông quốc gia"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Đô thị là trung tâm dịch vụ, công nghiệp, đào tạo nhân lực và thị trường tiêu thụ thúc đẩy kinh tế các vùng phụ cận cùng phát triển."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-vietnam-agriculture-restructuring",
+      "title": "Chuyển dịch cơ cấu ngành nông nghiệp theo hướng hàng hóa, sinh thái",
+      "guidance": [
+        "Nông nghiệp Việt Nam đang chuyển đổi mạnh mẽ từ 'tư duy sản xuất nông nghiệp' sang 'tư duy kinh tế nông nghiệp' tích hợp đa giá trị. Cơ cấu trồng trọt: giảm tỉ trọng lúa gạo phẩm cấp thấp, tăng diện tích cây ăn quả nhiệt đới (sầu riêng, thanh long, xoài) và cây công nghiệp lâu năm giá trị cao (cà phê, cao su, hồ tiêu, điều); mở rộng diện tích nông nghiệp hữu cơ, ứng dụng công nghệ cao (tưới nhỏ giọt, nhà màng). Chăn nuôi chuyển từ quy mô nhỏ lẻ sang trang trại tập trung công nghiệp, an toàn sinh học."
+      ],
+      "examples": [
+        "Mô hình trồng bưởi da xanh và sầu riêng chuyên canh xuất khẩu tại Tiền Giang và Bến Tre mang lại doanh thu hàng trăm triệu đồng trên mỗi hecta, gấp nhiều lần trồng lúa truyền thống."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-vietnam-agriculture-restructuring-q1",
+          "prompt": "Xu hướng chuyển dịch cơ cấu nội bộ ngành trồng trọt của nước ta hiện nay là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chuyển toàn bộ diện tích đất nông nghiệp sang khai thác mỏ khoáng sản"
+            },
+            {
+              "id": "b",
+              "text": "Giảm tỉ trọng cây lương thực phẩm cấp thấp, tăng tỉ trọng cây công nghiệp lâu năm và cây ăn quả chất lượng cao"
+            },
+            {
+              "id": "c",
+              "text": "Xóa bỏ hoàn toàn diện tích trồng lúa để trồng toàn bộ cỏ chăn nuôi"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Tái cơ cấu trồng trọt tập trung vào nâng cao giá trị gia tăng, đáp ứng tiêu chuẩn xuất khẩu và thích ứng biến đổi khí hậu."
+        },
+        {
+          "id": "geography-12-vietnam-agriculture-restructuring-q2",
+          "prompt": "Vùng chuyên canh cây cà phê lớn nhất của Việt Nam, đưa nước ta trở thành quốc gia xuất khẩu cà phê Robusta hàng đầu thế giới là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Vùng Tây Nguyên"
+            },
+            {
+              "id": "b",
+              "text": "Vùng Đồng bằng sông Hồng"
+            },
+            {
+              "id": "c",
+              "text": "Vùng Bắc Trung Bộ"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tây Nguyên có diện tích đất đỏ bazan màu mỡ và khí hậu cận xích đạo rất thích hợp hình thành các vùng chuyên canh cà phê quy mô lớn."
+        },
+        {
+          "id": "geography-12-vietnam-agriculture-restructuring-q3",
+          "prompt": "Việc áp dụng công nghệ tưới tiết kiệm nhỏ giọt Israel và nhà màng trong sản xuất nông nghiệp công nghệ cao nhằm mục đích chủ yếu gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Làm tăng chi phí sản xuất lên mức tối đa mà không cần thu hoạch"
+            },
+            {
+              "id": "b",
+              "text": "Biến đổi mọi giống cây nhiệt đới thành cây ôn đới tuyết phủ"
+            },
+            {
+              "id": "c",
+              "text": "Chủ động điều tiết nước và phân bón, giảm thiểu sâu bệnh, tiết kiệm tài nguyên và nâng cao năng suất sản phẩm"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nông nghiệp công nghệ cao tối ưu hóa dinh dưỡng và nước tưới theo nhu cầu sinh trưởng của cây, nâng cao chất lượng nông sản sạch xuất khẩu."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-vietnam-forestry-fisheries",
+      "title": "Phát triển lâm nghiệp và thủy sản bền vững",
+      "guidance": [
+        "Lâm nghiệp có cơ cấu gồm quản lí, bảo vệ, khoanh nuôi và phát triển rừng. Ba loại rừng: rừng đặc dụng (bảo tồn gene, vườn quốc gia), rừng phòng hộ (đầu nguồn, chắn sóng ven biển), rừng sản xuất (cung cấp gỗ, lâm sản). Chính sách đóng cửa rừng tự nhiên và đẩy mạnh trồng rừng gỗ lớn có chứng chỉ FSC. Ngành thủy sản: đường bờ biển dài 3260 km, 4 ngư trường trọng điểm; đẩy mạnh nuôi trồng thủy sản nước ngọt, lợ, mặn (tôm nước lợ, cá tra); khắc phục 'thẻ vàng' IUU qua giám sát hành trình tàu cá, phát triển nghề cá có trách nhiệm."
+      ],
+      "examples": [
+        "Ngành nuôi và chế biến tôm xuất khẩu tại Cà Mau, Bạc Liêu áp dụng mô hình tôm - rừng ngập mặn sinh thái đạt chứng nhận quốc tế, vừa giữ rừng vừa đạt giá trị kinh tế cao."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-vietnam-forestry-fisheries-q1",
+          "prompt": "Loại rừng nào sau đây có chức năng chủ yếu là bảo tồn nguồn gene sinh vật quý hiếm và nghiên cứu khoa học?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Rừng đặc dụng (các vườn quốc gia, khu bảo tồn thiên nhiên)"
+            },
+            {
+              "id": "b",
+              "text": "Rừng sản xuất lấy gỗ"
+            },
+            {
+              "id": "c",
+              "text": "Rừng trồng bạch đàn thương phẩm"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Rừng đặc dụng bảo vệ hệ sinh thái mẫu chuẩn, bảo tồn đa dạng sinh học và cảnh quan di sản thiên nhiên."
+        },
+        {
+          "id": "geography-12-vietnam-forestry-fisheries-q2",
+          "prompt": "Hai mặt hàng thủy sản nuôi trồng xuất khẩu chủ lực mang lại kim ngạch hàng tỉ USD mỗi năm cho nước ta là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cá hồi và cá tầm ôn đới"
+            },
+            {
+              "id": "b",
+              "text": "Rong biển tươi và cua đồng"
+            },
+            {
+              "id": "c",
+              "text": "Tôm nước lợ và cá tra"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Đồng bằng sông Cửu Long là vựa tôm và cá tra lớn nhất nước, đóng góp phần lớn kim ngạch xuất khẩu thủy sản của Việt Nam."
+        },
+        {
+          "id": "geography-12-vietnam-forestry-fisheries-q3",
+          "prompt": "Nhiệm vụ cấp bách hàng đầu của ngành khai thác hải sản xa bờ Việt Nam nhằm gỡ bỏ cảnh báo 'thẻ vàng' của Ủy ban châu Âu (EC) là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đóng cửa các cảng cá và cấm xuất khẩu hải sản sang mọi châu lục"
+            },
+            {
+              "id": "b",
+              "text": "Chấm dứt hoàn toàn tình trạng khai thác hải sản bất hợp pháp, không báo cáo và không theo quy định (IUU)"
+            },
+            {
+              "id": "c",
+              "text": "Ngừng hoàn toàn hoạt động đánh bắt cá của tất cả ngư dân trên biển"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Gỡ thẻ vàng IUU đòi hỏi lắp đặt 100% thiết bị giám sát hành trình (VMS), truy xuất nguồn gốc thủy sản và xử lí nghiêm vi phạm vùng biển nước ngoài."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-vietnam-industry-restructuring",
+      "title": "Chuyển dịch cơ cấu ngành công nghiệp và phát triển công nghiệp xanh",
+      "guidance": [
+        "Cơ cấu ngành công nghiệp dịch chuyển theo hướng hiện đại: giảm tỉ trọng công nghiệp khai khoáng, tăng nhanh tỉ trọng công nghiệp chế biến - chế tạo và công nghiệp công nghệ cao (điện tử, máy vi tính, viễn thông, linh kiện bán dẫn). Giảm thâm dụng lao động phổ thông, chuyển dịch sang tự động hóa, chuyển đổi số và kinh tế xanh. Không gian công nghiệp hình thành các trung tâm công nghiệp lớn (Hà Nội - Hải Phòng - Quảng Ninh ở phía Bắc; TP. Hồ Chí Minh - Bình Dương - Đồng Nai - Bà Rịa - Vũng Tàu ở phía Nam) gắn với các khu công nghiệp sinh thái."
+      ],
+      "examples": [
+        "Sự hình thành các tổ hợp sản xuất vi mạch bán dẫn và thiết bị di động của các tập đoàn công nghệ toàn cầu tại Bắc Ninh, Thái Nguyên, TP. Hồ Chí Minh đưa Việt Nam vào chuỗi giá trị công nghệ cao."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-vietnam-industry-restructuring-q1",
+          "prompt": "Nhóm ngành công nghiệp hiện đang chiếm tỉ trọng áp đảo và đóng vai trò động lực tăng trưởng chính của công nghiệp Việt Nam là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Công nghiệp khai thác than và quặng kim loại thô"
+            },
+            {
+              "id": "b",
+              "text": "Công nghiệp đan lát thủ công gia đình"
+            },
+            {
+              "id": "c",
+              "text": "Công nghiệp chế biến, chế tạo"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Công nghiệp chế biến, chế tạo đóng góp trên 80% giá trị sản xuất công nghiệp và là nguồn thu xuất khẩu lớn nhất của đất nước."
+        },
+        {
+          "id": "geography-12-vietnam-industry-restructuring-q2",
+          "prompt": "Hai vùng kinh tế tập trung mật độ các khu công nghiệp và trung tâm công nghiệp quy mô lớn nhất cả nước là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Vùng Bắc Trung Bộ và Duyên hải Nam Trung Bộ"
+            },
+            {
+              "id": "b",
+              "text": "Vùng Đông Nam Bộ và Vùng Đồng bằng sông Hồng"
+            },
+            {
+              "id": "c",
+              "text": "Vùng Tây Nguyên và Vùng Tây Bắc"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Đông Nam Bộ và Đồng bằng sông Hồng hội tụ hạ tầng giao thông, cảng biển, nguồn nhân lực chất lượng cao và thị trường tiêu thụ lớn nhất nước."
+        },
+        {
+          "id": "geography-12-vietnam-industry-restructuring-q3",
+          "prompt": "Mục tiêu phát triển các 'Khu công nghiệp sinh thái' (Eco-Industrial Park) trong định hướng công nghiệp xanh ở Việt Nam là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Áp dụng kinh tế tuần hoàn, tận dụng chất thải của nhà máy này làm nguyên liệu cho nhà máy khác và giảm phát thải carbon"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ cho phép trồng cây ăn quả bên trong khuôn viên nhà xưởng"
+            },
+            {
+              "id": "c",
+              "text": "Ngừng sử dụng toàn bộ máy móc cơ khí và chuyển sang làm thủ công"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Khu công nghiệp sinh thái tối ưu hóa tài nguyên qua cộng sinh công nghiệp, giảm thiểu ô nhiễm và hướng tới tiêu chuẩn phát thải ròng bằng 0."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-vietnam-energy-transition",
+      "title": "Phát triển ngành năng lượng và chuyển dịch năng lượng tái tạo",
+      "guidance": [
+        "Ngành năng lượng là huyết mạch bảo đảm an ninh năng lượng quốc gia. Cơ cấu nguồn điện trước đây dựa vào thủy điện (Sơn La, Hòa Bình) và nhiệt điện than, khí. Thực hiện cam kết quốc tế đạt phát thải ròng bằng 0 (Net Zero) vào năm 2050 theo Quy hoạch điện VIII, Việt Nam đang đẩy mạnh chuyển dịch năng lượng công bằng (JETP): hạn chế nhiệt điện than, phát triển nhiệt điện khí LNG, bùng nổ năng lượng tái tạo (điện gió trên bờ và ngoài khơi, điện mặt trời, điện sinh khối) và hiện đại hóa lưới điện thông minh."
+      ],
+      "examples": [
+        "Các cánh đồng điện gió ngoài khơi tại Bạc Liêu, Sóc Trăng và các dự án điện mặt trời tại Ninh Thuận, Bình Thuận đã bổ sung hàng tỉ kWh điện sạch vào lưới điện quốc gia mỗi năm."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-vietnam-energy-transition-q1",
+          "prompt": "Nhà máy thủy điện có công suất lớn nhất Việt Nam và khu vực Đông Nam Á hiện nay là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thủy điện Trị An"
+            },
+            {
+              "id": "b",
+              "text": "Thủy điện Sơn La (trên sông Đà)"
+            },
+            {
+              "id": "c",
+              "text": "Thủy điện Hòa Bình"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Thủy điện Sơn La có công suất thiết kế 2400 MW, khánh thành năm 2012, là công trình thủy điện lớn nhất Đông Nam Á."
+        },
+        {
+          "id": "geography-12-vietnam-energy-transition-q2",
+          "prompt": "Hai tỉnh Duyên hải Nam Trung Bộ có tiềm năng bức xạ mặt trời và tốc độ gió lớn nhất, trở thành trung tâm năng lượng tái tạo của cả nước là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ninh Thuận và Bình Thuận"
+            },
+            {
+              "id": "b",
+              "text": "Nam Định và Thái Bình"
+            },
+            {
+              "id": "c",
+              "text": "Điện Biên và Lai Châu"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Ninh Thuận và Bình Thuận có số giờ nắng cao quanh năm và lượng gió ổn định, thu hút hàng loạt dự án điện mặt trời và điện gió quy mô lớn."
+        },
+        {
+          "id": "geography-12-vietnam-energy-transition-q3",
+          "prompt": "Xu hướng chuyển dịch năng lượng theo Quy hoạch phát triển điện lực quốc gia (Quy hoạch điện VIII) hướng tới cam kết Net Zero năm 2050 là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tăng tối đa việc xây dựng thêm các nhà máy nhiệt điện đốt than bùn"
+            },
+            {
+              "id": "b",
+              "text": "Cấm hoàn toàn việc sử dụng điện năng trong sản xuất công nghiệp"
+            },
+            {
+              "id": "c",
+              "text": "Giảm dần tỉ trọng nhiệt điện than, phát triển mạnh mẽ điện gió, điện mặt trời và năng lượng sạch tái tạo"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Quy hoạch điện VIII ưu tiên tối đa nguồn năng lượng tái tạo nhằm giảm phát thải khí nhà kính và bảo đảm an ninh năng lượng bền vững."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-vietnam-services-transport-tourism",
+      "title": "Phát triển các ngành dịch vụ, giao thông vận tải và du lịch",
+      "guidance": [
+        "Khu vực dịch vụ chiếm tỉ trọng ngày càng lớn trong GDP (>40%). Giao thông vận tải phát triển đồng bộ: đường bộ cao tốc Bắc - Nam, đường sắt đô thị (Hà Nội, TP.HCM), cảng biển nước sâu quốc tế (Lạch Huyện - Hải Phòng, Cái Mép - Thị Vải - Bà Rịa Vũng Tàu tiếp nhận tàu mẹ xuyên đại dương), hàng không mở rộng các sân bay quốc tế (Long Thành, Nội Bài, Tân Sơn Nhất). Ngành du lịch trở thành ngành kinh tế mũi nhọn với tài nguyên du lịch tự nhiên (kì quan thiên nhiên, bãi biển) và nhân văn (di sản văn hóa, ẩm thực); phát triển du lịch sinh thái, di sản, nghỉ dưỡng."
+      ],
+      "examples": [
+        "Cảng quốc tế Cái Mép - Thị Vải là một trong số ít cảng nước sâu của Đông Nam Á có thể tiếp nhận trực tiếp các siêu tàu container lớn nhất thế giới đi thẳng sang châu Âu và bờ Tây Hoa Kỳ mà không cần trung chuyển."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-vietnam-services-transport-tourism-q1",
+          "prompt": "Tuyến đường bộ huyết mạch nối liền đất nước từ Bắc vào Nam dọc theo chiều dài dải đất non sông là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Quốc lộ 1A và đường cao tốc Bắc - Nam phía Đông"
+            },
+            {
+              "id": "b",
+              "text": "Đường Hồ Chí Minh trên biển"
+            },
+            {
+              "id": "c",
+              "text": "Tuyến đường vành đai biên giới số 4"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Quốc lộ 1A và tuyến cao tốc Bắc - Nam là trục xương sống giao thông vận tải đường bộ kết nối các trung tâm kinh tế từ Lạng Sơn đến Cà Mau."
+        },
+        {
+          "id": "geography-12-vietnam-services-transport-tourism-q2",
+          "prompt": "Cụm cảng biển nước sâu quốc tế ở Đông Nam Bộ có khả năng tiếp nhận các siêu tàu container đi trực tiếp sang bờ Tây nước Mĩ là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cảng Cửa Lò (Nghệ An)"
+            },
+            {
+              "id": "b",
+              "text": "Cảng Quy Nhơn (Bình Định)"
+            },
+            {
+              "id": "c",
+              "text": "Cụm cảng Cái Mép - Thị Vải (Bà Rịa - Vũng Tàu)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Cái Mép - Thị Vải có luồng sâu tự nhiên, là cửa ngõ xuất nhập khẩu hàng hải quốc tế hiện đại hàng đầu của Việt Nam."
+        },
+        {
+          "id": "geography-12-vietnam-services-transport-tourism-q3",
+          "prompt": "Để ngành du lịch Việt Nam thực sự trở thành ngành kinh tế mũi nhọn và phát triển bền vững, giải pháp then chốt là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chặt phá các khu rừng nguyên sinh để xây dựng toàn bộ sân golf"
+            },
+            {
+              "id": "b",
+              "text": "Nâng cao chất lượng dịch vụ, đa dạng hóa sản phẩm du lịch độc đáo, bảo vệ môi trường cảnh quan và ứng dụng công nghệ số"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ tập trung vào hạ giá vé thật thấp và chấp nhận xả rác bừa bãi tại điểm đến"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Phát triển du lịch xanh, chuyên nghiệp, giữ gìn bản sắc văn hóa và môi trường tự nhiên giúp gia tăng thời gian lưu trú và chi tiêu của du khách."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-red-river-delta-development",
+      "title": "Vùng Đồng bằng sông Hồng: Thế mạnh và chuyển dịch cơ cấu kinh tế",
+      "guidance": [
+        "Đồng bằng sông Hồng là trung tâm chính trị, văn hóa, khoa học và kinh tế năng động của cả nước. Thế mạnh nổi bật: nguồn lao động dồi dào có trình độ chuyên môn kĩ thuật cao nhất cả nước; mạng lưới kết cấu hạ tầng giao thông và đô thị hoàn thiện; thị trường tiêu thụ rộng lớn; tài nguyên đất phù sa sông Hồng màu mỡ. Chuyển dịch cơ cấu: tăng nhanh tỉ trọng công nghiệp chế biến, công nghệ thông tin (Hà Nội, Bắc Ninh, Hải Phòng), dịch vụ tài chính, logistics; nông nghiệp phát triển công nghệ cao gắn với rau vụ đông."
+      ],
+      "examples": [
+        "Vụ đông với các cây trồng ưa lạnh như khoai tây, cà rốt, bắp cải đã trở thành vụ sản xuất chính thứ ba mang lại giá trị kinh tế cao cho nông dân Đồng bằng sông Hồng."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-red-river-delta-development-q1",
+          "prompt": "Thế mạnh vượt trội nhất về mặt nguồn nhân lực của vùng Đồng bằng sông Hồng so với các vùng khác là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Toàn bộ lao động chỉ có kinh nghiệm săn bắt thú hoang dã"
+            },
+            {
+              "id": "b",
+              "text": "Chi phí thuê nhân công rẻ nhất trong toàn bộ khu vực"
+            },
+            {
+              "id": "c",
+              "text": "Nguồn lao động rất dồi dào và có tỉ lệ lao động qua đào tạo cao nhất cả nước"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Vùng tập trung phần lớn các trường đại học, viện nghiên cứu lớn nên có mật độ tri thức và tay nghề kĩ thuật đứng đầu cả nước."
+        },
+        {
+          "id": "geography-12-red-river-delta-development-q2",
+          "prompt": "Vụ sản xuất nông nghiệp đặc trưng tạo nên nét độc đáo của Đồng bằng sông Hồng nhờ có mùa đông lạnh là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Vụ mưa tuyết trồng cây cao su"
+            },
+            {
+              "id": "b",
+              "text": "Vụ đông (trồng các loại rau màu ưa lạnh như khoai tây, su hào, bắp cải)"
+            },
+            {
+              "id": "c",
+              "text": "Vụ hè thu trồng lúa nổi"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mùa đông lạnh ở miền Bắc cho phép trồng các giống cây nguồn gốc cận nhiệt và ôn đới, biến vụ đông thành vụ hàng hóa có hiệu quả kinh tế cao."
+        },
+        {
+          "id": "geography-12-red-river-delta-development-q3",
+          "prompt": "Định hướng chuyển dịch cơ cấu ngành kinh tế của vùng Đồng bằng sông Hồng đến năm 2030 là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phát triển công nghiệp hiện đại, công nghệ cao, dịch vụ chất lượng cao gắn với kinh tế tri thức và đô thị thông minh"
+            },
+            {
+              "id": "b",
+              "text": "Mở rộng diện tích khai thác quặng than lộ thiên trong các khu dân cư"
+            },
+            {
+              "id": "c",
+              "text": "Chuyển toàn bộ lực lượng lao động công nghiệp sang làm nông nghiệp tự cấp tự túc"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Đồng bằng sông Hồng được định hướng trở thành trung tâm công nghệ cao, tài chính, logistics và dịch vụ hiện đại hàng đầu khu vực."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-mekong-delta-climate-adaptation",
+      "title": "Vùng Đồng bằng sông Cửu Long: Thích ứng biến đổi khí hậu và an ninh lương thực",
+      "guidance": [
+        "Đồng bằng sông Cửu Long là vùng sản xuất lương thực, thực phẩm, thủy sản và trái cây lớn nhất cả nước (đóng góp trên 50% sản lượng lúa và 90% lượng gạo xuất khẩu). Đặc điểm tự nhiên: mạng lưới kênh rạch chằng chịt, đất phù sa ngọt ven sông Tiền, sông Hậu; đất phèn, đất mặn chiếm diện tích lớn. Thách thức lớn: biến đổi khí hậu, nước biển dâng, sụt lún đất, xâm nhập mặn sâu vào mùa khô và thiếu phù sa do thủy điện thượng nguồn Mê Kông. Định hướng: Nghị quyết 120/NQ-CP 'thuận thiên', chuyển đổi mô hình kinh tế nông nghiệp (lúa - tôm, cây ăn trái), xây dựng hồ trữ nước ngọt."
+      ],
+      "examples": [
+        "Mô hình một vụ lúa vào mùa mưa ngọt và một vụ nuôi tôm vào mùa nước lợ mặn tại Bạc Liêu, Sóc Trăng là minh chứng xuất sắc cho giải pháp thích ứng 'thuận thiên'."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-mekong-delta-climate-adaptation-q1",
+          "prompt": "Vai trò quan trọng hàng đầu của vùng Đồng bằng sông Cửu Long đối với cả nước là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Là trung tâm luyện kim đen và chế tạo máy bay lớn nhất nước"
+            },
+            {
+              "id": "b",
+              "text": "Là vùng trọng điểm sản xuất lương thực, thủy sản và trái cây lớn nhất, bảo đảm an ninh lương thực quốc gia và xuất khẩu"
+            },
+            {
+              "id": "c",
+              "text": "Là vùng tập trung nhiều nhất các mỏ quặng sắt và than đá"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Đồng bằng sông Cửu Long chiếm hơn một nửa sản lượng lúa cả nước và cung cấp phần lớn sản lượng gạo xuất khẩu của Việt Nam."
+        },
+        {
+          "id": "geography-12-mekong-delta-climate-adaptation-q2",
+          "prompt": "Thách thức môi trường tự nhiên gay gắt nhất đe dọa sinh kế của người dân Đồng bằng sông Cửu Long vào mùa khô hiện nay là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hiện tượng hạn hán kết hợp với xâm nhập mặn lấn sâu vào nội đồng"
+            },
+            {
+              "id": "b",
+              "text": "Bão tuyết và rét đậm kéo dài nhiều tháng"
+            },
+            {
+              "id": "c",
+              "text": "Núi lửa phun trào dung nham dọc các bờ kênh"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Lưu lượng dòng chảy thượng nguồn giảm làm nước biển theo triều dâng xâm nhập sâu hàng chục km vào các nhánh sông, làm thiếu nước ngọt sinh hoạt và tưới tiêu."
+        },
+        {
+          "id": "geography-12-mekong-delta-climate-adaptation-q3",
+          "prompt": "Quan điểm phát triển 'thuận thiên' theo tinh thần Nghị quyết 120/NQ-CP của Chính phủ tại vùng Đồng bằng sông Cửu Long có nghĩa là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Để mặc thiên nhiên tàn phá mà không thực hiện bất kì công trình bảo vệ nào"
+            },
+            {
+              "id": "b",
+              "text": "Xây đê bê tông cao ngăn chặn toàn bộ các dòng sông chảy ra biển"
+            },
+            {
+              "id": "c",
+              "text": "Chủ động thích ứng với biến đổi khí hậu, coi nước mặn và nước lợ cũng là tài nguyên để chuyển dịch mô hình kinh tế phù hợp thay vì chống lại tự nhiên"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Thuận thiên nghĩa là tôn trọng quy luật tự nhiên, chuyển vùng mặn lợ sang nuôi trồng thủy sản, giảm diện tích lúa 3 vụ không hiệu quả để giảm sức ép tài nguyên nước."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-southeast-region-growth-pole",
+      "title": "Vùng Đông Nam Bộ: Đầu tàu kinh tế, công nghiệp và đô thị hóa",
+      "guidance": [
+        "Đông Nam Bộ là vùng kinh tế phát triển năng động nhất cả nước, đóng góp hơn 30% GDP và gần 40% thu ngân sách quốc gia. Thế mạnh: vị trí đầu mối giao thông quốc tế; địa hình bán bình nguyên lượn sóng bằng phẳng, đất bazan và xám thoát nước tốt thích hợp cây công nghiệp (cao su, điều); thềm lục địa giàu dầu mỏ, khí đốt; nguồn nhân lực và vốn FDI dồi dào. Đầu tàu là TP. Hồ Chí Minh. Định hướng phát triển: trung tâm công nghiệp công nghệ cao, bán dẫn, trung tâm tài chính quốc tế, dịch vụ logistics hiện đại và liên kết vùng bền vững."
+      ],
+      "examples": [
+        "Thành phố Thủ Đức (thuộc TP. Hồ Chí Minh) với Khu công nghệ cao và khu đô thị đại học đang vươn lên thành thung lũng sáng tạo của vùng kinh tế trọng điểm phía Nam."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-southeast-region-growth-pole-q1",
+          "prompt": "Đặc điểm nào sau đây khẳng định vị thế kinh tế số 1 của vùng Đông Nam Bộ ở Việt Nam?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Là vùng đóng góp tỉ trọng GDP và thu ngân sách nhà nước cao nhất cả nước"
+            },
+            {
+              "id": "b",
+              "text": "Là vùng có diện tích đất tự nhiên rộng lớn nhất cả nước"
+            },
+            {
+              "id": "c",
+              "text": "Là vùng có mật độ dân số thấp nhất trong tất cả các vùng"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Đông Nam Bộ là cực tăng trưởng kinh tế năng động nhất, dẫn đầu cả nước về quy mô kinh tế, thu hút vốn FDI và xuất khẩu."
+        },
+        {
+          "id": "geography-12-southeast-region-growth-pole-q2",
+          "prompt": "Tài nguyên khoáng sản nổi bật ở thềm lục địa của vùng Đông Nam Bộ có ý nghĩa chiến lược quốc gia là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Than đá và than bùn"
+            },
+            {
+              "id": "b",
+              "text": "Quặng sắt và bauxite"
+            },
+            {
+              "id": "c",
+              "text": "Dầu mỏ và khí tự nhiên"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Các mỏ dầu khí lớn ngoài khơi Bà Rịa - Vũng Tàu (Bạch Hổ, Rạng Đông) là nguồn nguyên liệu cho công nghiệp năng lượng và hóa dầu."
+        },
+        {
+          "id": "geography-12-southeast-region-growth-pole-q3",
+          "prompt": "Nhiệm vụ trọng tâm trong phát triển công nghiệp của vùng Đông Nam Bộ trong giai đoạn hiện nay là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ngừng hoàn toàn việc hợp tác đầu tư với các tập đoàn công nghệ quốc tế"
+            },
+            {
+              "id": "b",
+              "text": "Chuyển từ các ngành thâm dụng lao động phổ thông sang công nghiệp công nghệ cao, kinh tế số và chuỗi cung ứng bán dẫn"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ tập trung vào công nghiệp đóng gói bao bì thô"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Trước áp lực chi phí nhân công và đất đai, vùng đang tái cơ cấu mạnh mẽ lên nấc thang công nghệ cao và dịch vụ tài chính giá trị gia tăng lớn."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-vietnam-marine-economy",
+      "title": "Phát triển kinh tế biển gắn với bảo đảm quốc phòng - an ninh",
+      "guidance": [
+        "Nghị quyết số 36-NQ/TW về Chiến lược phát triển bền vững kinh tế biển Việt Nam đến năm 2030, tầm nhìn đến năm 2045 xác định mục tiêu đưa Việt Nam trở thành quốc gia biển mạnh. Các ngành kinh tế biển then chốt theo thứ tự ưu tiên: 1. Du lịch và dịch vụ biển; 2. Kinh tế hàng hải (vận tải, cảng biển, logistics); 3. Khai thác dầu khí và khoáng sản biển; 4. Nuôi trồng và khai thác hải sản; 5. Công nghiệp ven biển; 6. Năng lượng tái tạo và các ngành kinh tế biển mới. Phát triển kinh tế biển gắn chặt với bảo vệ môi trường biển, đảo và giữ vững chủ quyền, an ninh quốc gia trên biển."
+      ],
+      "examples": [
+        "Các đảo ven bờ như Phú Quốc (Kiên Giang), Cát Bà (Hải Phòng), Côn Đảo (Bà Rịa - Vũng Tàu) đang phát triển thành các trung tâm du lịch sinh thái biển đẳng cấp quốc tế."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-vietnam-marine-economy-q1",
+          "prompt": "Nghị quyết 36-NQ/TW của Trung ương Đảng xác định ngành kinh tế biển nào giữ vị trí ưu tiên hàng đầu?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khai thác cát sỏi lòng biển làm vật liệu san lấp"
+            },
+            {
+              "id": "b",
+              "text": "Chế biến dầu thô xuất khẩu"
+            },
+            {
+              "id": "c",
+              "text": "Du lịch và dịch vụ biển"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Du lịch biển với bờ biển dài và hàng nghìn hòn đảo đẹp là ngành kinh tế có tiềm năng đột phá và lan tỏa nhanh nhất."
+        },
+        {
+          "id": "geography-12-vietnam-marine-economy-q2",
+          "prompt": "Hệ thống các đảo và quần đảo của Việt Nam trên Biển Đông có ý nghĩa chiến lược to lớn về:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không có bất kì giá trị kinh tế nào do diện tích quá nhỏ"
+            },
+            {
+              "id": "b",
+              "text": "Kinh tế biển, căn cứ tiến ra biển lớn và bảo đảm quốc phòng, an ninh bảo vệ Tổ quốc"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ dùng để làm nơi lưu giữ rác thải công nghiệp"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hệ thống đảo tạo nên các tiền tiêu bảo vệ lãnh thổ, là điểm tựa cho ngư dân bám biển và xác định các vùng biển theo luật pháp quốc tế."
+        },
+        {
+          "id": "geography-12-vietnam-marine-economy-q3",
+          "prompt": "Mối quan hệ mật thiết giữa phát triển kinh tế biển và bảo vệ an ninh quốc phòng được thể hiện qua hành động nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hỗ trợ ngư dân đóng tàu vỏ thép công suất lớn vươn khơi bám biển dài ngày, vừa làm giàu vừa khẳng định mốc chủ quyền sống trên biển"
+            },
+            {
+              "id": "b",
+              "text": "Rút toàn bộ tàu thuyền đánh cá về bờ để tránh mọi va chạm"
+            },
+            {
+              "id": "c",
+              "text": "Khai thác san hô tự do để bán cho khách du lịch"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Mỗi con tàu đánh cá của ngư dân trên ngư trường Hoàng Sa, Trường Sa là một 'cột mốc chủ quyền' bảo vệ vùng trời, vùng biển thiêng liêng của Tổ quốc."
+        }
+      ]
+    },
+    {
+      "id": "geography-12-environmental-sustainability-vietnam",
+      "title": "Sử dụng tài nguyên, bảo vệ môi trường và ứng phó biến đổi khí hậu",
+      "guidance": [
+        "Thực trạng tài nguyên môi trường Việt Nam: suy giảm diện tích và chất lượng rừng tự nhiên; thoái hóa đất nông nghiệp (xói mòn, bạc màu, nhiễm phèn mặn); ô nhiễm môi trường nước lưu vực sông và rác thải nhựa đại dương; ô nhiễm không khí đô thị (bụi mịn PM2.5). Giải pháp phát triển bền vững: hoàn thiện khung pháp lí (Luật Bảo vệ môi trường 2020), áp dụng kinh tế tuần hoàn, phân loại rác tại nguồn, bảo tồn đa dạng sinh học, trồng 1 tỉ cây xanh, và thực hiện chuyển dịch năng lượng sạch để đạt mục tiêu Net Zero năm 2050 theo cam kết tại COP26."
+      ],
+      "examples": [
+        "Chiến dịch 'Chống rác thải nhựa' và mô hình phân loại rác thải rắn sinh hoạt tại nguồn được triển khai đồng bộ tại các trường học và khu dân cư trên cả nước."
+      ],
+      "questions": [
+        {
+          "id": "geography-12-environmental-sustainability-vietnam-q1",
+          "prompt": "Tại Hội nghị biến đổi khí hậu COP26 (năm 2021), Thủ tướng Chính phủ Việt Nam đã đưa ra cam kết mạnh mẽ nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ngừng hoàn toàn mọi hoạt động sản xuất công nghiệp vào năm 2025"
+            },
+            {
+              "id": "b",
+              "text": "Đạt mức phát thải ròng bằng 0 (Net Zero) vào năm 2050"
+            },
+            {
+              "id": "c",
+              "text": "Tăng gấp đôi lượng khí thải nhà kính vào năm 2030"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Cam kết Net Zero vào năm 2050 thể hiện trách nhiệm cao của Việt Nam trong nỗ lực toàn cầu ngăn chặn biến đổi khí hậu."
+        },
+        {
+          "id": "geography-12-environmental-sustainability-vietnam-q2",
+          "prompt": "Mô hình 'Kinh tế tuần hoàn' (Circular Economy) trong quản lí tài nguyên và môi trường hướng tới mục tiêu cốt lõi nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Kéo dài vòng đời của sản phẩm, tái sử dụng và tái chế chất thải thành tài nguyên, giảm thiểu phát thải ra môi trường"
+            },
+            {
+              "id": "b",
+              "text": "Khai thác triệt để tài nguyên một lần rồi chôn lấp toàn bộ"
+            },
+            {
+              "id": "c",
+              "text": "Tăng lượng rác thải nhựa không phân hủy sinh học ra sông hồ"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Kinh tế tuần hoàn thay thế mô hình kinh tế tuyến tính truyền thống (khai thác - sản xuất - vứt bỏ) bằng chu trình khép kín tài nguyên."
+        },
+        {
+          "id": "geography-12-environmental-sustainability-vietnam-q3",
+          "prompt": "Hành động thiết thực và có ý nghĩa nhất của mỗi học sinh để góp phần bảo vệ môi trường học đường và địa phương là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Vứt rác bừa bãi ra sân trường và để vòi nước chảy tự do"
+            },
+            {
+              "id": "b",
+              "text": "Sử dụng thật nhiều túi nilon mới trong mỗi lần mua đồ ăn vặt"
+            },
+            {
+              "id": "c",
+              "text": "Nghiêm túc phân loại rác tại nguồn, hạn chế sử dụng đồ nhựa dùng một lần, tiết kiệm điện nước và tích cực trồng cây xanh"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Ý thức giữ gìn môi trường bắt đầu từ những thói quen nhỏ hàng ngày như bỏ rác đúng nơi quy định và lan tỏa lối sống xanh đến bạn bè."
+        }
+      ]
+    }
+  ]
+}

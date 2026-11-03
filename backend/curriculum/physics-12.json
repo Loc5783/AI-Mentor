@@ -1,0 +1,1512 @@
+{
+  "subjectId": "physics",
+  "grade": 12,
+  "version": "intro-2026.1",
+  "title": "Vật lí 12: Vật lí nhiệt, Khí lí tưởng, Từ trường và Hạt nhân",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_12",
+  "extendedReviews": false,
+  "sourceNote": "Tài liệu học tập lớp 12 do AI Mentor biên soạn theo yêu cầu cần đạt của Chương trình GDPT 2018 (định hướng bộ sách Kết nối tri thức với cuộc sống); đây là tuyển chọn chuyên đề nền tảng, không phải bản sao nguyên văn SGK và chưa bao phủ toàn bộ năm học. Bài đầu vào sử dụng 2 câu hỏi từ mỗi bài học để hỗ trợ chẩn đoán năng lực. Nội dung cần được giáo viên chuyên môn thẩm định trước khi áp dụng chính thức.",
+  "lessons": [
+    {
+      "id": "physics-12-matter-model",
+      "title": "Mô hình động học phân tử và cấu trúc chất",
+      "guidance": [
+        "Mọi chất đều cấu tạo từ các phân tử chuyển động không ngừng; nhiệt độ càng cao thì chuyển động nhiệt càng nhanh. Thể rắn có trật tự và thể tích, hình dạng xác định; thể lỏng có thể tích xác định nhưng hình dạng theo bình chứa; thể khí phân tử ở rất xa nhau và chuyển động hỗn loạn."
+      ],
+      "examples": [
+        "Mở nắp lọ tinh dầu ở một góc phòng, một lát sau cả phòng đều ngửi thấy mùi thơm do các phân tử khuếch tán vào không khí nhờ chuyển động nhiệt."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-matter-model-q1",
+          "prompt": "Theo mô hình động học phân tử, khi nhiệt độ của một vật tăng lên thì:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tốc độ chuyển động hỗn loạn của các phân tử cấu tạo nên vật tăng"
+            },
+            {
+              "id": "b",
+              "text": "Khối lượng của mỗi phân tử cấu tạo nên vật tăng lên"
+            },
+            {
+              "id": "c",
+              "text": "Khoảng cách giữa các phân tử luôn giảm đi đáng kể"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nhiệt độ là số đo động năng chuyển động nhiệt trung bình của các phân tử. Nhiệt độ tăng nghĩa là phân tử chuyển động nhanh hơn."
+        },
+        {
+          "id": "physics-12-matter-model-q2",
+          "prompt": "Đặc điểm căn bản về cấu trúc phân tử của chất ở thể khí so với thể rắn và lỏng là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Các phân tử khí liên kết chặt chẽ và chỉ dao động quanh vị trí cân bằng"
+            },
+            {
+              "id": "b",
+              "text": "Các phân tử khí hoàn toàn không có tương tác đẩy"
+            },
+            {
+              "id": "c",
+              "text": "Khoảng cách giữa các phân tử rất lớn so với kích thước của chính chúng"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Ở thể khí, khoảng cách trung bình giữa các phân tử lớn gấp hàng chục lần kích thước phân tử nên lực tương tác rất yếu."
+        },
+        {
+          "id": "physics-12-matter-model-q3",
+          "prompt": "Hiện tượng khuếch tán chất màu trong nước xảy ra nhanh hơn khi nước nóng hơn là do:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nước nóng làm phân tử chất màu bị phân hủy thành nguyên tử"
+            },
+            {
+              "id": "b",
+              "text": "Nhiệt độ cao làm các phân tử nước và phân tử màu chuyển động nhiệt nhanh hơn"
+            },
+            {
+              "id": "c",
+              "text": "Nước nóng làm tăng trọng lực tác dụng lên các phân tử màu"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Chuyển động nhiệt của các phân tử diễn ra mãnh liệt hơn ở nhiệt độ cao, thúc đẩy quá trình va chạm và trộn lẫn lẫn nhau."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-temperature-scales",
+      "title": "Nhiệt độ, thang nhiệt độ và cân bằng nhiệt",
+      "guidance": [
+        "Cân bằng nhiệt xảy ra khi hai vật tiếp xúc truyền nhiệt cho nhau đến khi có cùng nhiệt độ. Thang nhiệt độ Celsius (°C) dựa trên điểm đóng băng và điểm sôi của nước ở 1 atm; thang Kelvin (K) là thang nhiệt độ tuyệt đối: T(K) = t(°C) + 273,15."
+      ],
+      "examples": [
+        "Nhiệt độ phòng 25 °C tương ứng với T = 25 + 273,15 = 298,15 K."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-temperature-scales-q1",
+          "prompt": "Hai vật ở trạng thái cân bằng nhiệt với nhau khi và chỉ khi chúng có cùng:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nội năng"
+            },
+            {
+              "id": "b",
+              "text": "Khối lượng"
+            },
+            {
+              "id": "c",
+              "text": "Nhiệt độ"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Điều kiện cân bằng nhiệt giữa hai hệ tiếp xúc nhiệt là nhiệt độ của chúng bằng nhau, khi đó không còn dòng nhiệt truyền qua lại."
+        },
+        {
+          "id": "physics-12-temperature-scales-q2",
+          "prompt": "Nhiệt độ sôi của nước ở áp suất tiêu chuẩn là 100 °C tương ứng với bao nhiêu Kelvin?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "100 K"
+            },
+            {
+              "id": "b",
+              "text": "373,15 K"
+            },
+            {
+              "id": "c",
+              "text": "273,15 K"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Công thức chuyển đổi: T(K) = t(°C) + 273,15 = 100 + 273,15 = 373,15 K."
+        },
+        {
+          "id": "physics-12-temperature-scales-q3",
+          "prompt": "Thả một miếng nhôm ở 80 °C vào cốc nước ở 20 °C trong một bình cách nhiệt. Sau một thời gian hệ đạt cân bằng nhiệt ở 30 °C. Nhận xét nào sau đây đúng?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Miếng nhôm tỏa nhiệt lượng và nước thu vào nhiệt lượng đó"
+            },
+            {
+              "id": "b",
+              "text": "Cả miếng nhôm và nước đều thu nhiệt từ môi trường ngoài"
+            },
+            {
+              "id": "c",
+              "text": "Nhiệt độ cuối cùng luôn bằng trung bình cộng hai nhiệt độ ban đầu"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nhiệt tự truyền từ vật có nhiệt độ cao (nhôm) sang vật có nhiệt độ thấp hơn (nước) cho đến khi đạt cân bằng nhiệt."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-heat-capacity",
+      "title": "Nhiệt dung riêng và nhiệt chuyển thể",
+      "guidance": [
+        "Nhiệt lượng cần để làm biến đổi nhiệt độ: Q = m.c.ΔT (c: nhiệt dung riêng, J/(kg.K)). Nhiệt nóng chảy: Q = λ.m (λ: nhiệt nóng chảy riêng). Nhiệt hóa hơi: Q = L.m (L: nhiệt hóa hơi riêng). Trong quá trình chuyển thể ở áp suất chuẩn, nhiệt độ không đổi."
+      ],
+      "examples": [
+        "Cần đun nóng 2 kg nước (c = 4200 J/(kg.K)) từ 25 °C lên 75 °C: Q = 2 * 4200 * (75 - 25) = 420 000 J = 420 kJ."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-heat-capacity-q1",
+          "prompt": "Đơn vị đo của nhiệt dung riêng trong hệ đơn vị quốc tế SI là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "W/(kg·K)"
+            },
+            {
+              "id": "b",
+              "text": "J/(kg·K)"
+            },
+            {
+              "id": "c",
+              "text": "J/kg"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Nhiệt dung riêng c = Q / (m·ΔT) có đơn vị là Joule trên kilogram Kelvin (J/(kg·K))."
+        },
+        {
+          "id": "physics-12-heat-capacity-q2",
+          "prompt": "Tính nhiệt lượng cần thiết để đun nóng 2 kg nước từ 20 °C lên 80 °C. Biết nhiệt dung riêng của nước c = 4200 J/(kg·K).",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "504 kJ"
+            },
+            {
+              "id": "b",
+              "text": "252 kJ"
+            },
+            {
+              "id": "c",
+              "text": "672 kJ"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Q = m · c · ΔT = 2 · 4200 · (80 - 20) = 8400 · 60 = 504 000 J = 504 kJ."
+        },
+        {
+          "id": "physics-12-heat-capacity-q3",
+          "prompt": "Trong suốt thời gian một khối nước đá tinh khiết đang nóng chảy hoàn toàn ở 0 °C dưới áp suất tiêu chuẩn 1 atm, nhiệt độ của khối đá:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tăng dần đều từ 0 °C lên 10 °C"
+            },
+            {
+              "id": "b",
+              "text": "Giảm xuống dưới 0 °C do thu nhiệt"
+            },
+            {
+              "id": "c",
+              "text": "Giữ nguyên không đổi ở 0 °C"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nhiệt lượng thu vào trong quá trình chuyển thể dùng để phá vỡ mạng tinh thể, không làm tăng động năng phân tử nên nhiệt độ không đổi."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-internal-energy",
+      "title": "Nội năng và định luật I nhiệt động lực học",
+      "guidance": [
+        "Nội năng U là tổng động năng chuyển động hỗn loạn và thế năng tương tác của các phân tử cấu tạo nên hệ. Định luật I nhiệt động lực học: ΔU = Q + A (quy ước: Q > 0 hệ nhận nhiệt, Q < 0 hệ truyền nhiệt; A > 0 hệ nhận công, A < 0 hệ sinh công)."
+      ],
+      "examples": [
+        "Chất khí nhận 500 J nhiệt lượng và thực hiện công 300 J đẩy piston: Q = +500 J, A = -300 J ⇒ ΔU = 500 - 300 = +200 J (nội năng tăng 200 J)."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-internal-energy-q1",
+          "prompt": "Biểu thức toán học của định luật I nhiệt động lực học là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "ΔU = Q + A"
+            },
+            {
+              "id": "b",
+              "text": "ΔU = Q · A"
+            },
+            {
+              "id": "c",
+              "text": "Q = ΔU + A²"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Định luật I là dạng biểu diễn của định luật bảo toàn và chuyển hóa năng lượng áp dụng cho các quá trình nhiệt: ΔU = Q + A."
+        },
+        {
+          "id": "physics-12-internal-energy-q2",
+          "prompt": "Một khối khí nhận nhiệt lượng 600 J từ nguồn nhiệt và thực hiện công 400 J đẩy piston nâng vật nặng lên. Độ biến thiên nội năng của khối khí là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "+1000 J"
+            },
+            {
+              "id": "b",
+              "text": "-200 J"
+            },
+            {
+              "id": "c",
+              "text": "+200 J"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hệ nhận nhiệt: Q = +600 J; hệ sinh công: A = -400 J. Ta có ΔU = Q + A = 600 + (-400) = +200 J."
+        },
+        {
+          "id": "physics-12-internal-energy-q3",
+          "prompt": "Dùng bơm tay để bơm lốp xe đạp, sau một thời gian thân ống bơm bị nóng lên. Nguyên nhân chính là do:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khối lượng không khí bên trong ống bơm tự tăng lên"
+            },
+            {
+              "id": "b",
+              "text": "Khí bị nén nhận công làm tăng nội năng và ma sát sinh nhiệt"
+            },
+            {
+              "id": "c",
+              "text": "Không khí từ khí quyển truyền nhiệt lượng trực tiếp vào ống bơm"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Quá trình nén khí thực hiện công lên chất khí làm tăng nội năng (nhiệt độ tăng) kết hợp với lực ma sát giữa piston và xilanh sinh nhiệt."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-thermal-efficiency",
+      "title": "Động cơ nhiệt và hiệu suất nhiệt",
+      "guidance": [
+        "Động cơ nhiệt nhận nhiệt lượng Q₁ từ nguồn nóng, chuyển hóa một phần thành công cơ học A' và nhả nhiệt lượng |Q₂| cho nguồn lạnh. Hiệu suất nhiệt: H = A' / Q₁ = (Q₁ - |Q₂|) / Q₁ = 1 - |Q₂| / Q₁ < 1."
+      ],
+      "examples": [
+        "Động cơ nhận 1000 J từ nguồn nóng và truyền cho nguồn lạnh 600 J: công sinh ra A' = 400 J, hiệu suất H = 400 / 1000 = 40%."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-thermal-efficiency-q1",
+          "prompt": "Hiệu suất nhiệt H của động cơ nhiệt được định nghĩa là tỉ số giữa:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nhiệt lượng truyền cho nguồn lạnh và nhiệt lượng nhận từ nguồn nóng"
+            },
+            {
+              "id": "b",
+              "text": "Nhiệt lượng nhận từ nguồn nóng và công toàn phần"
+            },
+            {
+              "id": "c",
+              "text": "Công cơ học có ích sinh ra và nhiệt lượng nhận từ nguồn nóng"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hiệu suất H = A' / Q₁ phản ánh tỉ lệ nhiệt năng được chuyển hóa thành cơ công hữu ích."
+        },
+        {
+          "id": "physics-12-thermal-efficiency-q2",
+          "prompt": "Một động cơ nhiệt nhận nhiệt lượng 2000 J từ nguồn nóng trong mỗi chu trình và nhả cho nguồn lạnh 1200 J. Hiệu suất của động cơ là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "30%"
+            },
+            {
+              "id": "b",
+              "text": "40%"
+            },
+            {
+              "id": "c",
+              "text": "60%"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Công có ích A' = Q₁ - |Q₂| = 2000 - 1200 = 800 J. Hiệu suất H = 800 / 2000 = 0,4 = 40%."
+        },
+        {
+          "id": "physics-12-thermal-efficiency-q3",
+          "prompt": "Theo nguyên lí II nhiệt động lực học, có thể chế tạo được một động cơ nhiệt làm việc tuần hoàn biến đổi hoàn toàn 100% nhiệt lượng thu được thành công cơ học không?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không thể chế tạo được"
+            },
+            {
+              "id": "b",
+              "text": "Hoàn toàn có thể chế tạo được nếu dùng vật liệu siêu dẫn"
+            },
+            {
+              "id": "c",
+              "text": "Có thể chế tạo được nếu nhiệt độ nguồn lạnh bằng 100 °C"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Theo cách phát biểu của Kelvin - Planck, động cơ nhiệt tuần hoàn không thể biến đổi toàn bộ nhiệt lượng nhận từ một nguồn thành công mà bắt buộc phải truyền một phần cho nguồn lạnh."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-ideal-gas-model",
+      "title": "Thuyết động học phân tử chất khí và mô hình khí lí tưởng",
+      "guidance": [
+        "Khí lí tưởng là mô hình trong đó các phân tử được coi là chất điểm, chuyển động hỗn loạn không ngừng và chỉ tương tác với nhau khi va chạm; các va chạm được coi là hoàn toàn đàn hồi."
+      ],
+      "examples": [
+        "Ở điều kiện nhiệt độ phòng và áp suất thường, các khí thực như heli, hydro, oxy tuân theo các quy luật của khí lí tưởng với độ chính xác rất cao."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-ideal-gas-model-q1",
+          "prompt": "Trong mô hình khí lí tưởng, tương tác giữa các phân tử khí được xem xét như thế nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Luôn đẩy nhau liên tục kể cả khi ở rất xa nhau"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ tương tác đẩy hoặc hút khi chúng va chạm vào nhau hoặc vào thành bình"
+            },
+            {
+              "id": "c",
+              "text": "Luôn hút nhau bằng lực tĩnh điện mạnh ở mọi khoảng cách"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mô hình khí lí tưởng bỏ qua tương tác tầm xa giữa các phân tử; lực tương tác chỉ xuất hiện tức thời khi có va chạm."
+        },
+        {
+          "id": "physics-12-ideal-gas-model-q2",
+          "prompt": "Mô hình khí lí tưởng coi các phân tử khí là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Các chất điểm có khối lượng nhưng thể tích bản thân không đáng kể so với thể tích bình"
+            },
+            {
+              "id": "b",
+              "text": "Các hình cầu rắn có kích thước bằng thể tích bình chứa"
+            },
+            {
+              "id": "c",
+              "text": "Các hạt đứng yên tại các nút mạng tinh thể xác định"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Vì khoảng cách giữa các phân tử khí rất lớn so với kích thước của chúng nên thể tích riêng của các phân tử được coi là chất điểm."
+        },
+        {
+          "id": "physics-12-ideal-gas-model-q3",
+          "prompt": "Khi giữ thể tích bình kín không đổi, việc bơm thêm khí làm tăng mật độ hạt phân tử dẫn đến hiện tượng gì ở cấp độ vi mô?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khối lượng của từng phân tử khí riêng lẻ tự tăng lên"
+            },
+            {
+              "id": "b",
+              "text": "Tốc độ trung bình của các phân tử khí tự động giảm về 0"
+            },
+            {
+              "id": "c",
+              "text": "Số va chạm của các phân tử lên một đơn vị diện tích thành bình trong một giây tăng lên"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mật độ phân tử tăng làm tần số va chạm lên thành bình tăng, qua đó làm tăng lực tác dụng trung bình và tăng áp suất chất khí."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-boyle-law",
+      "title": "Định luật Boyle - Quá trình đẳng nhiệt",
+      "guidance": [
+        "Quá trình biến đổi trạng thái trong đó nhiệt độ được giữ không đổi gọi là quá trình đẳng nhiệt. Định luật Boyle: Với một lượng khí xác định ở nhiệt độ không đổi, áp suất tỉ lệ nghịch với thể tích: p₁V₁ = p₂V₂ = const."
+      ],
+      "examples": [
+        "Một lượng khí ở 1 atm có thể tích 4 lít. Nén đẳng nhiệt xuống 2 lít thì áp suất mới là p₂ = 1 * 4 / 2 = 2 atm."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-boyle-law-q1",
+          "prompt": "Định luật Boyle áp dụng cho quá trình biến đổi trạng thái nào của chất khí?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Quá trình đẳng nhiệt"
+            },
+            {
+              "id": "b",
+              "text": "Quá trình đẳng áp"
+            },
+            {
+              "id": "c",
+              "text": "Quá trình đẳng tích"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Định luật Boyle nghiên cứu mối quan hệ giữa áp suất và thể tích khi nhiệt độ T được giữ không đổi."
+        },
+        {
+          "id": "physics-12-boyle-law-q2",
+          "prompt": "Một khối khí lí tưởng có thể tích 6 lít ở áp suất 1,5 atm. Giữ nhiệt độ không đổi, nén khối khí đến thể tích 2 lít thì áp suất mới là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "2,0 atm"
+            },
+            {
+              "id": "b",
+              "text": "3,0 atm"
+            },
+            {
+              "id": "c",
+              "text": "4,5 atm"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Theo định luật Boyle: p₁V₁ = p₂V₂ ⇒ p₂ = (1,5 * 6) / 2 = 9 / 2 = 4,5 atm."
+        },
+        {
+          "id": "physics-12-boyle-law-q3",
+          "prompt": "Một bọt khí nổi từ đáy hồ nước sâu lên mặt thoáng ở nhiệt độ không đổi. Thể tích của bọt khí thay đổi thế nào khi nổi lên?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thể tích luôn không đổi vì khối lượng khí không đổi"
+            },
+            {
+              "id": "b",
+              "text": "Thể tích tăng dần do áp suất nước giảm khi tiến gần mặt thoáng"
+            },
+            {
+              "id": "c",
+              "text": "Thể tích giảm dần do áp suất nước tăng lên"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Áp suất ở đáy hồ lớn hơn ở mặt nước do có thêm áp suất cột nước p = p₀ + ρgh. Khi nổi lên áp suất giảm nên theo định luật Boyle thể tích bọt khí tăng lên."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-charles-law",
+      "title": "Định luật Charles - Quá trình đẳng áp",
+      "guidance": [
+        "Quá trình biến đổi trạng thái khi áp suất không đổi gọi là quá trình đẳng áp. Định luật Charles: Với một lượng khí xác định ở áp suất không đổi, thể tích tỉ lệ thuận với nhiệt độ tuyệt đối T (Kelvin): V₁ / T₁ = V₂ / T₂ = const."
+      ],
+      "examples": [
+        "Lượng khí có thể tích 3 lít ở 300 K. Giữ áp suất không đổi, khi nung nóng lên 400 K thì V₂ = 3 * (400 / 300) = 4 lít."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-charles-law-q1",
+          "prompt": "Trong quá trình đẳng áp của một lượng khí lí tưởng xác định, thể tích của khối khí:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tỉ lệ nghịch với nhiệt độ tuyệt đối T"
+            },
+            {
+              "id": "b",
+              "text": "Tỉ lệ thuận với bình phương nhiệt độ Celsius"
+            },
+            {
+              "id": "c",
+              "text": "Tỉ lệ thuận với nhiệt độ tuyệt đối T"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Định luật Charles: V / T = const, thể tích tỉ lệ thuận với nhiệt độ tính theo thang Kelvin."
+        },
+        {
+          "id": "physics-12-charles-law-q2",
+          "prompt": "Một khối khí có thể tích 5 lít ở nhiệt độ 250 K. Giữ áp suất không đổi, khi nung nóng khối khí đến 350 K thì thể tích của nó bằng:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "8,5 lít"
+            },
+            {
+              "id": "b",
+              "text": "7,0 lít"
+            },
+            {
+              "id": "c",
+              "text": "6,0 lít"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Theo định luật Charles: V₂ = V₁ · (T₂ / T₁) = 5 · (350 / 250) = 5 · 1,4 = 7,0 lít."
+        },
+        {
+          "id": "physics-12-charles-law-q3",
+          "prompt": "Một quả bóng bàn bị móp nhẹ (vỏ chưa bị rách thủng), khi nhúng vào bát nước nóng thì quả bóng phồng trở lại như cũ. Hiện tượng này được giải thích chủ yếu bằng:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không khí bên trong nhận nhiệt nóng lên, giãn nở đẳng áp đẩy vỏ bóng phồng lại"
+            },
+            {
+              "id": "b",
+              "text": "Nước nóng thấm qua vỏ bóng làm tăng thể tích chất lỏng bên trong"
+            },
+            {
+              "id": "c",
+              "text": "Khối lượng không khí bên trong quả bóng tự động tăng lên"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nhiệt độ không khí bên trong tăng làm áp suất và thể tích khí giãn nở, tạo lực đẩy vỏ nhựa phồng trở lại hình cầu."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-state-equation",
+      "title": "Phương trình trạng thái khí lí tưởng",
+      "guidance": [
+        "Phương trình trạng thái liên hệ cả ba thông số p, V, T của một lượng khí: (p₁V₁)/T₁ = (p₂V₂)/T₂ = const. Dạng phương trình Clapeyron - Mendeleev: p.V = n.R.T = (m/M).R.T với hằng số khí R ≈ 8,31 J/(mol.K)."
+      ],
+      "examples": [
+        "Bình 0,02 m³ chứa 2 mol khí ở 300 K: p = (2 * 8,31 * 300) / 0,02 = 249 300 Pa ≈ 2,49 × 10⁵ Pa."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-state-equation-q1",
+          "prompt": "Phương trình trạng thái của khí lí tưởng cho một lượng khí xác định là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "(p · T) · V = hằng số"
+            },
+            {
+              "id": "b",
+              "text": "(p · V) / T = hằng số"
+            },
+            {
+              "id": "c",
+              "text": "p · T / V = hằng số"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Phương trình trạng thái kết hợp định luật Boyle và Charles cho hệ thức tổng quát pV/T = const."
+        },
+        {
+          "id": "physics-12-state-equation-q2",
+          "prompt": "Tính áp suất của 1 mol khí lí tưởng chứa trong bình kín thể tích 0,01 m³ ở nhiệt độ 300 K. Cho hằng số khí R = 8,31 J/(mol·K).",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "2,49 × 10⁵ Pa"
+            },
+            {
+              "id": "b",
+              "text": "1,25 × 10⁵ Pa"
+            },
+            {
+              "id": "c",
+              "text": "8,31 × 10⁴ Pa"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Áp dụng p = nRT / V = (1 · 8,31 · 300) / 0,01 = 2493 / 0,01 = 249 300 Pa ≈ 2,49 × 10⁵ Pa."
+        },
+        {
+          "id": "physics-12-state-equation-q3",
+          "prompt": "Bình xịt chứa khí nén luôn có cảnh báo 'Không để ở nơi có nhiệt độ trên 50 °C hoặc ném vào lửa' vì lý do vật lí nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nhiệt độ cao làm chất khí biến thành chất rắn làm nặng bình"
+            },
+            {
+              "id": "b",
+              "text": "Vỏ kim loại của bình bị tan chảy ngay ở nhiệt độ 50 °C"
+            },
+            {
+              "id": "c",
+              "text": "Thể tích bình cố định, nhiệt độ tăng cao làm áp suất khí tăng vọt gây nguy cơ nổ"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Theo quá trình đẳng tích (V không đổi), p tỉ lệ thuận với T. Nhiệt độ cao làm áp suất bên trong vượt quá giới hạn chịu lực của vỏ bình."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-molecular-pressure",
+      "title": "Áp suất khí theo mô hình động học phân tử",
+      "guidance": [
+        "Áp suất chất khí tác dụng lên thành bình sinh ra do các phân tử khí va chạm liên tục và truyền động lượng lên thành bình. Công thức cơ bản: p = (1/3) μ m v_tb² = (2/3) μ E_d, trong đó động năng tịnh tiến trung bình E_d = (3/2) k T (với hằng số Boltzmann k = R/N_A)."
+      ],
+      "examples": [
+        "Nhiệt độ T đo trực tiếp động năng tịnh tiến trung bình: khi T tăng gấp đôi thì E_d tăng gấp đôi."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-molecular-pressure-q1",
+          "prompt": "Động năng chuyển động nhiệt tịnh tiến trung bình của các phân tử khí lí tưởng tỉ lệ thuận với:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nhiệt độ tuyệt đối T của chất khí"
+            },
+            {
+              "id": "b",
+              "text": "Thể tích V của bình chứa"
+            },
+            {
+              "id": "c",
+              "text": "Khối lượng mol M của chất khí"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Hệ thức Boltzmann E_d = (3/2)kT cho thấy động năng tịnh tiến trung bình tỉ lệ thuận trực tiếp với nhiệt độ Kelvin."
+        },
+        {
+          "id": "physics-12-molecular-pressure-q2",
+          "prompt": "Bản chất vi mô của áp suất chất khí tác dụng lên thành bình chứa là do:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Trọng lực của các phân tử khí đè nén lên đáy bình chứa"
+            },
+            {
+              "id": "b",
+              "text": "Lực hút tĩnh điện giữa thành bình và các electron của chất khí"
+            },
+            {
+              "id": "c",
+              "text": "Hàng tỉ phân tử khí va chạm liên tục và truyền động lượng lên thành bình"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Mỗi phân tử va chạm đàn hồi vào thành bình làm đổi hướng vận tốc, truyền xung lượng; tổng hợp vô số va chạm tạo nên áp suất liên tục."
+        },
+        {
+          "id": "physics-12-molecular-pressure-q3",
+          "prompt": "Khi đun nóng đẳng tích một khối khí lí tưởng để nhiệt độ tuyệt đối tăng từ 300 K lên 600 K, động năng tịnh tiến trung bình của các phân tử khí sẽ:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không thay đổi"
+            },
+            {
+              "id": "b",
+              "text": "Tăng lên 2 lần"
+            },
+            {
+              "id": "c",
+              "text": "Tăng lên 4 lần"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Vì E_d = (3/2)kT tỉ lệ thuận với T bậc nhất, nên khi T tăng từ 300 K lên 600 K (gấp 2 lần) thì động năng trung bình tăng 2 lần."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-magnetic-field",
+      "title": "Từ trường và đường sức từ",
+      "guidance": [
+        "Từ trường là dạng vật chất tồn tại xung quanh nam châm hoặc dòng điện, tác dụng lực từ lên kim nam châm hoặc hạt điện tích chuyển động. Đường sức từ là các đường cong khép kín có chiều quy ước: vào cực Nam (S) ra cực Bắc (N)."
+      ],
+      "examples": [
+        "Kim la bàn đặt tự do luôn định hướng theo trục Bắc - Nam địa lí chứng tỏ Trái Đất có từ trường riêng (địa từ trường)."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-magnetic-field-q1",
+          "prompt": "Từ trường không tác dụng lực lên đối tượng nào sau đây?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Một đoạn dây dẫn có dòng điện chạy qua"
+            },
+            {
+              "id": "b",
+              "text": "Một hạt mang điện đang chuyển động cắt các đường sức từ"
+            },
+            {
+              "id": "c",
+              "text": "Một điện tích đứng yên trong từ trường"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Lực từ chỉ xuất hiện khi điện tích chuyển động (hoặc có dòng điện); điện tích đứng yên không chịu tác dụng của lực từ."
+        },
+        {
+          "id": "physics-12-magnetic-field-q2",
+          "prompt": "Tính chất hình học cơ bản của các đường sức từ là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Luôn cắt nhau tại các điểm có từ trường mạnh"
+            },
+            {
+              "id": "b",
+              "text": "Là những đường cong khép kín (hoặc vô hạn ở hai đầu)"
+            },
+            {
+              "id": "c",
+              "text": "Là các đoạn thẳng hở bắt đầu từ cực dương và kết thúc ở cực âm"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Từ trường là trường xoáy, không có điểm khởi đầu hay kết thúc nên các đường sức từ luôn là đường cong kín."
+        },
+        {
+          "id": "physics-12-magnetic-field-q3",
+          "prompt": "Hiện tượng kim la bàn đặt tự do trên mặt đất luôn định hướng theo phương gần trùng với phương Bắc - Nam chứng tỏ:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Xung quanh Trái Đất tồn tại một từ trường gọi là địa từ trường"
+            },
+            {
+              "id": "b",
+              "text": "Không khí xung quanh Trái Đất bị nhiễm điện tĩnh điện mạnh"
+            },
+            {
+              "id": "c",
+              "text": "Trọng lực của Trái Đất chỉ tác dụng theo phương Bắc - Nam"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Trái Đất hoạt động như một nam châm khổng lồ có cực từ Nam nằm gần cực Bắc địa lí và ngược lại, định hướng kim la bàn."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-magnetic-force",
+      "title": "Lực từ tác dụng lên đoạn dây dẫn mang dòng điện",
+      "guidance": [
+        "Lực từ tác dụng lên đoạn dây dẫn thẳng mang dòng điện I dài L đặt trong từ trường đều B: F = B.I.L.sin θ (θ là góc giữa dây dẫn và B). Phương của F vuông góc với mặt phẳng chứa đoạn dây và vectơ B; chiều xác định theo quy tắc bàn tay trái."
+      ],
+      "examples": [
+        "Dây dài 0,2 m mang dòng điện 5 A đặt vuông góc với B = 0,4 T: F = 0,4 * 5 * 0,2 * sin 90° = 0,4 N."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-magnetic-force-q1",
+          "prompt": "Lực từ tác dụng lên đoạn dây dẫn mang dòng điện đặt trong từ trường đều đạt giá trị cực đại khi góc θ giữa đoạn dây và vectơ cảm ứng từ bằng:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "180°"
+            },
+            {
+              "id": "b",
+              "text": "90°"
+            },
+            {
+              "id": "c",
+              "text": "0°"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "F = B·I·L·sin θ. Hàm sin θ đạt cực đại bằng 1 khi góc θ = 90° (dây dẫn vuông góc với đường sức từ)."
+        },
+        {
+          "id": "physics-12-magnetic-force-q2",
+          "prompt": "Đoạn dây dẫn thẳng dài 0,2 m mang dòng điện cường độ 5 A đặt vuông góc với các đường cảm ứng từ của từ trường đều B = 0,4 T. Độ lớn lực từ tác dụng lên đoạn dây là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "0,4 N"
+            },
+            {
+              "id": "b",
+              "text": "0,8 N"
+            },
+            {
+              "id": "c",
+              "text": "0,2 N"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "F = B · I · L · sin 90° = 0,4 · 5 · 0,2 · 1 = 0,4 N."
+        },
+        {
+          "id": "physics-12-magnetic-force-q3",
+          "prompt": "Đặt hai dây dẫn thẳng dài song song mang dòng điện cùng chiều gần nhau. Tương tác từ giữa hai dây dẫn là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chúng đẩy nhau"
+            },
+            {
+              "id": "b",
+              "text": "Không có lực tương tác nào giữa hai dây"
+            },
+            {
+              "id": "c",
+              "text": "Chúng hút nhau"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Áp dụng quy tắc nắm tay phải để tìm chiều từ trường của dây 1 và quy tắc bàn tay trái để tìm lực từ tác dụng lên dây 2, ta thấy hai dòng điện cùng chiều hút nhau."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-magnetic-induction",
+      "title": "Cảm ứng từ của dòng điện có hình dạng đặc biệt",
+      "guidance": [
+        "Độ lớn cảm ứng từ B đặc trưng cho tác dụng lực từ: dòng điện thẳng dài: B = 2·10⁻⁷·(I/r); dòng điện tròn bán kính R tại tâm: B = 2π·10⁻⁷·(I/R); trong lòng ống dây dài n vòng/m: B = 4π·10⁻⁷·n·I (từ trường đều)."
+      ],
+      "examples": [
+        "Dòng điện 10 A trong dây thẳng dài gây ra tại điểm cách 0,05 m cảm ứng từ B = 2·10⁻⁷ * 10 / 0,05 = 4 × 10⁻⁵ T."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-magnetic-induction-q1",
+          "prompt": "Vectơ cảm ứng từ B tại một điểm đặc trưng cho từ trường tại điểm đó về phương diện:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tác dụng lực từ"
+            },
+            {
+              "id": "b",
+              "text": "Năng lượng tĩnh điện"
+            },
+            {
+              "id": "c",
+              "text": "Tốc độ truyền sóng"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Cảm ứng từ B là đại lượng vectơ đặc trưng cho từ trường về mặt gây ra lực từ tác dụng lên dòng điện hay điện tích chuyển động."
+        },
+        {
+          "id": "physics-12-magnetic-induction-q2",
+          "prompt": "Tính cảm ứng từ do dòng điện thẳng dài cường độ 10 A gây ra tại một điểm cách dây dẫn 0,05 m trong không khí.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "2 × 10⁻⁵ T"
+            },
+            {
+              "id": "b",
+              "text": "4 × 10⁻⁶ T"
+            },
+            {
+              "id": "c",
+              "text": "4 × 10⁻⁵ T"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "B = 2 · 10⁻⁷ · (I / r) = 2 · 10⁻⁷ · (10 / 0,05) = 2 · 10⁻⁷ · 200 = 4 · 10⁻⁵ T."
+        },
+        {
+          "id": "physics-12-magnetic-induction-q3",
+          "prompt": "Trong lòng một ống dây hình trụ dài có dòng điện không đổi chạy qua, từ trường có đặc điểm quan trọng nào sau đây?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đường sức từ xoáy tròn đồng tâm quanh trục ống dây"
+            },
+            {
+              "id": "b",
+              "text": "Là từ trường đều với các đường sức từ song song và cách đều nhau"
+            },
+            {
+              "id": "c",
+              "text": "Cảm ứng từ tại tâm bằng 0 và tăng dần ra hai mép ngoài"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Bên trong lòng ống dây hình trụ dài mang dòng điện, từ trường là từ trường đều, có vectơ cảm ứng từ không đổi ở mọi điểm."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-lorentz-force",
+      "title": "Lực Lorentz tác dụng lên điện tích chuyển động",
+      "guidance": [
+        "Điện tích q chuyển động với vận tốc v trong từ trường B chịu lực Lorentz: f = |q|.v.B.sin α (α là góc giữa v và B). Phương của f vuông góc với cả v và B. Vì f luôn vuông góc với vectơ vận tốc tức thời nên lực Lorentz không sinh công, chỉ làm đổi hướng chuyển động."
+      ],
+      "examples": [
+        "Một proton bay vuông góc vào B: chuyển động theo quỹ đạo tròn với bán kính R = (m.v)/(|q|.B)."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-lorentz-force-q1",
+          "prompt": "Phương của lực Lorentz tác dụng lên hạt mang điện chuyển động trong từ trường đều có đặc điểm nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cùng phương với vectơ cảm ứng từ B"
+            },
+            {
+              "id": "b",
+              "text": "Cùng phương với vectơ vận tốc v của hạt"
+            },
+            {
+              "id": "c",
+              "text": "Vuông góc với cả vectơ vận tốc v và vectơ cảm ứng từ B"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Lực Lorentz có phương vuông góc với mặt phẳng tạo bởi vectơ vận tốc v và vectơ cảm ứng từ B."
+        },
+        {
+          "id": "physics-12-lorentz-force-q2",
+          "prompt": "Một hạt mang điện tích q = 1,6·10⁻¹⁹ C bay với vận tốc v = 2·10⁶ m/s vuông góc vào từ trường đều B = 0,5 T. Độ lớn lực Lorentz tác dụng lên hạt là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "0,8 × 10⁻¹³ N"
+            },
+            {
+              "id": "b",
+              "text": "1,6 × 10⁻¹³ N"
+            },
+            {
+              "id": "c",
+              "text": "3,2 × 10⁻¹³ N"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "f = |q| · v · B · sin 90° = 1,6 · 10⁻¹⁹ · 2 · 10⁶ · 0,5 · 1 = 1,6 · 10⁻¹³ N."
+        },
+        {
+          "id": "physics-12-lorentz-force-q3",
+          "prompt": "Lực Lorentz có thực hiện công cơ học lên một điện tích chuyển động tự do trong từ trường đều không? Vì sao?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Không thực hiện công, vì lực Lorentz luôn vuông góc với vectơ vận tốc tức thời của hạt"
+            },
+            {
+              "id": "b",
+              "text": "Có thực hiện công dương làm tăng động năng của hạt"
+            },
+            {
+              "id": "c",
+              "text": "Có thực hiện công âm làm hạt chuyển động chậm dần đều"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Công tức thời dA = f · v · dt. Do lực Lorentz f ⊥ v nên tích vô hướng f · v = 0, công toàn phần luôn bằng 0."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-electromagnetic-induction",
+      "title": "Hiện tượng cảm ứng điện từ và định luật Faraday",
+      "guidance": [
+        "Từ thông qua diện tích S: Φ = B.S.cos α. Khi từ thông qua mạch kín biến thiên, trong mạch xuất hiện dòng điện cảm ứng (hiện tượng cảm ứng điện từ). Độ lớn suất điện động cảm ứng: |e_c| = |ΔΦ/Δt|. Định luật Lenz: dòng điện cảm ứng có chiều chống lại sự biến thiên từ thông sinh ra nó."
+      ],
+      "examples": [
+        "Từ thông giảm từ 0,08 Wb xuống 0,02 Wb trong 0,1 s: |e_c| = |(0,02 - 0,08)/0,1| = 0,6 V."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-electromagnetic-induction-q1",
+          "prompt": "Điều kiện tiên quyết để xuất hiện dòng điện cảm ứng trong một khung dây dẫn kín là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khung dây phải luôn chuyển động nhanh dần đều"
+            },
+            {
+              "id": "b",
+              "text": "Từ thông qua diện tích giới hạn bởi khung dây biến thiên theo thời gian"
+            },
+            {
+              "id": "c",
+              "text": "Khung dây phải được đặt trong từ trường có độ lớn cực kì lớn"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hiện tượng cảm ứng điện từ chỉ xảy ra khi có sự biến thiên từ thông gửi qua mạch kín theo thời gian."
+        },
+        {
+          "id": "physics-12-electromagnetic-induction-q2",
+          "prompt": "Từ thông qua một mạch kín biến thiên đều giảm từ 0,08 Wb xuống 0,02 Wb trong khoảng thời gian 0,1 s. Độ lớn suất điện động cảm ứng xuất hiện trong mạch là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "0,6 V"
+            },
+            {
+              "id": "b",
+              "text": "0,06 V"
+            },
+            {
+              "id": "c",
+              "text": "6,0 V"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Theo định luật Faraday: |e_c| = |ΔΦ / Δt| = |(0,02 - 0,08) / 0,1| = |-0,06 / 0,1| = 0,6 V."
+        },
+        {
+          "id": "physics-12-electromagnetic-induction-q3",
+          "prompt": "Đưa cực Bắc của một thanh nam châm lại gần một vòng nhôm kín nhẹ treo tự do bằng sợi chỉ. Vòng nhôm sẽ phản ứng thế nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Vòng nhôm bị hút mạnh vào thanh nam châm"
+            },
+            {
+              "id": "b",
+              "text": "Vòng nhôm đứng yên không dịch chuyển"
+            },
+            {
+              "id": "c",
+              "text": "Vòng nhôm bị đẩy ra xa thanh nam châm"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Theo định luật Lenz, dòng điện cảm ứng sinh ra từ trường chống lại sự lại gần của nam châm (mặt đối diện biến thành cực Bắc), gây lực đẩy đẩy vòng nhôm ra xa."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-nuclear-structure",
+      "title": "Cấu tạo hạt nhân và năng lượng liên kết",
+      "guidance": [
+        "Hạt nhân nguyên tử cấu tạo từ Z proton và (A - Z) neutron. Khối lượng hạt nhân luôn nhỏ hơn tổng khối lượng các nucleon tạo nên nó một lượng gọi là độ hụt khối: Δm = Z.m_p + (A - Z).m_n - m_X. Năng lượng liên kết E_lk = Δm.c²; năng lượng liên kết riêng E_lk/A đặc trưng cho độ bền vững của hạt nhân (lớn nhất ở các hạt nhân có 50 < A < 80)."
+      ],
+      "examples": [
+        "Hạt He-4 có Δm = 0,0304 u: E_lk = 0,0304 * 931,5 ≈ 28,3 MeV. Năng lượng liên kết riêng là 28,3 / 4 ≈ 7,07 MeV/nucleon."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-nuclear-structure-q1",
+          "prompt": "Hạt nhân nguyên tử được cấu tạo bởi hai loại hạt cơ bản (gọi chung là nucleon) gồm:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Proton và neutron"
+            },
+            {
+              "id": "b",
+              "text": "Proton và electron"
+            },
+            {
+              "id": "c",
+              "text": "Neutron và electron"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nucleon cấu tạo nên hạt nhân nguyên tử bao gồm các hạt proton mang điện tích dương và neutron không mang điện."
+        },
+        {
+          "id": "physics-12-nuclear-structure-q2",
+          "prompt": "Hạt nhân He-4 có độ hụt khối Δm = 0,0304 u. Cho biết 1 u ≈ 931,5 MeV/c². Năng lượng liên kết của hạt nhân He-4 xấp xỉ bằng:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "14,2 MeV"
+            },
+            {
+              "id": "b",
+              "text": "56,6 MeV"
+            },
+            {
+              "id": "c",
+              "text": "28,3 MeV"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "E_lk = Δm · c² = 0,0304 u · c² = 0,0304 · 931,5 MeV ≈ 28,3 MeV."
+        },
+        {
+          "id": "physics-12-nuclear-structure-q3",
+          "prompt": "Đại lượng vật lí nào sau đây đặc trưng cho mức độ bền vững của một hạt nhân nguyên tử?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Độ hụt khối toàn phần của hạt nhân"
+            },
+            {
+              "id": "b",
+              "text": "Năng lượng liên kết riêng (năng lượng liên kết tính trên một nucleon)"
+            },
+            {
+              "id": "c",
+              "text": "Năng lượng liên kết toàn phần của hạt nhân"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hạt nhân có năng lượng liên kết riêng E_lk/A càng lớn thì càng bền vững; bền vững nhất là các hạt nhân có số khối trung bình như sắt Fe-56."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-radioactivity",
+      "title": "Hiện tượng phóng xạ và định luật phóng xạ",
+      "guidance": [
+        "Phóng xạ là quá trình phân rã tự phát của hạt nhân không bền vững kèm theo phát ra các tia phóng xạ (α: hạt nhân He-4; β⁻: electron; β⁺: positron; γ: sóng điện từ photon năng lượng cao). Định luật phóng xạ: N(t) = N₀ · 2^(-t/T) = N₀ · e^(-λt) với T là chu kì bán rã."
+      ],
+      "examples": [
+        "Chất phóng xạ có T = 8 ngày, sau 24 ngày (3 chu kì) số hạt nhân còn lại là N = N₀ / 2³ = N₀ / 8 = 12,5% ban đầu."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-radioactivity-q1",
+          "prompt": "Tia phóng xạ nào sau đây có bản chất là sóng điện từ có bước sóng cực ngắn và năng lượng photon rất cao?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tia alpha (α)"
+            },
+            {
+              "id": "b",
+              "text": "Tia beta trừ (β⁻)"
+            },
+            {
+              "id": "c",
+              "text": "Tia gamma (γ)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tia gamma là bức xạ điện từ không mang điện, có tần số rất cao và khả năng đâm xuyên mạnh nhất."
+        },
+        {
+          "id": "physics-12-radioactivity-q2",
+          "prompt": "Một chất phóng xạ có chu kì bán rã T = 8 ngày. Sau khoảng thời gian 24 ngày, tỉ lệ phần trăm số hạt nhân phóng xạ còn lại chưa phân rã so với ban đầu là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "6,25%"
+            },
+            {
+              "id": "b",
+              "text": "12,5%"
+            },
+            {
+              "id": "c",
+              "text": "25,0%"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Số chu kì bán rã trôi qua là k = t / T = 24 / 8 = 3. Số hạt còn lại: N / N₀ = (1/2)³ = 1/8 = 12,5%."
+        },
+        {
+          "id": "physics-12-radioactivity-q3",
+          "prompt": "Đồng vị phóng xạ Carbon-14 (C-14) có chu kì bán rã khoảng 5730 năm được ứng dụng rộng rãi trong khoa học để:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Xác định niên đại của các cổ vật hữu cơ và mẫu hóa thạch khảo cổ học"
+            },
+            {
+              "id": "b",
+              "text": "Chế tạo nhiên liệu phản ứng nhiệt hạch trên tàu vũ trụ"
+            },
+            {
+              "id": "c",
+              "text": "Làm nguồn phát tia laser trong phẫu thuật mắt"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Thực vật hấp thụ C-14 qua quang hợp khi còn sống; khi sinh vật chết lượng C-14 phân rã theo thời gian giúp xác định tuổi mẫu vật."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-nuclear-reactions",
+      "title": "Phản ứng hạt nhân và các định luật bảo toàn",
+      "guidance": [
+        "Phản ứng hạt nhân tuân theo 4 định luật bảo toàn: bảo toàn điện tích (Z), bảo toàn số nucleon (A), bảo toàn năng lượng toàn phần và bảo toàn động lượng. Không có định luật bảo toàn khối lượng nghỉ. Năng lượng tỏa ra: ΔE = (m_trước - m_sau).c²."
+      ],
+      "examples": [
+        "Phản ứng: ₁²H + ₁³H → ₂⁴He + ₀¹n. Tổng Z: 1 + 1 = 2 + 0; Tổng A: 2 + 3 = 4 + 1. Khối lượng giảm nên tỏa năng lượng ~17,6 MeV."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-nuclear-reactions-q1",
+          "prompt": "Định luật nào sau đây KHÔNG áp dụng cho các phản ứng hạt nhân?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Định luật bảo toàn số nucleon (số khối A)"
+            },
+            {
+              "id": "b",
+              "text": "Định luật bảo toàn khối lượng nghỉ"
+            },
+            {
+              "id": "c",
+              "text": "Định luật bảo toàn điện tích"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Trong phản ứng hạt nhân, tổng khối lượng nghỉ trước và sau phản ứng có sự chênh lệch (độ hụt khối chuyển hóa thành năng lượng) nên khối lượng nghỉ không bảo toàn."
+        },
+        {
+          "id": "physics-12-nuclear-reactions-q2",
+          "prompt": "Trong phản ứng hạt nhân: ₁²H + ₁³H → ₂⁴He + X. Hạt X sinh ra là hạt nào sau đây?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hạt neutron (₀¹n)"
+            },
+            {
+              "id": "b",
+              "text": "Hạt proton (₁¹p)"
+            },
+            {
+              "id": "c",
+              "text": "Hạt electron (-₁⁰e)"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Áp dụng bảo toàn điện tích Z: 1 + 1 = 2 + Z_X ⇒ Z_X = 0. Bảo toàn số nucleon A: 2 + 3 = 4 + A_X ⇒ A_X = 1. Hạt có Z = 0, A = 1 là neutron."
+        },
+        {
+          "id": "physics-12-nuclear-reactions-q3",
+          "prompt": "Nếu một phản ứng hạt nhân có tổng khối lượng nghỉ của các hạt trước phản ứng m_trước lớn hơn tổng khối lượng nghỉ các hạt sau phản ứng m_sau thì phản ứng đó:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thu năng lượng"
+            },
+            {
+              "id": "b",
+              "text": "Không giải phóng hay hấp thụ năng lượng"
+            },
+            {
+              "id": "c",
+              "text": "Tỏa năng lượng"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Độ biến thiên năng lượng ΔE = (m_trước - m_sau)c² > 0, phần khối lượng giảm chuyển thành động năng hạt và năng lượng photon tỏa ra môi trường."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-fission-fusion",
+      "title": "Phản ứng phân hạch và phản ứng nhiệt hạch",
+      "guidance": [
+        "Phân hạch là phản ứng hạt nhân nặng (như U-235) hấp thụ neutron chậm rồi vỡ thành hai mảnh trung bình và giải phóng 2-3 neutron mới (tạo phản ứng dây chuyền; k = 1 là tới hạn có kiểm soát). Nhiệt hạch là phản ứng kết hợp hai hạt nhân nhẹ (H-2, H-3) thành hạt nhân nặng hơn ở nhiệt độ hàng trăm triệu độ."
+      ],
+      "examples": [
+        "Phản ứng nhiệt hạch tỏa năng lượng lớn hơn phân hạch tính trên cùng một đơn vị khối lượng và là nguồn năng lượng của các ngôi sao."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-fission-fusion-q1",
+          "prompt": "Bản chất của phản ứng nhiệt hạch (phản ứng tổng hợp hạt nhân) là quá trình:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Kết hợp hai hạt nhân rất nhẹ thành một hạt nhân nặng hơn ở nhiệt độ cực kì cao"
+            },
+            {
+              "id": "b",
+              "text": "Bắn phá hạt nhân nặng bằng neutron làm nó vỡ thành hai mảnh nhẹ"
+            },
+            {
+              "id": "c",
+              "text": "Hạt nhân tự phát bức xạ tia gamma mà không thay đổi cấu tạo"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nhiệt hạch là phản ứng kết hợp hai hạt nhân có số khối nhỏ (như hydro, deuteri, triti) thành hạt nhân nặng hơn ở điều kiện nhiệt độ hàng trăm triệu độ."
+        },
+        {
+          "id": "physics-12-fission-fusion-q2",
+          "prompt": "Để duy trì phản ứng phân hạch dây chuyền tự duy trì có kiểm soát hoạt động ổn định trong lò phản ứng hạt nhân, hệ số nhân neutron k phải bằng:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "k > 1"
+            },
+            {
+              "id": "b",
+              "text": "k < 1"
+            },
+            {
+              "id": "c",
+              "text": "k = 1"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hệ số k = 1 gọi là trạng thái tới hạn: số neutron sinh ra trung bình bù đắp đủ số neutron thất thoát và hấp thụ, duy trì công suất phát điện ổn định."
+        },
+        {
+          "id": "physics-12-fission-fusion-q3",
+          "prompt": "Nguồn năng lượng khổng lồ phát ra liên tục hàng tỉ năm của Mặt Trời và các vì sao trong vũ trụ có nguồn gốc từ:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Sự cháy oxy hóa khử hóa học của khí methane"
+            },
+            {
+              "id": "b",
+              "text": "Các phản ứng nhiệt hạch tổng hợp hạt nhân hydrogen thành helium"
+            },
+            {
+              "id": "c",
+              "text": "Các phản ứng phân hạch dây chuyền của uranium"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Tại vùng lõi Mặt Trời với áp suất và nhiệt độ hàng chục triệu độ Kelvin, phản ứng tổng hợp hạt nhân hydro tạo heli diễn ra liên tục giải phóng năng lượng bức xạ."
+        }
+      ]
+    },
+    {
+      "id": "physics-12-radiation-safety",
+      "title": "Ứng dụng bức xạ và an toàn hạt nhân",
+      "guidance": [
+        "Ứng dụng bức xạ: y học (xạ trị, máy đo PET, dao gamma), nông nghiệp (chiếu xạ giống đột biến, bảo quản nông sản), công nghiệp (kiểm tra khuyết tật mối hàn bằng tia gamma). Nguyên tắc an toàn: giảm thời gian phơi nhiễm, tăng khoảng cách tới nguồn và sử dụng vật liệu che chắn hấp thụ (chì, bê tông cốt thép)."
+      ],
+      "examples": [
+        "Phòng chụp X-quang hoặc xạ trị luôn có tường lót chì và kính pha chì để ngăn bức xạ lọt ra ngoài."
+      ],
+      "questions": [
+        {
+          "id": "physics-12-radiation-safety-q1",
+          "prompt": "Biện pháp nào sau đây giúp giảm liều chiếu xạ nguy hiểm cho người khi làm việc gần nguồn phóng xạ?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đứng càng gần nguồn phát phóng xạ càng tốt"
+            },
+            {
+              "id": "b",
+              "text": "Tăng tối đa thời gian tiếp xúc trực tiếp với nguồn phóng xạ"
+            },
+            {
+              "id": "c",
+              "text": "Tăng khoảng cách tới nguồn và sử dụng tấm che chắn chì/bê tông dày"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Liều bức xạ tỉ lệ nghịch với bình phương khoảng cách và giảm theo hàm mũ khi qua các tấm che chắn chì hoặc bê tông."
+        },
+        {
+          "id": "physics-12-radiation-safety-q2",
+          "prompt": "Ứng dụng quan trọng của nguồn phóng xạ phát tia gamma trong y học hiện đại là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đun sôi nước khử trùng phòng bệnh nhanh chóng"
+            },
+            {
+              "id": "b",
+              "text": "Xạ trị tiêu diệt tế bào khối u ác tính hoặc phẫu thuật bằng dao mổ gamma"
+            },
+            {
+              "id": "c",
+              "text": "Uống trực tiếp để cung cấp năng lượng trao đổi chất cho cơ thể"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Tia gamma mang năng lượng photon lớn được hội tụ chính xác để phá hủy cấu trúc DNA của các tế bào ung thư mà ít tổn thương mô lành."
+        },
+        {
+          "id": "physics-12-radiation-safety-q3",
+          "prompt": "Biển báo có hình cánh quạt ba lá màu đen trên nền vàng tươi gắn tại cửa phòng chuyên dụng mang ý nghĩa cảnh báo gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khu vực có nguy cơ bức xạ ion hóa nguy hiểm cần tuân thủ an toàn"
+            },
+            {
+              "id": "b",
+              "text": "Khu vực có quạt thông gió công suất cao đang quay nhanh"
+            },
+            {
+              "id": "c",
+              "text": "Khu vực nguy cơ cháy nổ khí gas dễ bắt lửa"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Biểu tượng ba cánh quạt (trefoil) là kí hiệu quốc tế chuẩn cảnh báo khu vực chứa nguồn phóng xạ ion hóa hoặc thiết bị phát tia bức xạ hạt nhân."
+        }
+      ]
+    }
+  ]
+}

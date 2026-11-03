@@ -24,10 +24,18 @@ ORIGINAL_DIGESTS = {
     "biology": "82164b79e9f83e87de8f342d530fb390d8f0a4ad9629428aeda0a37063980dd0",
 }
 NEW_GRADE_10_SUBJECTS = ("math", "literature", "english", "history", "geography", "economics_law")
+ALL_GRADE_12_SUBJECTS = (
+    "math", "physics", "chemistry", "biology",
+    "literature", "english", "history", "geography", "economics_law"
+)
 
 
 def course(subject):
     return json.loads((PACKS / f"{subject}-10.json").read_text(encoding="utf-8"))
+
+
+def course12(subject):
+    return json.loads((PACKS / f"{subject}-12.json").read_text(encoding="utf-8"))
 
 
 def solve(client, session, attempt, content):
@@ -42,12 +50,13 @@ def begin(client, session, enrollment, unit, content):
                    "lessonId": unit, "curriculumVersion": content["version"]}))
 
 
-def prepare(client, session, content):
-    enrollment = ok(post(client, session, "/enrollments", {"subjectId": content["subjectId"], "grade": 10}))
+def prepare(client, session, content, grade=10):
+    enrollment = ok(post(client, session, "/enrollments", {"subjectId": content["subjectId"], "grade": grade}))
     placement = ok(post(client, session, "/placements", {"enrollmentId": enrollment["id"]}))
+    solutions = {q["id"]: q["correctOptionId"] for l in content["lessons"] for q in l["questions"]}
     answers = [{"questionId": question["id"],
                 "selectedOptionId": next(option["id"] for option in question["options"]
-                                          if option["id"] != question["correctOptionId"]),
+                                          if option["id"] != solutions[question["id"]]),
                 "submissionId": key()} for question in placement["questions"]]
     completed = finish(client, session, answer(client, session, placement, answers))
     assert completed["xpAwarded"] == 0 and not completed["streakLit"]
@@ -132,7 +141,7 @@ def test_packs_preserve_old_questions_and_cover_four_disjoint_blocks(subject):
         for q in lesson["questions"]:
             texts = [o["text"].strip().casefold() for o in q["options"]]
             assert len(texts) == len(set(texts)), q["id"]
-    assert (subject, 11) not in catalog.courses and (subject, 12) not in catalog.courses
+    assert (subject, 11) not in catalog.courses
 
 
 @pytest.mark.parametrize("subject", ORIGINAL_DIGESTS)
@@ -213,3 +222,124 @@ def test_upgrade_keeps_completed_block_pending_attempt_and_awards(tmp_path, subj
         new = begin(client, session, enrollment, current["lessons"][5]["id"], current)
         result = finish(client, session, solve(client, session, new, current))
         assert result["xpAwarded"] == 200 and result["dailyXp"] == 1600
+
+
+@pytest.mark.parametrize("subject", ALL_GRADE_12_SUBJECTS)
+def test_all_nine_grade_twelve_packs_valid_catalog_and_reviews(subject):
+    content = course12(subject)
+    Catalog.validate(content)
+    assert content["subjectId"] == subject
+    assert content["grade"] == 12
+    assert content["coverage"] == "PARTIAL_GRADE_12"
+    assert content["published"] is True
+
+    expected_lesson_count = 20 if subject in ("physics", "chemistry", "biology") else 15
+    expected_question_count = expected_lesson_count * 3
+    assert len(content["lessons"]) == expected_lesson_count
+
+    catalog = Catalog(PACKS)
+    question_ids = [q["id"] for lesson in content["lessons"] for q in lesson["questions"]]
+    assert len(question_ids) == expected_question_count
+    assert len(set(question_ids)) == expected_question_count
+
+    for lesson in content["lessons"]:
+        diffs = {q["difficulty"] for q in lesson["questions"]}
+        assert diffs == {"EASY", "MEDIUM", "APPLIED"}
+        for q in lesson["questions"]:
+            texts = [o["text"].strip().casefold() for o in q["options"]]
+            assert len(texts) == len(set(texts)), q["id"]
+            assert len(texts) == 3
+
+    for end in range(5, expected_lesson_count + 1, 5):
+        _, _, questions, sources = catalog.unit(content, catalog.review_id(content, end))
+        assert len(questions) == 10
+        assert sources == [lesson["id"] for lesson in content["lessons"][end - 5:end]]
+        assert len({q["id"] for q in questions}) == 10
+
+    _, _, placement_questions, _ = catalog.unit(content, "placement")
+    assert len(placement_questions) == expected_lesson_count * 2
+    assert {q["id"] for q in placement_questions} == {
+        q["id"] for lesson in content["lessons"] for q in lesson["questions"][:2]}
+
+
+@pytest.mark.parametrize("subject", ALL_GRADE_12_SUBJECTS)
+def test_grade_twelve_behavioral_flow_enrollment_placement_review_and_isolation(tmp_path, subject):
+    content = course12(subject)
+    app = create_app(Settings(tmp_path))
+    with TestClient(app) as client:
+        student_a = signup(client, f"Grade12StudentA_{subject}")
+        student_b = signup(client, f"Grade12StudentB_{subject}")
+
+        # 1. Enrollment in Grade 12
+        enrollment_a = ok(post(client, student_a, "/enrollments", {"subjectId": subject, "grade": 12}))
+        assert enrollment_a["subjectId"] == subject
+        assert enrollment_a["grade"] == 12
+
+        # 2. User isolation: Student B cannot access Student A's enrollment path
+        assert client.get(f"/enrollments/{enrollment_a['id']}/path", headers=headers(student_b)).status_code == 404
+        path_a = client.get(f"/enrollments/{enrollment_a['id']}/path", headers=headers(student_a)).json()
+        assert all(u["state"] == "LOCKED" for u in path_a["units"])
+
+        # 3. Lesson attempt blocked before placement
+        blocked = post(client, student_a, "/attempts", {
+            "enrollmentId": enrollment_a["id"],
+            "lessonId": content["lessons"][0]["id"],
+            "curriculumVersion": content["version"]
+        })
+        assert blocked.status_code == 409 and blocked.json()["code"] == "PLACEMENT_REQUIRED"
+
+        # 4. Placement flow: questions hide answers/explanations
+        placement = ok(post(client, student_a, "/placements", {"enrollmentId": enrollment_a["id"]}))
+        assert all("correctOptionId" not in q and "explanation" not in q for q in placement["questions"])
+
+        # User isolation: Student B cannot view Student A's placement attempt
+        assert client.get(f"/attempts/{placement['id']}", headers=headers(student_b)).status_code == 404
+
+        # Complete placement with wrong answers (guaranteed 0 XP, no streak, lesson 1 becomes available)
+        solutions = {q["id"]: q["correctOptionId"] for l in content["lessons"] for q in l["questions"]}
+        wrong_answers = [{"questionId": q["id"],
+                          "selectedOptionId": next(o["id"] for o in q["options"] if o["id"] != solutions[q["id"]]),
+                          "submissionId": key()} for q in placement["questions"]]
+        completed_placement = finish(client, student_a, answer(client, student_a, placement, wrong_answers))
+        assert completed_placement["xpAwarded"] == 0 and not completed_placement["streakLit"]
+
+        path_after = client.get(f"/enrollments/{enrollment_a['id']}/path", headers=headers(student_a)).json()
+        assert path_after["units"][0]["state"] == "AVAILABLE"
+        assert path_after["units"][1]["state"] == "LOCKED"
+
+        # 5. Complete Lessons 1 to 5 with correct answers
+        for idx in range(5):
+            lid = content["lessons"][idx]["id"]
+            att = begin(client, student_a, enrollment_a, lid, content)
+            # User isolation: Student B cannot view Student A's attempt
+            assert client.get(f"/attempts/{att['id']}", headers=headers(student_b)).status_code == 404
+            res = finish(client, student_a, solve(client, student_a, att, content))
+            assert res["xpAwarded"] == 200
+            assert res["dailyXp"] == (idx + 1) * 200
+
+        # 6. Attempting Lesson 6 before Review 1 must be blocked
+        blocked_six = post(client, student_a, "/attempts", {
+            "enrollmentId": enrollment_a["id"],
+            "lessonId": content["lessons"][5]["id"],
+            "curriculumVersion": content["version"]
+        })
+        assert blocked_six.status_code == 409 and blocked_six.json()["code"] == "PREVIOUS_REVIEW_REQUIRED"
+
+        # 7. Complete 5-Lesson Review 1
+        review_id = Catalog.review_id(content, 5)
+        review_att = begin(client, student_a, enrollment_a, review_id, content)
+        assert review_att["sourceLessonIds"] == [l["id"] for l in content["lessons"][:5]]
+        done_review = finish(client, student_a, solve(client, student_a, review_att, content))
+        assert done_review["xpAwarded"] == 400
+        assert done_review["dailyXp"] == 1400
+
+        # Lesson 6 is now AVAILABLE
+        path_after_rev = client.get(f"/enrollments/{enrollment_a['id']}/path", headers=headers(student_a)).json()
+        assert next(u for u in path_after_rev["units"] if u["id"] == content["lessons"][5]["id"])["state"] == "AVAILABLE"
+
+        # 8. Grade Isolation: Enrolling Student A in Grade 10 of same subject has isolated progression
+        enrollment_g10 = ok(post(client, student_a, "/enrollments", {"subjectId": subject, "grade": 10}))
+        assert enrollment_g10["id"] != enrollment_a["id"]
+        assert enrollment_g10["grade"] == 10
+        path_g10 = client.get(f"/enrollments/{enrollment_g10['id']}/path", headers=headers(student_a)).json()
+        assert all(u["state"] == "LOCKED" for u in path_g10["units"])

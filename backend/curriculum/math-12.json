@@ -1,0 +1,1137 @@
+{
+  "subjectId": "math",
+  "grade": 12,
+  "version": "intro-2026.1",
+  "title": "Toán 12: Khảo sát hàm số, Hình học Oxyz và Thống kê - Xác suất",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_12",
+  "extendedReviews": false,
+  "sourceNote": "Tài liệu học tập lớp 12 do AI Mentor biên soạn theo yêu cầu cần đạt của Chương trình GDPT 2018 (định hướng bộ sách Kết nối tri thức với cuộc sống); đây là tuyển chọn chuyên đề nền tảng, không phải bản sao nguyên văn SGK và chưa bao phủ toàn bộ năm học. Bài đầu vào sử dụng 2 câu hỏi từ mỗi bài học để hỗ trợ chẩn đoán năng lực. Nội dung cần được giáo viên chuyên môn thẩm định trước khi áp dụng chính thức.",
+  "lessons": [
+    {
+      "id": "math-12-monotonicity",
+      "title": "Tính đơn điệu của hàm số",
+      "guidance": [
+        "Hàm số y = f(x) đồng biến trên khoảng K khi f'(x) ≥ 0 với mọi x thuộc K (dấu bằng chỉ xảy ra tại hữu hạn điểm). Hàm số nghịch biến khi f'(x) ≤ 0 trên K."
+      ],
+      "examples": [
+        "Xét f(x) = x³ - 3x: f'(x) = 3x² - 3 = 3(x² - 1). f'(x) > 0 khi x < -1 hoặc x > 1, do đó f(x) đồng biến trên (-∞; -1) và (1; +∞)."
+      ],
+      "questions": [
+        {
+          "id": "math-12-monotonicity-q1",
+          "prompt": "Cho hàm số y = f(x) có đạo hàm f'(x) > 0 với mọi x thuộc khoảng (1; 3). Kết luận nào sau đây đúng?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hàm số đồng biến trên khoảng (1; 3)"
+            },
+            {
+              "id": "b",
+              "text": "Hàm số nghịch biến trên khoảng (1; 3)"
+            },
+            {
+              "id": "c",
+              "text": "Hàm số không đổi trên khoảng (1; 3)"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Đạo hàm luôn mang dấu dương trên một khoảng là điều kiện đủ để hàm số đồng biến trên khoảng đó."
+        },
+        {
+          "id": "math-12-monotonicity-q2",
+          "prompt": "Tìm các khoảng nghịch biến của hàm số y = -x³ + 3x.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "(-1; 1)"
+            },
+            {
+              "id": "b",
+              "text": "(-∞; 0)"
+            },
+            {
+              "id": "c",
+              "text": "(-∞; -1) và (1; +∞)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Đạo hàm y' = -3x² + 3 = -3(x² - 1). Ta có y' < 0 khi x² - 1 > 0, tức x < -1 hoặc x > 1."
+        },
+        {
+          "id": "math-12-monotonicity-q3",
+          "prompt": "Chi phí sản xuất x sản phẩm của một xí nghiệp là C(x) = 2x² + 50x + 800 (nghìn đồng) với x > 0. Ý nghĩa thực tế của việc chi phí biên C'(x) > 0 với mọi x > 0 là gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chi phí sản xuất không phụ thuộc vào sản lượng"
+            },
+            {
+              "id": "b",
+              "text": "Tổng chi phí sản xuất luôn tăng khi quy mô sản lượng mở rộng"
+            },
+            {
+              "id": "c",
+              "text": "Tổng chi phí sản xuất luôn giảm khi mở rộng sản lượng"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Chi phí biên C'(x) = 4x + 50 > 0 với mọi x > 0, cho thấy hàm chi phí là hàm đồng biến theo sản lượng x."
+        }
+      ]
+    },
+    {
+      "id": "math-12-extrema",
+      "title": "Cực trị của hàm số",
+      "guidance": [
+        "Nếu f'(x₀) = 0 (hoặc f'(x₀) không xác định) và đạo hàm f'(x) đổi dấu từ dương sang âm khi qua x₀ thì x₀ là điểm cực đại. Nếu đổi dấu từ âm sang dương thì x₀ là điểm cực tiểu."
+      ],
+      "examples": [
+        "Với y = x³ - 3x²: y' = 3x(x - 2). y' đổi dấu từ + sang - qua x = 0 (cực đại), từ - sang + qua x = 2 (cực tiểu)."
+      ],
+      "questions": [
+        {
+          "id": "math-12-extrema-q1",
+          "prompt": "Giả sử hàm số y = f(x) có đạo hàm tại điểm x₀. Điều kiện cần để x₀ là một điểm cực trị của hàm số là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "f'(x₀) > 0"
+            },
+            {
+              "id": "b",
+              "text": "f'(x₀) < 0"
+            },
+            {
+              "id": "c",
+              "text": "f'(x₀) = 0"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Theo định lí Fermat, nếu hàm số đạt cực trị tại x₀ và có đạo hàm tại đó thì f'(x₀) = 0."
+        },
+        {
+          "id": "math-12-extrema-q2",
+          "prompt": "Tìm điểm cực tiểu của hàm số y = x³ - 3x + 2.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "x = 0"
+            },
+            {
+              "id": "b",
+              "text": "x = 1"
+            },
+            {
+              "id": "c",
+              "text": "x = -1"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "y' = 3x² - 3 = 0 ⇔ x = ±1. Đạo hàm đổi dấu từ âm sang dương khi đi qua x = 1 nên x = 1 là điểm cực tiểu."
+        },
+        {
+          "id": "math-12-extrema-q3",
+          "prompt": "Hàm lợi nhuận của một cơ sở kinh doanh theo số lượng sản phẩm x bán ra là P(x) = -2x² + 120x - 500 (nghìn đồng). Để lợi nhuận đạt giá trị cực đại, cơ sở cần sản xuất bao nhiêu sản phẩm?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "30 sản phẩm"
+            },
+            {
+              "id": "b",
+              "text": "60 sản phẩm"
+            },
+            {
+              "id": "c",
+              "text": "20 sản phẩm"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "P'(x) = -4x + 120 = 0 ⇔ x = 30. Vì P''(30) = -4 < 0 nên tại x = 30 lợi nhuận đạt cực đại."
+        }
+      ]
+    },
+    {
+      "id": "math-12-min-max",
+      "title": "Giá trị lớn nhất và nhỏ nhất của hàm số",
+      "guidance": [
+        "Mọi hàm số liên tục trên đoạn [a; b] đều đạt giá trị lớn nhất (GTLN) và giá trị nhỏ nhất (GTNN) trên đoạn đó. Ta tìm các điểm tới hạn trong khoảng (a; b) rồi so sánh giá trị tại các điểm đó với f(a) và f(b)."
+      ],
+      "examples": [
+        "Tìm GTLN và GTNN của f(x) = x³ - 3x trên [0; 2]: f'(x) = 3x² - 3 = 0 có nghiệm x = 1 thuộc (0; 2). Ta có f(0) = 0, f(1) = -2, f(2) = 2. Vậy GTLN bằng 2, GTNN bằng -2."
+      ],
+      "questions": [
+        {
+          "id": "math-12-min-max-q1",
+          "prompt": "Cho hàm số y = f(x) liên tục trên đoạn [a; b]. Khẳng định nào sau đây luôn đúng?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Giá trị lớn nhất luôn đạt tại một trong hai đầu mút a hoặc b"
+            },
+            {
+              "id": "b",
+              "text": "Hàm số luôn đạt giá trị lớn nhất và giá trị nhỏ nhất trên [a; b]"
+            },
+            {
+              "id": "c",
+              "text": "Hàm số chỉ đạt cực đại mà không thể đạt giá trị lớn nhất"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Theo định lí Weierstrass, hàm số liên tục trên một đoạn đóng bị chặn luôn đạt giá trị lớn nhất và nhỏ nhất trên đoạn đó."
+        },
+        {
+          "id": "math-12-min-max-q2",
+          "prompt": "Giá trị lớn nhất của hàm số y = -x² + 4x + 1 trên đoạn [0; 3] bằng bao nhiêu?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "5"
+            },
+            {
+              "id": "b",
+              "text": "4"
+            },
+            {
+              "id": "c",
+              "text": "1"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "y' = -2x + 4 = 0 ⇔ x = 2 thuộc [0; 3]. Ta tính: y(0) = 1, y(2) = 5, y(3) = 4. Vậy giá trị lớn nhất bằng 5."
+        },
+        {
+          "id": "math-12-min-max-q3",
+          "prompt": "Bác thợ rèn dùng 40 m lưới rào quanh một mảnh vườn hình chữ nhật tựa vào bờ tường thẳng có sẵn (không cần rào phía tường). Diện tích lớn nhất có thể rào được là bao nhiêu?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "400 m²"
+            },
+            {
+              "id": "b",
+              "text": "100 m²"
+            },
+            {
+              "id": "c",
+              "text": "200 m²"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Gọi chiều rộng vuông góc với tường là x (m) thì chiều dài là 40 - 2x (m) với 0 < x < 20. Diện tích S(x) = x(40 - 2x) = -2x² + 40x. S'(x) = -4x + 40 = 0 ⇔ x = 10, khi đó S = 200 m²."
+        }
+      ]
+    },
+    {
+      "id": "math-12-asymptotes",
+      "title": "Đường tiệm cận của đồ thị hàm số",
+      "guidance": [
+        "Đường thẳng y = y₀ là tiệm cận ngang nếu lim_{x→+∞} f(x) = y₀ hoặc lim_{x→-∞} f(x) = y₀. Đường thẳng x = x₀ là tiệm cận đứng nếu ít nhất một trong các giới hạn một bên khi x tiến tới x₀ bằng vô cực."
+      ],
+      "examples": [
+        "Hàm số y = (2x + 1)/(x - 1) có lim_{x→1⁺} y = +∞ nên x = 1 là tiệm cận đứng; lim_{x→±∞} y = 2 nên y = 2 là tiệm cận ngang."
+      ],
+      "questions": [
+        {
+          "id": "math-12-asymptotes-q1",
+          "prompt": "Đường thẳng x = a được gọi là đường tiệm cận đứng của đồ thị hàm số y = f(x) nếu thỏa mãn điều kiện nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ít nhất một trong các giới hạn một bên khi x tiến đến a là vô cực"
+            },
+            {
+              "id": "b",
+              "text": "Giới hạn khi x tiến đến vô cực bằng a"
+            },
+            {
+              "id": "c",
+              "text": "Đạo hàm f'(a) bằng 0"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Định nghĩa tiệm cận đứng yêu cầu lim_{x→a⁺} f(x) = ±∞ hoặc lim_{x→a⁻} f(x) = ±∞."
+        },
+        {
+          "id": "math-12-asymptotes-q2",
+          "prompt": "Tìm phương trình đường tiệm cận ngang của đồ thị hàm số y = (3x - 1)/(x + 2).",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "x = -2"
+            },
+            {
+              "id": "b",
+              "text": "y = -1/2"
+            },
+            {
+              "id": "c",
+              "text": "y = 3"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Ta có lim_{x→+∞} (3x - 1)/(x + 2) = 3 và lim_{x→-∞} (3x - 1)/(x + 2) = 3 nên y = 3 là tiệm cận ngang."
+        },
+        {
+          "id": "math-12-asymptotes-q3",
+          "prompt": "Nồng độ của một loại thuốc trong máu bệnh nhân sau t giờ được mô hình hóa bởi C(t) = 4t / (t² + 2) (mg/L). Khi thời gian t tăng lên vô hạn, nồng độ thuốc tiến về giá trị nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "4 mg/L"
+            },
+            {
+              "id": "b",
+              "text": "0 mg/L"
+            },
+            {
+              "id": "c",
+              "text": "2 mg/L"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "lim_{t→+∞} 4t / (t² + 2) = lim_{t→+∞} (4/t) / (1 + 2/t²) = 0 mg/L. Đồ thị có tiệm cận ngang y = 0."
+        }
+      ]
+    },
+    {
+      "id": "math-12-graph-analysis",
+      "title": "Khảo sát và nhận dạng đồ thị hàm số",
+      "guidance": [
+        "Khảo sát hàm số gồm: tìm tập xác định, xét chiều biến thiên (đạo hàm, cực trị, tiệm cận, bảng biến thiên) và vẽ đồ thị (giao trục tọa độ, tính đối xứng). Đồ thị hàm bậc ba có tâm đối xứng là điểm uốn."
+      ],
+      "examples": [
+        "Hàm số y = x³ - 3x: f'(x) = 3(x² - 1); cực đại (-1; 2), cực tiểu (1; -2). Đồ thị nhận gốc tọa độ O(0; 0) làm tâm đối xứng."
+      ],
+      "questions": [
+        {
+          "id": "math-12-graph-analysis-q1",
+          "prompt": "Đối với hàm số bậc ba y = ax³ + bx² + cx + d (a ≠ 0), nếu lim_{x→+∞} y = +∞ thì dấu của hệ số a là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "a < 0"
+            },
+            {
+              "id": "b",
+              "text": "a = 0"
+            },
+            {
+              "id": "c",
+              "text": "a > 0"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Khi x tiến ra dương vô cực, giới hạn của đa thức bậc ba cùng dấu với hệ số cao nhất a. Do đó a > 0."
+        },
+        {
+          "id": "math-12-graph-analysis-q2",
+          "prompt": "Tâm đối xứng của đồ thị hàm phân thức bậc nhất trên bậc nhất y = (ax + b)/(cx + d) (với c ≠ 0, ad - bc ≠ 0) là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Giao điểm của đồ thị với trục hoành Ox"
+            },
+            {
+              "id": "b",
+              "text": "Giao điểm của tiệm cận đứng và tiệm cận ngang"
+            },
+            {
+              "id": "c",
+              "text": "Giao điểm của đồ thị với trục tung Oy"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Đồ thị hàm nhất biến nhận giao điểm của hai đường tiệm cận làm tâm đối xứng."
+        },
+        {
+          "id": "math-12-graph-analysis-q3",
+          "prompt": "Cho hàm số f(x) liên tục trên R có bảng biến thiên: cực đại tại x = -1 với f(-1) = 4, cực tiểu tại x = 2 với f(2) = -1. Khi x → -∞ thì y → -∞; khi x → +∞ thì y → +∞. Số nghiệm phân biệt của phương trình f(x) = 0 là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "3 nghiệm phân biệt"
+            },
+            {
+              "id": "b",
+              "text": "1 nghiệm"
+            },
+            {
+              "id": "c",
+              "text": "2 nghiệm phân biệt"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Trên (-∞; -1), f tăng từ -∞ lên 4 nên cắt Ox tại 1 điểm. Trên (-1; 2), f giảm từ 4 xuống -1 nên cắt Ox tại điểm thứ hai. Trên (2; +∞), f tăng từ -1 lên +∞ nên cắt Ox tại điểm thứ ba."
+        }
+      ]
+    },
+    {
+      "id": "math-12-vectors-space",
+      "title": "Vectơ và các phép toán trong không gian",
+      "guidance": [
+        "Vectơ trong không gian là đoạn thẳng có hướng. Phép cộng vectơ tuân theo quy tắc ba điểm, hình bình hành và hình hộp: vectơ đường chéo xuất phát từ một đỉnh bằng tổng ba vectơ cạnh cùng xuất phát từ đỉnh đó."
+      ],
+      "examples": [
+        "Cho hình hộp ABCD.A'B'C'D': vectơ AC' = vectơ AB + vectơ AD + vectơ AA'."
+      ],
+      "questions": [
+        {
+          "id": "math-12-vectors-space-q1",
+          "prompt": "Trong không gian, quy tắc hình hộp khẳng định tổng ba vectơ chung gốc xuất phát từ một đỉnh của hình hộp bằng vectơ nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Vectơ cạnh đối diện"
+            },
+            {
+              "id": "b",
+              "text": "Vectơ đường chéo xuất phát từ đỉnh đó"
+            },
+            {
+              "id": "c",
+              "text": "Vectơ đường chéo của mặt đáy"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Với hình hộp ABCD.A'B'C'D', ta luôn có vectơ AB + vectơ AD + vectơ AA' = vectơ AC'."
+        },
+        {
+          "id": "math-12-vectors-space-q2",
+          "prompt": "Cho tứ diện ABCD có G là trọng tâm của tam giác BCD. Đẳng thức vectơ nào sau đây đúng?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "vectơ AB + vectơ AC + vectơ AD = 3 vectơ AG"
+            },
+            {
+              "id": "b",
+              "text": "vectơ AB + vectơ AC + vectơ AD = vectơ AG"
+            },
+            {
+              "id": "c",
+              "text": "vectơ AB + vectơ AC + vectơ AD = 4 vectơ AG"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Vì G là trọng tâm tam giác BCD nên vectơ GB + vectơ GC + vectơ GD = vectơ 0. Biểu diễn qua điểm A ta được vectơ AB + AC + AD = 3 AG."
+        },
+        {
+          "id": "math-12-vectors-space-q3",
+          "prompt": "Ba lực vectơ F₁, F₂, F₃ cùng tác dụng vào một chất điểm đứng yên ở trạng thái cân bằng. Hệ thức vectơ nào sau đây phản ánh đúng định luật cân bằng?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "|F₁| + |F₂| + |F₃| = 0"
+            },
+            {
+              "id": "b",
+              "text": "vectơ F₁ + vectơ F₂ = vectơ F₃"
+            },
+            {
+              "id": "c",
+              "text": "vectơ F₁ + vectơ F₂ + vectơ F₃ = vectơ 0"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hợp lực của tất cả các lực tác dụng lên một vật cân bằng phải triệt tiêu, tức tổng vectơ bằng vectơ 0."
+        }
+      ]
+    },
+    {
+      "id": "math-12-coordinates-space",
+      "title": "Hệ tọa độ Oxyz và tọa độ điểm, vectơ",
+      "guidance": [
+        "Hệ tọa độ Oxyz gồm ba trục Ox, Oy, Oz đôi một vuông góc tại gốc O với ba vectơ đơn vị i, j, k. Vectơ u = x.i + y.j + z.k có tọa độ u = (x; y; z). Tọa độ trung điểm M của đoạn thẳng AB là trung bình cộng tọa độ của A và B."
+      ],
+      "examples": [
+        "A(1; 2; 3) và B(3; 0; -1) thì trung điểm M có tọa độ ((1+3)/2; (2+0)/2; (3-1)/2) = (2; 1; 1). Vectơ AB = (2; -2; -4)."
+      ],
+      "questions": [
+        {
+          "id": "math-12-coordinates-space-q1",
+          "prompt": "Trong không gian Oxyz, tọa độ của gốc tọa độ O là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "(0; 0; 0)"
+            },
+            {
+              "id": "b",
+              "text": "(1; 1; 1)"
+            },
+            {
+              "id": "c",
+              "text": "(0; 0; 1)"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Gốc tọa độ O có hoành độ, tung độ và cao độ đều bằng 0."
+        },
+        {
+          "id": "math-12-coordinates-space-q2",
+          "prompt": "Cho hai điểm A(2; -1; 4) và B(4; 3; 0). Tọa độ trung điểm M của đoạn thẳng AB là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "(6; 2; 4)"
+            },
+            {
+              "id": "b",
+              "text": "(1; 2; -2)"
+            },
+            {
+              "id": "c",
+              "text": "(3; 1; 2)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "xM = (2 + 4)/2 = 3; yM = (-1 + 3)/2 = 1; zM = (4 + 0)/2 = 2. Vậy M(3; 1; 2)."
+        },
+        {
+          "id": "math-12-coordinates-space-q3",
+          "prompt": "Trong trạm không lưu, máy bay A tại tọa độ P(120; 80; 10) di chuyển với vận tốc đều v = (30; 20; 2) (km/h) trong không gian Oxyz. Sau 2 giờ bay, tọa độ mới của máy bay là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "(240; 160; 20)"
+            },
+            {
+              "id": "b",
+              "text": "(180; 120; 14)"
+            },
+            {
+              "id": "c",
+              "text": "(150; 100; 12)"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Tọa độ mới P' = P + 2v = (120 + 2*30; 80 + 2*20; 10 + 2*2) = (180; 120; 14)."
+        }
+      ]
+    },
+    {
+      "id": "math-12-dot-product-space",
+      "title": "Tích vô hướng và góc giữa hai vectơ",
+      "guidance": [
+        "Tích vô hướng của u = (x₁; y₁; z₁) và v = (x₂; y₂; z₂) là u.v = x₁x₂ + y₁y₂ + z₁z₂. Góc θ giữa hai vectơ thỏa mãn cos θ = (u.v)/(|u|.|v|). Hai vectơ vuông góc khi và chỉ khi tích vô hướng bằng 0."
+      ],
+      "examples": [
+        "Cho u = (1; 2; 2) và v = (2; -1; 0): u.v = 1*2 + 2*(-1) + 2*0 = 0, suy ra u vuông góc với v."
+      ],
+      "questions": [
+        {
+          "id": "math-12-dot-product-space-q1",
+          "prompt": "Hai vectơ u và v khác vectơ không trong không gian vuông góc với nhau khi và chỉ khi:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tổng u + v = 0"
+            },
+            {
+              "id": "b",
+              "text": "Độ dài |u| = |v|"
+            },
+            {
+              "id": "c",
+              "text": "Tích vô hướng u · v = 0"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "cos 90° = 0 nên tích vô hướng u · v = |u||v|cos 90° = 0."
+        },
+        {
+          "id": "math-12-dot-product-space-q2",
+          "prompt": "Tính tích vô hướng của hai vectơ a = (1; 3; -2) và b = (4; -1; 1).",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "9"
+            },
+            {
+              "id": "b",
+              "text": "-1"
+            },
+            {
+              "id": "c",
+              "text": "5"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "a · b = 1*4 + 3*(-1) + (-2)*1 = 4 - 3 - 2 = -1."
+        },
+        {
+          "id": "math-12-dot-product-space-q3",
+          "prompt": "Tính số đo góc giữa hai vectơ u = (1; 0; 1) và v = (0; 1; 1).",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "60°"
+            },
+            {
+              "id": "b",
+              "text": "45°"
+            },
+            {
+              "id": "c",
+              "text": "90°"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "u · v = 1*0 + 0*1 + 1*1 = 1. Độ dài |u| = √(1² + 1²) = √2, |v| = √2. cos θ = 1 / (√2 * √2) = 1/2 ⇒ θ = 60°."
+        }
+      ]
+    },
+    {
+      "id": "math-12-sphere-equation",
+      "title": "Phương trình mặt cầu trong không gian",
+      "guidance": [
+        "Mặt cầu tâm I(a; b; c) bán kính R có phương trình chính tắc: (x - a)² + (y - b)² + (z - c)² = R². Dạng tổng quát x² + y² + z² - 2ax - 2by - 2cz + d = 0 với điều kiện a² + b² + c² - d > 0 và R = √(a² + b² + c² - d)."
+      ],
+      "examples": [
+        "Mặt cầu tâm I(1; -2; 3) bán kính R = 4 có phương trình: (x - 1)² + (y + 2)² + (z - 3)² = 16."
+      ],
+      "questions": [
+        {
+          "id": "math-12-sphere-equation-q1",
+          "prompt": "Mặt cầu (S): (x - 2)² + (y + 1)² + (z - 3)² = 25 có tọa độ tâm I và bán kính R lần lượt là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "I(2; -1; 3) và R = 25"
+            },
+            {
+              "id": "b",
+              "text": "I(2; -1; 3) và R = 5"
+            },
+            {
+              "id": "c",
+              "text": "I(-2; 1; -3) và R = 25"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Từ phương trình chính tắc (x - a)² + (y - b)² + (z - c)² = R², ta có a = 2, b = -1, c = 3 và R = √25 = 5."
+        },
+        {
+          "id": "math-12-sphere-equation-q2",
+          "prompt": "Viết phương trình mặt cầu nhận đoạn thẳng AB làm đường kính với A(1; 0; 2) và B(3; 4; 0).",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "(x - 2)² + (y - 2)² + (z - 1)² = 6"
+            },
+            {
+              "id": "b",
+              "text": "(x - 2)² + (y - 2)² + (z - 1)² = 24"
+            },
+            {
+              "id": "c",
+              "text": "(x - 1)² + y² + (z - 2)² = 6"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tâm I là trung điểm AB: I(2; 2; 1). Bán kính R = AB/2 = √[(3-1)² + (4-0)² + (0-2)²]/2 = √24 / 2 = √6. R² = 6."
+        },
+        {
+          "id": "math-12-sphere-equation-q3",
+          "prompt": "Một trạm radar phủ sóng hình cầu bán kính 10 km, đặt tại tâm I(1; 2; 3) (đơn vị tọa độ km). Điểm nào sau đây nằm bên trong vùng phát sóng của trạm?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Điểm N(10; 10; 10)"
+            },
+            {
+              "id": "b",
+              "text": "Điểm P(15; 2; 3)"
+            },
+            {
+              "id": "c",
+              "text": "Điểm M(3; 4; 5)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Khoảng cách IM² = (3-1)² + (4-2)² + (5-3)² = 4 + 4 + 4 = 12 < 10² = 100, do đó M nằm bên trong mặt cầu."
+        }
+      ]
+    },
+    {
+      "id": "math-12-plane-equation",
+      "title": "Phương trình mặt phẳng trong không gian",
+      "guidance": [
+        "Mặt phẳng đi qua M(x₀; y₀; z₀) và có vectơ pháp tuyến n = (A; B; C) có phương trình: A(x - x₀) + B(y - y₀) + C(z - z₀) = 0 hay Ax + By + Cz + D = 0 (A² + B² + C² > 0). Khoảng cách từ M đến (P) là d = |Ax₀ + By₀ + Cz₀ + D| / √(A² + B² + C²)."
+      ],
+      "examples": [
+        "Mặt phẳng qua M(1; 2; 3) vuông góc với n = (2; -1; 4) có phương trình: 2(x - 1) - 1(y - 2) + 4(z - 3) = 0 ⇔ 2x - y + 4z - 12 = 0."
+      ],
+      "questions": [
+        {
+          "id": "math-12-plane-equation-q1",
+          "prompt": "Một vectơ pháp tuyến của mặt phẳng (P): 2x - 3y + z - 5 = 0 là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "n = (2; -3; 1)"
+            },
+            {
+              "id": "b",
+              "text": "n = (2; 3; 1)"
+            },
+            {
+              "id": "c",
+              "text": "n = (2; -3; -5)"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Các hệ số của x, y, z trong phương trình tổng quát chính là tọa độ của một vectơ pháp tuyến."
+        },
+        {
+          "id": "math-12-plane-equation-q2",
+          "prompt": "Phương trình mặt phẳng đi qua M(1; 2; -1) và nhận n = (2; 1; 3) làm vectơ pháp tuyến là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "2x + y + 3z + 1 = 0"
+            },
+            {
+              "id": "b",
+              "text": "x + 2y - z - 6 = 0"
+            },
+            {
+              "id": "c",
+              "text": "2x + y + 3z - 1 = 0"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Phương trình: 2(x - 1) + 1(y - 2) + 3(z + 1) = 0 ⇔ 2x + y + 3z - 2 - 2 + 3 = 0 ⇔ 2x + y + 3z - 1 = 0."
+        },
+        {
+          "id": "math-12-plane-equation-q3",
+          "prompt": "Khoảng cách từ điểm A(1; 2; 3) đến mặt phẳng (P): 2x - 2y + z + 5 = 0 bằng bao nhiêu?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "3"
+            },
+            {
+              "id": "b",
+              "text": "2"
+            },
+            {
+              "id": "c",
+              "text": "6"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "d(A, (P)) = |2*1 - 2*2 + 3 + 5| / √(2² + (-2)² + 1²) = |2 - 4 + 3 + 5| / √9 = 6 / 3 = 2."
+        }
+      ]
+    },
+    {
+      "id": "math-12-antiderivative",
+      "title": "Nguyên hàm và tính chất cơ bản",
+      "guidance": [
+        "Hàm số F(x) là một nguyên hàm của f(x) trên K nếu F'(x) = f(x) với mọi x thuộc K. Họ tất cả các nguyên hàm là ∫ f(x) dx = F(x) + C. Các nguyên hàm cơ bản: ∫ xⁿ dx = xⁿ⁺¹/(n+1) + C (n ≠ -1), ∫ eˣ dx = eˣ + C."
+      ],
+      "examples": [
+        "∫ (3x² + 2x) dx = x³ + x² + C."
+      ],
+      "questions": [
+        {
+          "id": "math-12-antiderivative-q1",
+          "prompt": "Cho F(x) là một nguyên hàm của hàm số f(x) trên khoảng K. Khẳng định nào sau đây đúng?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đạo hàm F'(x) bằng -f(x) với mọi x thuộc K"
+            },
+            {
+              "id": "b",
+              "text": "∫ F(x) dx = f(x) + C"
+            },
+            {
+              "id": "c",
+              "text": "F'(x) = f(x) với mọi x thuộc K"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Định nghĩa nguyên hàm: F(x) là nguyên hàm của f(x) khi và chỉ khi đạo hàm của F(x) bằng f(x)."
+        },
+        {
+          "id": "math-12-antiderivative-q2",
+          "prompt": "Tìm họ nguyên hàm của hàm số f(x) = 4x³ - 2x + 1.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "4x⁴ - 2x² + x + C"
+            },
+            {
+              "id": "b",
+              "text": "x⁴ - x² + x + C"
+            },
+            {
+              "id": "c",
+              "text": "12x² - 2 + C"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Áp dụng công thức nguyên hàm từng số hạng: ∫ 4x³ dx = x⁴, ∫ (-2x) dx = -x², ∫ 1 dx = x."
+        },
+        {
+          "id": "math-12-antiderivative-q3",
+          "prompt": "Một vật chuyển động thẳng có vận tốc tức thời v(t) = 3t² + 2t (m/s). Biết tại thời điểm t = 0 vật ở vị trí s(0) = 5 m. Phương trình vị trí s(t) của vật là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "s(t) = t³ + t² + 5 (m)"
+            },
+            {
+              "id": "b",
+              "text": "s(t) = 6t + 2 (m)"
+            },
+            {
+              "id": "c",
+              "text": "s(t) = t³ + t² (m)"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "s(t) = ∫ (3t² + 2t) dt = t³ + t² + C. Với s(0) = 5 suy ra C = 5, do đó s(t) = t³ + t² + 5."
+        }
+      ]
+    },
+    {
+      "id": "math-12-definite-integral",
+      "title": "Tích phân và ứng dụng tính diện tích",
+      "guidance": [
+        "Định nghĩa tích phân theo công thức Newton - Leibniz: ∫_a^b f(x) dx = F(b) - F(a). Diện tích hình phẳng giới hạn bởi đồ thị y = f(x) liên tục, trục hoành và hai đường thẳng x = a, x = b là S = ∫_a^b |f(x)| dx."
+      ],
+      "examples": [
+        "Tính diện tích hình phẳng giới hạn bởi y = x², trục hoành, x = 0 và x = 3: S = ∫_0^3 x² dx = [x³/3]_0^3 = 27/3 = 9."
+      ],
+      "questions": [
+        {
+          "id": "math-12-definite-integral-q1",
+          "prompt": "Theo công thức Newton - Leibniz, nếu F(x) là một nguyên hàm của hàm số f(x) liên tục trên [a; b] thì:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "∫_a^b f(x) dx = F(a) + F(b)"
+            },
+            {
+              "id": "b",
+              "text": "∫_a^b f(x) dx = F(b) - F(a)"
+            },
+            {
+              "id": "c",
+              "text": "∫_a^b f(x) dx = F(a) - F(b)"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Công thức cơ bản của giải tích liên hệ tích phân xác định với hiệu giá trị của nguyên hàm tại hai đầu mút."
+        },
+        {
+          "id": "math-12-definite-integral-q2",
+          "prompt": "Tính tích phân I = ∫_1^2 (3x² + 1) dx.",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "8"
+            },
+            {
+              "id": "b",
+              "text": "10"
+            },
+            {
+              "id": "c",
+              "text": "7"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "F(x) = x³ + x. Ta có F(2) = 2³ + 2 = 10; F(1) = 1³ + 1 = 2. Vậy I = F(2) - F(1) = 10 - 2 = 8."
+        },
+        {
+          "id": "math-12-definite-integral-q3",
+          "prompt": "Tính diện tích hình phẳng giới hạn bởi đồ thị hàm số y = 3x², trục hoành Ox và hai đường thẳng x = 0, x = 2.",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "12"
+            },
+            {
+              "id": "b",
+              "text": "6"
+            },
+            {
+              "id": "c",
+              "text": "8"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Vì 3x² ≥ 0 trên [0; 2] nên diện tích S = ∫_0^2 3x² dx = [x³]_0^2 = 2³ - 0³ = 8."
+        }
+      ]
+    },
+    {
+      "id": "math-12-grouped-dispersion",
+      "title": "Đo độ phân tán của mẫu số liệu ghép nhóm",
+      "guidance": [
+        "Các số đặc trưng đo độ phân tán của mẫu số liệu ghép nhóm gồm: khoảng biến thiên R = x_max - x_min, khoảng tứ phân vị IQR = Q₃ - Q₁, phương sai s² và độ lệch chuẩn s = √(s²). Độ lệch chuẩn càng nhỏ thể hiện dữ liệu càng phân tán ít quanh giá trị trung bình."
+      ],
+      "examples": [
+        "Mẫu số liệu có phương sai s² = 16 thì độ lệch chuẩn s = √16 = 4."
+      ],
+      "questions": [
+        {
+          "id": "math-12-grouped-dispersion-q1",
+          "prompt": "Số đặc trưng nào bằng căn bậc hai số học của phương sai trong thống kê?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Độ lệch chuẩn"
+            },
+            {
+              "id": "b",
+              "text": "Khoảng biến thiên"
+            },
+            {
+              "id": "c",
+              "text": "Khoảng tứ phân vị"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Độ lệch chuẩn s được định nghĩa là căn bậc hai số học của phương sai s²: s = √(s²)."
+        },
+        {
+          "id": "math-12-grouped-dispersion-q2",
+          "prompt": "Một mẫu số liệu ghép nhóm có tứ phân vị thứ nhất Q₁ = 45 và tứ phân vị thứ ba Q₃ = 75. Khoảng tứ phân vị IQR của mẫu bằng:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "120"
+            },
+            {
+              "id": "b",
+              "text": "60"
+            },
+            {
+              "id": "c",
+              "text": "30"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Khoảng tứ phân vị được tính theo công thức IQR = Q₃ - Q₁ = 75 - 45 = 30."
+        },
+        {
+          "id": "math-12-grouped-dispersion-q3",
+          "prompt": "Hai lớp 12A và 12B có cùng điểm trung bình môn Toán là 7,5 điểm. Độ lệch chuẩn điểm kiểm tra của lớp 12A là 0,8 còn của lớp 12B là 1,6. Kết luận nào sau đây chính xác nhất?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hai lớp có độ phân tán kết quả học tập như nhau"
+            },
+            {
+              "id": "b",
+              "text": "Điểm số của học sinh lớp 12A đồng đều hơn học sinh lớp 12B"
+            },
+            {
+              "id": "c",
+              "text": "Học sinh lớp 12B học tốt môn Toán hơn học sinh lớp 12A"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Độ lệch chuẩn đo mức độ phân tán quanh giá trị trung bình. Lớp 12A có độ lệch chuẩn nhỏ hơn nên mức độ đồng đều cao hơn."
+        }
+      ]
+    },
+    {
+      "id": "math-12-conditional-probability",
+      "title": "Xác suất có điều kiện và quy tắc nhân",
+      "guidance": [
+        "Xác suất của biến cố A với điều kiện biến cố B đã xảy ra (P(B) > 0) là P(A|B) = P(A ∩ B) / P(B). Quy tắc nhân xác suất: P(A ∩ B) = P(B) · P(A|B). Khi A và B độc lập thì P(A|B) = P(A)."
+      ],
+      "examples": [
+        "Gieo xúc xắc cân đối. Gọi B là biến cố 'xuất hiện mặt chẵn' ({2, 4, 6}), A là biến cố 'xuất hiện mặt 6'. P(B) = 3/6 = 1/2, P(A ∩ B) = 1/6. Xác suất P(A|B) = (1/6)/(1/2) = 1/3."
+      ],
+      "questions": [
+        {
+          "id": "math-12-conditional-probability-q1",
+          "prompt": "Cho hai biến cố A và B với P(B) > 0. Công thức tính xác suất có điều kiện của A khi biết B đã xảy ra là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "P(A|B) = P(A) / P(B)"
+            },
+            {
+              "id": "b",
+              "text": "P(A|B) = P(A ∩ B) · P(B)"
+            },
+            {
+              "id": "c",
+              "text": "P(A|B) = P(A ∩ B) / P(B)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Định nghĩa xác suất có điều kiện là tỉ số giữa xác suất đồng thời P(A ∩ B) và xác suất điều kiện P(B)."
+        },
+        {
+          "id": "math-12-conditional-probability-q2",
+          "prompt": "Cho P(A) = 0,6; P(B) = 0,5 và P(A ∩ B) = 0,3. Giá trị của P(A|B) bằng:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "0,15"
+            },
+            {
+              "id": "b",
+              "text": "0,6"
+            },
+            {
+              "id": "c",
+              "text": "0,5"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "P(A|B) = P(A ∩ B) / P(B) = 0,3 / 0,5 = 0,6."
+        },
+        {
+          "id": "math-12-conditional-probability-q3",
+          "prompt": "Một hộp có 5 viên bi xanh và 3 viên bi đỏ. Rút ngẫu nhiên lần lượt hai viên không hoàn lại. Xác suất để viên thứ hai rút được màu đỏ biết rằng viên thứ nhất màu xanh là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "3/7"
+            },
+            {
+              "id": "b",
+              "text": "3/8"
+            },
+            {
+              "id": "c",
+              "text": "2/7"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Sau khi rút viên 1 màu xanh, trong hộp còn 4 bi xanh và 3 bi đỏ (tổng cộng 7 viên). Xác suất chọn được bi đỏ là 3/7."
+        }
+      ]
+    },
+    {
+      "id": "math-12-bayes-formula",
+      "title": "Công thức xác suất toàn phần và công thức Bayes",
+      "guidance": [
+        "Nếu {B₁, B₂} tạo thành một hệ biến cố đầy đủ thì công thức xác suất toàn phần là P(A) = P(B₁)P(A|B₁) + P(B₂)P(A|B₂). Công thức Bayes cho phép cập nhật xác suất tiên nghiệm khi có bằng chứng: P(B₁|A) = [P(B₁)P(A|B₁)] / P(A)."
+      ],
+      "examples": [
+        "Xét nghiệm y tế có tỉ lệ dương tính giả; công thức Bayes cho phép tính xác suất thực sự mang bệnh khi kết quả xét nghiệm dương tính."
+      ],
+      "questions": [
+        {
+          "id": "math-12-bayes-formula-q1",
+          "prompt": "Nếu {B₁, B₂} là một hệ đầy đủ các biến cố thì công thức xác suất toàn phần đối với biến cố A là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "P(A) = P(A|B₁) · P(A|B₂)"
+            },
+            {
+              "id": "b",
+              "text": "P(A) = P(B₁) · P(A|B₁) + P(B₂) · P(A|B₂)"
+            },
+            {
+              "id": "c",
+              "text": "P(A) = P(B₁) + P(B₂)"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Công thức xác suất toàn phần phân tích biến cố A thành tổng hợp các trường hợp loại trừ nhau tương ứng với hệ đầy đủ."
+        },
+        {
+          "id": "math-12-bayes-formula-q2",
+          "prompt": "Một xí nghiệp có hai dây chuyền sản xuất: máy I sản xuất 60% sản phẩm với tỉ lệ phế phẩm 2%; máy II sản xuất 40% sản phẩm với tỉ lệ phế phẩm 3%. Tỉ lệ phế phẩm chung P(A) của xí nghiệp là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "0,024 (2,4%)"
+            },
+            {
+              "id": "b",
+              "text": "0,050 (5,0%)"
+            },
+            {
+              "id": "c",
+              "text": "0,012 (1,2%)"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "P(A) = P(I)P(A|I) + P(II)P(A|II) = 0,6 * 0,02 + 0,4 * 0,03 = 0,012 + 0,012 = 0,024 = 2,4%."
+        },
+        {
+          "id": "math-12-bayes-formula-q3",
+          "prompt": "Từ dữ liệu xí nghiệp trên: lấy ngẫu nhiên một sản phẩm thấy bị phế phẩm. Xác suất để phế phẩm đó do máy I sản xuất là bao nhiêu (theo công thức Bayes)?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "0,60 (60%)"
+            },
+            {
+              "id": "b",
+              "text": "0,40 (40%)"
+            },
+            {
+              "id": "c",
+              "text": "0,50 (50%)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Theo công thức Bayes: P(I|A) = [P(I)P(A|I)] / P(A) = (0,6 * 0,02) / 0,024 = 0,012 / 0,024 = 0,5 (50%)."
+        }
+      ]
+    }
+  ]
+}

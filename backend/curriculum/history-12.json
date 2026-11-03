@@ -1,0 +1,1137 @@
+{
+  "subjectId": "history",
+  "grade": 12,
+  "version": "intro-2026.1",
+  "title": "Lịch sử 12: Thế giới và Việt Nam từ thế kỉ XX đến nay",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_12",
+  "extendedReviews": false,
+  "sourceNote": "Tài liệu học tập lớp 12 do AI Mentor biên soạn theo yêu cầu cần đạt của Chương trình GDPT 2018 (định hướng bộ sách Kết nối tri thức với cuộc sống); đây là tuyển chọn chuyên đề nền tảng, không phải bản sao nguyên văn SGK và chưa bao phủ toàn bộ năm học. Bài đầu vào sử dụng 2 câu hỏi từ mỗi bài học để hỗ trợ chẩn đoán năng lực. Nội dung cần được giáo viên chuyên môn thẩm định trước khi áp dụng chính thức.",
+  "lessons": [
+    {
+      "id": "history-12-cold-war-origins",
+      "title": "Trật tự thế giới hai cực Ianta và nguồn gốc Chiến tranh Lạnh",
+      "guidance": [
+        "Hội nghị Ianta (2/1945) với sự tham gia của ba cường quốc (Liên Xô, Mĩ, Anh) đã phân chia phạm vi ảnh hưởng ở châu Âu và châu Á, hình thành trật tự hai cực Ianta. Chiến tranh Lạnh khởi đầu từ Thông điệp của Tổng thống Mĩ Truman (3/1947), Kế hoạch Marshall, và sự xác lập hai khối quân sự đối đầu: NATO (1949) và Hiệp ước Warsaw (1955)."
+      ],
+      "examples": [
+        "Sự phân chia nước Đức thành Cộng hòa Liên bang Đức (Tây Đức) và Cộng hòa Dân chủ Đức (Đông Đức) năm 1949 là biểu hiện cụ thể của trật tự hai cực Ianta tại châu Âu."
+      ],
+      "questions": [
+        {
+          "id": "history-12-cold-war-origins-q1",
+          "prompt": "Hội nghị Ianta diễn ra vào tháng 2/1945 có sự tham gia của nguyên thủ ba cường quốc nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Liên Xô, Mĩ và Anh"
+            },
+            {
+              "id": "b",
+              "text": "Mĩ, Anh và Pháp"
+            },
+            {
+              "id": "c",
+              "text": "Liên Xô, Trung Quốc và Mĩ"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Hội nghị Ianta quy tụ ba nguyên thủ: Stalin (Liên Xô), Roosevelt (Mĩ) và Churchill (Anh) để thỏa thuận phân chia phạm vi ảnh hưởng sau Thế chiến II."
+        },
+        {
+          "id": "history-12-cold-war-origins-q2",
+          "prompt": "Sự kiện nào sau đây đánh dấu sự khởi đầu chính thức của cuộc Chiến tranh Lạnh giữa hai phe?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Sự ra đời của tổ chức Hiệp ước Bắc Đại Tây Dương (NATO) năm 1949"
+            },
+            {
+              "id": "b",
+              "text": "Sự thành lập khối Hiệp ước Warsaw tại Đông Âu năm 1955"
+            },
+            {
+              "id": "c",
+              "text": "Thông điệp của Tổng thống Mĩ Truman tại Quốc hội Mĩ (tháng 3/1947)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tháng 3/1947, Thông điệp Truman khẳng định sự tồn tại của Liên Xô là mối đe dọa và viện trợ cho Hy Lạp, Thổ Nhĩ Kỳ, mở đầu Chiến tranh Lạnh."
+        },
+        {
+          "id": "history-12-cold-war-origins-q3",
+          "prompt": "Đặc điểm nổi bật nhất chi phối quan hệ quốc tế trong phần lớn nửa sau thế kỉ XX (1945 - 1991) là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Sự thống trị tuyệt đối của một siêu cường duy nhất trên toàn bộ thế giới"
+            },
+            {
+              "id": "b",
+              "text": "Tình trạng đối đầu căng thẳng giữa hai khối tư bản chủ nghĩa và xã hội chủ nghĩa do Mĩ và Liên Xô đứng đầu"
+            },
+            {
+              "id": "c",
+              "text": "Sự hợp tác kinh tế toàn diện và không có xung đột quân sự cục bộ nào xảy ra"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Cục diện hai cực hai phe do Mĩ và Liên Xô đứng đầu đã bao trùm và chi phối hầu hết các mối quan hệ chính trị, quân sự toàn cầu trong thời kì này."
+        }
+      ]
+    },
+    {
+      "id": "history-12-united-nations",
+      "title": "Liên hợp quốc: Mục tiêu, nguyên tắc và vai trò giữ gìn hòa bình",
+      "guidance": [
+        "Hiến chương Liên hợp quốc có hiệu lực ngày 24/10/1945 xác định mục tiêu duy trì hòa bình, an ninh quốc tế và thúc đẩy hợp tác hữu nghị giữa các dân tộc. Nguyên tắc hoạt động trọng yếu gồm: bình đẳng chủ quyền, không can thiệp vào công việc nội bộ, giải quyết tranh chấp bằng biện pháp hòa bình, và sự nhất trí giữa 5 nước ủy viên thường trực Hội đồng Bảo an (Mĩ, Nga, Anh, Pháp, Trung Quốc)."
+      ],
+      "examples": [
+        "Việt Nam chính thức gia nhập Liên hợp quốc vào ngày 20/9/1977 và tích cực tham gia lực lượng gìn giữ hòa bình tại Nam Sudan, Cộng hòa Trung Phi."
+      ],
+      "questions": [
+        {
+          "id": "history-12-united-nations-q1",
+          "prompt": "Mục tiêu bao trùm hàng đầu của tổ chức Liên hợp quốc được ghi nhận trong Hiến chương năm 1945 là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thành lập một chính phủ liên bang chung cho toàn cầu"
+            },
+            {
+              "id": "b",
+              "text": "Xóa bỏ hoàn toàn mọi đường biên giới quốc gia giữa các nước"
+            },
+            {
+              "id": "c",
+              "text": "Duy trì hòa bình và an ninh quốc tế"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Điều 1 Hiến chương Liên hợp quốc xác định mục tiêu cao nhất là duy trì hòa bình và an ninh thế giới, ngăn ngừa chiến tranh tái diễn."
+        },
+        {
+          "id": "history-12-united-nations-q2",
+          "prompt": "Cơ quan nào của Liên hợp quốc giữ vai trò trọng yếu trong việc duy trì hòa bình và an ninh thế giới?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tòa án Công lí Quốc tế"
+            },
+            {
+              "id": "b",
+              "text": "Hội đồng Bảo an"
+            },
+            {
+              "id": "c",
+              "text": "Đại hội đồng"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Hội đồng Bảo an là cơ quan duy nhất của Liên hợp quốc có thẩm quyền ra các quyết định mang tính ràng buộc pháp lí về duy trì hòa bình và an ninh."
+        },
+        {
+          "id": "history-12-united-nations-q3",
+          "prompt": "Nguyên tắc 'sự nhất trí của 5 nước Ủy viên thường trực Hội đồng Bảo an Liên hợp quốc' (quyền phủ quyết) có ý nghĩa thực tiễn là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ngăn chặn một quyết định quân sự hoặc trừng phạt lớn khi chưa có sự đồng thuận của các cường quốc hạt nhân chủ chốt"
+            },
+            {
+              "id": "b",
+              "text": "Bắt buộc tất cả các nước thành viên Đại hội đồng phải có ý kiến giống nhau"
+            },
+            {
+              "id": "c",
+              "text": "Cho phép bất kì quốc gia nào cũng có quyền đình chỉ hoạt động của Liên hợp quốc"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Quy tắc veto của 5 cường quốc (Mĩ, Nga, Anh, Pháp, Trung Quốc) buộc các siêu cường phải thỏa hiệp, tránh nguy cơ nổ ra chiến tranh hạt nhân trực tiếp giữa các nước lớn."
+        }
+      ]
+    },
+    {
+      "id": "history-12-asean-integration",
+      "title": "Quá trình hình thành và phát triển của ASEAN",
+      "guidance": [
+        "Hiệp hội các quốc gia Đông Nam Á (ASEAN) thành lập ngày 8/8/1967 tại Bangkok bởi 5 nước (Indonesia, Malaysia, Philippines, Singapore, Thái Lan). Hiệp ước Bali (1976) xác định nguyên tắc tôn trọng độc lập, chủ quyền, không can thiệp nội bộ và giải quyết hòa bình tranh chấp. Quá trình mở rộng: Brunei (1984), Việt Nam (28/7/1995), Lào và Myanmar (1997), Campuchia (1999). Ngày 31/12/2015, Cộng đồng ASEAN chính thức thành lập với 3 trụ cột: APSC, AEC, ASCC."
+      ],
+      "examples": [
+        "Việt Nam đảm nhiệm thành công vai trò Chủ tịch ASEAN vào các năm 1998, 2010 và 2020, đóng góp tích cực vào sự đoàn kết và vị thế quốc tế của khối."
+      ],
+      "questions": [
+        {
+          "id": "history-12-asean-integration-q1",
+          "prompt": "Hiệp hội các quốc gia Đông Nam Á (ASEAN) được thành lập vào ngày tháng năm nào và tại đâu?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ngày 20/9/1977 tại New York (Mĩ)"
+            },
+            {
+              "id": "b",
+              "text": "Ngày 8/8/1967 tại Bangkok (Thái Lan)"
+            },
+            {
+              "id": "c",
+              "text": "Ngày 2/9/1945 tại Hà Nội (Việt Nam)"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Tuyên bố Bangkok ngày 8/8/1967 do đại diện 5 nước sáng lập kí kết chính thức khai sinh tổ chức ASEAN."
+        },
+        {
+          "id": "history-12-asean-integration-q2",
+          "prompt": "Việt Nam chính thức trở thành thành viên thứ 7 của ASEAN vào thời điểm nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ngày 28/7/1995"
+            },
+            {
+              "id": "b",
+              "text": "Ngày 30/4/1975"
+            },
+            {
+              "id": "c",
+              "text": "Ngày 31/12/2015"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Ngày 28/7/1995, tại Hội nghị Bộ trưởng Ngoại giao ASEAN lần thứ 28 ở Brunei, Việt Nam chính thức kết nạp làm thành viên thứ 7."
+        },
+        {
+          "id": "history-12-asean-integration-q3",
+          "prompt": "Cộng đồng ASEAN được chính thức thành lập vào ngày 31/12/2015 dựa trên ba trụ cột vững chắc nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cộng đồng Quốc phòng chung, Đồng tiền chung và Tòa án tư pháp chung"
+            },
+            {
+              "id": "b",
+              "text": "Liên minh Quân sự Đông Nam Á, Thị trường vốn và Khối dầu khí tự do"
+            },
+            {
+              "id": "c",
+              "text": "Cộng đồng Chính trị - An ninh (APSC), Cộng đồng Kinh tế (AEC) và Cộng đồng Văn hóa - Xã hội (ASCC)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Ba trụ cột APSC, AEC và ASCC tạo nên khuôn khổ hợp tác toàn diện, gắn kết chặt chẽ về chính trị, kinh tế và giao lưu văn hóa giữa các dân tộc."
+        }
+      ]
+    },
+    {
+      "id": "history-12-cold-war-end-multipolar",
+      "title": "Sự chấm dứt Chiến tranh Lạnh và xu thế trật tự thế giới đa cực",
+      "guidance": [
+        "Tháng 12/1989, tại cuộc gặp cấp cao ở đảo Malta, hai nhà lãnh đạo Mĩ (G. Bush) và Liên Xô (M. Gorbachev) cùng tuyên bố chấm dứt Chiến tranh Lạnh. Trật tự hai cực Ianta sụp đổ hoàn toàn sau khi Liên Xô tan rã (12/1991). Thế giới bước vào thời kì quá độ hướng tới trật tự đa cực, nhiều trung tâm (Mĩ, Trung Quốc, EU, Nga, Nhật Bản, Ấn Độ), hòa hoãn và lấy phát triển kinh tế làm trọng tâm."
+      ],
+      "examples": [
+        "Các diễn đàn hợp tác đa phương như G20, BRICS, APEC phản ánh rõ nét sự phân bổ quyền lực đa cực, không còn một siêu cường đơn lẻ nào có thể chi phối toàn diện nền kinh tế toàn cầu."
+      ],
+      "questions": [
+        {
+          "id": "history-12-cold-war-end-multipolar-q1",
+          "prompt": "Sự kiện lịch sử nào đánh dấu sự sụp đổ hoàn toàn của trật tự thế giới hai cực Ianta?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Sự sụp đổ và tan rã của Liên bang Xô viết vào tháng 12/1991"
+            },
+            {
+              "id": "b",
+              "text": "Hiệp định đình chiến tại bán đảo Triều Tiên năm 1953"
+            },
+            {
+              "id": "c",
+              "text": "Sự thành lập khối liên minh quân sự NATO năm 1949"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Khi Liên Xô tan rã cuối năm 1991, một trong hai cực đối đầu không còn tồn tại, trật tự hai cực Ianta chính thức kết thúc."
+        },
+        {
+          "id": "history-12-cold-war-end-multipolar-q2",
+          "prompt": "Sau khi Chiến tranh Lạnh chấm dứt, xu thế chủ đạo trong quan hệ quốc tế của hầu hết các quốc gia là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tập trung chạy đua vũ trang hạt nhân và chuẩn bị thế chiến mới"
+            },
+            {
+              "id": "b",
+              "text": "Đóng cửa biên giới hoàn toàn và ngừng mọi quan hệ ngoại giao"
+            },
+            {
+              "id": "c",
+              "text": "Hòa hoãn, đối thoại và hợp tác phát triển kinh tế làm trọng tâm chiến lược"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Các nước chuyển trọng tâm sang xây dựng sức mạnh quốc gia tổng hợp, lấy phát triển kinh tế làm nền tảng cạnh tranh lành mạnh và đối thoại giải quyết tranh chấp."
+        },
+        {
+          "id": "history-12-cold-war-end-multipolar-q3",
+          "prompt": "Thuật ngữ 'trật tự thế giới đa cực' phản ánh thực trạng quan hệ quốc tế đương đại như thế nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tất cả các quốc gia trên thế giới đều có quy mô kinh tế và quân sự hoàn toàn ngang bằng nhau"
+            },
+            {
+              "id": "b",
+              "text": "Quyền lực và ảnh hưởng quốc tế phân bổ giữa nhiều trung tâm kinh tế, chính trị lớn thay vì tập trung vào một hoặc hai siêu cường"
+            },
+            {
+              "id": "c",
+              "text": "Thế giới bị chia rẽ thành vô số các liên minh quân sự đối đầu vũ trang trực tiếp"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Trật tự đa cực thể hiện sự trỗi dậy của nhiều cường quốc và trung tâm khu vực (Mĩ, EU, Trung Quốc, Nga, Ấn Độ, Nhật Bản) cùng tham gia định hình luật chơi quốc tế."
+        }
+      ]
+    },
+    {
+      "id": "history-12-fourth-industrial-revolution",
+      "title": "Cách mạng công nghiệp lần thứ tư và tác động xã hội",
+      "guidance": [
+        "Cách mạng công nghiệp lần thứ tư (Công nghiệp 4.0) bùng nổ từ những năm đầu thế kỉ XXI, dựa trên sự kết hợp giữa thế giới thực và số qua các công nghệ đột phá: Trí tuệ nhân tạo (AI), Internet vạn vật (IoT), Dữ liệu lớn (Big Data), Điện toán đám mây và Công nghệ sinh học. Tác động sâu sắc: đột phá năng suất, chuyển dịch mô hình việc làm, thúc đẩy chính phủ số, nhưng đặt ra thách thức lớn về an ninh mạng, bảo vệ dữ liệu cá nhân và bất bình đẳng số."
+      ],
+      "examples": [
+        "Việc ứng dụng cảm biến IoT và phân tích dữ liệu AI trong nông nghiệp thông minh tại Việt Nam giúp theo dõi độ ẩm, sâu bệnh theo thời gian thực và tiết kiệm tới 40% nước tưới."
+      ],
+      "questions": [
+        {
+          "id": "history-12-fourth-industrial-revolution-q1",
+          "prompt": "Công nghệ nào sau đây được coi là một trong những trụ cột cốt lõi của cuộc Cách mạng công nghiệp lần thứ tư?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Động cơ hơi nước cải tiến của James Watt"
+            },
+            {
+              "id": "b",
+              "text": "Dây chuyền sản xuất cơ khí hóa chạy bằng sức nước"
+            },
+            {
+              "id": "c",
+              "text": "Trí tuệ nhân tạo (AI) và Internet vạn vật (IoT)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Công nghiệp 4.0 dựa trên nền tảng kỹ thuật số với AI, IoT, Big Data kết nối thế giới thực và thế giới ảo."
+        },
+        {
+          "id": "history-12-fourth-industrial-revolution-q2",
+          "prompt": "Thời cơ lớn nhất mà Cách mạng công nghiệp lần thứ tư mang lại cho các quốc gia đang phát triển như Việt Nam là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chấm dứt hoàn toàn mọi tác động tiêu cực của thiên tai và dịch bệnh"
+            },
+            {
+              "id": "b",
+              "text": "Khả năng đi tắt đón đầu, chuyển đổi số nhanh để nâng cao năng suất lao động và năng lực cạnh tranh quốc gia"
+            },
+            {
+              "id": "c",
+              "text": "Loại bỏ hoàn toàn sự cần thiết của giáo dục đại học và đào tạo nghề nghiệp"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Công nghệ số cho phép các nước đi sau tiếp cận tri thức và giải pháp quản trị hiện đại nhanh chóng mà không cần lặp lại toàn bộ các nấc thang công nghiệp hóa truyền thống."
+        },
+        {
+          "id": "history-12-fourth-industrial-revolution-q3",
+          "prompt": "Một trong những thách thức an ninh phi truyền thống gay gắt nhất phát sinh từ quá trình chuyển đổi số và phát triển Internet toàn cầu là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tội phạm công nghệ cao, tấn công an ninh mạng và rò rỉ dữ liệu thông tin cá nhân"
+            },
+            {
+              "id": "b",
+              "text": "Sự thiếu hụt nguồn tài nguyên than đá cho các nhà máy cơ khí cổ điển"
+            },
+            {
+              "id": "c",
+              "text": "Sự suy giảm đột ngột của các phương tiện truyền thông vô tuyến"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Không gian mạng mở rộng làm gia tăng nguy cơ tấn công hạ tầng trọng yếu, đánh cắp dữ liệu tài chính và phát tán tin giả đe dọa an ninh xã hội."
+        }
+      ]
+    },
+    {
+      "id": "history-12-august-revolution-1945",
+      "title": "Cách mạng tháng Tám năm 1945 và sự ra đời của nước Việt Nam Dân chủ Cộng hòa",
+      "guidance": [
+        "Giữa tháng 8/1945, phát xít Nhật đầu hàng Đồng minh, thời cơ ngàn năm có một xuất hiện. Hội nghị toàn quốc của Đảng họp tại Tân Trào (14 - 15/8) và Đại hội Quốc dân Tân Trào (16 - 17/8) quyết định Tổng khởi nghĩa. Nhân dân cả nước vùng lên giành chính quyền thắng lợi ở Hà Nội (19/8), Huế (23/8), Sài Gòn (25/8). Ngày 2/9/1945, Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập tại Quảng trường Ba Đình, khai sinh nước Việt Nam Dân chủ Cộng hòa."
+      ],
+      "examples": [
+        "Vua Bảo Đại thoái vị ngày 30/8/1945 tại Huế với lời tuyên bố nổi tiếng: 'Thà làm dân một nước độc lập hơn làm vua một nước nô lệ', chấm dứt hoàn toàn chế độ phong kiến Việt Nam."
+      ],
+      "questions": [
+        {
+          "id": "history-12-august-revolution-1945-q1",
+          "prompt": "Ngày 2/9/1945, tại Quảng trường Ba Đình (Hà Nội), sự kiện lịch sử trọng đại nào đã diễn ra?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Khởi nghĩa giành chính quyền thắng lợi hoàn toàn tại Sài Gòn"
+            },
+            {
+              "id": "b",
+              "text": "Chủ tịch Hồ Chí Minh đọc bản Tuyên ngôn Độc lập khai sinh nước Việt Nam Dân chủ Cộng hòa"
+            },
+            {
+              "id": "c",
+              "text": "Đại hội Quốc dân Tân Trào thông qua 10 chính sách lớn của Việt Minh"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Bản Tuyên ngôn Độc lập ngày 2/9/1945 tuyên bố trước quốc dân và thế giới quyền tự do, độc lập thiêng liêng của dân tộc Việt Nam."
+        },
+        {
+          "id": "history-12-august-revolution-1945-q2",
+          "prompt": "Thời cơ lịch sử 'ngàn năm có một' của Cách mạng tháng Tám năm 1945 xuất hiện khi nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chính phủ phát xít Nhật Bản tuyên bố đầu hàng Đồng minh vô điều kiện (giữa tháng 8/1945)"
+            },
+            {
+              "id": "b",
+              "text": "Thực dân Pháp bắt đầu quay trở lại nổ súng đánh chiếm Sài Gòn"
+            },
+            {
+              "id": "c",
+              "text": "Quân đội Tưởng Giới Thạch tiến vào miền Bắc giải giáp quân Nhật"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nhật đầu hàng Đồng minh khiến quân Nhật ở Đông Dương tê liệt, chính phủ bù nhìn Trần Trọng Kim hoang mang cực độ, tạo thời cơ chín muồi giành chính quyền trước khi quân Đồng minh vào."
+        },
+        {
+          "id": "history-12-august-revolution-1945-q3",
+          "prompt": "Bài học kinh nghiệm quý báu nhất về nghệ thuật chỉ đạo khởi nghĩa của Đảng trong Cách mạng tháng Tám năm 1945 là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chờ đợi sự viện trợ quân sự trực tiếp của các cường quốc Đồng minh bên ngoài"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ tập trung khởi nghĩa ở vùng rừng núi hiểm trở và bỏ qua các đô thị lớn"
+            },
+            {
+              "id": "c",
+              "text": "Nắm bắt chính xác thời cơ lịch sử, kết hợp linh hoạt lực lượng chính trị quần chúng với lực lượng vũ trang"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Đảng đã dự đoán đúng thời cơ, chớp lấy khoảng trống quyền lực trong vòng 15 ngày để huy động sức mạnh toàn dân tổng khởi nghĩa đồng loạt thành công trên cả nước."
+        }
+      ]
+    },
+    {
+      "id": "history-12-anti-french-resistance",
+      "title": "Cuộc kháng chiến toàn quốc chống thực dân Pháp (1946 - 1954)",
+      "guidance": [
+        "Trước hành động bội ước và khiêu khích của thực dân Pháp, đêm 19/12/1946, Chủ tịch Hồ Chí Minh ra Lời kêu gọi toàn quốc kháng chiến. Đường lối kháng chiến được xác định: toàn dân, toàn diện, trường kì, tự lực cánh sinh và tranh thủ sự ủng hộ quốc tế. Các chiến dịch tiêu biểu: Việt Bắc thu - đông 1947 (bẻ gãy chiến lược đánh nhanh thắng nhanh của Pháp), Biên giới thu - đông 1950 (giành quyền chủ động chiến lược trên chiến trường chính Bắc Bộ, khai thông biên giới Việt - Trung)."
+      ],
+      "examples": [
+        "Trong chiến dịch Biên giới 1950, Chủ tịch Hồ Chí Minh trực tiếp lên đài quan sát chỉ đạo mặt trận Đông Khê, cổ vũ tinh thần chiến đấu quật cường của quân và dân ta."
+      ],
+      "questions": [
+        {
+          "id": "history-12-anti-french-resistance-q1",
+          "prompt": "Lời kêu gọi toàn quốc kháng chiến của Chủ tịch Hồ Chí Minh được phát đi vào thời điểm lịch sử nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đêm ngày 19/12/1946"
+            },
+            {
+              "id": "b",
+              "text": "Ngày 2/9/1945"
+            },
+            {
+              "id": "c",
+              "text": "Ngày 7/5/1954"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Trước tối hậu thư đòi tước vũ khí của thực dân Pháp tại Hà Nội, Trung ương Đảng và Hồ Chủ tịch đã quyết định phát động toàn quốc kháng chiến đêm 19/12/1946."
+        },
+        {
+          "id": "history-12-anti-french-resistance-q2",
+          "prompt": "Chiến dịch nào sau đây đã giúp quân đội ta giành được quyền chủ động chiến lược trên chiến trường chính Bắc Bộ?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chiến dịch Việt Bắc thu - đông năm 1947"
+            },
+            {
+              "id": "b",
+              "text": "Cuộc chiến đấu 60 ngày đêm bảo vệ Thủ đô Hà Nội cuối năm 1946"
+            },
+            {
+              "id": "c",
+              "text": "Chiến dịch Biên giới thu - đông năm 1950"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Chiến dịch Biên giới 1950 tiêu diệt nhiều sinh lực địch, giải phóng dải biên giới phía Bắc, khai thông đường liên lạc quốc tế và chuyển sang thế chủ động tiến công."
+        },
+        {
+          "id": "history-12-anti-french-resistance-q3",
+          "prompt": "Nguyên tắc 'toàn dân, toàn diện, trường kì, tự lực cánh sinh' trong đường lối kháng chiến chống Pháp thể hiện tư tưởng chiến lược gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Giao toàn bộ nhiệm vụ đánh giặc cho lực lượng vũ trang chính quy trong các trận đánh đô thị"
+            },
+            {
+              "id": "b",
+              "text": "Huy động sức mạnh tổng hợp của toàn thể nhân dân trên mọi mặt trận quân sự, chính trị, kinh tế, văn hóa để chiến thắng kẻ thù mạnh hơn về trang bị"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ dựa hoàn toàn vào sự chi viện vũ khí của nước ngoài để giải quyết nhanh cuộc chiến"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Vì xuất phát điểm ta nghèo và vũ khí thô sơ hơn địch, đường lối kháng chiến toàn dân trường kì nhằm vừa đánh vừa bồi dưỡng sức dân, từng bước chuyển hóa tương quan lực lượng."
+        }
+      ]
+    },
+    {
+      "id": "history-12-dien-bien-phu-1954",
+      "title": "Chiến dịch Điện Biên Phủ năm 1954 và Hiệp định Giơ-ne-vơ",
+      "guidance": [
+        "Tập đoàn cứ điểm Điện Biên Phủ gồm 49 cứ điểm chia thành 3 phân khu, được Pháp - Mĩ coi là 'pháo đài bất khả xâm phạm'. Đại tướng Võ Nguyên Giáp đã quyết định chuyển phương châm tác chiến từ 'đánh nhanh, thắng nhanh' sang 'đánh chắc, tiến chắc'. Sau 56 ngày đêm chiến đấu kiên cường (13/3 - 7/5/1954), ta tiêu diệt hoàn toàn tập đoàn cứ điểm. Thắng lợi dẫn tới việc kí kết Hiệp định Giơ-ne-vơ (21/7/1954), công nhận độc lập, chủ quyền, thống nhất và toàn vẹn lãnh thổ của Việt Nam."
+      ],
+      "examples": [
+        "Quyết định kéo pháo vào rồi lại lệnh kéo pháo ra để chuẩn bị trận địa vững chắc của Đại tướng Võ Nguyên Giáp được lịch sử ghi nhận là quyết định khó khăn nhất nhưng sáng suốt nhất trong cuộc đời chỉ huy."
+      ],
+      "questions": [
+        {
+          "id": "history-12-dien-bien-phu-1954-q1",
+          "prompt": "Chiến dịch lịch sử Điện Biên Phủ năm 1954 toàn thắng vào ngày tháng năm nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ngày 13/3/1954"
+            },
+            {
+              "id": "b",
+              "text": "Ngày 21/7/1954"
+            },
+            {
+              "id": "c",
+              "text": "Ngày 7/5/1954"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Chiều ngày 7/5/1954, lá cờ Quyết chiến Quyết thắng tung bay trên nóc hầm tướng De Castries, chiến dịch Điện Biên Phủ kết thúc thắng lợi rực rỡ."
+        },
+        {
+          "id": "history-12-dien-bien-phu-1954-q2",
+          "prompt": "Quyết định thay đổi phương châm tác chiến mang tính bước ngoặt quyết định thắng lợi của Đại tướng Võ Nguyên Giáp tại Điện Biên Phủ là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chuyển từ tiến công đường bộ sang đổ bộ đường không"
+            },
+            {
+              "id": "b",
+              "text": "Chuyển từ phương châm 'đánh nhanh, thắng nhanh' sang 'đánh chắc, tiến chắc'"
+            },
+            {
+              "id": "c",
+              "text": "Chuyển từ bao vây chiến hào sang rút lui toàn bộ lực lượng về căn cứ Việt Bắc"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Nhận thấy địch đã tăng cường công sự kiên cố, việc chuyển sang 'đánh chắc, tiến chắc' bóc dỡ từng cứ điểm bảo đảm chắc thắng cho từng trận đánh."
+        },
+        {
+          "id": "history-12-dien-bien-phu-1954-q3",
+          "prompt": "Nội dung quan trọng hàng đầu của Hiệp định Giơ-ne-vơ năm 1954 về Đông Dương là các nước tham dự hội nghị cam kết:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tôn trọng các quyền dân tộc cơ bản của Việt Nam, Lào, Campuchia là độc lập, chủ quyền, thống nhất và toàn vẹn lãnh thổ"
+            },
+            {
+              "id": "b",
+              "text": "Công nhận sự cai trị lâu dài của thực dân Pháp tại miền Nam Việt Nam"
+            },
+            {
+              "id": "c",
+              "text": "Chia cắt vĩnh viễn lãnh thổ Việt Nam thành hai quốc gia riêng biệt tại vĩ tuyến 17"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Hiệp định Giơ-ne-vơ là văn bản pháp lí quốc tế đầu tiên ghi nhận đầy đủ các quyền dân tộc cơ bản của ba nước Đông Dương, quy định giới tuyến quân sự tạm thời tại vĩ tuyến 17."
+        }
+      ]
+    },
+    {
+      "id": "history-12-tet-offensive-1968",
+      "title": "Cuộc Tổng tiến công và nổi dậy Xuân Mậu Thân 1968",
+      "guidance": [
+        "Đêm Giao thừa Tết Mậu Thân (cuối tháng 1/1968), quân và dân ta bất ngờ mở cuộc Tổng tiến công và nổi dậy đồng loạt đánh vào các đô thị trọng yếu ở miền Nam, tập kích các vị trí đầu não đối phương tại Sài Gòn (Tòa Đại sứ Mĩ, Dinh Độc Lập, Bộ Tổng tham mưu). Thắng lợi đã giáng đòn chí mạng vào chiến lược 'Chiến tranh cục bộ', làm lung lay ý chí xâm lược của giới cầm quyền Mĩ, buộc Mĩ phải tuyên bố 'phi Mĩ hóa' chiến tranh, ngừng ném bom miền Bắc và chấp nhận đàm phán tại Paris."
+      ],
+      "examples": [
+        "Hình ảnh các chiến sĩ biệt động Sài Gòn tấn công Tòa Đại sứ Mĩ truyền hình trực tiếp về Washington đã gây chấn động dư luận nước Mĩ, thổi bùng phong trào phản chiến đòi hòa bình."
+      ],
+      "questions": [
+        {
+          "id": "history-12-tet-offensive-1968-q1",
+          "prompt": "Điểm độc đáo và bất ngờ nhất về mặt không gian tác chiến của cuộc Tổng tiến công Xuân Mậu Thân 1968 là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đổ bộ tấn công bất ngờ bằng đường biển vào các hòn đảo xa bờ"
+            },
+            {
+              "id": "b",
+              "text": "Đồng loạt tiến công trực diện vào các đô thị lớn và cơ quan đầu não đối phương"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ mở các cuộc phục kích nhỏ ở các vùng rừng núi hẻo lánh"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Đòn tiến công diễn ra đúng đêm Giao thừa Tết nhắm thẳng vào các trung tâm đô thị kiên cố nơi đối phương tập trung phòng thủ dày đặc nhất."
+        },
+        {
+          "id": "history-12-tet-offensive-1968-q2",
+          "prompt": "Hậu quả chính trị - quân sự lớn nhất mà cuộc Tổng tiến công Xuân Mậu Thân 1968 gây ra cho giới cầm quyền Washington là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Làm lung lay ý chí xâm lược của Mĩ, buộc Tổng thống Johnson phải tuyên bố 'phi Mĩ hóa' chiến tranh và ngồi vào bàn đàm phán Paris"
+            },
+            {
+              "id": "b",
+              "text": "Khiến quân Mĩ phải kí ngay hiệp định đầu hàng vô điều kiện trong vòng một tuần"
+            },
+            {
+              "id": "c",
+              "text": "Làm cho toàn bộ lực lượng quân đội Sài Gòn tự nguyện giải thể vũ khí"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Đòn Mậu Thân phá sản hoàn toàn chiến lược Chiến tranh cục bộ, buộc Mĩ phải xuống thang chiến tranh và thừa nhận thất bại quân sự trên bàn đàm phán."
+        },
+        {
+          "id": "history-12-tet-offensive-1968-q3",
+          "prompt": "Ý nghĩa chiến lược quan trọng của cuộc đàm phán tại Hội nghị Paris (bắt đầu từ tháng 5/1968) đối với cuộc kháng chiến chống Mĩ là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thay thế hoàn toàn mọi hoạt động tác chiến của quân giải phóng trên chiến trường"
+            },
+            {
+              "id": "b",
+              "text": "Buộc các nước xã hội chủ nghĩa ngừng viện trợ kinh tế cho Việt Nam"
+            },
+            {
+              "id": "c",
+              "text": "Mở ra cục diện 'vừa đánh, vừa đàm', kết hợp chặt chẽ giữa đấu tranh quân sự, chính trị và mặt trận ngoại giao"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hội nghị Paris là vũ đài ngoại giao quốc tế phối hợp nhịp nhàng với những chiến thắng trên chiến trường để từng bước buộc Mĩ phải rút quân về nước."
+        }
+      ]
+    },
+    {
+      "id": "history-12-ho-chi-minh-campaign-1975",
+      "title": "Hiệp định Paris 1973 và Chiến dịch Hồ Chí Minh năm 1975",
+      "guidance": [
+        "Hiệp định Paris kí kết ngày 27/1/1973 buộc quân viễn chinh Mĩ phải rút hết về nước, tạo so sánh lực lượng có lợi cho cách mạng ('đánh cho Mĩ cút'). Cuộc Tổng tiến công và nổi dậy mùa Xuân 1975 diễn ra với tốc độ thần tốc qua ba chiến dịch lớn: Chiến dịch Tây Nguyên (đột phá then chốt giải phóng Buôn Ma Thuột 10/3), Chiến dịch Huế - Đà Nẵng, và Chiến dịch Hồ Chí Minh lịch sử (26/4 - 30/4/1975). Đúng 11 giờ 30 phút ngày 30/4/1975, cờ cách mạng tung bay trên nóc Dinh Độc Lập, miền Nam hoàn toàn giải phóng."
+      ],
+      "examples": [
+        "Mệnh lệnh lịch sử của Đại tướng Võ Nguyên Giáp gửi toàn quân ngày 7/4/1975: 'Thần tốc, thần tốc hơn nữa; táo bạo, táo bạo hơn nữa; tranh thủ từng giờ, từng phút, xốc tới mặt trận, giải phóng miền Nam!'."
+      ],
+      "questions": [
+        {
+          "id": "history-12-ho-chi-minh-campaign-1975-q1",
+          "prompt": "Hiệp định Paris về chấm dứt chiến tranh, lập lại hòa bình ở Việt Nam được kí kết chính thức vào thời gian nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ngày 27/1/1973"
+            },
+            {
+              "id": "b",
+              "text": "Ngày 21/7/1954"
+            },
+            {
+              "id": "c",
+              "text": "Ngày 30/4/1975"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Hiệp định Paris được kí ngày 27/1/1973 sau thắng lợi oanh liệt của trận 'Điện Biên Phủ trên không' cuối năm 1972, buộc Mĩ phải rút hết quân viễn chinh."
+        },
+        {
+          "id": "history-12-ho-chi-minh-campaign-1975-q2",
+          "prompt": "Đòn tiến công mở màn mang tính đột phá chiến lược của cuộc Tổng tiến công mùa Xuân 1975 là trận đánh giải phóng:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Thành phố Huế và Đà Nẵng"
+            },
+            {
+              "id": "b",
+              "text": "Căn cứ quân sự Cam Ranh"
+            },
+            {
+              "id": "c",
+              "text": "Thị xã Buôn Ma Thuột (trong Chiến dịch Tây Nguyên, ngày 10/3/1975)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Trận Buôn Ma Thuột ngày 10/3/1975 đánh trúng điểm hiểm yếu bất ngờ, làm rung chuyển toàn bộ tuyến phòng thủ Tây Nguyên và dẫn đến sự tan rã của đối phương."
+        },
+        {
+          "id": "history-12-ho-chi-minh-campaign-1975-q3",
+          "prompt": "Chiến thắng lịch sử của Chiến dịch Hồ Chí Minh ngày 30/4/1975 có ý nghĩa thời đại to lớn như thế nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Xóa bỏ hoàn toàn mọi tàn dư chiến tranh ngay lập tức trong một ngày"
+            },
+            {
+              "id": "b",
+              "text": "Kết thúc vẻ vang 30 năm chiến tranh giải phóng dân tộc, bảo vệ Tổ quốc, chấm dứt hoàn toàn ách thống trị của chủ nghĩa thực dân, đế quốc và mở ra kỉ nguyên thống nhất đi lên chủ nghĩa xã hội"
+            },
+            {
+              "id": "c",
+              "text": "Bắt đầu thời kì mở rộng lãnh thổ sang các nước lân cận ở khu vực"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Thắng lợi ngày 30/4/1975 non sông thu về một mối, hoàn thành cách mạng dân tộc dân chủ nhân dân trên phạm vi cả nước và cổ vũ phong trào giải phóng dân tộc trên thế giới."
+        }
+      ]
+    },
+    {
+      "id": "history-12-national-reunification-state",
+      "title": "Thống nhất đất nước về mặt nhà nước (1975 - 1976)",
+      "guidance": [
+        "Sau ngày 30/4/1975, đất nước đã thống nhất về mặt lãnh thổ nhưng vẫn tồn tại hai chính phủ ở hai miền. Hội nghị Hiệp thương chính trị (11/1975) đã nhất trí tổ chức Tổng tuyển cử bầu Quốc hội chung. Ngày 25/4/1976, cử tri cả nước nô nức đi bầu cử Quốc hội khóa VI. Kì họp thứ nhất (6 - 7/1976) đã quyết định: đặt tên nước là Cộng hòa Xã hội chủ nghĩa Việt Nam, thủ đô là Hà Nội, Quốc huy, Quốc kì (cờ đỏ sao vàng), Quốc ca (Tiến quân ca), và đổi tên thành phố Sài Gòn - Gia Định thành Thành phố Hồ Chí Minh."
+      ],
+      "examples": [
+        "Cuộc Tổng tuyển cử ngày 25/4/1976 là ngày hội non sông với hơn 23 triệu cử tri (đạt 98,77%) lần đầu tiên cùng đi bỏ phiếu bầu ra Quốc hội thống nhất."
+      ],
+      "questions": [
+        {
+          "id": "history-12-national-reunification-state-q1",
+          "prompt": "Kì họp thứ nhất Quốc hội khóa VI (tháng 6 - 7/1976) đã đưa ra quyết định trọng đại nào về quốc hiệu?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đặt tên nước là Việt Nam Dân chủ Cộng hòa"
+            },
+            {
+              "id": "b",
+              "text": "Giữ nguyên hai tên gọi nhà nước riêng biệt ở hai miền"
+            },
+            {
+              "id": "c",
+              "text": "Đặt tên nước là Cộng hòa Xã hội chủ nghĩa Việt Nam"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Quốc hội khóa VI đã thống nhất thể chế, quyết định quốc hiệu là Cộng hòa Xã hội chủ nghĩa Việt Nam từ ngày 2/7/1976."
+        },
+        {
+          "id": "history-12-national-reunification-state-q2",
+          "prompt": "Ý nghĩa lịch sử then chốt của việc hoàn thành thống nhất đất nước về mặt nhà nước (1975 - 1976) là gì?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cho phép đất nước ngay lập tức tham gia vào tất cả các hiệp định thương mại tự do"
+            },
+            {
+              "id": "b",
+              "text": "Tạo cơ sở pháp lí và sức mạnh tổng hợp của toàn dân tộc để xây dựng, phát triển kinh tế và bảo vệ vững chắc Tổ quốc"
+            },
+            {
+              "id": "c",
+              "text": "Chấm dứt hoàn toàn mọi khó khăn về kinh tế - xã hội thời hậu chiến"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Thống nhất nhà nước tạo nên sự đồng bộ về thể chế, luật pháp, chính quyền từ trung ương đến địa phương để huy động mọi nguồn lực kiến thiết đất nước."
+        },
+        {
+          "id": "history-12-national-reunification-state-q3",
+          "prompt": "Tại sao sau đại thắng mùa Xuân 1975, nhiệm vụ thống nhất đất nước về mặt nhà nước lại trở nên cấp thiết hàng đầu?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Vì dù lãnh thổ đã liền một dải nhưng mỗi miền vẫn có bộ máy nhà nước và pháp luật riêng biệt, cản trở sự quản lí thống nhất và phát triển kinh tế"
+            },
+            {
+              "id": "b",
+              "text": "Vì các cường quốc bên ngoài yêu cầu phải có một chính phủ liên hiệp tạm thời"
+            },
+            {
+              "id": "c",
+              "text": "Vì cần chia lại địa giới các tỉnh thành theo mô hình thuộc địa"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tình trạng tồn tại hai nhà nước (ở miền Bắc là VNDCCH, miền Nam là Chính phủ Cách mạng lâm thời CHMNVN) đòi hỏi phải thể chế hóa ý chí thống nhất của toàn dân thành một nhà nước pháp quyền duy nhất."
+        }
+      ]
+    },
+    {
+      "id": "history-12-doi-moi-1986",
+      "title": "Đại hội đại biểu toàn quốc lần thứ VI (12/1986) và đường lối Đổi mới",
+      "guidance": [
+        "Trong những năm 1976 - 1985, cơ chế quản lí tập trung quan liêu bao cấp và khủng hoảng kinh tế - xã hội trầm trọng (lạm phát phi mã lên tới hơn 700% năm 1986) đã đặt ra yêu cầu sống còn phải đổi mới. Đại hội đại biểu toàn quốc lần thứ VI của Đảng (12/1986) đã đề ra đường lối Đổi mới toàn diện: đổi mới tư duy kinh tế, phát triển nền kinh tế nhiều thành phần định hướng XHCN, vận hành theo cơ chế thị trường có sự quản lí của Nhà nước, thực hiện ba chương trình kinh tế lớn (lương thực - thực phẩm, hàng tiêu dùng, hàng xuất khẩu)."
+      ],
+      "examples": [
+        "Nghị quyết 10 của Bộ Chính trị (Khoán 10 năm 1988) giao quyền tự chủ ruộng đất cho hộ nông dân, giúp Việt Nam nhanh chóng thoát cảnh thiếu đói và trở thành nước xuất khẩu gạo hàng đầu thế giới."
+      ],
+      "questions": [
+        {
+          "id": "history-12-doi-moi-1986-q1",
+          "prompt": "Đại hội đại biểu toàn quốc lần thứ VI của Đảng Cộng sản Việt Nam họp vào tháng 12/1986 có ý nghĩa lịch sử gì?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tuyên bố xóa bỏ hoàn toàn nền kinh tế thị trường để chuyển sang kinh tế thuần nông"
+            },
+            {
+              "id": "b",
+              "text": "Khởi xướng và đề ra đường lối Đổi mới toàn diện đất nước"
+            },
+            {
+              "id": "c",
+              "text": "Quyết định phát động cuộc kháng chiến toàn quốc chống Mĩ cứu nước"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Đại hội VI (12/1986) nhìn thẳng vào sự thật, đánh dấu bước ngoặt lịch sử mở đường cho công cuộc Đổi mới đất nước."
+        },
+        {
+          "id": "history-12-doi-moi-1986-q2",
+          "prompt": "Trọng tâm của đường lối Đổi mới do Đại hội VI đề ra bắt đầu từ lĩnh vực nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đổi mới về kinh tế"
+            },
+            {
+              "id": "b",
+              "text": "Đổi mới về chính trị"
+            },
+            {
+              "id": "c",
+              "text": "Đổi mới về quốc phòng"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Đảng xác định đổi mới kinh tế là trọng tâm, kết hợp từng bước đổi mới chính trị vững chắc nhằm giải quyết khủng hoảng đời sống nhân dân trước tiên."
+        },
+        {
+          "id": "history-12-doi-moi-1986-q3",
+          "prompt": "Một trong những nội dung căn bản của việc đổi mới tư duy kinh tế tại Đại hội VI (1986) là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Quốc hữu hóa toàn bộ ruộng đất và cấm đoán tư nhân buôn bán"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ tập trung vào công nghiệp nặng và dừng sản xuất hàng tiêu dùng"
+            },
+            {
+              "id": "c",
+              "text": "Xóa bỏ cơ chế quản lí tập trung quan liêu, bao cấp, phát triển nền kinh tế nhiều thành phần vận hành theo cơ chế thị trường có sự quản lí của Nhà nước"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Đại hội VI công nhận sự tồn tại khách quan của nền kinh tế nhiều thành phần và quy luật giá trị thị trường định hướng xã hội chủ nghĩa."
+        }
+      ]
+    },
+    {
+      "id": "history-12-vietnam-international-integration",
+      "title": "Quá trình hội nhập quốc tế sâu rộng của Việt Nam",
+      "guidance": [
+        "Thực hiện đường lối đối ngoại độc lập, tự chủ, đa phương hóa, đa dạng hóa ('Việt Nam sẵn sàng là bạn, là đối tác tin cậy và thành viên có trách nhiệm của cộng đồng quốc tế'), Việt Nam từng bước phá vỡ bao vây cô lập: bình thường hóa quan hệ với Trung Quốc (1991), bình thường hóa quan hệ với Hoa Kỳ (11/7/1995), gia nhập ASEAN (28/7/1995), APEC (1998), WTO (2007). Việt Nam đã thiết lập quan hệ ngoại giao với gần 200 quốc gia và nâng cấp quan hệ Đối tác chiến lược toàn diện với nhiều cường quốc hàng đầu thế giới."
+      ],
+      "examples": [
+        "Việc kí kết các Hiệp định thương mại tự do thế hệ mới như CPTPP (2018) và EVFTA (2020) mở rộng cánh cửa xuất khẩu hàng hóa Việt Nam sang các thị trường phát triển nhất thế giới."
+      ],
+      "questions": [
+        {
+          "id": "history-12-vietnam-international-integration-q1",
+          "prompt": "Năm 1995 ghi dấu ấn lịch sử nổi bật nào trong tiến trình hội nhập quốc tế của Việt Nam?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bình thường hóa quan hệ ngoại giao với Hoa Kỳ và chính thức gia nhập ASEAN"
+            },
+            {
+              "id": "b",
+              "text": "Gia nhập Tổ chức Thương mại Thế giới (WTO)"
+            },
+            {
+              "id": "c",
+              "text": "Kí kết Hiệp định Đối tác Toàn diện và Tiến bộ xuyên Thái Bình Dương (CPTPP)"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tháng 7/1995 là dấu mốc lịch sử khi Việt Nam và Mĩ bình thường hóa quan hệ ngoại giao (11/7) và Việt Nam trở thành thành viên ASEAN (28/7)."
+        },
+        {
+          "id": "history-12-vietnam-international-integration-q2",
+          "prompt": "Việt Nam chính thức trở thành thành viên thứ 150 của Tổ chức Thương mại Thế giới (WTO) vào năm nào?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Năm 1995"
+            },
+            {
+              "id": "b",
+              "text": "Năm 1986"
+            },
+            {
+              "id": "c",
+              "text": "Năm 2007"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tháng 1/2007, Việt Nam chính thức trở thành thành viên WTO, đánh dấu bước hội nhập sâu rộng vào sân chơi kinh tế toàn cầu."
+        },
+        {
+          "id": "history-12-vietnam-international-integration-q3",
+          "prompt": "Đường lối đối ngoại 'đa phương hóa, đa dạng hóa quan hệ quốc tế' mang lại lợi ích chiến lược lớn nhất cho Việt Nam là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đóng cửa thị trường nội địa để bảo hộ tuyệt đối cho các doanh nghiệp yếu kém"
+            },
+            {
+              "id": "b",
+              "text": "Nâng cao vị thế và uy tín quốc tế, tranh thủ nguồn vốn đầu tư, công nghệ hiện đại và củng cố môi trường hòa bình để phát triển đất nước"
+            },
+            {
+              "id": "c",
+              "text": "Phụ thuộc hoàn toàn vào viện trợ không hoàn lại của một siêu cường duy nhất"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Chính sách ngoại giao rộng mở giúp đất nước giữ vững độc lập chủ quyền, thu hút hàng trăm tỉ USD vốn FDI và mở rộng thị trường xuất khẩu."
+        }
+      ]
+    },
+    {
+      "id": "history-12-east-sea-sovereignty",
+      "title": "Chủ quyền biển, đảo của Việt Nam trên Biển Đông trong lịch sử và luật pháp quốc tế",
+      "guidance": [
+        "Nhà nước Việt Nam qua các triều đại lịch sử đã xác lập, thực thi chủ quyền liên tục, hòa bình đối với hai quần đảo Hoàng Sa và Trường Sa phù hợp với luật pháp quốc tế. Chứng cứ lịch sử: Châu bản triều Nguyễn, Toàn tập Thiên Nam tứ chí lộ đồ thư (1686), Đại Nam thực lục, hoạt động của Hải đội Hoàng Sa và Bắc Hải kiêm quản. Về mặt pháp lí quốc tế: Công ước Liên hợp quốc về Luật Biển năm 1982 (UNCLOS 1982), Luật Biển Việt Nam năm 2012 khẳng định chủ quyền, quyền chủ quyền và quyền tài phán; cam kết thực hiện Tuyên bố DOC và hướng tới Bộ Quy tắc COC ở Biển Đông."
+      ],
+      "examples": [
+        "Lễ Khao lề thế lính Hoàng Sa được nhân dân huyện đảo Lý Sơn (Quảng Ngãi) duy trì hàng trăm năm qua là bằng chứng sống động về lòng tri ân và ý chí gìn giữ chủ quyền biển đảo thiêng liêng của cha ông."
+      ],
+      "questions": [
+        {
+          "id": "history-12-east-sea-sovereignty-q1",
+          "prompt": "Tổ chức nào trong lịch sử phong kiến Việt Nam được các chúa Nguyễn và triều Nguyễn lập ra để thực thi chủ quyền hàng năm tại Hoàng Sa và Trường Sa?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đoàn tàu buôn phương Tây"
+            },
+            {
+              "id": "b",
+              "text": "Vạn chài ven sông Hồng"
+            },
+            {
+              "id": "c",
+              "text": "Hải đội Hoàng Sa (và Đội Bắc Hải)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hải đội Hoàng Sa được thành lập từ thời chúa Nguyễn có nhiệm vụ ra hai quần đảo đo đạc thủy trình, cắm mốc chủ quyền, thu lượm hải vật và cứu hộ tàu thuyền."
+        },
+        {
+          "id": "history-12-east-sea-sovereignty-q2",
+          "prompt": "Văn bản pháp lí quốc tế quan trọng nhất hiện nay quy định chế độ pháp lí của các vùng biển và quyền của các quốc gia ven biển là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hiến chương Liên minh châu Âu"
+            },
+            {
+              "id": "b",
+              "text": "Công ước Liên hợp quốc về Luật Biển năm 1982 (UNCLOS 1982)"
+            },
+            {
+              "id": "c",
+              "text": "Tuyên bố Cairo năm 1943"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "UNCLOS 1982 được coi là 'Hiến pháp của đại dương', xác lập rõ ràng phạm vi nội thủy, lãnh hải, vùng đặc quyền kinh tế 200 hải lí và thềm lục địa."
+        },
+        {
+          "id": "history-12-east-sea-sovereignty-q3",
+          "prompt": "Chủ trương nhất quán của Đảng và Nhà nước Việt Nam trong việc giải quyết các tranh chấp về chủ quyền trên Biển Đông là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Giải quyết bằng biện pháp hòa bình trên cơ sở tôn trọng luật pháp quốc tế, đặc biệt là UNCLOS 1982, giữ vững hòa bình và an ninh khu vực"
+            },
+            {
+              "id": "b",
+              "text": "Sử dụng ngay biện pháp quân sự đối đầu trực diện khi có tranh chấp"
+            },
+            {
+              "id": "c",
+              "text": "Từ bỏ hoàn toàn các quyền chủ quyền trên vùng đặc quyền kinh tế để giữ hòa khí"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Việt Nam kiên quyết bảo vệ chủ quyền nhưng kiên trì giải quyết bất đồng thông qua đối thoại hòa bình, tuân thủ UNCLOS 1982 và các thỏa thuận quốc tế."
+        }
+      ]
+    },
+    {
+      "id": "history-12-ho-chi-minh-national-liberation",
+      "title": "Chủ tịch Hồ Chí Minh - Anh hùng giải phóng dân tộc và dấu ấn lịch sử",
+      "guidance": [
+        "Chủ tịch Hồ Chí Minh (1890 - 1969) là vị lãnh tụ thiên tài của cách mạng Việt Nam, Anh hùng giải phóng dân tộc và Danh nhân văn hóa thế giới được UNESCO vinh danh năm 1987. Cuộc đời hoạt động cách mạng: ra đi tìm đường cứu nước (1911), tiếp cận chủ nghĩa Mác - Lênin (1920), sáng lập Đảng Cộng sản Việt Nam (1930), lãnh đạo Cách mạng tháng Tám lập nên nước Việt Nam Dân chủ Cộng hòa (1945), và cùng toàn Đảng, toàn dân lãnh đạo thắng lợi các cuộc kháng chiến vì độc lập, tự do và thống nhất Tổ quốc."
+      ],
+      "examples": [
+        "Năm 1920, tại Đại hội Tours (Pháp), Nguyễn Ái Quốc bỏ phiếu tán thành gia nhập Quốc tế thứ ba và tham gia sáng lập Đảng Cộng sản Pháp, đánh dấu bước chuyển dứt khoát từ chủ nghĩa yêu nước sang chủ nghĩa cộng sản."
+      ],
+      "questions": [
+        {
+          "id": "history-12-ho-chi-minh-national-liberation-q1",
+          "prompt": "Sự kiện lịch sử nào đánh dấu bước ngoặt quyết định đưa Nguyễn Ái Quốc từ người yêu nước trở thành chiến sĩ cộng sản?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tham gia thành lập Hội Liên hiệp thuộc địa tại Paris năm 1921"
+            },
+            {
+              "id": "b",
+              "text": "Đọc Luận cương của Lênin về vấn đề dân tộc và thuộc địa (1920) và bỏ phiếu tán thành Quốc tế Cộng sản tại Đại hội Tours"
+            },
+            {
+              "id": "c",
+              "text": "Rời bến cảng Nhà Rồng sang phương Tây tìm đường cứu nước năm 1911"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Tháng 7/1920, khi đọc Sơ thảo Luận cương của Lênin, Nguyễn Ái Quốc đã tìm thấy con đường giải phóng cho dân tộc và bỏ phiếu tán thành Quốc tế Cộng sản vào tháng 12/1920."
+        },
+        {
+          "id": "history-12-ho-chi-minh-national-liberation-q2",
+          "prompt": "Tác phẩm lý luận chính trị xuất sắc do Nguyễn Ái Quốc biên soạn năm 1927 dùng làm tài liệu huấn luyện cán bộ cách mạng tiền phong là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đường Kách mệnh"
+            },
+            {
+              "id": "b",
+              "text": "Bản án chế độ thực dân Pháp"
+            },
+            {
+              "id": "c",
+              "text": "Tuyên ngôn Độc lập"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Cuốn sách 'Đường Kách mệnh' (1927) tập hợp các bài giảng của Nguyễn Ái Quốc tại Quảng Châu, chuẩn bị nền tảng tư tưởng và chính trị cho sự ra đời của Đảng."
+        },
+        {
+          "id": "history-12-ho-chi-minh-national-liberation-q3",
+          "prompt": "Năm 1987, Đại hội đồng UNESCO đã ra Nghị quyết 24C/18.65 tôn vinh Chủ tịch Hồ Chí Minh với danh hiệu cao quý nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đại sứ hòa bình danh dự của phong trào không liên kết"
+            },
+            {
+              "id": "b",
+              "text": "Nhà cải cách giáo dục tiêu biểu của thế kỉ XX"
+            },
+            {
+              "id": "c",
+              "text": "Anh hùng giải phóng dân tộc và Nhà văn hóa kiệt xuất của Việt Nam"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Nghị quyết của UNESCO khẳng định Chủ tịch Hồ Chí Minh là biểu tượng xuất sắc về sự kiên cường đấu tranh giải phóng dân tộc và kết tinh các giá trị văn hóa nhân loại cao đẹp."
+        }
+      ]
+    }
+  ]
+}

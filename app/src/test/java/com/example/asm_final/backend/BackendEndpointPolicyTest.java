@@ -31,4 +31,15 @@ public final class BackendEndpointPolicyTest {
           "http://10.0.2.2:65536"
         }) assertFalse(invalid, BackendEndpointPolicy.allowed(invalid, true));
   }
+
+  @Test
+  public void debugBackendUrlMatchesContractAndPassesPolicy() {
+    String debugUrl = com.example.asm_final.BuildConfig.MENTOR_BACKEND_URL;
+    assertNotNull(debugUrl);
+    if (!debugUrl.isEmpty()) {
+      assertTrue(
+          "Debug backend URL must be valid for debug policy: " + debugUrl,
+          BackendEndpointPolicy.allowed(debugUrl, com.example.asm_final.BuildConfig.DEBUG));
+    }
+  }
 }

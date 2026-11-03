@@ -1,0 +1,1137 @@
+{
+  "subjectId": "literature",
+  "grade": 12,
+  "version": "intro-2026.1",
+  "title": "Ngữ văn 12: Đọc hiểu văn bản, Nghị luận và Kĩ năng giao tiếp",
+  "published": true,
+  "coverage": "PARTIAL_GRADE_12",
+  "extendedReviews": false,
+  "sourceNote": "Tài liệu học tập lớp 12 do AI Mentor biên soạn theo yêu cầu cần đạt của Chương trình GDPT 2018 (định hướng bộ sách Kết nối tri thức với cuộc sống); đây là tuyển chọn chuyên đề nền tảng, không phải bản sao nguyên văn SGK và chưa bao phủ toàn bộ năm học. Bài đầu vào sử dụng 2 câu hỏi từ mỗi bài học để hỗ trợ chẩn đoán năng lực. Nội dung cần được giáo viên chuyên môn thẩm định trước khi áp dụng chính thức.",
+  "lessons": [
+    {
+      "id": "literature-12-narrative-voice",
+      "title": "Điểm nhìn và ngôi kể trong truyện hiện đại",
+      "guidance": [
+        "Ngôi kể thứ nhất (nhân vật xưng 'tôi' - trực tiếp, chủ quan) và ngôi thứ ba (người kể giấu mình, toàn tri hoặc hạn tri). Điểm nhìn: bên trong (tâm lí nhân vật) vs bên ngoài. Sự dịch chuyển điểm nhìn làm tăng chiều sâu tâm lí và tính đa thanh của tác phẩm."
+      ],
+      "examples": [
+        "Trong truyện ngắn hiện đại, người kể chuyện chuyển từ điểm nhìn khách quan bên ngoài sang điểm nhìn bên trong tâm tư của nhân vật để làm nổi bật dằn vặt nội tâm."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-narrative-voice-q1",
+          "prompt": "Người kể chuyện toàn tri trong tác phẩm tự sự là người kể chuyện:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Biết hết mọi hành động, suy nghĩ và quá khứ của tất cả các nhân vật"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ biết những gì nhân vật chính tận mắt chứng kiến"
+            },
+            {
+              "id": "c",
+              "text": "Luôn xuất hiện trực tiếp dưới danh xưng tôi"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Người kể toàn tri (omniscient) đứng ngoài câu chuyện nhưng thấu suốt toàn bộ thế giới nội tâm và hành động của mọi nhân vật."
+        },
+        {
+          "id": "literature-12-narrative-voice-q2",
+          "prompt": "Việc chuyển đổi linh hoạt giữa điểm nhìn bên ngoài và điểm nhìn bên trong trong truyện ngắn hiện đại có tác dụng:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Làm người đọc hoàn toàn không hiểu được diễn biến cốt truyện"
+            },
+            {
+              "id": "b",
+              "text": "Rút ngắn tối đa dung lượng của văn bản"
+            },
+            {
+              "id": "c",
+              "text": "Khám phá chiều sâu tâm lí phức tạp và tạo tính đa thanh cho tác phẩm"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Dịch chuyển điểm nhìn giúp soi chiếu nhân vật từ nhiều góc độ, làm hiện rõ những xung đột tinh tế trong tâm thức."
+        },
+        {
+          "id": "literature-12-narrative-voice-q3",
+          "prompt": "Đọc đoạn văn miêu tả: 'Gió lạnh thấu xương lùa qua khe cửa. Nó co ro kéo tấm chăn rách, thầm nghĩ chẳng biết ngày mai có còn việc để làm'. Điểm nhìn trần thuật ở đây là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Điểm nhìn của nhân vật xưng tôi ngôi thứ nhất"
+            },
+            {
+              "id": "b",
+              "text": "Điểm nhìn bên trong kết hợp lời nửa trực tiếp của nhân vật"
+            },
+            {
+              "id": "c",
+              "text": "Điểm nhìn hoàn toàn khách quan không biểu lộ cảm xúc"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Người kể chuyện thâm nhập vào suy tư lo âu của nhân vật ('thầm nghĩ chẳng biết ngày mai...') thể hiện điểm nhìn bên trong."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-modern-poetry",
+      "title": "Hình tượng và cảm xúc trong thơ hiện đại",
+      "guidance": [
+        "Thơ hiện đại tự do về vần điệu, nhịp điệu co duỗi linh hoạt theo dòng cảm xúc. Hình tượng thơ mang tính biểu tượng, liên tưởng bất ngờ, phá vỡ ước lệ cổ điển. Giọng điệu đa dạng: trữ tình sâu lắng, triết lí chiêm nghiệm, hoặc xót xa trăn trở."
+      ],
+      "examples": [
+        "Câu thơ hiện đại dùng hình ảnh 'mùa thu lá rụng như chiếc vé tàu đã hết hạn' tạo liên tưởng độc đáo về thời gian trôi qua không thể lấy lại."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-modern-poetry-q1",
+          "prompt": "Đặc điểm nổi bật về hình thức tổ chức nhịp điệu của thơ hiện đại so với thơ ca cổ điển là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Luôn bắt buộc tuân thủ nghiêm ngặt luật bằng trắc và niêm luật cổ"
+            },
+            {
+              "id": "b",
+              "text": "Hoàn toàn không bao giờ sử dụng vần điệu"
+            },
+            {
+              "id": "c",
+              "text": "Nhịp điệu linh hoạt, phóng khoáng, biến đổi theo mạch vận động của cảm xúc"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Thơ hiện đại phá vỡ khuôn khổ niêm luật cứng nhắc để nhịp điệu tuôn chảy tự nhiên theo xung lực cảm xúc của cái tôi trữ tình."
+        },
+        {
+          "id": "literature-12-modern-poetry-q2",
+          "prompt": "Yếu tố nào đóng vai trò là 'linh hồn' định hình toàn bộ cấu tứ và hệ thống hình ảnh trong một bài thơ trữ tình?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tên gọi địa danh xuất hiện trong bài thơ"
+            },
+            {
+              "id": "b",
+              "text": "Mạch cảm xúc và tư tưởng của chủ thể trữ tình"
+            },
+            {
+              "id": "c",
+              "text": "Số lượng từ ngữ và số câu thơ trong một khổ"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Cảm xúc chân thực, mãnh liệt của chủ thể trữ tình là hạt nhân liên kết và chi phối việc lựa chọn hình ảnh, ngôn từ, nhạc điệu."
+        },
+        {
+          "id": "literature-12-modern-poetry-q3",
+          "prompt": "Khi phân tích một hình ảnh thơ mang tính biểu tượng đa nghĩa, người đọc cần chú ý nhất điều gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đặt hình ảnh trong chỉnh thể bài thơ và mối liên hệ giữa nghĩa thực với các lớp nghĩa liên tưởng sâu xa"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ tra cứu nghĩa đen thuần túy của từ ngữ trong từ điển tiếng Việt"
+            },
+            {
+              "id": "c",
+              "text": "Xem xét độ dài của câu thơ chứa hình ảnh đó"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Biểu tượng thơ luôn có tầng nghĩa thực và các lớp nghĩa ẩn dụ, biểu cảm cần được giải mã qua ngữ cảnh chỉnh thể tác phẩm."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-dramatic-conflict",
+      "title": "Xung đột kịch và hành động kịch",
+      "guidance": [
+        "Xung đột kịch là động lực phát triển cốt truyện kịch (xung đột giữa cái thiện và cái ác, giữa khát vọng và hoàn cảnh thực tại, xung đột nội tâm). Hành động kịch thể hiện qua lời thoại (đối thoại, độc thoại, độc thoại nội tâm). Sự thanh lọc (catharsis) giúp người xem thấu hiểu và nâng cao tâm hồn."
+      ],
+      "examples": [
+        "Trong vở kịch hiện đại, xung đột nổ ra giữa hai thế hệ: người cha muốn bảo thủ nếp cũ và người con muốn đổi mới tư duy kinh doanh."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-dramatic-conflict-q1",
+          "prompt": "Yếu tố then chốt tạo nên sức hấp dẫn và thúc đẩy toàn bộ cốt truyện kịch phát triển là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Lời bình luận của người dẫn chuyện gián tiếp"
+            },
+            {
+              "id": "b",
+              "text": "Xung đột kịch"
+            },
+            {
+              "id": "c",
+              "text": "Miêu tả cảnh thiên nhiên dài dòng"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Không có xung đột thì không có kịch; xung đột giữa các tính cách, quyền lợi, quan điểm là động lực của hành động kịch."
+        },
+        {
+          "id": "literature-12-dramatic-conflict-q2",
+          "prompt": "Độc thoại nội tâm của nhân vật trong kịch có chức năng nghệ thuật chính là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Bộc lộ trực tiếp những giằng xé, toan tính và thế giới tinh thần sâu kín của nhân vật"
+            },
+            {
+              "id": "b",
+              "text": "Trao đổi thông tin hàng ngày với các nhân vật khác trên sân khấu"
+            },
+            {
+              "id": "c",
+              "text": "Hướng dẫn diễn viên phụ cách di chuyển đạo cụ sân khấu"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Độc thoại nội tâm là tiếng nói cất lên từ đáy lòng nhân vật khi đối diện với chính mình, phơi bày những trăn trở dằn vặt sâu kín."
+        },
+        {
+          "id": "literature-12-dramatic-conflict-q3",
+          "prompt": "Khái niệm 'thanh lọc' (catharsis) trong tiếp nhận nghệ thuật kịch có ý nghĩa gì?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Làm khán giả cảm thấy hoàn toàn tuyệt vọng và mất niềm tin vào cuộc sống"
+            },
+            {
+              "id": "b",
+              "text": "Xóa sạch toàn bộ trí nhớ của người xem sau khi rời rạp hát"
+            },
+            {
+              "id": "c",
+              "text": "Nâng đỡ, thanh lọc tâm hồn khán giả qua việc đồng cảm với nỗi đau và sự chiến thắng đạo đức của nhân vật"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Theo mĩ học từ thời Aristotle, trải nghiệm bi kịch giúp khán giả trải qua nỗi sợ và lòng trắc ẩn để thanh lọc cảm xúc, vươn tới cái đẹp."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-rhetorical-devices",
+      "title": "Biện pháp tu từ và hiệu quả biểu đạt nâng cao",
+      "guidance": [
+        "Nghịch ngữ (oxymoron / paradox): kết hợp những khái niệm tưởng chừng mâu thuẫn để làm nổi bật chân lí sâu sắc. Ẩn dụ chuyển đổi cảm giác. Nói mỉa (irony): tạo khoảng cách giữa nghĩa bề mặt và nghĩa hàm ẩn. Điệp cấu trúc tạo âm hưởng hùng hồn hoặc da diết."
+      ],
+      "examples": [
+        "Cụm từ 'tiếng im lặng chói chang' là nghịch ngữ kết hợp ẩn dụ chuyển đổi cảm giác, nhấn mạnh sự cô đơn tột cùng."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-rhetorical-devices-q1",
+          "prompt": "Biện pháp tu từ nghịch ngữ (nghịch lí - paradox) có đặc điểm nổi bật nào sau đây?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Kết hợp những từ ngữ tưởng như mâu thuẫn đối lập nhưng lại diễn tả một chân lí sâu xa"
+            },
+            {
+              "id": "b",
+              "text": "Liệt kê các sự vật đồng nghĩa liên tiếp nhau"
+            },
+            {
+              "id": "c",
+              "text": "Nói quá sự thật gấp hàng nghìn lần để gây cười"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Nghịch ngữ tạo ra sự bất ngờ bằng cách ghép hai yếu tố tương phản, buộc người đọc suy ngẫm để nhận ra bản chất sâu kín."
+        },
+        {
+          "id": "literature-12-rhetorical-devices-q2",
+          "prompt": "Cụm từ 'ánh nắng ngọt ngào rơi trên mái hiên' sử dụng biện pháp tu từ nào sau đây?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "So sánh ngang bằng có từ như"
+            },
+            {
+              "id": "b",
+              "text": "Nhân hóa đồ vật thành người"
+            },
+            {
+              "id": "c",
+              "text": "Ẩn dụ chuyển đổi cảm giác (thị giác sang vị giác)"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Ánh nắng vốn cảm nhận bằng thị giác được miêu tả bằng tính từ 'ngọt ngào' thuộc vị giác, tạo ấn tượng tinh tế."
+        },
+        {
+          "id": "literature-12-rhetorical-devices-q3",
+          "prompt": "Tác dụng thẩm mĩ lớn nhất của thủ pháp mỉa mai (irony) trong văn học châm biếm là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tuyên truyền trực tiếp các điều luật pháp lý khô khan"
+            },
+            {
+              "id": "b",
+              "text": "Tạo khoảng cách giữa lời nói bề mặt và ý nghĩa thực tế để phê phán thói hư tật xấu"
+            },
+            {
+              "id": "c",
+              "text": "Làm cho câu văn trở nên dài dòng và khó hiểu"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mỉa mai dùng lời nói có vẻ khen ngợi hoặc vô tư để ngầm lật tẩy, chế giễu những hiện tượng lố lăng, bất công."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-literary-critique",
+      "title": "Tiếp nhận và đánh giá tác phẩm văn học",
+      "guidance": [
+        "Tiếp nhận văn học là hoạt động sáng tạo của người đọc: từ văn bản ngôn từ đồng sáng tạo ra thế giới hình tượng. Ý thức về bối cảnh lịch sử - văn hóa của thời đại ra đời tác phẩm. Tính đa nghĩa và đời sống lịch sử của tác phẩm qua các thời kì khác nhau."
+      ],
+      "examples": [
+        "Một tác phẩm viết về số phận con người trong chiến tranh khi đọc trong thời bình gợi lên những suy ngẫm nhân bản về hòa bình và lòng vị tha."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-literary-critique-q1",
+          "prompt": "Quá trình tiếp nhận văn học của bạn đọc được coi là một hoạt động:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tiếp thu thụ động y nguyên những gì tác giả viết mà không cần suy nghĩ"
+            },
+            {
+              "id": "b",
+              "text": "Sao chép lại toàn bộ văn bản để lưu trữ cá nhân"
+            },
+            {
+              "id": "c",
+              "text": "Đồng sáng tạo tích cực, làm sống dậy và làm phong phú thêm ý nghĩa của tác phẩm"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Người đọc mang vốn sống, trải nghiệm và cảm nhận riêng để lấp đầy các 'khoảng trống' nghệ thuật, tạo nên đời sống sinh động cho tác phẩm."
+        },
+        {
+          "id": "literature-12-literary-critique-q2",
+          "prompt": "Khi đánh giá giá trị tư tưởng của một tác phẩm văn học, người đọc cần đặt tác phẩm vào:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Số lượng bản in bán ra tại các hiệu sách"
+            },
+            {
+              "id": "b",
+              "text": "Bối cảnh lịch sử, xã hội và văn hóa cụ thể của thời đại mà tác phẩm ra đời"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ dựa vào sở thích nhất thời của cá nhân người đọc"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Đặt tác phẩm vào hoàn cảnh lịch sử giúp đánh giá đúng tính tiên phong, giá trị hiện thực và chiều sâu nhân đạo của tác giả."
+        },
+        {
+          "id": "literature-12-literary-critique-q3",
+          "prompt": "Hiện tượng một tác phẩm kinh điển có nhiều cách hiểu và bình luận khác nhau qua các thời kì lịch sử chứng minh:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tác phẩm văn học chân chính luôn có tính đa nghĩa và sức sống vượt thời gian"
+            },
+            {
+              "id": "b",
+              "text": "Tác giả tác phẩm đó viết sai ngữ pháp nghiêm trọng"
+            },
+            {
+              "id": "c",
+              "text": "Tác phẩm hoàn toàn không có giá trị nội dung cụ thể"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Văn học nghệ thuật giàu biểu tượng và chiều sâu nhân bản nên luôn mở ra những góc nhìn mới cho mỗi thế hệ độc giả."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-argument-structure",
+      "title": "Cấu trúc luận điểm trong văn bản nghị luận",
+      "guidance": [
+        "Luận đề (vấn đề chính) -> Luận điểm (các khía cạnh then chốt) -> Luận cứ (lý lẽ và dẫn chứng minh họa). Mối liên hệ logic giữa các luận điểm: song song, móc xích, tổng - phân - hợp. Tính mạch lạc và liên kết câu, đoạn."
+      ],
+      "examples": [
+        "Luận đề 'Bảo vệ nguồn nước sạch': Luận điểm 1 (Vai trò sống còn của nước), Luận điểm 2 (Thực trạng ô nhiễm), Luận điểm 3 (Giải pháp hành động)."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-argument-structure-q1",
+          "prompt": "Trong cấu trúc của một văn bản nghị luận, 'luận điểm' đóng vai trò là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Lời mở đầu giới thiệu tiểu sử tác giả"
+            },
+            {
+              "id": "b",
+              "text": "Các ý kiến, quan điểm chính triển khai làm sáng tỏ cho luận đề của bài viết"
+            },
+            {
+              "id": "c",
+              "text": "Các số liệu thống kê cụ thể trích dẫn từ bài báo"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Luận điểm là những phán đoán cốt lõi thể hiện quan điểm của người viết về từng khía cạnh của vấn đề nghị luận."
+        },
+        {
+          "id": "literature-12-argument-structure-q2",
+          "prompt": "Yêu cầu quan trọng nhất đối với hệ thống luận cứ (lí lẽ và dẫn chứng) trong văn bản nghị luận là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phải chân thực, tiêu biểu, xác đáng và có mối liên hệ logic chặt chẽ với luận điểm"
+            },
+            {
+              "id": "b",
+              "text": "Càng dài dòng và nhiều chi tiết vụn vặt càng tốt"
+            },
+            {
+              "id": "c",
+              "text": "Phải sử dụng hoàn toàn những câu chuyện hư cấu hoang đường"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Luận cứ xác thực, tiêu biểu mới đủ sức thuyết phục người đọc tin vào tính đúng đắn của luận điểm."
+        },
+        {
+          "id": "literature-12-argument-structure-q3",
+          "prompt": "Mô hình lập luận 'Tổng - Phân - Hợp' trong đoạn văn nghị luận có tiến trình triển khai như thế nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đi từ ví dụ cụ thể rồi mới kết luận mà không có phần phân tích"
+            },
+            {
+              "id": "b",
+              "text": "Nêu ba ý kiến hoàn toàn trái ngược nhau mà không có kết luận"
+            },
+            {
+              "id": "c",
+              "text": "Nêu ý khái quát toàn đoạn, sau đó phân tích các khía cạnh cụ thể, cuối cùng tổng hợp và nâng cao"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "'Tổng' nêu luận điểm ban đầu, 'Phân' triển khai các lí lẽ dẫn chứng, 'Hợp' khái quát lại vấn đề ở tầm nhận thức cao hơn."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-evidence-evaluation",
+      "title": "Thẩm định tính xác thực và logic của dẫn chứng",
+      "guidance": [
+        "Phân biệt sự thật (fact) và ý kiến cá nhân (opinion). Thẩm định dẫn chứng: nguồn gốc tin cậy, tính cập nhật, tính đại diện, tính liên quan trực tiếp đến luận điểm. Nhận diện ngụy biện: khái quát hóa vội vã, dẫn chứng thiên kiến."
+      ],
+      "examples": [
+        "Trích dẫn số liệu tỉ lệ thất nghiệp từ Tổng cục Thống kê có độ tin cậy cao hơn hẳn trích dẫn từ một bình luận ẩn danh trên mạng xã hội."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-evidence-evaluation-q1",
+          "prompt": "Tiêu chí nào sau đây là quan trọng hàng đầu khi lựa chọn dẫn chứng cho bài văn nghị luận xã hội?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tính xác thực, khách quan và có nguồn gốc xuất xứ tin cậy"
+            },
+            {
+              "id": "b",
+              "text": "Dẫn chứng phải hoàn toàn bí ẩn không ai kiểm chứng được"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ sử dụng những tin đồn chưa được kiểm chứng trên mạng"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Dẫn chứng khách quan, kiểm chứng được từ cơ quan chuyên môn mới tạo lập uy tín học thuật vững chắc cho bài viết."
+        },
+        {
+          "id": "literature-12-evidence-evaluation-q2",
+          "prompt": "Lỗi ngụy biện 'khái quát hóa vội vã' (hasty generalization) xảy ra khi người viết:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phân tích quá sâu nguyên nhân sâu xa của vấn đề"
+            },
+            {
+              "id": "b",
+              "text": "Trích dẫn đầy đủ số liệu điều tra diện rộng trên hàng triệu người"
+            },
+            {
+              "id": "c",
+              "text": "Rút ra kết luận chung cho toàn bộ tập thể chỉ dựa trên một vài trường hợp cá biệt"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Lấy một vài ví dụ cá biệt không đại diện để quy chụp cho số đông là lỗi ngụy biện khái quát hóa vội vã."
+        },
+        {
+          "id": "literature-12-evidence-evaluation-q3",
+          "prompt": "Đọc câu sau: 'Nhạc sĩ đó rất tài hoa vì nhiều người nói âm nhạc của ông thật tuyệt vời'. Câu này mắc lỗi logic nào?",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nhầm lẫn giữa nguyên nhân và kết quả thời gian"
+            },
+            {
+              "id": "b",
+              "text": "Lập luận vòng quanh (chứng minh điều A bằng điều A được diễn đạt lại)"
+            },
+            {
+              "id": "c",
+              "text": "So sánh khập khiễng hai sự vật không liên quan"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Khẳng định 'tài hoa' bằng lý lẽ 'nhiều người khen tuyệt vời' không đưa ra bằng chứng thực tế nào về chất lượng tác phẩm, là lập luận vòng tròn."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-persuasive-rhetoric",
+      "title": "Ngôn ngữ và thủ pháp thuyết phục",
+      "guidance": [
+        "Ba phương thức thuyết phục cổ điển: Ethos (xây dựng uy tín cá nhân), Pathos (lay động cảm xúc, trắc ẩn), Logos (lập luận logic, bằng chứng xác thực). Giọng điệu phù hợp, ngôn từ chính xác, mạch lạc, tránh công kích cá nhân (ad hominem)."
+      ],
+      "examples": [
+        "Diễn giả kêu gọi bảo vệ môi trường vừa đưa ra số liệu biến đổi khí hậu (Logos), vừa thể hiện trách nhiệm công dân (Ethos), vừa khơi gợi tình yêu với thiên nhiên (Pathos)."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-persuasive-rhetoric-q1",
+          "prompt": "Phương thức thuyết phục dựa trên uy tín, phẩm hạnh và tư cách đạo đức của người nói trong thuật hùng biện được gọi là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Pathos"
+            },
+            {
+              "id": "b",
+              "text": "Logos"
+            },
+            {
+              "id": "c",
+              "text": "Ethos"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Trong thuật hùng biện Aristotle: Ethos là uy tín cá nhân, Pathos là tác động cảm xúc, Logos là lập luận logic."
+        },
+        {
+          "id": "literature-12-persuasive-rhetoric-q2",
+          "prompt": "Khi muốn lay động lòng trắc ẩn và sự đồng cảm sâu sắc của người nghe về một mảnh đời bất hạnh, người viết thường sử dụng phương thức:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ đọc to danh mục văn bản luật pháp"
+            },
+            {
+              "id": "b",
+              "text": "Pathos (tác động vào cảm xúc và tâm lí)"
+            },
+            {
+              "id": "c",
+              "text": "Logos (lập luận toán học khô khan)"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Pathos hướng đến thế giới cảm xúc, chạm vào lòng nhân ái, sự sẻ chia của độc giả."
+        },
+        {
+          "id": "literature-12-persuasive-rhetoric-q3",
+          "prompt": "Lỗi ngụy biện 'công kích cá nhân' (ad hominem) trong văn bản tranh luận xảy ra khi:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tấn công vào đời tư, tính cách của đối phương thay vì phản bác luận điểm của họ"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ ra điểm thiếu logic trong lập luận của đối phương"
+            },
+            {
+              "id": "c",
+              "text": "Dẫn chứng số liệu khoa học chứng minh đối phương tính toán sai"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Ad hominem là lỗi chuyển hướng công kích vào con người đối thoại thay vì thảo luận thẳng thắn về luận điểm tranh cãi."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-social-argumentation",
+      "title": "Nghị luận về một vấn đề xã hội",
+      "guidance": [
+        "Các bước viết bài nghị luận xã hội: giải thích khái niệm, phân tích thực trạng, chỉ ra nguyên nhân (chủ quan, khách quan), đánh giá hậu quả/ý nghĩa, đề xuất giải pháp khả thi và rút ra bài học cho bản thân. Tránh viết chung chung, sáo rỗng."
+      ],
+      "examples": [
+        "Bàn về 'Văn hóa ứng xử trên không gian mạng': nêu hiện tượng bạo lực mạng, nguyên nhân do ẩn danh và thiếu kĩ năng số, giải pháp luật an ninh mạng và giáo dục tự giác."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-social-argumentation-q1",
+          "prompt": "Khi làm bài văn nghị luận về một vấn đề xã hội, thao tác đầu tiên sau khi giới thiệu vấn đề cần thực hiện là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đưa ra ngay kết luận cuối cùng của bài viết"
+            },
+            {
+              "id": "b",
+              "text": "Giải thích rõ nghĩa của các từ khóa và nội hàm cốt lõi của vấn đề"
+            },
+            {
+              "id": "c",
+              "text": "Lập tức phê phán gay gắt những người có ý kiến trái chiều"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Giải thích khái niệm giúp xác lập định nghĩa chuẩn xác, tránh lạc đề hoặc hiểu sai lệch vấn đề trước khi bàn luận."
+        },
+        {
+          "id": "literature-12-social-argumentation-q2",
+          "prompt": "Để các giải pháp đề xuất trong bài nghị luận xã hội có tính thuyết phục cao, người viết cần đảm bảo:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tính cụ thể, khả thi, phù hợp với thực tế và giải quyết trúng nguyên nhân gốc rễ"
+            },
+            {
+              "id": "b",
+              "text": "Đưa ra những lời hứa hão huyền không ai làm được"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ yêu cầu người khác làm mà bản thân không cần thay đổi"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Giải pháp phải xuất phát từ nguyên nhân thực tế, có tính khả thi và phân định rõ trách nhiệm cá nhân, cộng đồng."
+        },
+        {
+          "id": "literature-12-social-argumentation-q3",
+          "prompt": "Việc xem xét một vấn đề xã hội từ nhiều góc độ đa chiều (kinh tế, văn hóa, tâm lí lứa tuổi) giúp bài viết:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Trở nên mâu thuẫn và tự bác bỏ chính mình"
+            },
+            {
+              "id": "b",
+              "text": "Làm người chấm điểm không nhận ra quan điểm của tác giả"
+            },
+            {
+              "id": "c",
+              "text": "Tránh được cái nhìn phiến diện, cực đoan và thể hiện tư duy phản biện sắc bén"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tư duy đa chiều giúp nhận định thấu đáo bản chất phức tạp của đời sống xã hội, nâng cao tính thuyết phục."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-literary-argumentation",
+      "title": "Nghị luận về một tư tưởng, đạo lí hoặc hiện tượng văn học",
+      "guidance": [
+        "Nghị luận văn học kết hợp phân tích nội dung tư tưởng và hình thức nghệ thuật. Luận điểm rõ ràng bám sát tác phẩm. Trích dẫn câu thơ, đoạn văn chính xác. Liên hệ mở rộng với các tác phẩm cùng đề tài, thời đại để làm nổi bật đóng góp độc đáo của tác giả."
+      ],
+      "examples": [
+        "Phân tích vẻ đẹp người nông dân nghĩa sĩ: phân tích tinh thần quả cảm, lí tưởng vì nước quên thân, kết hợp nghệ thuật ngôn từ trang trọng, hào hùng."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-literary-argumentation-q1",
+          "prompt": "Khi viết bài văn nghị luận phân tích một tác phẩm văn học, người viết cần kết hợp chặt chẽ giữa hai yếu tố nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Phân tích nội dung tư tưởng và các thủ pháp nghệ thuật độc đáo"
+            },
+            {
+              "id": "b",
+              "text": "Chỉ tóm tắt cốt truyện từ đầu đến cuối như văn kể chuyện"
+            },
+            {
+              "id": "c",
+              "text": "Sao chép lại tiểu sử năm sinh năm mất của tác giả"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Tác phẩm văn học là sự thống nhất giữa nội dung và hình thức; nghệ thuật là phương tiện chuyên chở tư tưởng tác giả."
+        },
+        {
+          "id": "literature-12-literary-argumentation-q2",
+          "prompt": "Thao tác 'so sánh văn học' trong bài văn nghị luận có tác dụng nghệ thuật chủ yếu là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Để kéo dài dung lượng bài viết khi thiếu ý tưởng"
+            },
+            {
+              "id": "b",
+              "text": "Khẳng định tác phẩm kia hoàn toàn vô giá trị"
+            },
+            {
+              "id": "c",
+              "text": "Làm nổi bật nét độc đáo, dấu ấn phong cách riêng biệt của tác giả đang phân tích"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "So sánh với tác phẩm cùng đề tài hoặc cùng thời kì giúp nhận diện rõ nét sáng tạo độc đáo riêng của nhà văn."
+        },
+        {
+          "id": "literature-12-literary-argumentation-q3",
+          "prompt": "Yêu cầu bắt buộc khi đưa dẫn chứng là lời thoại hoặc câu thơ của tác phẩm vào bài nghị luận văn học là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tự ý bịa thêm câu từ mới vào thơ của tác giả"
+            },
+            {
+              "id": "b",
+              "text": "Dẫn chứng phải trích dẫn chính xác, tiêu biểu và có lời phân tích bình luận đi kèm"
+            },
+            {
+              "id": "c",
+              "text": "Trích bừa bãi toàn bộ tác phẩm mà không bình luận gì"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Trích dẫn phải trung thực với nguyên tác và phải có thao tác 'bình dẫn chứng' để làm sáng tỏ luận điểm của người viết."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-informational-synthesis",
+      "title": "Tiếp nhận và tổng hợp thông tin đa nguồn",
+      "guidance": [
+        "Văn bản thông tin: số liệu, biểu đồ, infographic, văn bản đa phương thức. Kĩ năng đọc: phân loại thông tin chính/phụ, kiểm tra tính nhất quán giữa các nguồn, tổng hợp và rút ra nhận định tổng quan."
+      ],
+      "examples": [
+        "Đọc báo cáo về tỉ lệ sử dụng năng lượng tái tạo gồm biểu đồ hình cột và đoạn văn phân tích xu hướng để tóm tắt các điểm then chốt."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-informational-synthesis-q1",
+          "prompt": "Trong một văn bản thông tin đa phương thức, các yếu tố phi ngôn ngữ (như biểu đồ, sơ đồ, hình ảnh) có vai trò:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ để trang trí cho văn bản bớt tẻ nhạt mà không mang ý nghĩa gì"
+            },
+            {
+              "id": "b",
+              "text": "Làm sai lệch thông tin của phần văn bản chữ viết"
+            },
+            {
+              "id": "c",
+              "text": "Trực quan hóa dữ liệu phức tạp giúp người đọc tiếp nhận thông tin nhanh chóng và chính xác"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Yếu tố phi ngôn ngữ giúp cô đọng số liệu trực quan, tăng tính sinh động và hỗ trợ đắc lực cho văn bản thuyết minh."
+        },
+        {
+          "id": "literature-12-informational-synthesis-q2",
+          "prompt": "Kĩ năng quan trọng nhất khi tổng hợp thông tin từ nhiều nguồn tài liệu khác nhau về cùng một đề tài là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chỉ chọn nguồn tin có độ dài ngắn nhất để đọc"
+            },
+            {
+              "id": "b",
+              "text": "So sánh, đối chiếu tính nhất quán của dữ liệu và chắt lọc các điểm đồng thuận cốt lõi"
+            },
+            {
+              "id": "c",
+              "text": "Sao chép nguyên văn tất cả các tài liệu gom lại thành một tập dài"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Tổng hợp thông tin đòi hỏi tư duy phân tích, đối chiếu chéo để loại bỏ mâu thuẫn và xây dựng bức tranh tổng thể tin cậy."
+        },
+        {
+          "id": "literature-12-informational-synthesis-q3",
+          "prompt": "Khi phát hiện hai bài báo uy tín đưa ra số liệu chênh lệch nhau về cùng một hiện tượng, người đọc thông thái nên:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Kiểm tra lại phương pháp thu thập dữ liệu, thời điểm khảo sát và phạm vi mẫu của từng bài báo"
+            },
+            {
+              "id": "b",
+              "text": "Lập tức tin ngay bài báo xuất bản sau cùng mà không cần kiểm tra"
+            },
+            {
+              "id": "c",
+              "text": "Bỏ qua hoàn toàn đề tài đó và không quan tâm nữa"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Chênh lệch số liệu thường xuất phát từ phương pháp chọn mẫu, thời điểm đo đạc hoặc tiêu chuẩn thống kê khác nhau."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-media-literacy",
+      "title": "Phân tích ngôn ngữ truyền thông và diễn ngôn đại chúng",
+      "guidance": [
+        "Ngôn ngữ truyền thông: giật gân, đóng khung thông điệp (framing), thiên kiến xác nhận. Phân tích diễn ngôn: ai nói, mục đích gì, nhắm đến đối tượng nào, những gì bị ẩn giấu hoặc lược bỏ. Nhận diện tin giả (fake news)."
+      ],
+      "examples": [
+        "Một tiêu đề bài báo dùng từ ngữ giật gân 'Kinh hoàng', 'Sốc' nhằm thu hút tương tác (clickbait) thay vì phản ánh bản chất trung thực của sự việc."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-media-literacy-q1",
+          "prompt": "Hiện tượng 'đóng khung thông điệp' (framing) trong truyền thông đại chúng có nghĩa là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Hoàn toàn cấm đoán người dân phát biểu ý kiến cá nhân"
+            },
+            {
+              "id": "b",
+              "text": "Cách thức cơ quan truyền thông lựa chọn nhấn mạnh một khía cạnh nhất định để định hướng cách nhìn của công chúng"
+            },
+            {
+              "id": "c",
+              "text": "Đóng khung các bài báo in vào khung gỗ để treo tường"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Framing là kĩ thuật định hướng dư luận bằng cách làm nổi bật một góc nhìn cụ thể và làm lu mờ các góc nhìn khác."
+        },
+        {
+          "id": "literature-12-media-literacy-q2",
+          "prompt": "Dấu hiệu điển hình của một tiêu đề mang tính chất 'mồi câu nhấp chuột' (clickbait) trên mạng là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Sử dụng ngôn từ giật gân, lấp lửng, phóng đại cảm xúc để kích thích người dùng bấm vào xem"
+            },
+            {
+              "id": "b",
+              "text": "Cung cấp đầy đủ thông tin tóm tắt khách quan ngay ở tiêu đề"
+            },
+            {
+              "id": "c",
+              "text": "Trích dẫn chính xác báo cáo khoa học có nguồn thẩm định rõ ràng"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Clickbait dùng các từ khóa kích động cảm xúc tò mò, thường phóng đại hoặc làm sai lệch nội dung thực tế bên trong bài viết."
+        },
+        {
+          "id": "literature-12-media-literacy-q3",
+          "prompt": "Để thẩm định một thông tin gây sốc lan truyền trên mạng xã hội có phải là tin giả (fake news) hay không, bước làm đầu tiên nên là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Chia sẻ ngay lập tức lên trang cá nhân để cảnh báo bạn bè"
+            },
+            {
+              "id": "b",
+              "text": "Bình luận thật nhiều cảm xúc phẫn nộ dưới bài viết"
+            },
+            {
+              "id": "c",
+              "text": "Kiểm tra nguồn gốc tác giả, ngày đăng và đối chiếu với các cơ quan báo chí chính thống"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Kiểm tra nguồn tin gốc, ngày phát hành và xác thực chéo qua báo chí chính thống là bước kiểm chứng căn bản nhất."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-research-report",
+      "title": "Kĩ thuật viết báo cáo nghiên cứu và trích dẫn",
+      "guidance": [
+        "Cấu trúc báo cáo nghiên cứu: Tên đề tài, Tóm tắt (Abstract), Đặt vấn đề, Phương pháp nghiên cứu, Kết quả và Bàn luận, Kết luận, Danh mục tài liệu tham khảo. Quy tắc trích dẫn học thuật (APA, MLA): trích trực tiếp vs gián tiếp, phòng chống đạo văn (plagiarism)."
+      ],
+      "examples": [
+        "Khi trích dẫn ý kiến của một chuyên gia, học sinh ghi rõ tên tác giả, năm công bố và đóng ngoặc kép câu trích dẫn kèm số trang."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-research-report-q1",
+          "prompt": "Phần 'Tóm tắt' (Abstract) ở đầu một báo cáo nghiên cứu khoa học có nhiệm vụ chính là:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tóm lược cô đọng mục tiêu, phương pháp, kết quả then chốt và kết luận của công trình"
+            },
+            {
+              "id": "b",
+              "text": "Liệt kê danh sách tất cả các thành viên trong gia đình tác giả"
+            },
+            {
+              "id": "c",
+              "text": "Trình bày chi tiết toàn bộ các bảng số liệu thô thu thập được"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Abstract giúp người đọc nhanh chóng nắm bắt bản chất và những phát hiện quan trọng nhất của công trình nghiên cứu."
+        },
+        {
+          "id": "literature-12-research-report-q2",
+          "prompt": "Hành vi nào sau đây bị coi là 'đạo văn' (plagiarism) nghiêm trọng trong nghiên cứu học thuật?",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Trích dẫn nguyên văn câu nói của tác giả và đặt trong dấu ngoặc kép kèm ghi chú nguồn"
+            },
+            {
+              "id": "b",
+              "text": "Diễn đạt lại ý kiến của chuyên gia và chú thích rõ tài liệu tham khảo"
+            },
+            {
+              "id": "c",
+              "text": "Sử dụng ý tưởng hoặc câu chữ của người khác mà không dẫn nguồn và trích dẫn rõ ràng"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Đạo văn là hành vi chiếm đoạt sản phẩm trí tuệ khi sử dụng tư liệu của người khác như thể là của chính mình."
+        },
+        {
+          "id": "literature-12-research-report-q3",
+          "prompt": "Trong danh mục tài liệu tham khảo theo quy chuẩn học thuật, các nguồn tài liệu thường được sắp xếp theo trật tự:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Xếp theo số lượng trang của cuốn sách từ dày đến mỏng"
+            },
+            {
+              "id": "b",
+              "text": "Thứ tự bảng chữ cái (A-Z) theo tên tác giả hoặc chữ cái đầu của tên tác phẩm"
+            },
+            {
+              "id": "c",
+              "text": "Xếp ngẫu nhiên theo thứ tự tác giả nào nổi tiếng hơn"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Quy chuẩn học thuật quốc tế (như APA, MLA) yêu cầu danh mục tài liệu tham khảo phải được sắp xếp theo thứ tự chữ cái A-Z."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-formal-speech",
+      "title": "Thuyết trình và đối thoại học thuật",
+      "guidance": [
+        "Cấu trúc bài thuyết trình: Mở đầu gây ấn tượng (hook), Thân bài có cấu trúc rõ ràng với các từ nối chuyển ý (signposting), Kết luận đọng lại thông điệp. Sử dụng phương tiện trực quan (slides) tinh gọn. Kĩ năng xử lý phần hỏi - đáp (Q&A): lắng nghe, ghi nhận, trả lời đúng trọng tâm và khiêm tốn."
+      ],
+      "examples": [
+        "Mở đầu bài thuyết trình bằng một câu hỏi gợi mở hoặc một câu chuyện thực tế ngắn tạo sự chú ý tức thì của người nghe."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-formal-speech-q1",
+          "prompt": "Kĩ thuật 'câu móc' (hook) trong phần mở đầu của một bài thuyết trình được dùng để:",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đọc nhanh danh sách tất cả các tài liệu tham khảo của bài"
+            },
+            {
+              "id": "b",
+              "text": "Xin lỗi khán giả vì chưa chuẩn bị bài kĩ càng"
+            },
+            {
+              "id": "c",
+              "text": "Thu hút sự chú ý và khơi gợi trí tò mò của khán giả ngay từ những giây đầu tiên"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Hook (câu hỏi thú vị, số liệu gây sốc, câu chuyện ngắn) kết nối người nghe với chủ đề ngay từ lúc mở màn."
+        },
+        {
+          "id": "literature-12-formal-speech-q2",
+          "prompt": "Khi thiết kế slide trình chiếu hỗ trợ bài thuyết trình, nguyên tắc quan trọng về mặt thị giác là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Dùng thật nhiều phông chữ sặc sỡ và hiệu ứng hoạt họa nhấp nháy liên tục"
+            },
+            {
+              "id": "b",
+              "text": "Trình bày cô đọng, ưu tiên hình ảnh biểu đồ trực quan và hạn chế tối đa các đoạn văn bản dài"
+            },
+            {
+              "id": "c",
+              "text": "Chép toàn bộ nguyên văn bài nói lên màn hình để đọc lại từng chữ"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Slide chỉ mang tính trực quan hỗ trợ; văn bản quá nhiều sẽ làm khán giả mải đọc chữ và phân tâm khỏi lời nói của diễn giả."
+        },
+        {
+          "id": "literature-12-formal-speech-q3",
+          "prompt": "Khi nhận được một câu hỏi phản biện khó từ khán giả trong phần Q&A mà bản thân chưa nắm rõ câu trả lời, thái độ đúng đắn là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cảm ơn câu hỏi sâu sắc, thừa nhận thẳng thắn giới hạn và hẹn sẽ tìm hiểu phản hồi sau"
+            },
+            {
+              "id": "b",
+              "text": "Cố tình nói quanh co dài dòng và bịa đặt số liệu giả để trả lời"
+            },
+            {
+              "id": "c",
+              "text": "Tỏ thái độ bực bội và yêu cầu khán giả không được hỏi câu hỏi đó"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Trung thực học thuật và khiêm tốn là phẩm chất cốt lõi; thừa nhận giới hạn và tiếp thu thể hiện tính chuyên nghiệp."
+        }
+      ]
+    },
+    {
+      "id": "literature-12-debate-skills",
+      "title": "Kĩ năng tranh biện và phản biện logic",
+      "guidance": [
+        "Bản chất tranh biện là đối thoại tư duy tìm chân lí, không phải cãi cọ ăn thua. Mô hình lập luận ARE (Assertion - Luận điểm, Reasoning - Lí lẽ, Evidence - Dẫn chứng). Kĩ thuật phản biện: chỉ ra lỗ hổng logic, đưa ra phản chứng, hoặc chứng minh tính phi thực tế của giải pháp đối phương."
+      ],
+      "examples": [
+        "Trong một cuộc tranh biện về 'Học trực tuyến thay thế hoàn toàn trường học', đội phản đối chỉ ra lỗ hổng: thiếu tương tác xã hội trực tiếp phát triển cảm xúc cho học sinh."
+      ],
+      "questions": [
+        {
+          "id": "literature-12-debate-skills-q1",
+          "prompt": "Trong mô hình tranh biện học thuật tiêu chuẩn, một lập luận hoàn chỉnh bao gồm các thành tố cốt lõi nào?",
+          "difficulty": "EASY",
+          "options": [
+            {
+              "id": "a",
+              "text": "Những lời công kích đời tư nhằm làm đối phương mất bình tĩnh"
+            },
+            {
+              "id": "b",
+              "text": "Luận điểm khẳng định, lí lẽ giải thích và dẫn chứng thực tế minh chứng"
+            },
+            {
+              "id": "c",
+              "text": "Chỉ gồm một lời khẳng định to tiếng và áp đặt"
+            }
+          ],
+          "correctOptionId": "b",
+          "explanation": "Mô hình ARE (Assertion, Reasoning, Evidence) là tiêu chuẩn vàng cho một luận cứ tranh biện logic và thuyết phục."
+        },
+        {
+          "id": "literature-12-debate-skills-q2",
+          "prompt": "Thao tác phản biện hiệu quả nhất khi đối thoại tranh luận với ý kiến trái chiều là:",
+          "difficulty": "MEDIUM",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tập trung phân tích lỗ hổng logic hoặc tính thiếu căn cứ của dẫn chứng mà đối phương đưa ra"
+            },
+            {
+              "id": "b",
+              "text": "Ngắt lời đối phương liên tục không cho họ phát biểu"
+            },
+            {
+              "id": "c",
+              "text": "Lặp đi lặp lại ý kiến của mình với giọng điệu to hơn"
+            }
+          ],
+          "correctOptionId": "a",
+          "explanation": "Phản biện sắc bén nhắm thẳng vào giả định sai lầm, sự thiếu hụt bằng chứng hoặc nghịch lí logic trong lập luận của đối thủ."
+        },
+        {
+          "id": "literature-12-debate-skills-q3",
+          "prompt": "Mục đích cao nhất của hoạt động tranh biện học thuật trong nhà trường là:",
+          "difficulty": "APPLIED",
+          "options": [
+            {
+              "id": "a",
+              "text": "Đánh bại đối thủ bằng mọi giá kể cả dùng tiểu xảo ngụy biện"
+            },
+            {
+              "id": "b",
+              "text": "Chứng minh mình luôn là người hoàn hảo không bao giờ mắc sai lầm"
+            },
+            {
+              "id": "c",
+              "text": "Rèn luyện tư duy phản biện, khả năng nhìn nhận vấn đề đa chiều và tôn trọng sự khác biệt"
+            }
+          ],
+          "correctOptionId": "c",
+          "explanation": "Tranh biện là phương pháp học tập nhằm khai phóng tư duy, mở rộng tầm nhìn và rèn luyện kĩ năng lắng nghe thấu cảm."
+        }
+      ]
+    }
+  ]
+}
