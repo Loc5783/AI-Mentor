@@ -113,9 +113,9 @@ def complete_attempt(c, s, attempt_id, k=None):
     return ok(post(c, s, "/completions", {"attemptId": attempt_id}, k))
 
 
-def complete_placement_for_user(c, s, enrollment_id):
+def complete_placement_for_user(c, s, enrollment_id, correct=False):
     p = start_placement(c, s, enrollment_id)
-    p_answered = answer_questions(c, s, p, correct=True)
+    p_answered = answer_questions(c, s, p, correct=correct)
     done = complete_attempt(c, s, p_answered["id"])
     assert done["kind"] == "PLACEMENT"
     assert done["xpAwarded"] == 0

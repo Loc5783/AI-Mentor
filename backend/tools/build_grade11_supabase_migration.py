@@ -65,9 +65,9 @@ def main():
     {escape_sql_string(lesson_title)},
     {escape_sql_string(title)},
     {escape_sql_string(data.get('sourceNote', ''))},
-    {escape_sql_string(guidance)}::jsonb,
-    {escape_sql_string(examples)}::jsonb,
-    {escape_sql_string(questions)}::jsonb,
+    $json${guidance}$json$::jsonb,
+    $json${examples}$json$::jsonb,
+    $json${questions}$json$::jsonb,
     '[]'::jsonb
 ) on conflict(subject_id,grade,unit_id) do nothing;\n"""
                 out.write(sql)

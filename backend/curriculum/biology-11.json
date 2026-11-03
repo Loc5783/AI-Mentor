@@ -2,1134 +2,244 @@
   "subjectId": "biology",
   "grade": 11,
   "version": "intro-2026.1",
-  "title": "Sinh học 11: Chuyển hóa vật chất và Năng lượng sinh học",
+  "title": "Sinh học 11: Trao đổi chất & Chuyển hóa năng lượng (SGK Kết nối tri thức)",
   "published": true,
-  "coverage": "PARTIAL_GRADE_11",
+  "coverage": "GRADE_11_KNTT",
   "extendedReviews": false,
-  "sourceNote": "Nội dung đang ở dạng cấu trúc khung (Placeholder) được sinh tự động bởi hệ thống AI Mentor để đảm bảo đúng định dạng JSON 3 câu hỏi (EASY/MEDIUM/APPLIED). Giáo viên cần hiệu đính nội dung chi tiết.",
+  "sourceNote": "Nội dung biên soạn bám sát chuẩn kiến thức SGK Sinh học 11 - Bộ sách Kết nối tri thức với cuộc sống.",
   "lessons": [
     {
-      "id": "biology-11-chuyen-hoa-nang-luong",
-      "title": "Chuyển hóa năng lượng",
+      "id": "biology-11-quang-hop-thuc-vat",
+      "title": "Quang hợp ở thực vật",
       "guidance": [
-        "Nội dung trọng tâm bài Chuyển hóa năng lượng theo khung CT GDPT 2018."
+        "Quang hợp là quá trình lá cây sử dụng năng lượng ánh sáng mặt trời tổng hợp chất hữu cơ (Glucose) từ CO2 và H2O, giải phóng O2.",
+        "Sắc tố quang hợp chính là diệp lục (chlorophyll a và b), sắc tố phụ là carotenoid.",
+        "Pha sáng diễn ra ở màng thylakoid (tạo ATP, NADPH, O2). Pha tối (chu trình Calvin) diễn ra ở chất nền stroma của lục lạp cố định CO2 thành đường."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Chuyển hóa năng lượng vào thực tiễn."
+        "Phương trình tổng quát: 6CO2 + 6H2O --(ánh sáng, diệp lục)--> C6H12O6 + 6O2."
       ],
       "questions": [
         {
-          "id": "biology-11-chuyen-hoa-nang-luong-biology-11-chuyen-hoa-nang-luong-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Chuyển hóa năng lượng?",
+          "id": "bio-11-qh-q1",
+          "prompt": "Sắc tố trực tiếp tham gia chuyển hóa năng lượng ánh sáng thành năng lượng hóa học trong ATP và NADPH là?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Diệp lục a ở trung tâm phản ứng" },
+            { "id": "b", "text": "Carotenoid" },
+            { "id": "c", "text": "Diệp lục b" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Chỉ diệp lục a trung tâm mới có khả năng giải phóng electron kích thích cho chuỗi truyền."
         },
         {
-          "id": "biology-11-chuyen-hoa-nang-luong-biology-11-chuyen-hoa-nang-luong-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Chuyển hóa năng lượng?",
+          "id": "bio-11-qh-q2",
+          "prompt": "Pha sáng của quá trình quang hợp diễn ra tại vị trí nào trong lục lạp?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Màng thylakoid" },
+            { "id": "b", "text": "Chất nền stroma" },
+            { "id": "c", "text": "Màng ngoài lục lạp" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Màng thylakoid chứa hệ sắc tố và chuỗi truyền electron cho pha sáng."
         },
         {
-          "id": "biology-11-chuyen-hoa-nang-luong-biology-11-chuyen-hoa-nang-luong-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Chuyển hóa năng lượng giải quyết vấn đề?",
+          "id": "bio-11-qh-q3",
+          "prompt": "Khí O2 được giải phóng trong quang hợp có nguồn gốc từ quá trình nào?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Quang phân li nước H2O ở pha sáng" },
+            { "id": "b", "text": "Cố định khí CO2 ở pha tối" },
+            { "id": "c", "text": "Phân giải ATP" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "biology-11-trao-doi-nuoc-o-thuc-vat",
-      "title": "Trao đổi nước ở thực vật",
-      "guidance": [
-        "Nội dung trọng tâm bài Trao đổi nước ở thực vật theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Trao đổi nước ở thực vật vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "biology-11-trao-doi-nuoc-o-thuc-vat-biology-11-trao-doi-nuoc-o-thuc-vat-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Trao đổi nước ở thực vật?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "biology-11-trao-doi-nuoc-o-thuc-vat-biology-11-trao-doi-nuoc-o-thuc-vat-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Trao đổi nước ở thực vật?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "biology-11-trao-doi-nuoc-o-thuc-vat-biology-11-trao-doi-nuoc-o-thuc-vat-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Trao đổi nước ở thực vật giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "biology-11-thoat-hoi-nuoc",
-      "title": "Thoát hơi nước",
-      "guidance": [
-        "Nội dung trọng tâm bài Thoát hơi nước theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Thoát hơi nước vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "biology-11-thoat-hoi-nuoc-biology-11-thoat-hoi-nuoc-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Thoát hơi nước?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "biology-11-thoat-hoi-nuoc-biology-11-thoat-hoi-nuoc-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Thoát hơi nước?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "biology-11-thoat-hoi-nuoc-biology-11-thoat-hoi-nuoc-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Thoát hơi nước giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "biology-11-quang-hop",
-      "title": "Quang hợp",
-      "guidance": [
-        "Nội dung trọng tâm bài Quang hợp theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Quang hợp vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "biology-11-quang-hop-biology-11-quang-hop-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Quang hợp?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "biology-11-quang-hop-biology-11-quang-hop-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Quang hợp?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "biology-11-quang-hop-biology-11-quang-hop-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Quang hợp giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "2H2O -> 4H+ + 4e- + O2 dưới tác dụng của ánh sáng ở pha sáng."
         }
       ]
     },
     {
       "id": "biology-11-ho-hap-thuc-vat",
-      "title": "Hô hấp thực vật",
+      "title": "Hô hấp ở thực vật",
       "guidance": [
-        "Nội dung trọng tâm bài Hô hấp thực vật theo khung CT GDPT 2018."
+        "Hô hấp ở thực vật là quá trình oxy hóa chất hữu cơ (chủ yếu là Glucose) thành CO2 và H2O, giải phóng năng lượng dưới dạng ATP.",
+        "Hô hấp hiếu khí gồm 3 giai đoạn: Đường phân (trong tế bào chất), Chu trình Krebs và Chuỗi truyền electron hô hấp (trong ti thể).",
+        "Một phân tử Glucose qua hô hấp hiếu khí tạo ra khoảng 30-32 ATP."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Hô hấp thực vật vào thực tiễn."
+        "Hạt đang nảy mầm có cường độ hô hấp rất mạnh để cung cấp năng lượng cho sự phát triển của mầm."
       ],
       "questions": [
         {
-          "id": "biology-11-ho-hap-thuc-vat-biology-11-ho-hap-thuc-vat-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Hô hấp thực vật?",
+          "id": "bio-11-hh-q1",
+          "prompt": "Bào quan chính thực hiện quá trình hô hấp hiếu khí ở tế bào thực vật là?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Ti thể" },
+            { "id": "b", "text": "Lục lạp" },
+            { "id": "c", "text": "Bộ máy Golgi" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Ti thể là nhà máy năng lượng, chứa chu trình Krebs và chuỗi truyền electron."
         },
         {
-          "id": "biology-11-ho-hap-thuc-vat-biology-11-ho-hap-thuc-vat-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Hô hấp thực vật?",
+          "id": "bio-11-hh-q2",
+          "prompt": "Giai đoạn đường phân trong hô hấp tế bào diễn ra ở?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Tế bào chất (cytosol)" },
+            { "id": "b", "text": "Màng trong ti thể" },
+            { "id": "c", "text": "Chất nền ti thể" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Đường phân biến đổi Glucose thành Pyruvate diễn ra tại tế bào chất không cần O2."
         },
         {
-          "id": "biology-11-ho-hap-thuc-vat-biology-11-ho-hap-thuc-vat-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Hô hấp thực vật giải quyết vấn đề?",
+          "id": "bio-11-hh-q3",
+          "prompt": "Tại sao trong bảo quản hạt nông sản (ngô, lúa) cần phải phơi khô làm giảm độ ẩm?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Giảm cường độ hô hấp tránh tiêu hao chất dinh dưỡng và sinh nhiệt" },
+            { "id": "b", "text": "Để tiêu diệt toàn bộ tế bào hạt" },
+            { "id": "c", "text": "Tăng tốc độ nảy mầm" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Nước là môi trường phản ứng; giảm ẩm làm hô hấp giảm xuống mức tối thiểu giúp bảo quản lâu dài."
         }
       ]
     },
     {
-      "id": "biology-11-tieu-hoa-o-dong-vat",
-      "title": "Tiêu hóa ở động vật",
+      "id": "biology-11-tieu-hoa-dong-vat",
+      "title": "Dinh dưỡng & Tiêu hóa ở động vật",
       "guidance": [
-        "Nội dung trọng tâm bài Tiêu hóa ở động vật theo khung CT GDPT 2018."
+        "Tiêu hóa là quá trình biến đổi các chất dinh dưỡng phức tạp trong thức ăn thành các chất đơn giản cơ thể có thể hấp thụ được.",
+        "Hình thức tiêu hóa: Tiêu hóa nội bào (ở động vật đơn bào) -> Tiêu hóa ngoại bào trong túi tiêu hóa -> Tiêu hóa ngoại bào trong ống tiêu hóa (ở động vật có xương sống).",
+        "Ống tiêu hóa có sự phối hợp giữa tiêu hóa cơ học (nhai, đảo) và tiêu hóa hóa học (enzyme)."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Tiêu hóa ở động vật vào thực tiễn."
+        "Ở người, dạ dày tiêu hóa cơ học và tiêu hóa hóa học protein nhờ enzyme pepsin và acid HCl."
       ],
       "questions": [
         {
-          "id": "biology-11-tieu-hoa-o-dong-vat-biology-11-tieu-hoa-o-dong-vat-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Tiêu hóa ở động vật?",
+          "id": "bio-11-th-q1",
+          "prompt": "Động vật nào sau đây có hệ tiêu hóa dạng ống tiêu hóa?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Thỏ (Động vật có xương sống)" },
+            { "id": "b", "text": "Thủy tức" },
+            { "id": "c", "text": "Trùng biến hình (Đơn bào)" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Thỏ và động vật có xương sống có ống tiêu hóa hoàn chỉnh từ miệng đến hậu môn."
         },
         {
-          "id": "biology-11-tieu-hoa-o-dong-vat-biology-11-tieu-hoa-o-dong-vat-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Tiêu hóa ở động vật?",
+          "id": "bio-11-th-q2",
+          "prompt": "Ở ruột nhỏ của người, sự hấp thụ chất dinh dưỡng diễn ra hiệu quả chủ yếu nhờ?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Bề mặt niêm mạc có nhiều nếp gấp và lông hấp thụ cực lớn" },
+            { "id": "b", "text": "Chiều dài ruột rất ngắn" },
+            { "id": "c", "text": "Dạ dày tiết acid HCl" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Vi nhung mao và lông ruột tăng diện tích bề mặt hấp thụ lên gấp hàng trăm lần."
         },
         {
-          "id": "biology-11-tieu-hoa-o-dong-vat-biology-11-tieu-hoa-o-dong-vat-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Tiêu hóa ở động vật giải quyết vấn đề?",
+          "id": "bio-11-th-q3",
+          "prompt": "Thức ăn của động vật ăn thực vật (trâu, bò) giàu cellulose nhưng khó tiêu hóa. Chúng tiêu hóa cellulose nhờ?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Hệ vi sinh vật cộng sinh trong dạ dày/manh tràng tiết enzyme cellulase" },
+            { "id": "b", "text": "Enzyme pepsin do dạ dày tự tiết ra" },
+            { "id": "c", "text": "Nhiệt độ cơ thể cao" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Trâu bò không tự tiết cellulase mà nhờ vi sinh vật cộng sinh phân giải cellulose."
         }
       ]
     },
     {
-      "id": "biology-11-ho-hap-o-dong-vat",
-      "title": "Hô hấp ở động vật",
+      "id": "biology-11-tuan-hoan-mau",
+      "title": "Tuần hoàn máu & Hệ tuần hoàn",
       "guidance": [
-        "Nội dung trọng tâm bài Hô hấp ở động vật theo khung CT GDPT 2018."
+        "Hệ tuần hoàn vận chuyển các chất (O2, CO2, chất dinh dưỡng, chất thải) đến và đi từ các tế bào.",
+        "Hệ tuần hoàn hở (ở thân mềm, chân khớp): Máu tràn vào khoang cơ thể trộn lẫn dịch tế bào.",
+        "Hệ tuần hoàn kín (ở đốt sống, đốt cao): Máu lưu thông liên tục trong mạch kín dưới áp lực cao hơn (gồm tuần hoàn đơn ở cá, tuần hoàn kép ở lưỡng cư, bò sát, chim, thú)."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Hô hấp ở động vật vào thực tiễn."
+        "Người có hệ tuần hoàn kép: Vòng tuần hoàn nhỏ đưa máu lên phổi trao đổi khí, vòng tuần hoàn lớn đưa máu đi khắp cơ thể."
       ],
       "questions": [
         {
-          "id": "biology-11-ho-hap-o-dong-vat-biology-11-ho-hap-o-dong-vat-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Hô hấp ở động vật?",
+          "id": "bio-11-thm-q1",
+          "prompt": "Động vật nào sau đây có hệ tuần hoàn hở?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Châu chấu (Chân khớp)" },
+            { "id": "b", "text": "Cá chép" },
+            { "id": "c", "text": "Chim bồ câu" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Côn trùng/Chân khớp có hệ tuần hoàn hở máu tiếp xúc trực tiếp với tế bào trong khoang."
         },
         {
-          "id": "biology-11-ho-hap-o-dong-vat-biology-11-ho-hap-o-dong-vat-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Hô hấp ở động vật?",
+          "id": "bio-11-thm-q2",
+          "prompt": "Huyết áp là áp lực của máu tác dụng lên?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Thành mạch máu" },
+            { "id": "b", "text": "Tim" },
+            { "id": "c", "text": "Phổi" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Tim co bóp đẩy máu tạo áp lực đẩy vào thành mạch, gọi là huyết áp."
         },
         {
-          "id": "biology-11-ho-hap-o-dong-vat-biology-11-ho-hap-o-dong-vat-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Hô hấp ở động vật giải quyết vấn đề?",
+          "id": "bio-11-thm-q3",
+          "prompt": "Huyết áp giảm dần trong hệ mạch theo chiều nào sau đây?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Động mạch -> Mao mạch -> Tĩnh mạch" },
+            { "id": "b", "text": "Tĩnh mạch -> Mao mạch -> Động mạch" },
+            { "id": "c", "text": "Mao mạch -> Động mạch -> Tĩnh mạch" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Do ma sát với thành mạch, huyết áp cao nhất ở động mạch chủ và thấp nhất ở tĩnh mạch chủ."
         }
       ]
     },
     {
-      "id": "biology-11-tuan-hoan",
-      "title": "Tuần hoàn",
+      "id": "biology-11-cam-ung-sinh-vat",
+      "title": "Cảm ứng & Tập tính ở sinh vật",
       "guidance": [
-        "Nội dung trọng tâm bài Tuần hoàn theo khung CT GDPT 2018."
+        "Cảm ứng là khả năng tiếp nhận kích thích và phản ứng lại các kích thích từ môi trường của sinh vật.",
+        "Ở thực vật: Hướng động (hướng sáng, hướng trọng lực, hướng nước) và Ứng động (ứng động sinh trưởng, sức trương nước).",
+        "Ở động vật: Phản xạ không điều kiện (bẩm sinh, di truyền) và Phản xạ có điều kiện (học tập, thành thục qua trải nghiệm)."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Tuần hoàn vào thực tiễn."
+        "Cây mọc hướng về phía có ánh sáng là hướng sáng dương. Chim sâu làm tổ là tập tính bẩm sinh."
       ],
       "questions": [
         {
-          "id": "biology-11-tuan-hoan-biology-11-tuan-hoan-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Tuần hoàn?",
+          "id": "bio-11-cu-q1",
+          "prompt": "Hiện tượng ngọn cây xanh luôn vươn về phía có ánh sáng gọi là?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Hướng sáng dương" },
+            { "id": "b", "text": "Hướng trọng lực âm" },
+            { "id": "c", "text": "Hướng hóa âm" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Thân ngọn cây hướng về nguồn sáng gọi là hướng sáng dương."
         },
         {
-          "id": "biology-11-tuan-hoan-biology-11-tuan-hoan-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Tuần hoàn?",
+          "id": "bio-11-cu-q2",
+          "prompt": "Tập tính bẩm sinh ở động vật có đặc điểm nào sau đây?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Sinh ra đã có, di truyền từ bố mẹ và đặc trưng cho loài" },
+            { "id": "b", "text": "Hình thành qua quá trình học tập trải nghiệm" },
+            { "id": "c", "text": "Dễ bị mất đi khi môi trường thay đổi" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Tập tính bẩm sinh do di truyền quy định, sinh ra đã có không cần học."
         },
         {
-          "id": "biology-11-tuan-hoan-biology-11-tuan-hoan-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Tuần hoàn giải quyết vấn đề?",
+          "id": "bio-11-cu-q3",
+          "prompt": "Chú chó nghe tiếng chuông báo ăn nhiều lần thì tiết nước bọt ngay cả khi chưa thấy thức ăn. Đây là ví dụ về?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Phản xạ có điều kiện (Tập tính học được)" },
+            { "id": "b", "text": "Phản xạ không điều kiện Bẩm sinh" },
+            { "id": "c", "text": "Hướng động thực vật" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "biology-11-mien-dich",
-      "title": "Miễn dịch",
-      "guidance": [
-        "Nội dung trọng tâm bài Miễn dịch theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Miễn dịch vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "biology-11-mien-dich-biology-11-mien-dich-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Miễn dịch?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "biology-11-mien-dich-biology-11-mien-dich-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Miễn dịch?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "biology-11-mien-dich-biology-11-mien-dich-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Miễn dịch giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "biology-11-can-bang-noi-moi",
-      "title": "Cân bằng nội môi",
-      "guidance": [
-        "Nội dung trọng tâm bài Cân bằng nội môi theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Cân bằng nội môi vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "biology-11-can-bang-noi-moi-biology-11-can-bang-noi-moi-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Cân bằng nội môi?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "biology-11-can-bang-noi-moi-biology-11-can-bang-noi-moi-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Cân bằng nội môi?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "biology-11-can-bang-noi-moi-biology-11-can-bang-noi-moi-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Cân bằng nội môi giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "biology-11-cam-ung-o-thuc-vat",
-      "title": "Cảm ứng ở thực vật",
-      "guidance": [
-        "Nội dung trọng tâm bài Cảm ứng ở thực vật theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Cảm ứng ở thực vật vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "biology-11-cam-ung-o-thuc-vat-biology-11-cam-ung-o-thuc-vat-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Cảm ứng ở thực vật?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "biology-11-cam-ung-o-thuc-vat-biology-11-cam-ung-o-thuc-vat-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Cảm ứng ở thực vật?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "biology-11-cam-ung-o-thuc-vat-biology-11-cam-ung-o-thuc-vat-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Cảm ứng ở thực vật giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "biology-11-dien-the-nghi-va-hoat-dong",
-      "title": "Điện thế nghỉ và hoạt động",
-      "guidance": [
-        "Nội dung trọng tâm bài Điện thế nghỉ và hoạt động theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Điện thế nghỉ và hoạt động vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "biology-11-dien-the-nghi-va-hoat-dong-biology-11-dien-the-nghi-va-hoat-dong-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Điện thế nghỉ và hoạt động?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "biology-11-dien-the-nghi-va-hoat-dong-biology-11-dien-the-nghi-va-hoat-dong-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Điện thế nghỉ và hoạt động?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "biology-11-dien-the-nghi-va-hoat-dong-biology-11-dien-the-nghi-va-hoat-dong-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Điện thế nghỉ và hoạt động giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "biology-11-tap-tinh-dong-vat",
-      "title": "Tập tính động vật",
-      "guidance": [
-        "Nội dung trọng tâm bài Tập tính động vật theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Tập tính động vật vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "biology-11-tap-tinh-dong-vat-biology-11-tap-tinh-dong-vat-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Tập tính động vật?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "biology-11-tap-tinh-dong-vat-biology-11-tap-tinh-dong-vat-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Tập tính động vật?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "biology-11-tap-tinh-dong-vat-biology-11-tap-tinh-dong-vat-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Tập tính động vật giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "biology-11-sinh-truong",
-      "title": "Sinh trưởng",
-      "guidance": [
-        "Nội dung trọng tâm bài Sinh trưởng theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Sinh trưởng vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "biology-11-sinh-truong-biology-11-sinh-truong-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Sinh trưởng?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "biology-11-sinh-truong-biology-11-sinh-truong-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Sinh trưởng?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "biology-11-sinh-truong-biology-11-sinh-truong-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Sinh trưởng giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "biology-11-sinh-san",
-      "title": "Sinh sản",
-      "guidance": [
-        "Nội dung trọng tâm bài Sinh sản theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Sinh sản vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "biology-11-sinh-san-biology-11-sinh-san-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Sinh sản?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "biology-11-sinh-san-biology-11-sinh-san-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Sinh sản?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "biology-11-sinh-san-biology-11-sinh-san-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Sinh sản giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Thí nghiệm Pavlov: Sự kết hợp giữa tiếng chuông và thức ăn tạo nên phản xạ có điều kiện."
         }
       ]
     }

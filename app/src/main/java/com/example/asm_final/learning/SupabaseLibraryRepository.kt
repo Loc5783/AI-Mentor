@@ -24,7 +24,8 @@ class SupabaseLibraryRepository(
             .put("body", body)
             .put("query", query)
         return JSONObject(SupabaseAccounts(appContext).requestFor(
-            ownerId, "POST", "/rest/v1/rpc/mentor_library_api", payload
+
+        ownerId, "POST", "/rest/v1/rpc/mentor_library_api", payload
         ))
     }
 

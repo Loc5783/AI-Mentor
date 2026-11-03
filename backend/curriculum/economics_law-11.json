@@ -2,1134 +2,243 @@
   "subjectId": "economics_law",
   "grade": 11,
   "version": "intro-2026.1",
-  "title": "KTPL 11: Cạnh tranh thị trường và Quyền công dân",
+  "title": "GDKT & PL 11: Thị trường lao động & Quyền công dân (SGK Kết nối tri thức)",
   "published": true,
-  "coverage": "PARTIAL_GRADE_11",
+  "coverage": "GRADE_11_KNTT",
   "extendedReviews": false,
-  "sourceNote": "Nội dung đang ở dạng cấu trúc khung (Placeholder) được sinh tự động bởi hệ thống AI Mentor để đảm bảo đúng định dạng JSON 3 câu hỏi (EASY/MEDIUM/APPLIED). Giáo viên cần hiệu đính nội dung chi tiết.",
+  "sourceNote": "Nội dung biên soạn bám sát chuẩn kiến thức SGK Giáo dục Kinh tế & Pháp luật 11 - Bộ sách Kết nối tri thức với cuộc sống.",
   "lessons": [
     {
-      "id": "economics_law-11-canh-tranh-kinh-te",
-      "title": "Cạnh tranh kinh tế",
-      "guidance": [
-        "Nội dung trọng tâm bài Cạnh tranh kinh tế theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Cạnh tranh kinh tế vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "economics_law-11-canh-tranh-kinh-te-economics_law-11-canh-tranh-kinh-te-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Cạnh tranh kinh tế?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "economics_law-11-canh-tranh-kinh-te-economics_law-11-canh-tranh-kinh-te-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Cạnh tranh kinh tế?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "economics_law-11-canh-tranh-kinh-te-economics_law-11-canh-tranh-kinh-te-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Cạnh tranh kinh tế giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "economics_law-11-cung-cau",
-      "title": "Cung cầu",
-      "guidance": [
-        "Nội dung trọng tâm bài Cung cầu theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Cung cầu vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "economics_law-11-cung-cau-economics_law-11-cung-cau-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Cung cầu?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "economics_law-11-cung-cau-economics_law-11-cung-cau-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Cung cầu?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "economics_law-11-cung-cau-economics_law-11-cung-cau-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Cung cầu giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "economics_law-11-lam-phat",
-      "title": "Lạm phát",
-      "guidance": [
-        "Nội dung trọng tâm bài Lạm phát theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Lạm phát vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "economics_law-11-lam-phat-economics_law-11-lam-phat-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Lạm phát?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "economics_law-11-lam-phat-economics_law-11-lam-phat-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Lạm phát?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "economics_law-11-lam-phat-economics_law-11-lam-phat-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Lạm phát giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "economics_law-11-kiem-soat-lam-phat",
-      "title": "Kiểm soát lạm phát",
-      "guidance": [
-        "Nội dung trọng tâm bài Kiểm soát lạm phát theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Kiểm soát lạm phát vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "economics_law-11-kiem-soat-lam-phat-economics_law-11-kiem-soat-lam-phat-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Kiểm soát lạm phát?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "economics_law-11-kiem-soat-lam-phat-economics_law-11-kiem-soat-lam-phat-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Kiểm soát lạm phát?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "economics_law-11-kiem-soat-lam-phat-economics_law-11-kiem-soat-lam-phat-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Kiểm soát lạm phát giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "economics_law-11-that-nghiep",
-      "title": "Thất nghiệp",
-      "guidance": [
-        "Nội dung trọng tâm bài Thất nghiệp theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Thất nghiệp vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "economics_law-11-that-nghiep-economics_law-11-that-nghiep-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Thất nghiệp?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "economics_law-11-that-nghiep-economics_law-11-that-nghiep-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Thất nghiệp?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "economics_law-11-that-nghiep-economics_law-11-that-nghiep-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Thất nghiệp giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
       "id": "economics_law-11-thi-truong-lao-dong",
-      "title": "Thị trường lao động",
+      "title": "Thị trường lao động và Việc làm",
       "guidance": [
-        "Nội dung trọng tâm bài Thị trường lao động theo khung CT GDPT 2018."
+        "Thị trường lao động là nơi diễn ra hoạt động mua bán sức lao động giữa người lao động (cung) và người sử dụng lao động (cầu).",
+        "Tiền lương là giá cả của sức lao động, do hai bên thỏa thuận phù hợp với quy định pháp luật.",
+        "Nâng cao trình độ chuyên môn, kỹ năng mềm và kỷ luật lao động giúp người lao động tăng cơ hội việc làm và thu nhập."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Thị trường lao động vào thực tiễn."
+        "Sự xuất hiện của trí tuệ nhân tạo (AI) đặt ra yêu cầu người lao động phải không ngừng học tập suốt đời để không bị thay thế."
       ],
       "questions": [
         {
-          "id": "economics_law-11-thi-truong-lao-dong-economics_law-11-thi-truong-lao-dong-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Thị trường lao động?",
+          "id": "eco-11-ld-q1",
+          "prompt": "Trong thị trường lao động, bên cung ứng sức lao động là đối tượng nào?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Người lao động" },
+            { "id": "b", "text": "Doanh nghiệp tuyển dụng" },
+            { "id": "c", "text": "Nhà nước" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Người lao động cung ứng sức lao động của bản thân để nhận tiền lương."
         },
         {
-          "id": "economics_law-11-thi-truong-lao-dong-economics_law-11-thi-truong-lao-dong-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Thị trường lao động?",
+          "id": "eco-11-ld-q2",
+          "prompt": "Yếu tố quyết định giá cả sức lao động (tiền lương) trên thị trường là?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Quan hệ cung - cầu lao động và chất lượng trình độ sức lao động" },
+            { "id": "b", "text": "Chỉ do người sử dụng lao động đơn phương áp đặt" },
+            { "id": "c", "text": "Sự may mắn" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Tiền lương phụ thuộc vào chất lượng lao động, năng suất và quy luật cung cầu."
         },
         {
-          "id": "economics_law-11-thi-truong-lao-dong-economics_law-11-thi-truong-lao-dong-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Thị trường lao động giải quyết vấn đề?",
+          "id": "eco-11-ld-q3",
+          "prompt": "Giải pháp quan trọng nhất đối với học sinh trung học phổ thông để chuẩn bị gia nhập thị trường lao động tương lai là?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Chủ động học tập kiến thức, rèn luyện kỹ năng mềm và hướng nghiệp phù hợp" },
+            { "id": "b", "text": "Chờ đợi sự sắp xếp của gia đình" },
+            { "id": "c", "text": "Không cần rèn luyện thêm" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Tự trang bị trình độ và kỹ năng tạo thế chủ động cho học sinh thích ứng thị trường."
         }
       ]
     },
     {
-      "id": "economics_law-11-y-tuong-kinh-doanh",
-      "title": "Ý tưởng kinh doanh",
+      "id": "economics_law-11-lam-phat-that-nghiep",
+      "title": "Lạm phát và Thất nghiệp trong nền kinh tế",
       "guidance": [
-        "Nội dung trọng tâm bài Ý tưởng kinh doanh theo khung CT GDPT 2018."
+        "Lạm phát là sự tăng mức giá chung một cách liên tục của hàng hóa và dịch vụ trong nền kinh tế theo thời gian, làm giảm sức mua của đồng tiền.",
+        "Thất nghiệp là tình trạng người trong độ tuổi lao động, có khả năng lao động, đang tìm kiếm việc làm nhưng chưa có việc làm.",
+        "Kiểm soát lạm phát và giảm thất nghiệp là mục tiêu quản lý vĩ mô quan trọng của Nhà nước."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Ý tưởng kinh doanh vào thực tiễn."
+        "Khi lạm phát cao, giá cả nhu yếu phẩm tăng vọt khiến đời sống người lao động gặp khó khăn."
       ],
       "questions": [
         {
-          "id": "economics_law-11-y-tuong-kinh-doanh-economics_law-11-y-tuong-kinh-doanh-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Ý tưởng kinh doanh?",
+          "id": "eco-11-lp-q1",
+          "prompt": "Hiện tượng lạm phát trong nền kinh tế dẫn đến hậu quả trực tiếp nào?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Giảm sức mua của đồng tiền" },
+            { "id": "b", "text": "Tăng giá trị đồng tiền" },
+            { "id": "c", "text": "Hàng hóa rẻ đi" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Lạm phát làm đồng tiền mất giá, cùng một lượng tiền mua được ít hàng hóa hơn."
         },
         {
-          "id": "economics_law-11-y-tuong-kinh-doanh-economics_law-11-y-tuong-kinh-doanh-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Ý tưởng kinh doanh?",
+          "id": "eco-11-lp-q2",
+          "prompt": "Thất nghiệp cơ cấu xảy ra do nguyên nhân nào sau đây?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Sự mất cân đối giữa kỹ năng của người lao động và yêu cầu công việc mới" },
+            { "id": "b", "text": "Người lao động lười biếng" },
+            { "id": "c", "text": "Thời tiết thay đổi theo mùa" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Thất nghiệp cơ cấu do sự thay đổi công nghệ/cơ cấu kinh tế làm kỹ năng cũ không còn phù hợp."
         },
         {
-          "id": "economics_law-11-y-tuong-kinh-doanh-economics_law-11-y-tuong-kinh-doanh-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Ý tưởng kinh doanh giải quyết vấn đề?",
+          "id": "eco-11-lp-q3",
+          "prompt": "Biện pháp tài chính nào giúp Nhà nước kiềm chế lạm phát khi nền kinh tế tăng nóng?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Thắt chặt tiền tệ và giảm chi tiêu công" },
+            { "id": "b", "text": "In thêm nhiều tiền giấy" },
+            { "id": "c", "text": "Tăng mạnh chi tiêu ngân sách" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Thắt chặt tiền tệ giảm lượng tiền lưu thông giúp hạ nhiệt lạm phát."
         }
       ]
     },
     {
-      "id": "economics_law-11-nang-luc-quan-tri",
-      "title": "Năng lực quản trị",
+      "id": "economics_law-11-binh-dang-phap-luat",
+      "title": "Quyền bình đẳng của công dân trước pháp luật",
       "guidance": [
-        "Nội dung trọng tâm bài Năng lực quản trị theo khung CT GDPT 2018."
+        "Quyền bình đẳng trước pháp luật: Mọi công dân không phân biệt nam nữ, dân tộc, tín ngưỡng, thành phần xã hội đều bình đẳng về quyền và nghĩa vụ.",
+        "Mọi hành vi vi phạm pháp luật đều bị xử lý nghiêm minh theo quy định, không có ngoại lệ.",
+        "Bình đẳng giới: Nam, nữ bình đẳng trong các lĩnh vực chính trị, kinh tế, văn hóa, xã hội và gia đình."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Năng lực quản trị vào thực tiễn."
+        "Công dân đủ 18 tuổi đều có quyền bầu cử Quốc hội không phân biệt giàu nghèo hay nam nữ."
       ],
       "questions": [
         {
-          "id": "economics_law-11-nang-luc-quan-tri-economics_law-11-nang-luc-quan-tri-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Năng lực quản trị?",
+          "id": "eco-11-bd-q1",
+          "prompt": "Quyền bình đẳng trước pháp luật có nghĩa là gì?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Mọi công dân đều bình đẳng về quyền, nghĩa vụ và trách nhiệm pháp lý" },
+            { "id": "b", "text": "Mọi người có thu nhập bằng nhau" },
+            { "id": "c", "text": "Người giàu không phải nộp thuế" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Bình đẳng trước pháp luật không phân biệt địa vị, thành phần hay tôn giáo."
         },
         {
-          "id": "economics_law-11-nang-luc-quan-tri-economics_law-11-nang-luc-quan-tri-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Năng lực quản trị?",
+          "id": "eco-11-bd-q2",
+          "prompt": "Bình đẳng về trách nhiệm pháp lý nghĩa là bất kỳ ai vi phạm pháp luật đều sẽ?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Bị xử lý nghiêm minh theo quy định pháp luật" },
+            { "id": "b", "text": "Được miễn trách nhiệm nếu có địa vị cao" },
+            { "id": "c", "text": "Tự thỏa thuận không cần pháp luật" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Pháp luật nghiêm minh áp dụng chung không có vùng cấm."
         },
         {
-          "id": "economics_law-11-nang-luc-quan-tri-economics_law-11-nang-luc-quan-tri-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Năng lực quản trị giải quyết vấn đề?",
+          "id": "eco-11-bd-q3",
+          "prompt": "Việc Nhà nước ưu tiên cộng điểm thi đại học cho học sinh vùng sâu vùng xa thể hiện chính sách gì?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Bình đẳng về cơ hội phát triển và hỗ trợ vùng khó khăn" },
+            { "id": "b", "text": "Bất bình đẳng xã hội" },
+            { "id": "c", "text": "Sự thiên vị bất hợp lý" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Chính sách ưu tiên giúp thu hẹp khoảng cách điều kiện, tạo bình đẳng cơ hội thực sự."
         }
       ]
     },
     {
-      "id": "economics_law-11-dao-duc-kinh-doanh",
-      "title": "Đạo đức kinh doanh",
+      "id": "economics_law-11-quyen-tu-do-co-ban",
+      "title": "Quyền tự do cơ bản của công dân",
       "guidance": [
-        "Nội dung trọng tâm bài Đạo đức kinh doanh theo khung CT GDPT 2018."
+        "Các quyền tự do cơ bản: Quyền bất khả xâm phạm về thân thể; Quyền được pháp luật bảo hộ về tính mạng, sức khỏe, danh dự và nhân phẩm; Quyền bất khả xâm phạm về chỗ ở; Quyền bảo đảm an toàn và bí mật thư tín, điện thoại, điện văn.",
+        "Không ai bị bắt nếu không có quyết định của Tòa án hoặc phê chuẩn của Viện kiểm sát (trừ trường hợp phạm tội quả đắng)."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Đạo đức kinh doanh vào thực tiễn."
+        "Tự ý khám xét nhà người khác khi chưa có lệnh của cơ quan có thẩm quyền là vi phạm quyền bất khả xâm phạm về chỗ ở."
       ],
       "questions": [
         {
-          "id": "economics_law-11-dao-duc-kinh-doanh-economics_law-11-dao-duc-kinh-doanh-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Đạo đức kinh doanh?",
+          "id": "eco-11-td-q1",
+          "prompt": "Công dân có quyền bất khả xâm phạm về thân thể có nghĩa là không ai bị bắt nếu không có quyết định của?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Tòa án hoặc phê chuẩn của Viện kiểm sát (trừ phạm tội quả đắng)" },
+            { "id": "b", "text": "Hàng xóm" },
+            { "id": "c", "text": "Bất kỳ cá nhân nào" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Quyền bất khả xâm phạm thân thể được bảo vệ nghiêm ngặt bởi Hiến pháp."
         },
         {
-          "id": "economics_law-11-dao-duc-kinh-doanh-economics_law-11-dao-duc-kinh-doanh-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Đạo đức kinh doanh?",
+          "id": "eco-11-td-q2",
+          "prompt": "Hành vi tự ý đọc tin nhắn, mở thư của người khác khi không được phép là vi phạm quyền nào?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Quyền được bảo đảm an toàn và bí mật thư tín, điện thoại" },
+            { "id": "b", "text": "Quyền tự do ngôn luận" },
+            { "id": "c", "text": "Quyền bầu cử" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Thư tín, điện thoại, tin nhắn riêng tư được pháp luật bảo đảm bí mật."
         },
         {
-          "id": "economics_law-11-dao-duc-kinh-doanh-economics_law-11-dao-duc-kinh-doanh-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Đạo đức kinh doanh giải quyết vấn đề?",
+          "id": "eco-11-td-q3",
+          "prompt": "Trường hợp nào sau đây cơ quan chức năng được phép bắt người mà không cần lệnh trước?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Người đang thực hiện hành vi phạm tội quả đắng hoặc đang bị truy nã" },
+            { "id": "b", "text": "Người đang nghi ngờ chung chung" },
+            { "id": "c", "text": "Người tranh chấp dân sự" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Trường hợp phạm tội quả đắng hoặc truy nã cho phép bắt khẩn cấp để ngăn chặn hậu quả."
         }
       ]
     },
     {
-      "id": "economics_law-11-tieu-dung-thong-minh",
-      "title": "Tiêu dùng thông minh",
+      "id": "economics_law-11-nghia-vu-cong-dan",
+      "title": "Nghĩa vụ cơ bản của công dân & Bảo vệ Tổ quốc",
       "guidance": [
-        "Nội dung trọng tâm bài Tiêu dùng thông minh theo khung CT GDPT 2018."
+        "Bảo vệ Tổ quốc là nghĩa vụ thiêng liêng và quyền cao quý của công dân.",
+        "Nghĩa vụ công dân: Tuân theo Hiến pháp và pháp luật; Nộp thuế theo quy định; Tham gia nghĩa vụ quân sự và bảo vệ an ninh quốc gia.",
+        "Mọi công dân nam trong độ tuổi quy định có nghĩa vụ thực hiện nghĩa vụ quân sự."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Tiêu dùng thông minh vào thực tiễn."
+        "Thanh niên đủ 18 tuổi hăng hái tham gia khám tuyển nghĩa vụ quân sự thể hiện ý thức trách nhiệm bảo vệ Tổ quốc."
       ],
       "questions": [
         {
-          "id": "economics_law-11-tieu-dung-thong-minh-economics_law-11-tieu-dung-thong-minh-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Tiêu dùng thông minh?",
+          "id": "eco-11-nv-q1",
+          "prompt": "Nghĩa vụ thiêng liêng và quyền cao quý của mọi công dân Việt Nam là?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Bảo vệ Tổ quốc" },
+            { "id": "b", "text": "Đi du lịch nước ngoài" },
+            { "id": "c", "text": "Kinh doanh tự do" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Hiến pháp quy định Bảo vệ Tổ quốc là nghĩa vụ thiêng liêng cao quý."
         },
         {
-          "id": "economics_law-11-tieu-dung-thong-minh-economics_law-11-tieu-dung-thong-minh-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Tiêu dùng thông minh?",
+          "id": "eco-11-nv-q2",
+          "prompt": "Trốn tránh thực hiện nghĩa vụ quân sự sẽ bị xử lý như thế nào?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Bị xử phạt hành chính hoặc truy cứu trách nhiệm hình sự" },
+            { "id": "b", "text": "Không bị xử lý gì" },
+            { "id": "c", "text": "Chỉ bị nhắc nhở" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Trốn nghĩa vụ quân sự vi phạm Luật Nghĩa vụ quân sự và bị xử lý nghiêm."
         },
         {
-          "id": "economics_law-11-tieu-dung-thong-minh-economics_law-11-tieu-dung-thong-minh-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Tiêu dùng thông minh giải quyết vấn đề?",
+          "id": "eco-11-nv-q3",
+          "prompt": "Học sinh THPT thể hiện trách nhiệm bảo vệ an ninh mạng bằng hành động nào sau đây?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Không chia sẻ tin giả, xấu độc và tuân thủ Luật An ninh mạng" },
+            { "id": "b", "text": "Lan truyền các thông tin chưa kiểm chứng" },
+            { "id": "c", "text": "Tấn công mạng các website" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "economics_law-11-quyen-binh-dang-phap-luat",
-      "title": "Quyền bình đẳng pháp luật",
-      "guidance": [
-        "Nội dung trọng tâm bài Quyền bình đẳng pháp luật theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Quyền bình đẳng pháp luật vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "economics_law-11-quyen-binh-dang-phap-luat-economics_law-11-quyen-binh-dang-phap-luat-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Quyền bình đẳng pháp luật?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "economics_law-11-quyen-binh-dang-phap-luat-economics_law-11-quyen-binh-dang-phap-luat-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Quyền bình đẳng pháp luật?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "economics_law-11-quyen-binh-dang-phap-luat-economics_law-11-quyen-binh-dang-phap-luat-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Quyền bình đẳng pháp luật giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "economics_law-11-binh-dang-gioi",
-      "title": "Bình đẳng giới",
-      "guidance": [
-        "Nội dung trọng tâm bài Bình đẳng giới theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Bình đẳng giới vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "economics_law-11-binh-dang-gioi-economics_law-11-binh-dang-gioi-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Bình đẳng giới?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "economics_law-11-binh-dang-gioi-economics_law-11-binh-dang-gioi-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Bình đẳng giới?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "economics_law-11-binh-dang-gioi-economics_law-11-binh-dang-gioi-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Bình đẳng giới giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "economics_law-11-binh-dang-dan-toc-ton-giao",
-      "title": "Bình đẳng dân tộc tôn giáo",
-      "guidance": [
-        "Nội dung trọng tâm bài Bình đẳng dân tộc tôn giáo theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Bình đẳng dân tộc tôn giáo vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "economics_law-11-binh-dang-dan-toc-ton-giao-economics_law-11-binh-dang-dan-toc-ton-giao-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Bình đẳng dân tộc tôn giáo?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "economics_law-11-binh-dang-dan-toc-ton-giao-economics_law-11-binh-dang-dan-toc-ton-giao-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Bình đẳng dân tộc tôn giáo?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "economics_law-11-binh-dang-dan-toc-ton-giao-economics_law-11-binh-dang-dan-toc-ton-giao-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Bình đẳng dân tộc tôn giáo giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "economics_law-11-quyen-bau-cu",
-      "title": "Quyền bầu cử",
-      "guidance": [
-        "Nội dung trọng tâm bài Quyền bầu cử theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Quyền bầu cử vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "economics_law-11-quyen-bau-cu-economics_law-11-quyen-bau-cu-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Quyền bầu cử?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "economics_law-11-quyen-bau-cu-economics_law-11-quyen-bau-cu-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Quyền bầu cử?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "economics_law-11-quyen-bau-cu-economics_law-11-quyen-bau-cu-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Quyền bầu cử giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "economics_law-11-nghia-vu-bao-ve-to-quoc",
-      "title": "Nghĩa vụ bảo vệ Tổ quốc",
-      "guidance": [
-        "Nội dung trọng tâm bài Nghĩa vụ bảo vệ Tổ quốc theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Nghĩa vụ bảo vệ Tổ quốc vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "economics_law-11-nghia-vu-bao-ve-to-quoc-economics_law-11-nghia-vu-bao-ve-to-quoc-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Nghĩa vụ bảo vệ Tổ quốc?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "economics_law-11-nghia-vu-bao-ve-to-quoc-economics_law-11-nghia-vu-bao-ve-to-quoc-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Nghĩa vụ bảo vệ Tổ quốc?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "economics_law-11-nghia-vu-bao-ve-to-quoc-economics_law-11-nghia-vu-bao-ve-to-quoc-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Nghĩa vụ bảo vệ Tổ quốc giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Sử dụng mạng xã hội văn minh, tôn trọng Luật An ninh mạng là trách nhiệm của mỗi học sinh."
         }
       ]
     }

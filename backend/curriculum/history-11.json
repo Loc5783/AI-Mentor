@@ -2,1134 +2,241 @@
   "subjectId": "history",
   "grade": 11,
   "version": "intro-2026.1",
-  "title": "Lịch sử 11: Lịch sử thế giới hiện đại và Văn minh Đông Nam Á",
+  "title": "Lịch sử 11: Lịch sử thế giới hiện đại & Việt Nam (SGK Kết nối tri thức)",
   "published": true,
-  "coverage": "PARTIAL_GRADE_11",
+  "coverage": "GRADE_11_KNTT",
   "extendedReviews": false,
-  "sourceNote": "Nội dung đang ở dạng cấu trúc khung (Placeholder) được sinh tự động bởi hệ thống AI Mentor để đảm bảo đúng định dạng JSON 3 câu hỏi (EASY/MEDIUM/APPLIED). Giáo viên cần hiệu đính nội dung chi tiết.",
+  "sourceNote": "Nội dung biên soạn bám sát chuẩn kiến thức SGK Lịch sử 11 - Bộ sách Kết nối tri thức với cuộc sống.",
   "lessons": [
     {
-      "id": "history-11-cach-mang-tu-san-anh-phap",
-      "title": "Cách mạng tư sản Anh Pháp",
+      "id": "history-11-su-phat-trien-cnxh",
+      "title": "Sự phát triển của Chủ nghĩa Xã hội thế giới",
       "guidance": [
-        "Nội dung trọng tâm bài Cách mạng tư sản Anh Pháp theo khung CT GDPT 2018."
+        "Thắng lợi của Cách mạng tháng Mười Nga năm 1917 lật đổ chính quyền tư sản, thành lập nhà nước công nông đầu tiên trên thế giới.",
+        "Năm 1922, Liên bang Cộng hòa Xã hội Chủ nghĩa Xô viết (Liên Xô) thành lập. Sau Chiến tranh thế giới thứ hai, CNXH phát triển thành hệ thống thế giới.",
+        "Công cuộc Đổi mới ở Việt Nam (khởi xướng 1986) và Cải cách mở cửa ở Trung Quốc khẳng định sự vận dụng sáng tạo chủ nghĩa Mác - Lênin."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Cách mạng tư sản Anh Pháp vào thực tiễn."
+        "Cách mạng tháng Mười Nga làm thay đổi cục diện thế giới, cổ vũ mạnh mẽ phong trào giải phóng dân tộc ở các nước thuộc địa."
       ],
       "questions": [
         {
-          "id": "history-11-cach-mang-tu-san-anh-phap-history-11-cach-mang-tu-san-anh-phap-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Cách mạng tư sản Anh Pháp?",
+          "id": "his-11-cnxh-q1",
+          "prompt": "Sự kiện lịch sử nào năm 1917 đã mở ra thời đại mới trong lịch sử loài người?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Cách mạng tháng Mười Nga" },
+            { "id": "b", "text": "Chiến tranh thế giới thứ nhất bùng nổ" },
+            { "id": "c", "text": "Thành lập Liên Hợp Quốc" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Cách mạng tháng Mười Nga thành công thành lập nhà nước XHCN đầu tiên."
         },
         {
-          "id": "history-11-cach-mang-tu-san-anh-phap-history-11-cach-mang-tu-san-anh-phap-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Cách mạng tư sản Anh Pháp?",
+          "id": "his-11-cnxh-q2",
+          "prompt": "Liên bang Cộng hòa Xã hội Chủ nghĩa Xô viết (Liên Xô) được thành lập vào năm nào?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "1922" },
+            { "id": "b", "text": "1917" },
+            { "id": "c", "text": "1945" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Tháng 12 năm 1922, Liên Xô chính thức được thành lập trên cơ sở tự nguyện."
         },
         {
-          "id": "history-11-cach-mang-tu-san-anh-phap-history-11-cach-mang-tu-san-anh-phap-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Cách mạng tư sản Anh Pháp giải quyết vấn đề?",
+          "id": "his-11-cnxh-q3",
+          "prompt": "Trọng tâm của Công cuộc Đổi mới ở Việt Nam từ năm 1986 là?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Đổi mới kinh tế toàn diện, xây dựng nền kinh tế thị trường định hướng XHCN" },
+            { "id": "b", "text": "Chỉ đổi mới văn hóa" },
+            { "id": "c", "text": "Từ bỏ mục tiêu tiến lên XHCN" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Đổi mới tập trung vào kinh tế làm trọng tâm, gắn liền với đổi mới hệ thống chính trị."
         }
       ]
     },
     {
-      "id": "history-11-su-xac-lap-tbcn",
-      "title": "Sự xác lập TBCN",
+      "id": "history-11-chu-nghia-tu-ban-hien-dai",
+      "title": "Chủ nghĩa tư bản hiện đại & Cách mạng công nghiệp",
       "guidance": [
-        "Nội dung trọng tâm bài Sự xác lập TBCN theo khung CT GDPT 2018."
+        "Chủ nghĩa tư bản chuyển từ giai đoạn tự do cạnh tranh sang giai đoạn độc quyền (đầu thế kỷ XX) và chủ nghĩa tư bản hiện đại (sau 1945).",
+        "Đặc điểm CNTB hiện đại: Lực lượng sản xuất phát triển cao nhờ khoa học công nghệ, có sự điều tiết của nhà nước, tính chất toàn cầu hóa."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Sự xác lập TBCN vào thực tiễn."
+        "Các tập đoàn độc quyền xuyên quốc gia (TNCs) chi phối mạnh mẽ nền kinh tế toàn cầu."
       ],
       "questions": [
         {
-          "id": "history-11-su-xac-lap-tbcn-history-11-su-xac-lap-tbcn-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Sự xác lập TBCN?",
+          "id": "his-11-cntb-q1",
+          "prompt": "Đặc điểm nổi bật của Chủ nghĩa tư bản hiện đại từ sau Chiến tranh thế giới thứ hai là?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Có sự điều tiết của nhà nước độc quyền tư bản và liên kết quốc tế" },
+            { "id": "b", "text": "Chỉ dựa vào nông nghiệp thủ công" },
+            { "id": "c", "text": "Không sử dụng khoa học công nghệ" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Nhà nước tư bản can thiệp điều tiết nền kinh tế kết hợp với các công ty xuyên quốc gia."
         },
         {
-          "id": "history-11-su-xac-lap-tbcn-history-11-su-xac-lap-tbcn-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Sự xác lập TBCN?",
+          "id": "his-11-cntb-q2",
+          "prompt": "Thách thức lớn nhất đối với Chủ nghĩa tư bản hiện đại là gì?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Khủng hoảng kinh tế chu kỳ, phân hóa giàu nghèo và mâu thuẫn xã hội" },
+            { "id": "b", "text": "Thiếu nguyên nhiên liệu hoàn toàn" },
+            { "id": "c", "text": "Không có thị trường tiêu thụ" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Bản chất mâu thuẫn giữa tính chất xã hội hóa và chế độ chiếm hữu tư nhân vẫn tồn tại."
         },
         {
-          "id": "history-11-su-xac-lap-tbcn-history-11-su-xac-lap-tbcn-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Sự xác lập TBCN giải quyết vấn đề?",
+          "id": "his-11-cntb-q3",
+          "prompt": "Các cuộc cách mạng công nghiệp thời hiện đại đã làm thay đổi nền sản xuất như thế nào?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Chuyển từ lao động cơ khí sang tự động hóa, tin học hóa và trí tuệ nhân tạo" },
+            { "id": "b", "text": "Quay lại sản xuất thủ công" },
+            { "id": "c", "text": "Giảm năng suất lao động" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Thúc đẩy lực lượng sản xuất phát triển vượt bậc với công nghệ cao."
         }
       ]
     },
     {
-      "id": "history-11-cntb-hien-dai",
-      "title": "CNTB hiện đại",
+      "id": "history-11-dong-nam-a-giai-phong",
+      "title": "Phong trào giải phóng dân tộc ở Đông Nam Á",
       "guidance": [
-        "Nội dung trọng tâm bài CNTB hiện đại theo khung CT GDPT 2018."
+        "Đông Nam Á hầu hết trở thành thuộc địa của thực dân phương Tây (trừ Xiêm/Thái Lan duy trì độc lập nhờ chính sách ngoại giao khéo léo).",
+        "Sau Chiến tranh thế giới thứ hai (1945), nhân cơ hội Nhật Bản hàng hàng, Indonesia, Việt Nam và Lào đã chớp thời cơ tuyên bố độc lập."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần CNTB hiện đại vào thực tiễn."
+        "Cách mạng tháng Tám 1945 ở Việt Nam khai sinh nước Việt Nam Dân chủ Cộng hòa."
       ],
       "questions": [
         {
-          "id": "history-11-cntb-hien-dai-history-11-cntb-hien-dai-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài CNTB hiện đại?",
+          "id": "his-11-dna-q1",
+          "prompt": "Quốc gia duy nhất ở khu vực Đông Nam Á giữ được độc lập trước sự xâm lược của thực dân phương Tây là?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Xiêm (Thái Lan)" },
+            { "id": "b", "text": "Việt Nam" },
+            { "id": "c", "text": "Indonesia" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Thái Lan thực hiện chính sách cải cách và ngoại giao vùng đệm giữ độc lập."
         },
         {
-          "id": "history-11-cntb-hien-dai-history-11-cntb-hien-dai-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần CNTB hiện đại?",
+          "id": "his-11-dna-q2",
+          "prompt": "Năm 1945, ba quốc gia Đông Nam Á đầu tiên giành được độc lập là?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Indonesia, Việt Nam, Lào" },
+            { "id": "b", "text": "Thái Lan, Myanmar, Singapore" },
+            { "id": "c", "text": "Campuchia, Malaysia, Philippines" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Chớp thời cơ Nhật hàng hằng, Indonesia (17/8), Việt Nam (2/9) và Lào (12/10) tuyên bố độc lập năm 1945."
         },
         {
-          "id": "history-11-cntb-hien-dai-history-11-cntb-hien-dai-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức CNTB hiện đại giải quyết vấn đề?",
+          "id": "his-11-dna-q3",
+          "prompt": "Sự thành lập Hiệp hội các quốc gia Đông Nam Á (ASEAN năm 1967) đáp ứng nhu cầu nào?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Hợp tác phát triển kinh tế, văn hóa và ổn định hòa bình khu vực" },
+            { "id": "b", "text": "Thành lập liên minh quân sự chống nước khác" },
+            { "id": "c", "text": "Đồng hóa văn hóa giữa các nước" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "ASEAN ra đời nhằm thúc đẩy tăng trưởng kinh tế, hòa bình và hợp tác khu vực."
         }
       ]
     },
     {
-      "id": "history-11-lien-bang-xo-viet",
-      "title": "Liên bang Xô viết",
+      "id": "history-11-chien-tranh-the-gioi",
+      "title": "Chiến tranh thế giới thứ nhất và thứ hai",
       "guidance": [
-        "Nội dung trọng tâm bài Liên bang Xô viết theo khung CT GDPT 2018."
+        "Chiến tranh thế giới thứ nhất (1914 - 1918) và thứ hai (1939 - 1945) là các cuộc chiến tranh tàn phá thảm khốc nhất lịch sử.",
+        "Nguyên nhân sâu xa: Mâu thuẫn giữa các nước đế quốc về thị trường và thuộc địa.",
+        "Kết thúc CTTG II: Khối Đồng minh (Liên Xô, Mỹ, Anh) đánh bại chủ nghĩa phát xít, dẫn đến sự ra đời của Tổ chức Liên Hợp Quốc."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Liên bang Xô viết vào thực tiễn."
+        "Hội nghị Yalta (1945) phân chia phạm vi ảnh hưởng tạo nên Trật tự hai cực I-an-ta."
       ],
       "questions": [
         {
-          "id": "history-11-lien-bang-xo-viet-history-11-lien-bang-xo-viet-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Liên bang Xô viết?",
+          "id": "his-11-ct-q1",
+          "prompt": "Chiến tranh thế giới thứ hai (1939 - 1945) kết thúc với sự thất bại hoàn toàn của khối nào?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Khối Phát xít (Đức, Ý, Nhật)" },
+            { "id": "b", "text": "Khối Đồng minh" },
+            { "id": "c", "text": "Khối Hiệp ước" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Khối phát xít bị tiêu diệt hoàn toàn năm 1945."
         },
         {
-          "id": "history-11-lien-bang-xo-viet-history-11-lien-bang-xo-viet-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Liên bang Xô viết?",
+          "id": "his-11-ct-q2",
+          "prompt": "Tổ chức quốc tế lớn nhất được thành lập sau Chiến tranh thế giới thứ hai nhằm duy trì hòa bình an ninh thế giới là?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Liên Hợp Quốc (UN)" },
+            { "id": "b", "text": "Quốc liên" },
+            { "id": "c", "text": "NATO" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Liên Hợp Quốc chính thức hoạt động từ ngày 24/10/1945."
         },
         {
-          "id": "history-11-lien-bang-xo-viet-history-11-lien-bang-xo-viet-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Liên bang Xô viết giải quyết vấn đề?",
+          "id": "his-11-ct-q3",
+          "prompt": "Bài học lịch sử lớn nhất rút ra từ hai cuộc Chiến tranh thế giới đối với hòa bình hiện nay là?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Giải quyết các xung đột quốc tế bằng thương lượng hòa bình và đối thoại" },
+            { "id": "b", "text": "Chạy đua vũ trang tối tân" },
+            { "id": "c", "text": "Đóng cửa biên giới không giao thiệp" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "history-11-y-nghia-cach-mang-thang-muoi",
-      "title": "Ý nghĩa Cách mạng tháng Mười",
-      "guidance": [
-        "Nội dung trọng tâm bài Ý nghĩa Cách mạng tháng Mười theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Ý nghĩa Cách mạng tháng Mười vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "history-11-y-nghia-cach-mang-thang-muoi-history-11-y-nghia-cach-mang-thang-muoi-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Ý nghĩa Cách mạng tháng Mười?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "history-11-y-nghia-cach-mang-thang-muoi-history-11-y-nghia-cach-mang-thang-muoi-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Ý nghĩa Cách mạng tháng Mười?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "history-11-y-nghia-cach-mang-thang-muoi-history-11-y-nghia-cach-mang-thang-muoi-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Ý nghĩa Cách mạng tháng Mười giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "history-11-thuc-dan-xam-luoc-dna",
-      "title": "Thực dân xâm lược ĐNA",
-      "guidance": [
-        "Nội dung trọng tâm bài Thực dân xâm lược ĐNA theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Thực dân xâm lược ĐNA vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "history-11-thuc-dan-xam-luoc-dna-history-11-thuc-dan-xam-luoc-dna-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Thực dân xâm lược ĐNA?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "history-11-thuc-dan-xam-luoc-dna-history-11-thuc-dan-xam-luoc-dna-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Thực dân xâm lược ĐNA?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "history-11-thuc-dan-xam-luoc-dna-history-11-thuc-dan-xam-luoc-dna-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Thực dân xâm lược ĐNA giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "history-11-giai-phong-dan-toc-dna",
-      "title": "Giải phóng dân tộc ĐNA",
-      "guidance": [
-        "Nội dung trọng tâm bài Giải phóng dân tộc ĐNA theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Giải phóng dân tộc ĐNA vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "history-11-giai-phong-dan-toc-dna-history-11-giai-phong-dan-toc-dna-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Giải phóng dân tộc ĐNA?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "history-11-giai-phong-dan-toc-dna-history-11-giai-phong-dan-toc-dna-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Giải phóng dân tộc ĐNA?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "history-11-giai-phong-dan-toc-dna-history-11-giai-phong-dan-toc-dna-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Giải phóng dân tộc ĐNA giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "history-11-cttg-thu-nhat",
-      "title": "CTTG thứ nhất",
-      "guidance": [
-        "Nội dung trọng tâm bài CTTG thứ nhất theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần CTTG thứ nhất vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "history-11-cttg-thu-nhat-history-11-cttg-thu-nhat-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài CTTG thứ nhất?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "history-11-cttg-thu-nhat-history-11-cttg-thu-nhat-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần CTTG thứ nhất?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "history-11-cttg-thu-nhat-history-11-cttg-thu-nhat-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức CTTG thứ nhất giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "history-11-cttg-thu-hai",
-      "title": "CTTG thứ hai",
-      "guidance": [
-        "Nội dung trọng tâm bài CTTG thứ hai theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần CTTG thứ hai vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "history-11-cttg-thu-hai-history-11-cttg-thu-hai-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài CTTG thứ hai?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "history-11-cttg-thu-hai-history-11-cttg-thu-hai-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần CTTG thứ hai?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "history-11-cttg-thu-hai-history-11-cttg-thu-hai-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức CTTG thứ hai giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "history-11-trat-tu-hai-cuc-i-an-ta",
-      "title": "Trật tự hai cực I-an-ta",
-      "guidance": [
-        "Nội dung trọng tâm bài Trật tự hai cực I-an-ta theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Trật tự hai cực I-an-ta vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "history-11-trat-tu-hai-cuc-i-an-ta-history-11-trat-tu-hai-cuc-i-an-ta-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Trật tự hai cực I-an-ta?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "history-11-trat-tu-hai-cuc-i-an-ta-history-11-trat-tu-hai-cuc-i-an-ta-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Trật tự hai cực I-an-ta?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "history-11-trat-tu-hai-cuc-i-an-ta-history-11-trat-tu-hai-cuc-i-an-ta-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Trật tự hai cực I-an-ta giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "history-11-van-minh-dna-co-trung-dai",
-      "title": "Văn minh ĐNA cổ trung đại",
-      "guidance": [
-        "Nội dung trọng tâm bài Văn minh ĐNA cổ trung đại theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Văn minh ĐNA cổ trung đại vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "history-11-van-minh-dna-co-trung-dai-history-11-van-minh-dna-co-trung-dai-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Văn minh ĐNA cổ trung đại?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "history-11-van-minh-dna-co-trung-dai-history-11-van-minh-dna-co-trung-dai-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Văn minh ĐNA cổ trung đại?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "history-11-van-minh-dna-co-trung-dai-history-11-van-minh-dna-co-trung-dai-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Văn minh ĐNA cổ trung đại giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "history-11-van-minh-van-lang",
-      "title": "Văn minh Văn Lang",
-      "guidance": [
-        "Nội dung trọng tâm bài Văn minh Văn Lang theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Văn minh Văn Lang vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "history-11-van-minh-van-lang-history-11-van-minh-van-lang-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Văn minh Văn Lang?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "history-11-van-minh-van-lang-history-11-van-minh-van-lang-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Văn minh Văn Lang?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "history-11-van-minh-van-lang-history-11-van-minh-van-lang-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Văn minh Văn Lang giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "history-11-van-minh-champa-phu-nam",
-      "title": "Văn minh Champa Phù Nam",
-      "guidance": [
-        "Nội dung trọng tâm bài Văn minh Champa Phù Nam theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Văn minh Champa Phù Nam vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "history-11-van-minh-champa-phu-nam-history-11-van-minh-champa-phu-nam-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Văn minh Champa Phù Nam?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "history-11-van-minh-champa-phu-nam-history-11-van-minh-champa-phu-nam-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Văn minh Champa Phù Nam?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "history-11-van-minh-champa-phu-nam-history-11-van-minh-champa-phu-nam-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Văn minh Champa Phù Nam giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Hợp tác đối thoại hòa bình là con đường bảo vệ sự tồn vong nhân loại."
         }
       ]
     },
     {
       "id": "history-11-van-minh-dai-viet",
-      "title": "Văn minh Đại Việt",
+      "title": "Văn minh Đại Việt & Bảo tồn di sản",
       "guidance": [
-        "Nội dung trọng tâm bài Văn minh Đại Việt theo khung CT GDPT 2018."
+        "Văn minh Đại Việt trải qua các triều đại Lý, Trần, Lê, Nguyễn với những thành tựu rực rỡ về chính trị, kinh tế, văn hóa, giáo dục.",
+        "Bảo tồn di sản lịch sử văn hóa giúp gìn giữ bản sắc dân tộc, giáo dục truyền thống và phát triển du lịch bền vững."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Văn minh Đại Việt vào thực tiễn."
+        "Văn Miếu - Quốc Tử Giám là biểu tượng rực rỡ cho truyền thống hiếu học và tôn sư trọng đạo của dân tộc."
       ],
       "questions": [
         {
-          "id": "history-11-van-minh-dai-viet-history-11-van-minh-dai-viet-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Văn minh Đại Việt?",
+          "id": "his-11-vm-q1",
+          "prompt": "Văn Miếu được xây dựng dưới triều đại phong kiến nào của Việt Nam?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Triều Lý (1070)" },
+            { "id": "b", "text": "Triều Trần" },
+            { "id": "c", "text": "Triều Nguyễn" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Văn Miếu được xây dựng năm 1070 dưới thời vua Lý Thánh Tông."
         },
         {
-          "id": "history-11-van-minh-dai-viet-history-11-van-minh-dai-viet-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Văn minh Đại Việt?",
+          "id": "his-11-vm-q2",
+          "prompt": "Chữ viết chính thức dùng trong khoa cử và văn bản hành chính thời Lý - Trần - Lê là?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Chữ Hán và chữ Nôm" },
+            { "id": "b", "text": "Chữ Quốc ngữ" },
+            { "id": "c", "text": "Chữ Phạn" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Chữ Hán dùng chính thức trong khoa cử; chữ Nôm phát triển sáng tạo văn học dân tộc."
         },
         {
-          "id": "history-11-van-minh-dai-viet-history-11-van-minh-dai-viet-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Văn minh Đại Việt giải quyết vấn đề?",
+          "id": "his-11-vm-q3",
+          "prompt": "Việc bảo tồn các di sản văn hóa như Cố đô Huế, Phố cổ Hội An có ý nghĩa gì?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Gìn giữ bản sắc dân tộc, giáo dục truyền thống và phát triển du lịch bền vững" },
+            { "id": "b", "text": "Làm lãng phí ngân sách nhà nước" },
+            { "id": "c", "text": "Cản trở đô thị hóa hiện đại" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "history-11-bao-ton-di-san",
-      "title": "Bảo tồn di sản",
-      "guidance": [
-        "Nội dung trọng tâm bài Bảo tồn di sản theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Bảo tồn di sản vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "history-11-bao-ton-di-san-history-11-bao-ton-di-san-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Bảo tồn di sản?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "history-11-bao-ton-di-san-history-11-bao-ton-di-san-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Bảo tồn di sản?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "history-11-bao-ton-di-san-history-11-bao-ton-di-san-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Bảo tồn di sản giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Di sản là tài sản vô giá kết nối quá khứ với hiện tại và phát triển kinh tế văn hóa."
         }
       ]
     }

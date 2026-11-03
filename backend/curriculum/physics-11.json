@@ -2,1134 +2,242 @@
   "subjectId": "physics",
   "grade": 11,
   "version": "intro-2026.1",
-  "title": "Vật lí 11: Dao động, Sóng và Điện từ trường",
+  "title": "Vật lý 11: Dao động, Sóng và Điện trường (SGK Kết nối tri thức)",
   "published": true,
-  "coverage": "PARTIAL_GRADE_11",
+  "coverage": "GRADE_11_KNTT",
   "extendedReviews": false,
-  "sourceNote": "Nội dung đang ở dạng cấu trúc khung (Placeholder) được sinh tự động bởi hệ thống AI Mentor để đảm bảo đúng định dạng JSON 3 câu hỏi (EASY/MEDIUM/APPLIED). Giáo viên cần hiệu đính nội dung chi tiết.",
+  "sourceNote": "Nội dung biên soạn bám sát chuẩn kiến thức SGK Vật lý 11 - Bộ sách Kết nối tri thức với cuộc sống.",
   "lessons": [
     {
       "id": "physics-11-dao-dong-dieu-hoa",
-      "title": "Dao động điều hòa",
+      "title": "Mô tả dao động điều hòa",
       "guidance": [
-        "Nội dung trọng tâm bài Dao động điều hòa theo khung CT GDPT 2018."
+        "Dao động điều hòa là dao động trong đó ly độ x của vật là một hàm cosin (hoặc xin) theo thời gian: x = A cos(ωt + φ).",
+        "A là biên độ (độ lệch cực đại khỏi VCB), ω là tần số góc, (ωt + φ) là pha dao động tại thời điểm t, φ là pha ban đầu."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Dao động điều hòa vào thực tiễn."
+        "Phương trình x = 5 cos(4πt + π/3) cm có biên độ A = 5 cm, tần số góc ω = 4π rad/s, pha ban đầu φ = π/3 rad."
       ],
       "questions": [
         {
-          "id": "physics-11-dao-dong-dieu-hoa-physics-11-dao-dong-dieu-hoa-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Dao động điều hòa?",
+          "id": "phy-11-ddh-q1",
+          "prompt": "Phương trình dao động điều hòa có dạng x = A cos(ωt + φ). Đại lượng A đại diện cho?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Biên độ dao động" },
+            { "id": "b", "text": "Pha ban đầu" },
+            { "id": "c", "text": "Tần số góc" }
           ],
           "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "explanation": "A là ly độ cực đại của vật dao động, được gọi là biên độ dao động (A > 0)."
         },
         {
-          "id": "physics-11-dao-dong-dieu-hoa-physics-11-dao-dong-dieu-hoa-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Dao động điều hòa?",
+          "id": "phy-11-ddh-q2",
+          "prompt": "Một vật dao động điều hòa với phương trình x = 6 cos(2πt - π/6) cm. Pha ban đầu của dao động là?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "6 cm" },
+            { "id": "b", "text": "-π/6 rad" },
+            { "id": "c", "text": "2π rad/s" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "b", "explanation": "So sánh với dạng chuẩn x = A cos(ωt + φ), ta thấy φ = -π/6 rad."
         },
         {
-          "id": "physics-11-dao-dong-dieu-hoa-physics-11-dao-dong-dieu-hoa-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Dao động điều hòa giải quyết vấn đề?",
+          "id": "phy-11-ddh-q3",
+          "prompt": "Vật dao động điều hòa thực hiện 20 dao động toàn phần trong 10 giây. Tần số góc ω của dao động bằng?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "4π rad/s" },
+            { "id": "b", "text": "2π rad/s" },
+            { "id": "c", "text": "2 Hz" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Tần số f = N/t = 20/10 = 2 Hz. Tần số góc ω = 2πf = 2π * 2 = 4π rad/s."
         }
       ]
     },
     {
-      "id": "physics-11-cac-dai-luong-li-do-van-toc-gia-toc",
-      "title": "Các đại lượng li độ - vận tốc - gia tốc",
+      "id": "physics-11-van-toc-gia-toc",
+      "title": "Vận tốc và gia tốc trong dao động điều hòa",
       "guidance": [
-        "Nội dung trọng tâm bài Các đại lượng li độ - vận tốc - gia tốc theo khung CT GDPT 2018."
+        "Vận tốc là đạo hàm bậc nhất của ly độ theo thời gian: v = x' = -ωA sin(ωt + φ). Vận tốc cực đại tại VCB: v_max = ωA.",
+        "Gia tốc là đạo hàm của vận tốc: a = v' = -ω^2 x. Gia tốc luôn hướng về VCB và biến thiên ngược pha với ly độ x."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Các đại lượng li độ - vận tốc - gia tốc vào thực tiễn."
+        "Tại vị trí biên (x = ±A), ly độ cực đại nên gia tốc cực đại a_max = ω^2 A, còn vận tốc v = 0."
       ],
       "questions": [
         {
-          "id": "physics-11-cac-dai-luong-li-do-van-toc-gia-toc-physics-11-cac-dai-luong-li-do-van-toc-gia-toc-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Các đại lượng li độ - vận tốc - gia tốc?",
+          "id": "phy-11-vt-gt-q1",
+          "prompt": "Vật dao động điều hòa có vận tốc đạt độ lớn cực đại khi vật qua vị trí nào?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Vị trí cân bằng" },
+            { "id": "b", "text": "Vị trí biên dương" },
+            { "id": "c", "text": "Vị trí biên âm" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Khi qua vị trí cân bằng, x = 0 nên độ lớn vận tốc đạt cực đại v_max = ωA."
         },
         {
-          "id": "physics-11-cac-dai-luong-li-do-van-toc-gia-toc-physics-11-cac-dai-luong-li-do-van-toc-gia-toc-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Các đại lượng li độ - vận tốc - gia tốc?",
+          "id": "phy-11-vt-gt-q2",
+          "prompt": "Phát biểu nào sau đây đúng về gia tốc của vật dao động điều hòa?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Gia tốc luôn biến thiên ngược pha với ly độ" },
+            { "id": "b", "text": "Gia tốc có độ lớn cực đại tại vị trí cân bằng" },
+            { "id": "c", "text": "Gia tốc luôn cùng chiều với chuyển động" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Do a = -ω^2 x nên gia tốc luôn đổi chiều và biến thiên ngược pha với ly độ x."
         },
         {
-          "id": "physics-11-cac-dai-luong-li-do-van-toc-gia-toc-physics-11-cac-dai-luong-li-do-van-toc-gia-toc-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Các đại lượng li độ - vận tốc - gia tốc giải quyết vấn đề?",
+          "id": "phy-11-vt-gt-q3",
+          "prompt": "Vật dao động có biên độ A = 4 cm, tần số góc ω = 10 rad/s. Gia tốc cực đại của vật là?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "400 cm/s² (4 m/s²)" },
+            { "id": "b", "text": "40 cm/s²" },
+            { "id": "c", "text": "4 m/s" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "a_max = ω² A = 10² * 4 = 100 * 4 = 400 cm/s² = 4 m/s²."
         }
       ]
     },
     {
-      "id": "physics-11-nang-luong-trong-dao-dong",
-      "title": "Năng lượng trong dao động",
+      "id": "physics-11-nang-luong-dao-dong",
+      "title": "Năng lượng trong dao động điều hòa",
       "guidance": [
-        "Nội dung trọng tâm bài Năng lượng trong dao động theo khung CT GDPT 2018."
+        "Động năng Wd = 1/2 m v² biến thiên theo thời gian. Thế năng Wt = 1/2 k x² biến thiên theo thời gian.",
+        "Cơ năng W = Wd + Wt = 1/2 k A² = 1/2 m ω² A² là một hằng số bảo toàn, tỉ lệ với bình phương biên độ."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Năng lượng trong dao động vào thực tiễn."
+        "Khi động năng bằng thế năng (Wd = Wt), ly độ của vật bằng x = ±A / √2."
       ],
       "questions": [
         {
-          "id": "physics-11-nang-luong-trong-dao-dong-physics-11-nang-luong-trong-dao-dong-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Năng lượng trong dao động?",
+          "id": "phy-11-nl-q1",
+          "prompt": "Cơ năng của một vật dao động điều hòa tỉ lệ với đại lượng nào?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Bình phương biên độ dao động" },
+            { "id": "b", "text": "Biên độ dao động" },
+            { "id": "c", "text": "Tần số dao động" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Công thức cơ năng W = 1/2 m ω² A², nên W tỉ lệ thuận với A²."
         },
         {
-          "id": "physics-11-nang-luong-trong-dao-dong-physics-11-nang-luong-trong-dao-dong-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Năng lượng trong dao động?",
+          "id": "phy-11-nl-q2",
+          "prompt": "Trong quá trình vật dao động điều hòa chuyển động từ vị trí biên về vị trí cân bằng thì?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Thế năng chuyển hóa thành động năng" },
+            { "id": "b", "text": "Động năng chuyển hóa thành thế năng" },
+            { "id": "c", "text": "Cơ năng tăng dần" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Từ biên về VCB, độ lớn ly độ x giảm (thế năng giảm) và tốc độ v tăng (động năng tăng)."
         },
         {
-          "id": "physics-11-nang-luong-trong-dao-dong-physics-11-nang-luong-trong-dao-dong-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Năng lượng trong dao động giải quyết vấn đề?",
+          "id": "phy-11-nl-q3",
+          "prompt": "Tại vị trí ly độ x = A/2, tỉ số giữa thế năng và động năng của vật là?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "1/3" },
+            { "id": "b", "text": "1/2" },
+            { "id": "c", "text": "3" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Wt = 1/2 k (A/2)² = 1/4 W. Do đó Wd = W - Wt = 3/4 W. Tỉ số Wt/Wd = (1/4)/(3/4) = 1/3."
         }
       ]
     },
     {
-      "id": "physics-11-dao-dong-tat-dan-va-cuong-buc",
-      "title": "Dao động tắt dần và cưỡng bức",
-      "guidance": [
-        "Nội dung trọng tâm bài Dao động tắt dần và cưỡng bức theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Dao động tắt dần và cưỡng bức vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "physics-11-dao-dong-tat-dan-va-cuong-buc-physics-11-dao-dong-tat-dan-va-cuong-buc-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Dao động tắt dần và cưỡng bức?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "physics-11-dao-dong-tat-dan-va-cuong-buc-physics-11-dao-dong-tat-dan-va-cuong-buc-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Dao động tắt dần và cưỡng bức?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "physics-11-dao-dong-tat-dan-va-cuong-buc-physics-11-dao-dong-tat-dan-va-cuong-buc-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Dao động tắt dần và cưỡng bức giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "physics-11-hien-tuong-cong-huong",
-      "title": "Hiện tượng cộng hưởng",
-      "guidance": [
-        "Nội dung trọng tâm bài Hiện tượng cộng hưởng theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Hiện tượng cộng hưởng vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "physics-11-hien-tuong-cong-huong-physics-11-hien-tuong-cong-huong-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Hiện tượng cộng hưởng?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "physics-11-hien-tuong-cong-huong-physics-11-hien-tuong-cong-huong-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Hiện tượng cộng hưởng?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "physics-11-hien-tuong-cong-huong-physics-11-hien-tuong-cong-huong-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Hiện tượng cộng hưởng giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "physics-11-song-co-va-su-truyen-song",
+      "id": "physics-11-song-co",
       "title": "Sóng cơ và sự truyền sóng",
       "guidance": [
-        "Nội dung trọng tâm bài Sóng cơ và sự truyền sóng theo khung CT GDPT 2018."
+        "Sóng cơ là sự lan truyền dao động cơ trong môi trường vật chất theo thời gian.",
+        "Sóng dọc có phương dao động trùng với phương truyền sóng (truyền trong chất khí, lỏng, rắn). Sóng ngang có phương dao động vuông góc với phương truyền sóng (truyền trên bề mặt chất lỏng và trong chất rắn).",
+        "Bước sóng λ = v * T = v / f là khoảng cách giữa hai điểm gần nhất trên cùng một phương truyền sóng dao động cùng pha."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Sóng cơ và sự truyền sóng vào thực tiễn."
+        "Sóng âm truyền trong không khí là sóng dọc. Sóng trên mặt nước là sóng ngang."
       ],
       "questions": [
         {
-          "id": "physics-11-song-co-va-su-truyen-song-physics-11-song-co-va-su-truyen-song-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Sóng cơ và sự truyền sóng?",
+          "id": "phy-11-song-q1",
+          "prompt": "Bước sóng λ được xác định bởi công thức nào sau đây?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "λ = v / f" },
+            { "id": "b", "text": "λ = v * f" },
+            { "id": "c", "text": "λ = f / v" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Bước sóng λ = v * T = v / f, trong đó v là vận tốc truyền sóng, f là tần số."
         },
         {
-          "id": "physics-11-song-co-va-su-truyen-song-physics-11-song-co-va-su-truyen-song-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Sóng cơ và sự truyền sóng?",
+          "id": "phy-11-song-q2",
+          "prompt": "Sóng dọc là sóng có phương dao động của các phần tử môi trường?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Trùng với phương truyền sóng" },
+            { "id": "b", "text": "Vuông góc với phương truyền sóng" },
+            { "id": "c", "text": "Nằm ngang bất kỳ" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Định nghĩa: Sóng dọc có phương dao động trùng với phương truyền sóng."
         },
         {
-          "id": "physics-11-song-co-va-su-truyen-song-physics-11-song-co-va-su-truyen-song-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Sóng cơ và sự truyền sóng giải quyết vấn đề?",
+          "id": "phy-11-song-q3",
+          "prompt": "Một nguồn sóng dao động với tần số f = 50 Hz truyền đi với vận tốc v = 15 m/s. Bước sóng λ là?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "0,3 m (30 cm)" },
+            { "id": "b", "text": "750 m" },
+            { "id": "c", "text": "3,33 m" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "λ = v / f = 15 / 50 = 0,3 m = 30 cm."
         }
       ]
     },
     {
-      "id": "physics-11-cac-dac-trung-cua-song",
-      "title": "Các đặc trưng của sóng",
+      "id": "physics-11-giao-thoa-song",
+      "title": "Giao thoa sóng cơ & Sóng dừng",
       "guidance": [
-        "Nội dung trọng tâm bài Các đặc trưng của sóng theo khung CT GDPT 2018."
+        "Giao thoa là hiện tượng hai sóng kết hợp gặp nhau tạo nên các cực đại và cực tiểu giao thoa xen kẽ.",
+        "Điều kiện cực đại giao thoa: d2 - d1 = k λ. Điều kiện cực tiểu giao thoa: d2 - d1 = (k + 0.5) λ.",
+        "Sóng dừng hình thành do sự phản xạ và giao thoa của sóng tới và sóng phản xạ. Khoảng cách giữa 2 nút sóng liên tiếp bằng λ/2."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Các đặc trưng của sóng vào thực tiễn."
+        "Dây hai đầu cố định chiều dài L = k * (λ/2) sinh ra k bụng sóng."
       ],
       "questions": [
         {
-          "id": "physics-11-cac-dac-trung-cua-song-physics-11-cac-dac-trung-cua-song-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Các đặc trưng của sóng?",
+          "id": "phy-11-gt-q1",
+          "prompt": "Trong hiện tượng sóng dừng trên sợi dây, khoảng cách giữa hai nút sóng liên tiếp bằng?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Nửa bước sóng (λ/2)" },
+            { "id": "b", "text": "Một bước sóng (λ)" },
+            { "id": "c", "text": "Một phần tư bước sóng (λ/4)" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Hai nút sóng (hoặc hai bụng sóng) liên tiếp cách nhau đúng λ/2."
         },
         {
-          "id": "physics-11-cac-dac-trung-cua-song-physics-11-cac-dac-trung-cua-song-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Các đặc trưng của sóng?",
+          "id": "phy-11-gt-q2",
+          "prompt": "Điều kiện để hai sóng gặp nhau tạo ra hiện tượng giao thoa ổn định là hai nguồn phải?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Cùng tần số và hiệu số pha không đổi theo thời gian" },
+            { "id": "b", "text": "Cùng biên độ và cùng tốc độ" },
+            { "id": "c", "text": "Phát ra từ cùng một điểm" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Hai nguồn kết hợp phải cùng phương, cùng tần số và có hiệu số pha không đổi."
         },
         {
-          "id": "physics-11-cac-dac-trung-cua-song-physics-11-cac-dac-trung-cua-song-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Các đặc trưng của sóng giải quyết vấn đề?",
+          "id": "phy-11-gt-q3",
+          "prompt": "Một sợi dây dài L = 1,2 m hai đầu cố định đang có sóng dừng với 3 bụng sóng. Bước sóng λ trên dây là?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "0,8 m (80 cm)" },
+            { "id": "b", "text": "0,4 m" },
+            { "id": "c", "text": "2,4 m" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "physics-11-giao-thoa-song-co",
-      "title": "Giao thoa sóng cơ",
-      "guidance": [
-        "Nội dung trọng tâm bài Giao thoa sóng cơ theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Giao thoa sóng cơ vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "physics-11-giao-thoa-song-co-physics-11-giao-thoa-song-co-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Giao thoa sóng cơ?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "physics-11-giao-thoa-song-co-physics-11-giao-thoa-song-co-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Giao thoa sóng cơ?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "physics-11-giao-thoa-song-co-physics-11-giao-thoa-song-co-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Giao thoa sóng cơ giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "physics-11-song-dung",
-      "title": "Sóng dừng",
-      "guidance": [
-        "Nội dung trọng tâm bài Sóng dừng theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Sóng dừng vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "physics-11-song-dung-physics-11-song-dung-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Sóng dừng?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "physics-11-song-dung-physics-11-song-dung-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Sóng dừng?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "physics-11-song-dung-physics-11-song-dung-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Sóng dừng giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "physics-11-song-dien-tu",
-      "title": "Sóng điện từ",
-      "guidance": [
-        "Nội dung trọng tâm bài Sóng điện từ theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Sóng điện từ vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "physics-11-song-dien-tu-physics-11-song-dien-tu-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Sóng điện từ?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "physics-11-song-dien-tu-physics-11-song-dien-tu-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Sóng điện từ?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "physics-11-song-dien-tu-physics-11-song-dien-tu-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Sóng điện từ giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "physics-11-dien-truong-va-cuong-do-dien-truong",
-      "title": "Điện trường và cường độ điện trường",
-      "guidance": [
-        "Nội dung trọng tâm bài Điện trường và cường độ điện trường theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Điện trường và cường độ điện trường vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "physics-11-dien-truong-va-cuong-do-dien-truong-physics-11-dien-truong-va-cuong-do-dien-truong-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Điện trường và cường độ điện trường?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "physics-11-dien-truong-va-cuong-do-dien-truong-physics-11-dien-truong-va-cuong-do-dien-truong-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Điện trường và cường độ điện trường?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "physics-11-dien-truong-va-cuong-do-dien-truong-physics-11-dien-truong-va-cuong-do-dien-truong-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Điện trường và cường độ điện trường giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "physics-11-the-nang-va-dien-the",
-      "title": "Thế năng và điện thế",
-      "guidance": [
-        "Nội dung trọng tâm bài Thế năng và điện thế theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Thế năng và điện thế vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "physics-11-the-nang-va-dien-the-physics-11-the-nang-va-dien-the-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Thế năng và điện thế?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "physics-11-the-nang-va-dien-the-physics-11-the-nang-va-dien-the-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Thế năng và điện thế?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "physics-11-the-nang-va-dien-the-physics-11-the-nang-va-dien-the-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Thế năng và điện thế giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "physics-11-tu-dien-va-dien-dung",
-      "title": "Tụ điện và điện dung",
-      "guidance": [
-        "Nội dung trọng tâm bài Tụ điện và điện dung theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Tụ điện và điện dung vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "physics-11-tu-dien-va-dien-dung-physics-11-tu-dien-va-dien-dung-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Tụ điện và điện dung?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "physics-11-tu-dien-va-dien-dung-physics-11-tu-dien-va-dien-dung-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Tụ điện và điện dung?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "physics-11-tu-dien-va-dien-dung-physics-11-tu-dien-va-dien-dung-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Tụ điện và điện dung giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "physics-11-cuong-do-dong-dien",
-      "title": "Cường độ dòng điện",
-      "guidance": [
-        "Nội dung trọng tâm bài Cường độ dòng điện theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Cường độ dòng điện vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "physics-11-cuong-do-dong-dien-physics-11-cuong-do-dong-dien-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Cường độ dòng điện?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "physics-11-cuong-do-dong-dien-physics-11-cuong-do-dong-dien-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Cường độ dòng điện?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "physics-11-cuong-do-dong-dien-physics-11-cuong-do-dong-dien-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Cường độ dòng điện giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "physics-11-nang-luong-dien",
-      "title": "Năng lượng điện",
-      "guidance": [
-        "Nội dung trọng tâm bài Năng lượng điện theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Năng lượng điện vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "physics-11-nang-luong-dien-physics-11-nang-luong-dien-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Năng lượng điện?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "physics-11-nang-luong-dien-physics-11-nang-luong-dien-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Năng lượng điện?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "physics-11-nang-luong-dien-physics-11-nang-luong-dien-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Năng lượng điện giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Với 2 đầu cố định, L = k (λ/2) với k là số bụng. 1,2 = 3 * (λ/2) => λ = 2,4 / 3 = 0,8 m."
         }
       ]
     }

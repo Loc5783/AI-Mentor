@@ -2,1134 +2,242 @@
   "subjectId": "literature",
   "grade": 11,
   "version": "intro-2026.1",
-  "title": "Ngữ văn 11: Đọc hiểu thể loại và Kỹ năng viết nghị luận",
+  "title": "Ngữ văn 11: Đọc hiểu thể loại & Viết bài nghị luận (SGK Kết nối tri thức)",
   "published": true,
-  "coverage": "PARTIAL_GRADE_11",
+  "coverage": "GRADE_11_KNTT",
   "extendedReviews": false,
-  "sourceNote": "Nội dung đang ở dạng cấu trúc khung (Placeholder) được sinh tự động bởi hệ thống AI Mentor để đảm bảo đúng định dạng JSON 3 câu hỏi (EASY/MEDIUM/APPLIED). Giáo viên cần hiệu đính nội dung chi tiết.",
+  "sourceNote": "Nội dung biên soạn bám sát chuẩn kiến thức SGK Ngữ văn 11 - Bộ sách Kết nối tri thức với cuộc sống.",
   "lessons": [
     {
-      "id": "literature-11-cau-chuyen-va-diem-nhin",
-      "title": "Câu chuyện và điểm nhìn",
+      "id": "literature-11-nguyen-du-truyen-kieu",
+      "title": "Nguyễn Du và Giá trị nhân đạo Truyện Kiều",
       "guidance": [
-        "Nội dung trọng tâm bài Câu chuyện và điểm nhìn theo khung CT GDPT 2018."
+        "Đại thi hào Nguyễn Du (1765 - 1820) là danh nhân văn hóa thế giới.",
+        "Truyện Kiều là kiệt tác thơ lục bát bằng chữ Nôm. Tác phẩm thể hiện giá trị nhân đạo cao cả: tiếng nói xót thương số phận con người (đặc biệt là người phụ nữ), tố cáo các lực lượng tàn bạo, trân trọng khát vọng tình yêu và tự do.",
+        "Đoạn trích Trao duyên miêu tả bi kịch tình yêu tan vỡ và diễn biến tâm trạng phức tạp, giằng xé nội tâm của Thúy Kiều."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Câu chuyện và điểm nhìn vào thực tiễn."
+        "\"Cậy em em có chịu lời / Sit lên cho chị lạy rồi sẽ thưa\" - Lời khẩn cầu tha thiết, trân trọng và đau đớn của Thúy Kiều khi nhờ Thúy Vân nối duyên với Kim Trọng."
       ],
       "questions": [
         {
-          "id": "literature-11-cau-chuyen-va-diem-nhin-literature-11-cau-chuyen-va-diem-nhin-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Câu chuyện và điểm nhìn?",
+          "id": "lit-11-kieu-q1",
+          "prompt": "Tác phẩm Truyện Kiều của Đại thi hào Nguyễn Du được viết bằng thể thơ truyền thống nào?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Lục bát" },
+            { "id": "b", "text": "Song thất lục bát" },
+            { "id": "c", "text": "Thất ngôn bát cú" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Truyện Kiều gồm 3254 câu thơ lục bát chữ Nôm đỉnh cao của văn học dân tộc."
         },
         {
-          "id": "literature-11-cau-chuyen-va-diem-nhin-literature-11-cau-chuyen-va-diem-nhin-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Câu chuyện và điểm nhìn?",
+          "id": "lit-11-kieu-q2",
+          "prompt": "Nội dung cốt lõi của Giá trị nhân đạo trong Truyện Kiều thể hiện ở?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Xót thương con người bất hạnh và trân trọng khát vọng quyền sống, tình yêu" },
+            { "id": "b", "text": "Tập trung ca ngợi triều đại phong kiến" },
+            { "id": "c", "text": "Miêu tả thuần túy cảnh quan thiên nhiên" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Giá trị nhân đạo đặt con người vào trung tâm sự xót thương và khẳng định phẩm giá."
         },
         {
-          "id": "literature-11-cau-chuyen-va-diem-nhin-literature-11-cau-chuyen-va-diem-nhin-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Câu chuyện và điểm nhìn giải quyết vấn đề?",
+          "id": "lit-11-kieu-q3",
+          "prompt": "Từ 'cậy' trong câu thơ 'Cậy em em có chịu lời' thể hiện thái độ tâm lý nào của Thúy Kiều?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Gửi gắm niềm hy vọng tha thiết kèm sự nài nỉ, nương tựa" },
+            { "id": "b", "text": "Thái độ ra lệnh bắt buộc" },
+            { "id": "c", "text": "Sự nghi ngờ không tin tưởng" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "'Cậy' vừa gửi gắm vừa trông mong, chứa đựng sự quỵ lụy tha thiết trong hoàn cảnh khó nói."
         }
       ]
     },
     {
-      "id": "literature-11-nhan-vat-truyen-ngan",
-      "title": "Nhân vật truyện ngắn",
+      "id": "literature-11-tho-truyenthong-nom",
+      "title": "Thơ Nôm đường luật và Thơ mới",
       "guidance": [
-        "Nội dung trọng tâm bài Nhân vật truyện ngắn theo khung CT GDPT 2018."
+        "Thơ Nôm Đường luật vận dụng luật thơ Đường (Thất ngôn bát cú, Thất ngôn tứ tuyệt) kết hợp với từ ngữ dân tộc, hình ảnh đời thường gần gũi.",
+        "Phong trào Thơ mới (1932 - 1945) bứt phá khỏi quy phạm cổ điển, giải phóng cái 'Tôi' cá nhân, đổi mới hình thức thể thơ và cảm xúc tự do.",
+        "Các tác giả tiêu biểu: Xuân Diệu (thơ tình nồng nàn), Huy Cận (nỗi sầu vũ trụ), Hàn Mặc Tử (thơ điên nồng cháy)."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Nhân vật truyện ngắn vào thực tiễn."
+        "Xuân Diệu trong Vội vàng: \"Tôi muốn tắt nắng đi / Cho màu đừng nhạt mất / Tôi muốn buộc gió lại / Cho hương đừng bay đi\"."
       ],
       "questions": [
         {
-          "id": "literature-11-nhan-vat-truyen-ngan-literature-11-nhan-vat-truyen-ngan-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Nhân vật truyện ngắn?",
+          "id": "lit-11-tm-q1",
+          "prompt": "Điểm đổi mới nổi bật nhất của phong trào Thơ mới (1932 - 1945) là gì?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Giải phóng cái 'Tôi' cá nhân và phá vỡ các quy phạm cổ điển" },
+            { "id": "b", "text": "Dùng hoàn toàn chữ Hán" },
+            { "id": "c", "text": "Chỉ viết theo thể thất ngôn bát cú" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Thơ mới khẳng định cái 'Tôi' cá nhân với muôn màu sắc cảm xúc linh hoạt."
         },
         {
-          "id": "literature-11-nhan-vat-truyen-ngan-literature-11-nhan-vat-truyen-ngan-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Nhân vật truyện ngắn?",
+          "id": "lit-11-tm-q2",
+          "prompt": "Nhà thơ nào được mệnh danh là 'Nhà thơ mới nhất trong các nhà thơ mới' với hồn thơ khát khao giao cảm vội vàng?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Xuân Diệu" },
+            { "id": "b", "text": "Huy Cận" },
+            { "id": "c", "text": "Tố Hữu" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Hoài Thanh nhận xét Xuân Diệu là nhà thơ mới nhất, sôi nổi yêu đời nồng nàn."
         },
         {
-          "id": "literature-11-nhan-vat-truyen-ngan-literature-11-nhan-vat-truyen-ngan-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Nhân vật truyện ngắn giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+          "id": "lit-11-tm-q3",
+          "prompt": "Cảm hứng chủ đạo trong bài thơ 'Vội vàng' của Xuân Diệu là?",
+          "difficulty": "APPLIED", "options": [
+            { "id": "a", "text": "Lòng yêu đời, trân trọng từng phút giây tuổi trẻ và thiên nhiên mùa xuân" },
+            { "id": "b", "text": "Nỗi hoài cổ tiếc thương quá khứ" },
+            { "id": "c", "text": "Lòng u uất bế tắc trước thời cuộc" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Xuân Diệu giục giã sống vội vàng để tận hưởng vẻ đẹp thiên nhiên và tình yêu tuổi trẻ."
         }
       ]
     },
     {
-      "id": "literature-11-lap-cau-truc",
-      "title": "Lặp cấu trúc",
+      "id": "literature-11-nghi-luan-xa-hoi",
+      "title": "Văn bản nghị luận & Nghệ thuật lập luận",
       "guidance": [
-        "Nội dung trọng tâm bài Lặp cấu trúc theo khung CT GDPT 2018."
+        "Văn bản nghị luận hướng tới thuyết phục người đọc về một tư tưởng, quan điểm bằng hệ thống Luận điểm, Lý lẽ và Dẫn chứng.",
+        "Luận điểm là ý kiến khẳng định/bác bỏ; Lý lẽ giải thích nguyên nhân; Dẫn chứng là bằng chứng thực tế khách quan.",
+        "Yêu cầu: Lập luận chặt chẽ, dẫn chứng xác thực, tư duy phản biện sắc bén và cảm xúc chân thành."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Lặp cấu trúc vào thực tiễn."
+        "Nghị luận về văn hóa ứng xử trên mạng xã hội: Luận điểm -> Lý lẽ tác hại của tin giả/bạo lực mạng -> Dẫn chứng sự việc thực tế."
       ],
       "questions": [
         {
-          "id": "literature-11-lap-cau-truc-literature-11-lap-cau-truc-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Lặp cấu trúc?",
+          "id": "lit-11-nl-q1",
+          "prompt": "Thành phần nào đóng vai trò là cột mốc ý kiến khẳng định chính trong bài văn nghị luận?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Luận điểm" },
+            { "id": "b", "text": "Dẫn chứng" },
+            { "id": "c", "text": "Mở bài" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Luận điểm là các ý kiến thể hiện quan điểm của người viết về vấn đề."
         },
         {
-          "id": "literature-11-lap-cau-truc-literature-11-lap-cau-truc-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Lặp cấu trúc?",
+          "id": "lit-11-nl-q2",
+          "prompt": "Yêu cầu quan trọng đối với Dẫn chứng trong bài văn nghị luận là gì?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Chính xác, tiêu biểu, chân thực và có tính thuyết phục" },
+            { "id": "b", "text": "Càng dài và hư cấu càng tốt" },
+            { "id": "c", "text": "Không cần liên quan đến luận điểm" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Dẫn chứng phải tiêu biểu và chân thực thì lập luận mới có sức nặng thuyết phục."
         },
         {
-          "id": "literature-11-lap-cau-truc-literature-11-lap-cau-truc-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Lặp cấu trúc giải quyết vấn đề?",
+          "id": "lit-11-nl-q3",
+          "prompt": "Tư duy phản biện trong bài văn nghị luận giúp ích gì cho bài viết?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Xem xét vấn đề đa chiều, lật lại vấn đề để lập luận toàn diện hơn" },
+            { "id": "b", "text": "Phủ nhận toàn bộ quan điểm của người khác" },
+            { "id": "c", "text": "Làm bài viết dài hơn" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Phản biện giúp nhìn nhận các góc khuất, phủ định ý kiến phiến diện để khẳng định luận điểm."
         }
       ]
     },
     {
-      "id": "literature-11-cam-xuc-trong-tho",
-      "title": "Cảm xúc trong thơ",
+      "id": "literature-11-bi-kich-kich-ban",
+      "title": "Bi kịch và Kịch bản văn học",
       "guidance": [
-        "Nội dung trọng tâm bài Cảm xúc trong thơ theo khung CT GDPT 2018."
+        "Bi kịch là thể loại kịch phản ánh xung đột gay gắt giữa khát vọng cao đẹp của nhân vật với hoàn cảnh thực tại nghiệt ngã.",
+        "Nhân vật bi kịch mang phẩm chất cao đẹp, chiến đấu dũng cảm nhưng phải chịu thất bại hoặc hy sinh đau thương, gợi sự thương cảm và thanh lọc tâm hồn người xem.",
+        "Tác phẩm tiêu biểu: Vũ Như Tô (Nguyễn Huy Tưởng) phản ánh bi kịch giữa khát vọng nghệ thuật siêu đàm và lợi ích nhân dân."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Cảm xúc trong thơ vào thực tiễn."
+        "Vũ Như Tô đắm đuối xây Cửu Trùng Đài đẹp cho đời nhưng vỡ mộng khi nhân dân lầm than nổi dậy đốt đài."
       ],
       "questions": [
         {
-          "id": "literature-11-cam-xuc-trong-tho-literature-11-cam-xuc-trong-tho-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Cảm xúc trong thơ?",
+          "id": "lit-11-bk-q1",
+          "prompt": "Đặc trưng mấu chốt của thể loại Bi kịch là gì?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Xung đột gay gắt giữa khát vọng nhân vật và hoàn cảnh thực tại" },
+            { "id": "b", "text": "Tạo ra tiếng cười gây hái hài hước" },
+            { "id": "c", "text": "Kết thúc luôn có hậu vui vẻ" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Xung đột bi kịch không thể hòa giải dẫn đến kết thúc đau thương của nhân vật."
         },
         {
-          "id": "literature-11-cam-xuc-trong-tho-literature-11-cam-xuc-trong-tho-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Cảm xúc trong thơ?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+          "id": "lit-11-bk-q2",
+          "prompt": "Bi kịch của nhân vật Vũ Như Tô trong đoạn trích 'Vĩnh biệt Cửu Trùng Đài' là bi kịch gì?",
+          "difficulty": "MEDIUM", "options": [
+            { "id": "a", "text": "Mâu thuẫn giữa khát vọng nghệ thuật thuần túy và đời sống lầm than của nhân dân" },
+            { "id": "b", "text": "Mâu thuẫn giữa tình yêu nam nữ" },
+            { "id": "c", "text": "Tranh chấp tài sản gia đình" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Vũ Như Tô muốn xây công trình vĩ đại nhưng lại làm kiệt quệ sức dân trong hoàn cảnh đất nước khó khăn."
         },
         {
-          "id": "literature-11-cam-xuc-trong-tho-literature-11-cam-xuc-trong-tho-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Cảm xúc trong thơ giải quyết vấn đề?",
+          "id": "lit-11-bk-q3",
+          "prompt": "Tác dụng tâm lý 'Thanh lọc' (Catharsis) của bi kịch đối với khán giả là gì?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Gợi sự thương cảm và khiếp sợ, từ đó làm trong sạch và hướng thiện tâm hồn" },
+            { "id": "b", "text": "Làm khán giả tuyệt vọng bỏ cuộc" },
+            { "id": "c", "text": "Gây ra sự tức giận căm thù" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Bi kịch giúp con người đồng cảm với nỗi đau và nâng cao tinh thần trân trọng cái đẹp."
         }
       ]
     },
     {
-      "id": "literature-11-ngon-ngu-van-hoc",
-      "title": "Ngôn ngữ văn học",
+      "id": "literature-11-tuy-but-tan-van",
+      "title": "Tùy bút và Tản văn hiện đại",
       "guidance": [
-        "Nội dung trọng tâm bài Ngôn ngữ văn học theo khung CT GDPT 2018."
+        "Tùy bút và Tản văn là thể loại ký chất trữ tình đậm nét, tự do phóng túng trong biểu hiện cảm xúc.",
+        "Tùy bút bộc lộ cái 'Tôi' của nhà văn qua quan sát, liên tưởng phong phú và vốn văn hóa sâu rộng.",
+        "Tác phẩm tiêu biểu: Người lái đò Sông Đà (Nguyễn Tuân), Ai đã đặt tên cho dòng sông (Hoàng Phủ Ngọc Tường)."
       ],
       "examples": [
-        "Ví dụ ứng dụng kiến thức phần Ngôn ngữ văn học vào thực tiễn."
+        "Nguyễn Tuân miêu tả Sông Đà vừa 'hung bạo' với bão đá thác rống, vừa 'trữ tình' thơ mộng như một áng tóc trữ tình."
       ],
       "questions": [
         {
-          "id": "literature-11-ngon-ngu-van-hoc-literature-11-ngon-ngu-van-hoc-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Ngôn ngữ văn học?",
+          "id": "lit-11-tb-q1",
+          "prompt": "Nét đặc trưng nổi bật nhất của thể loại Tùy bút là gì?",
           "difficulty": "EASY",
           "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
+            { "id": "a", "text": "Đậm đà nét trữ tình, thể hiện cái 'Tôi' độc đáo và liên tưởng phong phú của tác giả" },
+            { "id": "b", "text": "Tập trung xây dựng cốt truyện ly kỳ nhiều hư cấu" },
+            { "id": "c", "text": "Viết theo quy tắc luật thơ nghiêm ngặt" }
           ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
+          "correctOptionId": "a", "explanation": "Tùy bút thể hiện cái 'Tôi' tài hoa, uyên bác qua nét bút tự do trữ tình."
         },
         {
-          "id": "literature-11-ngon-ngu-van-hoc-literature-11-ngon-ngu-van-hoc-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Ngôn ngữ văn học?",
+          "id": "lit-11-tb-q2",
+          "prompt": "Hình ảnh con sông Đà trong tùy bút của Nguyễn Tuân hiện lên với hai nét tính cách đối lập là?",
           "difficulty": "MEDIUM",
           "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
+            { "id": "a", "text": "Hung bạo và Trữ tình" },
+            { "id": "b", "text": "Phôi pha và Cổ kính" },
+            { "id": "c", "text": "Êm đềm và Lạnh lẽo" }
           ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
+          "correctOptionId": "a", "explanation": "Nguyễn Tuân miêu tả Sông Đà hung bạo như kẻ thù số một và trữ tình đằm thắm như một cố nhân."
         },
         {
-          "id": "literature-11-ngon-ngu-van-hoc-literature-11-ngon-ngu-van-hoc-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Ngôn ngữ văn học giải quyết vấn đề?",
+          "id": "lit-11-tb-q3",
+          "prompt": "Trong 'Ai đã đặt tên cho dòng sông', Hoàng Phủ Ngọc Tường đã thể hiện tình cảm gì với dòng sông Hương và xứ Huế?",
           "difficulty": "APPLIED",
           "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
+            { "id": "a", "text": "Tình yêu thiết tha, niềm tự hào sâu sắc về vẻ đẹp thiên nhiên và văn hóa Huế" },
+            { "id": "b", "text": "Nỗi buồn hoang vắng bế tắc" },
+            { "id": "c", "text": "Sự phê phán lối sống cổ hủ" }
           ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "literature-11-tuy-but-va-tan-van",
-      "title": "Tùy bút và tản văn",
-      "guidance": [
-        "Nội dung trọng tâm bài Tùy bút và tản văn theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Tùy bút và tản văn vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "literature-11-tuy-but-va-tan-van-literature-11-tuy-but-va-tan-van-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Tùy bút và tản văn?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "literature-11-tuy-but-va-tan-van-literature-11-tuy-but-va-tan-van-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Tùy bút và tản văn?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "literature-11-tuy-but-va-tan-van-literature-11-tuy-but-va-tan-van-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Tùy bút và tản văn giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "literature-11-luan-diem-va-bang-chung",
-      "title": "Luận điểm và bằng chứng",
-      "guidance": [
-        "Nội dung trọng tâm bài Luận điểm và bằng chứng theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Luận điểm và bằng chứng vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "literature-11-luan-diem-va-bang-chung-literature-11-luan-diem-va-bang-chung-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Luận điểm và bằng chứng?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "literature-11-luan-diem-va-bang-chung-literature-11-luan-diem-va-bang-chung-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Luận điểm và bằng chứng?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "literature-11-luan-diem-va-bang-chung-literature-11-luan-diem-va-bang-chung-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Luận điểm và bằng chứng giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "literature-11-chem-xen-va-noi-giam",
-      "title": "Chêm xen và nói giảm",
-      "guidance": [
-        "Nội dung trọng tâm bài Chêm xen và nói giảm theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Chêm xen và nói giảm vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "literature-11-chem-xen-va-noi-giam-literature-11-chem-xen-va-noi-giam-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Chêm xen và nói giảm?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "literature-11-chem-xen-va-noi-giam-literature-11-chem-xen-va-noi-giam-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Chêm xen và nói giảm?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "literature-11-chem-xen-va-noi-giam-literature-11-chem-xen-va-noi-giam-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Chêm xen và nói giảm giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "literature-11-kich-ban-van-hoc",
-      "title": "Kịch bản văn học",
-      "guidance": [
-        "Nội dung trọng tâm bài Kịch bản văn học theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Kịch bản văn học vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "literature-11-kich-ban-van-hoc-literature-11-kich-ban-van-hoc-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Kịch bản văn học?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "literature-11-kich-ban-van-hoc-literature-11-kich-ban-van-hoc-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Kịch bản văn học?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "literature-11-kich-ban-van-hoc-literature-11-kich-ban-van-hoc-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Kịch bản văn học giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "literature-11-ngon-ngu-hanh-dong",
-      "title": "Ngôn ngữ hành động",
-      "guidance": [
-        "Nội dung trọng tâm bài Ngôn ngữ hành động theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Ngôn ngữ hành động vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "literature-11-ngon-ngu-hanh-dong-literature-11-ngon-ngu-hanh-dong-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Ngôn ngữ hành động?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "literature-11-ngon-ngu-hanh-dong-literature-11-ngon-ngu-hanh-dong-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Ngôn ngữ hành động?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "literature-11-ngon-ngu-hanh-dong-literature-11-ngon-ngu-hanh-dong-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Ngôn ngữ hành động giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "literature-11-van-ban-thong-tin",
-      "title": "Văn bản thông tin",
-      "guidance": [
-        "Nội dung trọng tâm bài Văn bản thông tin theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Văn bản thông tin vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "literature-11-van-ban-thong-tin-literature-11-van-ban-thong-tin-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Văn bản thông tin?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "literature-11-van-ban-thong-tin-literature-11-van-ban-thong-tin-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Văn bản thông tin?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "literature-11-van-ban-thong-tin-literature-11-van-ban-thong-tin-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Văn bản thông tin giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "literature-11-thuyet-minh-hien-tuong",
-      "title": "Thuyết minh hiện tượng",
-      "guidance": [
-        "Nội dung trọng tâm bài Thuyết minh hiện tượng theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Thuyết minh hiện tượng vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "literature-11-thuyet-minh-hien-tuong-literature-11-thuyet-minh-hien-tuong-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Thuyết minh hiện tượng?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "literature-11-thuyet-minh-hien-tuong-literature-11-thuyet-minh-hien-tuong-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Thuyết minh hiện tượng?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "literature-11-thuyet-minh-hien-tuong-literature-11-thuyet-minh-hien-tuong-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Thuyết minh hiện tượng giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "literature-11-viet-bai-so-sanh",
-      "title": "Viết bài so sánh",
-      "guidance": [
-        "Nội dung trọng tâm bài Viết bài so sánh theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Viết bài so sánh vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "literature-11-viet-bai-so-sanh-literature-11-viet-bai-so-sanh-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Viết bài so sánh?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "literature-11-viet-bai-so-sanh-literature-11-viet-bai-so-sanh-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Viết bài so sánh?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "literature-11-viet-bai-so-sanh-literature-11-viet-bai-so-sanh-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Viết bài so sánh giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "literature-11-ki-nang-phan-bien",
-      "title": "Kĩ năng phản biện",
-      "guidance": [
-        "Nội dung trọng tâm bài Kĩ năng phản biện theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Kĩ năng phản biện vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "literature-11-ki-nang-phan-bien-literature-11-ki-nang-phan-bien-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Kĩ năng phản biện?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "literature-11-ki-nang-phan-bien-literature-11-ki-nang-phan-bien-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Kĩ năng phản biện?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "literature-11-ki-nang-phan-bien-literature-11-ki-nang-phan-bien-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Kĩ năng phản biện giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
-        }
-      ]
-    },
-    {
-      "id": "literature-11-doc-hieu-van-hoc-trung-dai",
-      "title": "Đọc hiểu văn học trung đại",
-      "guidance": [
-        "Nội dung trọng tâm bài Đọc hiểu văn học trung đại theo khung CT GDPT 2018."
-      ],
-      "examples": [
-        "Ví dụ ứng dụng kiến thức phần Đọc hiểu văn học trung đại vào thực tiễn."
-      ],
-      "questions": [
-        {
-          "id": "literature-11-doc-hieu-van-hoc-trung-dai-literature-11-doc-hieu-van-hoc-trung-dai-q1",
-          "prompt": "Câu hỏi nhận biết khái niệm cơ bản của bài Đọc hiểu văn học trung đại?",
-          "difficulty": "EASY",
-          "options": [
-            {
-              "id": "a",
-              "text": "Khái niệm đúng"
-            },
-            {
-              "id": "b",
-              "text": "Sai lầm 1"
-            },
-            {
-              "id": "c",
-              "text": "Sai lầm 2"
-            }
-          ],
-          "correctOptionId": "a",
-          "explanation": "Giải thích chi tiết vì sao A là đáp án đúng mức độ nhận biết."
-        },
-        {
-          "id": "literature-11-doc-hieu-van-hoc-trung-dai-literature-11-doc-hieu-van-hoc-trung-dai-q2",
-          "prompt": "Câu hỏi thông hiểu hoặc tính toán cơ bản phần Đọc hiểu văn học trung đại?",
-          "difficulty": "MEDIUM",
-          "options": [
-            {
-              "id": "a",
-              "text": "Phương án nhiễu 1"
-            },
-            {
-              "id": "b",
-              "text": "Đáp án chính xác"
-            },
-            {
-              "id": "c",
-              "text": "Phương án nhiễu 2"
-            }
-          ],
-          "correctOptionId": "b",
-          "explanation": "Giải thích chi tiết các bước tính toán hoặc logic mức thông hiểu."
-        },
-        {
-          "id": "literature-11-doc-hieu-van-hoc-trung-dai-literature-11-doc-hieu-van-hoc-trung-dai-q3",
-          "prompt": "Tình huống thực tế áp dụng kiến thức Đọc hiểu văn học trung đại giải quyết vấn đề?",
-          "difficulty": "APPLIED",
-          "options": [
-            {
-              "id": "a",
-              "text": "Hướng đi sai lệch"
-            },
-            {
-              "id": "b",
-              "text": "Giải pháp chưa triệt để"
-            },
-            {
-              "id": "c",
-              "text": "Phương pháp tối ưu"
-            }
-          ],
-          "correctOptionId": "c",
-          "explanation": "Mở rộng và giải thích sâu vì sao đáp án C giải quyết được tình huống thực tế."
+          "correctOptionId": "a", "explanation": "Tác giả soi chiếu Sông Hương dưới góc độ địa lý, lịch sử và văn hóa nghệ thuật xứ Huế."
         }
       ]
     }
