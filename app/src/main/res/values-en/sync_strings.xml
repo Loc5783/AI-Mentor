@@ -2,6 +2,7 @@
 <resources>
   <string name="auth_account_exists">This email already has an account. Sign in to continue.</string>
   <string name="auth_server_rate_limit">Too many attempts. Please wait a moment and try again.</string>
+  <string name="auth_email_rate_limit">Supabase is limiting verification emails. Do not keep retrying; check Spam/Promotions and wait before trying again. If delivery still fails, configure custom SMTP for the project.</string>
   <string name="auth_server_error">Your account could not be confirmed by the server. Try again.</string>
   <string name="auth_server_offline">Cannot connect to the server. Check your connection and retry; data on this device is kept.</string>
   <string name="overview_lessons">%1$d / %2$d lessons</string>
