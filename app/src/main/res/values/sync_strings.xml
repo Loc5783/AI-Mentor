@@ -2,6 +2,7 @@
 <resources>
   <string name="auth_account_exists">Email này đã có tài khoản. Hãy đăng nhập để tiếp tục.</string>
   <string name="auth_server_rate_limit">Bạn đã thử nhiều lần. Vui lòng chờ một chút rồi thử lại.</string>
+  <string name="auth_email_rate_limit">Supabase đang giới hạn email xác minh. Đừng bấm gửi lại liên tục; hãy kiểm tra Hộp thư rác/Quảng cáo và chờ trước khi thử lại. Nếu vẫn không nhận được, cần cấu hình SMTP riêng cho project.</string>
   <string name="auth_server_error">Chưa xác nhận được tài khoản trên máy chủ. Hãy thử lại.</string>
   <string name="auth_server_offline">Chưa kết nối được máy chủ. Kiểm tra mạng rồi thử lại; dữ liệu trên thiết bị vẫn được giữ.</string>
   <string name="overview_lessons">%1$d / %2$d bài</string>
