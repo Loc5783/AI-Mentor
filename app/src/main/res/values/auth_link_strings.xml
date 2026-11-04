@@ -1,0 +1,4 @@
+<resources>
+    <string name="auth_reset_link_body">Nhập mật khẩu mới cho tài khoản đã xác thực qua email.</string>
+    <string name="auth_link_invalid">Link không hợp lệ hoặc đã hết hạn. Hãy quay lại đăng nhập và yêu cầu email mới.</string>
+</resources>

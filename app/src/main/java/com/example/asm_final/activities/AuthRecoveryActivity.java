@@ -13,6 +13,8 @@ import com.example.asm_final.utils.*;
 
 public final class AuthRecoveryActivity extends AppCompatActivity {
   private int mode;
+  private RecoveryLinkModel link;
+  private boolean linkMode;
   private long resendUntil;
   private EditText email, token, password, confirm;
   private Button submit;
@@ -40,6 +42,14 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
     status = findViewById(R.id.recovery_status);
     resend = findViewById(R.id.recovery_resend);
     draft = new ViewModelProvider(this).get(AuthFormModel.class);
+    link = new ViewModelProvider(this).get(RecoveryLinkModel.class);
+    String incoming = getIntent().getStringExtra("RECOVERY_ACCESS_TOKEN");
+    getIntent().removeExtra("RECOVERY_ACCESS_TOKEN");
+    if (incoming != null) link.accessToken = incoming;
+    linkMode = !link.accessToken.isEmpty() || (state != null && state.getBoolean("link_mode"));
+    if (linkMode) mode = 1;
+    password.setSaveEnabled(false);
+    confirm.setSaveEnabled(false);
     email.setText(draft.email);
     token.setText(draft.identifier);
     password.setText(draft.password);
@@ -83,6 +93,10 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
     }
     
     render();
+    if (linkMode && link.accessToken.isEmpty()) {
+      status.setText(R.string.auth_link_invalid);
+      submit.setEnabled(false);
+    }
   }
 
   private void render() {
@@ -94,10 +108,12 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
         buttons =
             {R.string.auth_recovery_send, R.string.auth_reset_button, R.string.auth_verify_button};
     ((TextView) findViewById(R.id.recovery_title)).setText(titles[mode]);
-    ((TextView) findViewById(R.id.recovery_intro)).setText(intro[mode]);
+    ((TextView) findViewById(R.id.recovery_intro)).setText(linkMode ? R.string.auth_reset_link_body : intro[mode]);
     submit.setText(buttons[mode]);
-    AuthFields.container(email).setVisibility(View.VISIBLE);
-    AuthFields.container(token).setVisibility(mode == 0 ? View.GONE : View.VISIBLE);
+    findViewById(R.id.recovery_reset_mode).setVisibility(linkMode ? View.GONE : View.VISIBLE);
+    findViewById(R.id.recovery_verify_mode).setVisibility(linkMode ? View.GONE : View.VISIBLE);
+    AuthFields.container(email).setVisibility(linkMode ? View.GONE : View.VISIBLE);
+    AuthFields.container(token).setVisibility(mode == 0 || linkMode ? View.GONE : View.VISIBLE);
     AuthFields.container(password).setVisibility(mode == 1 ? View.VISIBLE : View.GONE);
     AuthFields.container(confirm).setVisibility(mode == 1 ? View.VISIBLE : View.GONE);
     resend.setVisibility(mode == 2 ? View.VISIBLE : View.GONE);
@@ -148,12 +164,12 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
         code = AuthFields.text(token).trim(),
         secret = AuthFields.text(password);
     FormFeedback.clear(email, token, password, confirm);
-    if (!AuthFields.email(e)) {
+    if (!linkMode && !AuthFields.email(e)) {
       FormFeedback.error(email, R.string.auth_invalid_email);
       FormFeedback.focus(email);
       return;
     }
-    if (!again && mode > 0 && code.isEmpty()) {
+    if (!linkMode && !again && mode > 0 && code.isEmpty()) {
       FormFeedback.error(token, R.string.auth_token_required);
       FormFeedback.focus(token);
       return;
@@ -176,13 +192,14 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
     resend.setEnabled(false);
     status.setText(R.string.auth_processing);
     int requestedMode = mode;
+    String recoveryAccess = link.accessToken;
     actions.submit(
         () ->
             again
                 ? service.resendVerification(e)
                 : requestedMode == 0
                     ? service.requestReset(e)
-                    : requestedMode == 1 ? service.reset(e, code, secret) : service.verify(e, code),
+                    : requestedMode == 1 ? (linkMode ? service.resetFromLink(recoveryAccess, secret) : service.reset(e, code, secret)) : service.verify(e, code),
         result -> {
           submit.setEnabled(true);
           updateResendButton();
@@ -214,6 +231,9 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .show();
           } else if (result == RecoveryService.Result.PASSWORD_RESET) {
+            link.clear();
+            password.setText("");
+            confirm.setText("");
             draft.consumed();
             new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setMessage(message)
@@ -231,6 +251,7 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
 
   @Override
   protected void onSaveInstanceState(Bundle out) {
+    out.putBoolean("link_mode", linkMode);
     out.putInt("mode", mode);
     out.putLong("resend_until", resendUntil);
     super.onSaveInstanceState(out);
@@ -238,6 +259,7 @@ public final class AuthRecoveryActivity extends AppCompatActivity {
 
   @Override
   protected void onDestroy() {
+    if (resendTimer != null) resendTimer.cancel();
     if (actions != null) actions.close();
     super.onDestroy();
   }

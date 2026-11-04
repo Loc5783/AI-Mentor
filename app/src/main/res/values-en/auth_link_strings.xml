@@ -1,0 +1,4 @@
+<resources>
+    <string name="auth_reset_link_body">Enter a new password for the account verified through your email.</string>
+    <string name="auth_link_invalid">This link is invalid or expired. Return to sign in and request a new email.</string>
+</resources>

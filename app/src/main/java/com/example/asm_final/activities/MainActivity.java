@@ -16,12 +16,23 @@ public class MainActivity extends AppCompatActivity {
   private TextView message, register;
   private AuthFormModel model;
   private boolean emailConfirmedCallback;
+  private boolean invalidCallback;
 
   @Override
   protected void onCreate(Bundle state) {
     super.onCreate(state);
     setContentView(R.layout.activity_main);
-    emailConfirmedCallback = isEmailConfirmationCallback(getIntent());
+    AuthCallback callback = AuthCallback.parse(Intent.ACTION_VIEW.equals(getIntent().getAction())
+        && getIntent().getData() != null ? getIntent().getData().toString() : null);
+    getIntent().setData(null);
+    if (callback.kind == AuthCallback.Kind.RECOVERY) {
+      startActivity(new Intent(this, AuthRecoveryActivity.class)
+          .putExtra("RECOVERY_ACCESS_TOKEN", callback.accessToken));
+      finish();
+      return;
+    }
+    emailConfirmedCallback = callback.kind == AuthCallback.Kind.SIGNUP;
+    invalidCallback = callback.kind == AuthCallback.Kind.INVALID;
     AuthChrome.bind(this);
     AppServices services = ((AiMentorApplication) getApplication()).services();
     model = new ViewModelProvider(this).get(AuthFormModel.class);
@@ -71,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
           remember.setEnabled(!s.busy);
           findViewById(R.id.tvForgotPassword).setEnabled(!s.busy);
           message.setText(
-              emailConfirmedCallback && !s.busy && s.error == 0 && s.ticket == null
+              invalidCallback && !s.busy && s.error == 0 && s.ticket == null
+                  ? R.string.auth_link_invalid
+                  : emailConfirmedCallback && !s.busy && s.error == 0 && s.ticket == null
                   ? R.string.supabase_email_confirmed_return
                   : s.busy
                       ? R.string.auth_processing
@@ -92,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     if (!model.restoreAttempted) {
       model.restoreAttempted = true;
       String saved = AuthSession.remembered(this);
-      if (!saved.isEmpty() && !emailConfirmedCallback) {
+      if (!saved.isEmpty() && !emailConfirmedCallback && !invalidCallback) {
         model.remember = true;
         remember.setChecked(true);
         model.submit(
@@ -103,13 +116,4 @@ public class MainActivity extends AppCompatActivity {
     }
   }
 
-  private static boolean isEmailConfirmationCallback(Intent intent) {
-    Uri uri = intent == null ? null : intent.getData();
-    return intent != null
-        && Intent.ACTION_VIEW.equals(intent.getAction())
-        && uri != null
-        && "aimentor".equals(uri.getScheme())
-        && "auth".equals(uri.getHost())
-        && "/callback".equals(uri.getPath());
-  }
 }

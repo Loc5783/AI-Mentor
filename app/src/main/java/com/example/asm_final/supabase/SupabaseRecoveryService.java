@@ -26,7 +26,7 @@ public final class SupabaseRecoveryService implements RecoveryService {
 
   @Override
   public Result requestReset(String email) {
-    return request("POST", "/auth/v1/recover", json("email", email.trim()), null);
+    return request("POST", SupabaseAuthRedirect.withCallback("/auth/v1/recover"), json("email", email.trim()), null);
   }
 
   @Override
@@ -46,6 +46,19 @@ public final class SupabaseRecoveryService implements RecoveryService {
           json("type", "recovery", "email", email.trim(), "token", token.trim()), null);
       String accessToken = new JSONObject(response).getString("access_token");
       if (accessToken.isBlank()) return Result.INVALID_TOKEN;
+      http.request("PUT", "/auth/v1/user", json("password", password), accessToken);
+      return Result.PASSWORD_RESET;
+    } catch (Exception failure) {
+      return failure instanceof BackendClient.Failure && isInvalidToken((BackendClient.Failure) failure)
+          ? Result.INVALID_TOKEN : Result.FAILED;
+    }
+  }
+
+  @Override
+  public Result resetFromLink(String accessToken, String password) {
+    if (accessToken == null || accessToken.isBlank()) return Result.INVALID_TOKEN;
+    try {
+      http.request("GET", "/auth/v1/user", null, accessToken);
       http.request("PUT", "/auth/v1/user", json("password", password), accessToken);
       return Result.PASSWORD_RESET;
     } catch (Exception failure) {

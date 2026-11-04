@@ -22,4 +22,6 @@ public interface RecoveryService {
   Result verify(String email, String token);
 
   Result reset(String email, String token, String password);
+
+  default Result resetFromLink(String accessToken, String password) { return Result.UNAVAILABLE; }
 }

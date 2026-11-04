@@ -35,3 +35,10 @@ local.properties
 /backend/.env
 *.sqlite3-wal
 *.sqlite3-shm
+
+# Private local configuration and credentials
+/.secrets/
+/supabase.properties
+/supabase.local.properties
+/output/
+/supabase/.temp/
