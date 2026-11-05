@@ -1,7 +1,7 @@
 # Kiểm Kê Di Chuyển Dữ Liệu: SQLite (aimentor.sqlite3) Sang Supabase Postgres
 
 > **Trạng thái:** Kế hoạch di chuyển & kiểm kê dữ liệu Ngoại tuyến (Phase 1 Offline Preparation).  
-> **Dự án đích:** Supabase Project `qvhdoczieavwjmfrcibe` (`https://qvhdoczieavwjmfrcibe.supabase.co`).  
+> **Dự án đích:** Supabase Project `hnxphwuaccztzanjcuca` (`https://hnxphwuaccztzanjcuca.supabase.co`).
 > **Cơ sở dữ liệu nguồn:** `backend/data/aimentor.sqlite3` (Bản sao lưu bất biến: `backend/data/aimentor-before-supabase-20261101T015355Z.sqlite3`).  
 > **Nguyên tắc an toàn:** Tuyệt đối không xóa/ghi đè bản sao lưu; không đọc hoặc in ra giá trị mật khẩu hash hay thông tin cá nhân học sinh; không áp dụng di chuyển lên cụm live trong pha 1.
 

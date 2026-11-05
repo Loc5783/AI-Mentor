@@ -9,7 +9,7 @@ import java.util.Properties
 
 /**
  * Offline regression tests verifying Supabase configuration integrity:
- * - Proper project ref and publishable key targeting (qvhdoczieavwjmfrcibe).
+ * - Proper project ref and publishable key targeting the selected AI Mentor project.
  * - Absence of server secret / service_role keys.
  * - Configuration override precedence.
  * - Local FastAPI debug fallback preservation.
@@ -17,13 +17,11 @@ import java.util.Properties
 class SupabaseConfigTest {
 
     @Test
-    fun effectiveBuildConfigTargetsNewProjectAndNeverOldProject() {
+    fun effectiveBuildConfigTargetsSelectedProject() {
         val url = BuildConfig.SUPABASE_URL
         assertNotNull(url)
         assertTrue("Must start with https://", url.startsWith("https://"))
-        assertTrue("Must target project qvhdoczieavwjmfrcibe", url.contains("qvhdoczieavwjmfrcibe"))
-        assertFalse("Must never silently target deprecated project hnxphwuaccztzanjcuca", url.contains("hnxphwuaccztzanjcuca"))
-        assertEquals("https://qvhdoczieavwjmfrcibe.supabase.co", url)
+        assertEquals("https://hnxphwuaccztzanjcuca.supabase.co", url)
     }
 
     @Test
@@ -33,7 +31,7 @@ class SupabaseConfigTest {
         assertTrue("Must be publishable client key format", key.startsWith("sb_publishable_"))
         assertFalse("Must never contain service_role secret", key.contains("service_role"))
         assertFalse("Must never contain secret_ key", key.contains("secret"))
-        assertEquals("sb_publishable_zVfQ6zmld4qsQbuD4Osw_w_uaPgQHYa", key)
+        assertEquals("sb_publishable_u38oy7jkKi-YbA49jtnTXA_hHQfGGIa", key)
     }
 
     @Test
@@ -55,8 +53,8 @@ class SupabaseConfigTest {
     fun configurationOverridePrecedenceWorksCorrectly() {
         // Precedence: supabase.local.properties.example < supabase.properties < supabase.local.properties
         val example = """
-            SUPABASE_URL=https://qvhdoczieavwjmfrcibe.supabase.co
-            SUPABASE_PUBLISHABLE_KEY=sb_publishable_zVfQ6zmld4qsQbuD4Osw_w_uaPgQHYa
+            SUPABASE_URL=https://hnxphwuaccztzanjcuca.supabase.co
+            SUPABASE_PUBLISHABLE_KEY=sb_publishable_u38oy7jkKi-YbA49jtnTXA_hHQfGGIa
             SUPABASE_ENABLED=true
         """.trimIndent()
 
@@ -68,7 +66,7 @@ class SupabaseConfigTest {
 
         val props = Properties()
         props.load(ByteArrayInputStream(example.toByteArray(Charsets.UTF_8)))
-        assertEquals("https://qvhdoczieavwjmfrcibe.supabase.co", props.getProperty("SUPABASE_URL"))
+        assertEquals("https://hnxphwuaccztzanjcuca.supabase.co", props.getProperty("SUPABASE_URL"))
         assertEquals("true", props.getProperty("SUPABASE_ENABLED"))
 
         // Applying override simulates higher-precedence file
