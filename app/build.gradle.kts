@@ -46,6 +46,10 @@ val disableSupabaseForTests =
     providers.gradleProperty("disableSupabaseForTests").orNull?.toBoolean() ?: false
 val supabaseEnabled =
     supabaseConfig.getProperty("SUPABASE_ENABLED", "false") == "true" && !disableSupabaseForTests
+val debugGuestMode = providers.gradleProperty("debugGuestMode").orNull?.toBoolean() ?: false
+// Optional side-by-side device build when the installed app uses another signing key.
+val sideBySideTest = providers.gradleProperty("sideBySideTest").orNull?.toBoolean() ?: false
+// Project selection is provided by the public Supabase configuration.
 require(!supabaseEnabled || (supabaseUrl.matches(Regex("https://[a-z0-9-]+\\.supabase\\.co")) && supabaseKey.matches(Regex("sb_publishable_[A-Za-z0-9_-]+")))) { "Invalid Supabase public configuration" }
 
 android {
@@ -53,6 +57,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
+        buildConfigField("boolean", "DEBUG_GUEST_MODE", "false")
         buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
         buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"$supabaseKey\"")
         buildConfigField("boolean", "SUPABASE_ENABLED", supabaseEnabled.toString())
@@ -68,6 +73,9 @@ android {
 
     buildTypes {
         debug {
+            if (sideBySideTest) applicationIdSuffix = ".preview"
+            manifestPlaceholders["mentorDebugLabel"] = if (sideBySideTest) "AI Mentor Test" else "@string/app_name"
+            buildConfigField("boolean", "DEBUG_GUEST_MODE", debugGuestMode.toString())
             buildConfigField("String", "MENTOR_BACKEND_URL", "\"$debugBackendUrl\"")
         }
         release {

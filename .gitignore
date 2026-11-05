@@ -42,3 +42,7 @@ local.properties
 /supabase.local.properties
 /output/
 /supabase/.temp/
+
+/backend/.env.supabase.local
+/backend/.env.supabase-admin.local
+/backend/.env.gemini.local

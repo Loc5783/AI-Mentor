@@ -15,6 +15,7 @@
   <string name="design_tab_home">Trang chủ</string>
   <string name="design_tab_chat">Chat AI</string>
   <string name="design_tab_lessons">Bài học</string>
+  <string name="design_tab_schedule">Lịch học</string>
   <string name="design_tab_competition">Thi đua</string>
   <string name="design_chart_legend">Xanh: EXP · Cam: ngày đã thắp streak</string>
   <string name="home_status_title">Tiến độ học tập</string>

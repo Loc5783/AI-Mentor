@@ -99,7 +99,7 @@ class ComposeRedesignTest {
     }
 
     @Test(timeout = 60000) fun fiveTabsAndEmptyChartHaveUsefulContent() {
-        listOf(R.string.design_tab_home, R.string.design_tab_chat, R.string.design_tab_lessons, R.string.design_tab_competition, R.string.nav_profile_label).forEach {
+        listOf(R.string.design_tab_home, R.string.design_tab_lessons, R.string.design_tab_schedule, R.string.design_tab_competition, R.string.nav_profile_label).forEach {
             compose.onAllNodesWithText(label(it)).onFirst().assertExists()
         }
         capture("home")

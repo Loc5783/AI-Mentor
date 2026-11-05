@@ -5,5 +5,6 @@
   <item name="nav_competition" type="id" />
   <item name="nav_home" type="id" />
   <item name="nav_profile" type="id" />
+  <item name="nav_schedule" type="id" />
   <item name="nav_settings" type="id" />
 </resources>

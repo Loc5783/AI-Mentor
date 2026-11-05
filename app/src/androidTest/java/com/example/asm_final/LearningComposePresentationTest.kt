@@ -14,7 +14,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.asm_final.R
 import com.example.asm_final.learning.LessonPathData
 import com.example.asm_final.ui.PathContent
-import com.example.mentor.learning.SubjectId
 import com.example.mentor.ui.design.MentorTheme
 import org.json.JSONArray
 import org.json.JSONObject
@@ -38,7 +37,7 @@ class LearningComposePresentationTest {
             CompositionLocalProvider(LocalDensity provides Density(LocalDensity.current.density, 1.3f)) {
                 MentorTheme(dark) {
                     Column(Modifier.width(320.dp).verticalScroll(rememberScrollState())) {
-                        PathContent(LessonPathData(units), SubjectId.MATH) { opened.add(it) }
+                        PathContent(LessonPathData(units)) { opened.add(it) }
                     }
                 }
             }

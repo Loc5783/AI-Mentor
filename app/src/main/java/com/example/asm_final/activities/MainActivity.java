@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             AuthRoutes.open(this, ticket.username, ticket.profile, true);
           }
         });
-    if (!model.restoreAttempted) {
+    if (!BuildConfig.DEBUG_GUEST_MODE && !model.restoreAttempted) {
       model.restoreAttempted = true;
       String saved = AuthSession.remembered(this);
       if (!saved.isEmpty() && !emailConfirmedCallback && !invalidCallback) {
@@ -113,6 +113,12 @@ public class MainActivity extends AppCompatActivity {
             () -> services.accountAccess().restore(saved),
             R.string.auth_route_error);
       }
+    }
+    if (BuildConfig.DEBUG_GUEST_MODE) {
+      model.submit(
+          services.io(),
+          () -> com.example.asm_final.utils.DebugGuestAccess.authenticate(this, services),
+          R.string.login_msg_fail);
     }
   }
 

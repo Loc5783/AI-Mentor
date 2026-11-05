@@ -113,26 +113,7 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
         }
 
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 18.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                if (!profile) {
-                    val scheduleLabel = stringResource(R.string.home_schedule_title)
-                    PremiumDashboardCard(palette, modifier = Modifier.clickable(
-                        onClickLabel = scheduleLabel, role = Role.Button, onClick = schedule)) {
-                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                            Box(Modifier.size(48.dp).clip(RoundedCornerShape(14.dp))
-                                .background(palette.iconSurface), contentAlignment = Alignment.Center) {
-                                Icon(painterResource(R.drawable.ic_book_course), null, Modifier.size(26.dp), tint = palette.accent)
-                            }
-                            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                                Text(scheduleLabel, style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.SemiBold, color = palette.title)
-                                Text(stringResource(R.string.home_schedule_subtitle),
-                                    style = MaterialTheme.typography.bodySmall, color = palette.secondary)
-                            }
-                            Icon(painterResource(R.drawable.ic_chevron_right), null, Modifier.size(20.dp), tint = palette.muted)
-                        }
-                    }
-                }
+
 
             if (loading) {
                 repeat(3) { MentorSkeleton(stringResource(R.string.course_loading)) }

@@ -89,7 +89,7 @@ public final class ConnectedLearningTest {
     email = username + "@school.example";
     owner = (int) app.registration().register(username, "Mentor01!2026", email, "0901234567");
     assertTrue(owner > 0);
-    app.learners().setGrade(owner, 10);
+    app.learners().complete(new com.example.asm_final.onboarding.LearnerProfile(owner, 5, username, 10, "PHYSICS", 0, 0, 0));
     ActiveUser.set(context, owner);
     context.getSharedPreferences("backend_test", 0).edit().putString("endpoint", endpoint).commit();
     HttpURLConnection connection =
@@ -125,7 +125,7 @@ public final class ConnectedLearningTest {
           login.findViewById(R.id.btnLogin).performClick();
         });
     await(() -> current() instanceof HomeActivity);
-    ComposeProbe.text(compose, context.getString(R.string.design_today));
+    ComposeProbe.text(compose, context.getString(R.string.design_tab_home));
     assertEquals(owner, ActiveUser.get(context));
     try (com.example.asm_final.accounts.RemoteAccountLinks links =
         new com.example.asm_final.accounts.RemoteAccountLinks(context)) {

@@ -22,6 +22,7 @@
     <string name="todo_deleted">Task deleted</string>
 
     <string name="todo_add_title">Add To-Do Task</string>
+    <string name="todo_edit_title">Edit Task</string>
     <string name="todo_task_name">Task Name</string>
     <string name="todo_priority">Priority:</string>
     <string name="todo_priority_low">Low</string>
@@ -46,4 +47,12 @@
     <string name="schedule_period_morning">(Morning)</string>
     <string name="schedule_period_afternoon">(Afternoon)</string>
     <string name="schedule_repeat_days">Repeat on days:</string>
+
+    <string name="schedule_page_title">Schedule</string>
+    <string name="schedule_card_timetable">Timetable</string>
+    <string name="schedule_btn_add_class">Add Class</string>
+    <string name="schedule_empty_day">No classes scheduled for this day</string>
+    <string name="todo_card_title">To-Do List</string>
+    <string name="todo_btn_add_task">Add Task</string>
+    <string name="todo_empty_day">No tasks yet</string>
 </resources>

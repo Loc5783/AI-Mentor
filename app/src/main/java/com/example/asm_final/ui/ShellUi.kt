@@ -36,9 +36,10 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
     }
 
     fun navigate(id: Int, remember: Boolean) {
-        val route = destinations.firstOrNull { it.id == id }?.route ?: return
+        val targetId = if (id == 0) R.id.nav_schedule else id
+        val route = destinations.firstOrNull { it.id == targetId }?.route ?: return
         if (navigation == null) {
-            pending = id to remember
+            pending = targetId to remember
             return
         }
         if (navigation?.currentDestination?.route == route) return
@@ -46,6 +47,8 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
         // a saved tab stack that may bring the subpage back to the top.
         if (route == "profile" && navigation?.currentDestination?.route in listOf("settings", "edit-profile")
             && navigation?.popBackStack("profile", false) == true) return
+        if (route == "lessons" && navigation?.currentDestination?.route == "chat"
+            && navigation?.popBackStack("lessons", false) == true) return
         navigation?.navigate(route) {
             launchSingleTop = true
             if (!remember) {
@@ -67,12 +70,21 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
         val entry by nav.currentBackStackEntryAsState()
         val route = entry?.destination?.route
         val top = destinations.firstOrNull { it.route == route }
-        val selectedRoute = if (route == "settings" || route == "edit-profile") "profile" else route
+        val selectedRoute = when (route) {
+            "settings", "edit-profile" -> "profile"
+            "chat" -> "lessons"
+            else -> route
+        }
         val motion = motionEnabled()
         val duration = if (motion) MentorTokens.MotionMillis else 0
         val arguments = remember(username) { Bundle().apply { putString("USERNAME", username) } }
         BackHandler(enabled = route in tabs.map { it.route } && route != destinations.first { it.id == initial }.route) {
             navigate(initial, false)
+        }
+        BackHandler(enabled = route == "chat") {
+            if (!nav.popBackStack()) {
+                navigate(R.id.nav_category, false)
+            }
         }
         val keyboard = WindowInsets.ime.getBottom(LocalDensity.current) > 0
         
@@ -101,7 +113,11 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
                 Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
                     if (top != null && top !in tabs && route != "schedule") Row(Modifier.fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background)) {
-                        TextButton({ nav.popBackStack() }) {
+                        TextButton({
+                            if (!nav.popBackStack()) {
+                                navigate(R.id.nav_category, false)
+                            }
+                        }) {
                             Text(stringResource(R.string.course_back))
                         }
                     }
@@ -126,14 +142,20 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
     private companion object {
         val destinations = listOf(
             Destination(R.id.nav_home, "home", R.string.design_tab_home, R.drawable.ic_home, HomeFragment::class.java),
-            Destination(R.id.nav_chat, "chat", R.string.design_tab_chat, R.drawable.ic_chat, GeneralChatFragment::class.java),
             Destination(R.id.nav_category, "lessons", R.string.design_tab_lessons, R.drawable.ic_category, LessonHubFragment::class.java),
+            Destination(R.id.nav_schedule, "schedule", R.string.design_tab_schedule, R.drawable.ic_schedule, com.example.mentor.schedule.ui.ScheduleFragment::class.java),
             Destination(R.id.nav_competition, "competition", R.string.design_tab_competition, R.drawable.ic_competition, CompetitionFragment::class.java),
             Destination(R.id.nav_profile, "profile", R.string.nav_profile_label, R.drawable.ic_nav_profile, ProfileHubFragment::class.java),
+            Destination(R.id.nav_chat, "chat", R.string.design_tab_chat, R.drawable.ic_chat, GeneralChatFragment::class.java),
             Destination(R.id.nav_settings, "settings", R.string.settings_title, R.drawable.ic_nav_profile, SettingsFragment::class.java),
-            Destination(R.id.nav_edit_profile, "edit-profile", R.string.profile_edit, R.drawable.ic_nav_profile, ProfileFragment::class.java),
-            Destination(0, "schedule", 0, 0, com.example.mentor.schedule.ui.ScheduleFragment::class.java)
+            Destination(R.id.nav_edit_profile, "edit-profile", R.string.profile_edit, R.drawable.ic_nav_profile, ProfileFragment::class.java)
         )
-        val tabs = destinations.take(5)
+        val tabs = listOf(
+            destinations.first { it.id == R.id.nav_home },
+            destinations.first { it.id == R.id.nav_category },
+            destinations.first { it.id == R.id.nav_schedule },
+            destinations.first { it.id == R.id.nav_competition },
+            destinations.first { it.id == R.id.nav_profile }
+        )
     }
 }

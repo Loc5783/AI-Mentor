@@ -2,35 +2,120 @@ package com.example.mentor.schedule.ui
 
 import com.example.mentor.ui.design.mentorHeader
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mentor.schedule.R
 import com.example.mentor.schedule.domain.ScheduleEntry
 import com.example.mentor.schedule.domain.ScheduleRepository
+import com.example.mentor.schedule.domain.TodoTask
 import kotlinx.coroutines.launch
 
 import android.app.Application
 import androidx.compose.ui.platform.LocalContext
+
+private val NullableScheduleEntrySaver: Saver<ScheduleEntry?, Any> = listSaver(
+    save = { entry ->
+        if (entry == null) {
+            listOf()
+        } else {
+            listOf(
+                entry.id,
+                entry.accountId,
+                entry.title,
+                entry.dayOfWeek,
+                entry.period,
+                entry.teacher ?: "",
+                entry.notes ?: ""
+            )
+        }
+    },
+    restore = { list ->
+        if (list.isEmpty()) {
+            null
+        } else {
+            val teacherStr = list[5] as? String
+            val notesStr = list[6] as? String
+            ScheduleEntry(
+                id = (list[0] as? Number)?.toLong() ?: 0L,
+                accountId = list[1] as? String ?: "",
+                title = list[2] as? String ?: "",
+                dayOfWeek = (list[3] as? Number)?.toInt() ?: 1,
+                period = (list[4] as? Number)?.toInt() ?: 1,
+                teacher = if (teacherStr.isNullOrEmpty()) null else teacherStr,
+                notes = if (notesStr.isNullOrEmpty()) null else notesStr
+            )
+        }
+    }
+)
+
+private val NullableTodoTaskSaver: Saver<TodoTask?, Any> = listSaver(
+    save = { task ->
+        if (task == null) {
+            listOf()
+        } else {
+            listOf(
+                task.id,
+                task.accountId,
+                task.title,
+                task.isCompleted,
+                task.dayOfWeek,
+                task.priority,
+                task.linkedSubject ?: "",
+                task.createdAt,
+                task.completedAt ?: -1L
+            )
+        }
+    },
+    restore = { list ->
+        if (list.isEmpty()) {
+            null
+        } else {
+            val subjectStr = list[6] as? String
+            val completedAtVal = (list[8] as? Number)?.toLong()
+            TodoTask(
+                id = (list[0] as? Number)?.toLong() ?: 0L,
+                accountId = list[1] as? String ?: "",
+                title = list[2] as? String ?: "",
+                isCompleted = list[3] as? Boolean ?: false,
+                dayOfWeek = (list[4] as? Number)?.toInt() ?: 1,
+                priority = (list[5] as? Number)?.toInt() ?: 1,
+                linkedSubject = if (subjectStr.isNullOrEmpty()) null else subjectStr,
+                createdAt = (list[7] as? Number)?.toLong() ?: 0L,
+                completedAt = if (completedAtVal == null || completedAtVal < 0) null else completedAtVal
+            )
+        }
+    }
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleScreen(
     accountId: String,
     repository: ScheduleRepository,
-    onBack: () -> Unit
+    onBack: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val factory = remember { ScheduleViewModelFactory(context.applicationContext as Application, accountId, repository) }
@@ -39,11 +124,13 @@ fun ScheduleScreen(
     val daysArray = stringResource(R.string.schedule_days).split(",")
     val selectedDay by viewModel.selectedDay
     
-    var selectedTabIndex by remember { mutableStateOf(0) }
-    var showScheduleForm by remember { mutableStateOf(false) }
-    var showTodoForm by remember { mutableStateOf(false) }
-    var showHistory by remember { mutableStateOf(false) }
-    var entryToEdit by remember { mutableStateOf<ScheduleEntry?>(null) }
+    var showScheduleForm by rememberSaveable { mutableStateOf(false) }
+    var showTodoForm by rememberSaveable { mutableStateOf(false) }
+    var showHistory by rememberSaveable { mutableStateOf(false) }
+    var entryToEdit by rememberSaveable(stateSaver = NullableScheduleEntrySaver) { mutableStateOf<ScheduleEntry?>(null) }
+    var taskToEdit by rememberSaveable(stateSaver = NullableTodoTaskSaver) { mutableStateOf<TodoTask?>(null) }
+    var scheduleDialogSession by rememberSaveable { mutableStateOf(0) }
+    var todoDialogSession by rememberSaveable { mutableStateOf(0) }
     
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -56,13 +143,13 @@ fun ScheduleScreen(
         topBar = {
             TopAppBar(
                 modifier = Modifier.mentorHeader(com.example.mentor.ui.design.MentorArtwork.PLANNER),
-                title = { Text(if (selectedTabIndex == 0) stringResource(R.string.schedule_tab_schedule) else stringResource(R.string.schedule_tab_todo)) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = androidx.compose.ui.graphics.Color.Transparent),
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
+                title = {
+                    Text(
+                        stringResource(R.string.schedule_page_title),
+                        fontWeight = FontWeight.Bold
+                    )
                 },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 actions = {
                     IconButton(onClick = { showHistory = true }) {
                         Icon(Icons.Default.DateRange, contentDescription = stringResource(R.string.schedule_history))
@@ -70,78 +157,305 @@ fun ScheduleScreen(
                 }
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { 
-                    if (selectedTabIndex == 0) {
-                        entryToEdit = null
-                        showScheduleForm = true
-                    } else {
-                        showTodoForm = true
-                    }
-                },
-                containerColor = MaterialTheme.colorScheme.secondary,
-                contentColor = MaterialTheme.colorScheme.onSecondary
-            ) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_add_button))
-            }
-        },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = androidx.compose.ui.graphics.Color.Transparent
+        containerColor = Color.Transparent
     ) { padding ->
-        Column(modifier = Modifier.padding(padding).fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             if (viewModel.error.value) {
-                Text(stringResource(R.string.schedule_connection_error), Modifier.padding(16.dp), color = MaterialTheme.colorScheme.error)
-                TextButton(onClick = { viewModel.loadData() }) { Text(stringResource(R.string.schedule_retry)) }
-            }
-            // Tabs cho Lịch học vs Nhiệm vụ
-            TabRow(selectedTabIndex = selectedTabIndex,
-                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = .9f)) {
-                Tab(
-                    selected = selectedTabIndex == 0,
-                    onClick = { selectedTabIndex = 0 },
-                    text = { Text(stringResource(R.string.schedule_tab_schedule)) }
-                )
-                Tab(
-                    selected = selectedTabIndex == 1,
-                    onClick = { selectedTabIndex = 1 },
-                    text = { Text(stringResource(R.string.schedule_tab_todo)) }
-                )
-            }
-            
-            // Thanh chọn ngày dùng chung
-            DaySelectorStrip(
-                days = daysArray,
-                selectedDay = selectedDay,
-                onDaySelected = { viewModel.selectDay(it) }
-            )
-            
-            if (selectedTabIndex == 0) {
-                ScheduleTimelineList(
-                    entries = viewModel.entries,
-                    onItemClick = { entry ->
-                        entryToEdit = entry
-                        showScheduleForm = true
-                    }
-                )
-            } else {
-                DailyTodoList(
-                    todos = viewModel.todos,
-                    progress = viewModel.todoProgress.value,
-                    onToggle = { viewModel.toggleTodo(it) },
-                    onDelete = { task ->
-                        viewModel.deleteTodo(task)
-                        scope.launch {
-                            val res = snackbarHostState.showSnackbar(
-                                message = deletedMsgTodo, 
-                                actionLabel = undoMsg, 
-                                duration = SnackbarDuration.Short
-                            )
-                            if (res == SnackbarResult.ActionPerformed) viewModel.undoDeleteTodo()
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier.padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            stringResource(R.string.schedule_connection_error),
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.weight(1f)
+                        )
+                        TextButton(onClick = { viewModel.loadData() }) {
+                            Text(stringResource(R.string.schedule_retry))
                         }
                     }
-                )
+                }
             }
+
+            // === KHUNG 1: THỜI KHÓA BIỂU ===
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)),
+                shadowElevation = 1.dp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp)) {
+                    // Header: Tiêu đề + Nút Thêm lịch
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = stringResource(R.string.schedule_card_timetable),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        FilledTonalButton(
+                            onClick = {
+                                entryToEdit = null
+                                scheduleDialogSession++
+                                showScheduleForm = true
+                            },
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_add), modifier = Modifier.size(18.dp))
+                            Spacer(Modifier.width(4.dp))
+                            Text(stringResource(R.string.schedule_btn_add_class))
+                        }
+                    }
+
+                    // Thanh chọn ngày/thứ
+                    DaySelectorStrip(
+                        days = daysArray,
+                        selectedDay = selectedDay,
+                        onDaySelected = { viewModel.selectDay(it) }
+                    )
+
+                    Spacer(Modifier.height(6.dp))
+
+                    // Danh sách các buổi học hoặc trạng thái trống gọn
+                    if (viewModel.entries.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 24.dp, horizontal = 16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.schedule_empty_day),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                OutlinedButton(onClick = {
+                                    entryToEdit = null
+                                    scheduleDialogSession++
+                                    showScheduleForm = true
+                                }) {
+                                    Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
+                                    Spacer(Modifier.width(4.dp))
+                                    Text(stringResource(R.string.schedule_btn_add_class))
+                                }
+                            }
+                        }
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            viewModel.entries.sortedBy { it.period }.forEach { entry ->
+                                ScheduleTimelineItemV2(entry) { clicked ->
+                                    entryToEdit = clicked
+                                    scheduleDialogSession++
+                                    showScheduleForm = true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // === KHUNG 2: VIỆC CẦN LÀM ===
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)),
+                shadowElevation = 1.dp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp)) {
+                    // Header: Tiêu đề + Nút Thêm việc
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = stringResource(R.string.todo_card_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        FilledTonalButton(
+                            onClick = {
+                                taskToEdit = null
+                                todoDialogSession++
+                                showTodoForm = true
+                            },
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.todo_add_title), modifier = Modifier.size(18.dp))
+                            Spacer(Modifier.width(4.dp))
+                            Text(stringResource(R.string.todo_btn_add_task))
+                        }
+                    }
+
+                    if (viewModel.todos.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 24.dp, horizontal = 16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.todo_empty_day),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                OutlinedButton(onClick = {
+                                    taskToEdit = null
+                                    todoDialogSession++
+                                    showTodoForm = true
+                                }) {
+                                    Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
+                                    Spacer(Modifier.width(4.dp))
+                                    Text(stringResource(R.string.todo_btn_add_task))
+                                }
+                            }
+                        }
+                    } else {
+                        // Progress bar
+                        val completed = viewModel.todos.count { it.isCompleted }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 4.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    stringResource(R.string.todo_daily_progress),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                Text(
+                                    "$completed/${viewModel.todos.size}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                            LinearProgressIndicator(
+                                progress = { viewModel.todoProgress.value },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(6.dp)
+                                    .clip(RoundedCornerShape(3.dp)),
+                                color = Color(0xFF10B981),
+                                trackColor = MaterialTheme.colorScheme.outlineVariant
+                            )
+                        }
+
+                        Spacer(Modifier.height(8.dp))
+
+                        // Danh sách việc (Chưa xong trước, Đã xong sau)
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            val incomplete = viewModel.todos.filter { !it.isCompleted }.sortedByDescending { it.priority }
+                            val complete = viewModel.todos.filter { it.isCompleted }.sortedByDescending { it.completedAt }
+
+                            incomplete.forEach { task ->
+                                TodoCard(
+                                    task = task,
+                                    onToggle = { viewModel.toggleTodo(it) },
+                                    onDelete = { taskToDelete ->
+                                        viewModel.deleteTodo(taskToDelete)
+                                        scope.launch {
+                                            val res = snackbarHostState.showSnackbar(
+                                                deletedMsgTodo,
+                                                undoMsg,
+                                                duration = SnackbarDuration.Short
+                                            )
+                                            if (res == SnackbarResult.ActionPerformed) viewModel.undoDeleteTodo()
+                                        }
+                                    },
+                                    onClick = { clicked ->
+                                        taskToEdit = clicked
+                                        todoDialogSession++
+                                        showTodoForm = true
+                                    }
+                                )
+                            }
+
+                            if (complete.isNotEmpty()) {
+                                Text(
+                                    stringResource(R.string.todo_completed_section),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+                                )
+                                complete.forEach { task ->
+                                    TodoCard(
+                                        task = task,
+                                        onToggle = { viewModel.toggleTodo(it) },
+                                        onDelete = { taskToDelete ->
+                                            viewModel.deleteTodo(taskToDelete)
+                                            scope.launch {
+                                                val res = snackbarHostState.showSnackbar(
+                                                    deletedMsgTodo,
+                                                    undoMsg,
+                                                    duration = SnackbarDuration.Short
+                                                )
+                                                if (res == SnackbarResult.ActionPerformed) viewModel.undoDeleteTodo()
+                                            }
+                                        },
+                                        onClick = { clicked ->
+                                            taskToEdit = clicked
+                                            todoDialogSession++
+                                            showTodoForm = true
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
         }
     }
     
@@ -151,14 +465,20 @@ fun ScheduleScreen(
             accountId = accountId,
             selectedDay = selectedDay,
             viewModel = viewModel,
-            onDismiss = { showScheduleForm = false },
+            dialogSession = scheduleDialogSession,
+            onDismiss = {
+                showScheduleForm = false
+                entryToEdit = null
+            },
             onSave = { entries, isEdit ->
                 viewModel.saveEntries(entries, isEdit)
                 showScheduleForm = false
+                entryToEdit = null
             },
             onDelete = { entry ->
                 viewModel.deleteEntry(entry)
                 showScheduleForm = false
+                entryToEdit = null
                 scope.launch {
                     val result = snackbarHostState.showSnackbar(deletedMsgSchedule, undoMsg, duration = SnackbarDuration.Short)
                     if (result == SnackbarResult.ActionPerformed) viewModel.undoDeleteEntry()
@@ -169,10 +489,20 @@ fun ScheduleScreen(
     
     if (showTodoForm) {
         TodoQuickAddDialog(
-            onDismiss = { showTodoForm = false },
-            onSave = { title, priority ->
-                viewModel.saveTodo(title, priority, null)
+            initialTask = taskToEdit,
+            dialogSession = todoDialogSession,
+            onDismiss = {
                 showTodoForm = false
+                taskToEdit = null
+            },
+            onSave = { title, priority ->
+                if (taskToEdit != null) {
+                    viewModel.updateTodo(taskToEdit!!.copy(title = title, priority = priority))
+                } else {
+                    viewModel.saveTodo(title, priority, null)
+                }
+                showTodoForm = false
+                taskToEdit = null
             }
         )
     }
@@ -187,13 +517,19 @@ fun ScheduleScreen(
 }
 
 @Composable
-fun TodoQuickAddDialog(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
-    var title by remember { mutableStateOf("") }
-    var priority by remember { mutableStateOf(1) } // 0=Low, 1=Normal, 2=High
+fun TodoQuickAddDialog(
+    initialTask: TodoTask? = null,
+    dialogSession: Int = 0,
+    onDismiss: () -> Unit,
+    onSave: (String, Int) -> Unit
+) {
+    val isEdit = initialTask != null
+    var title by rememberSaveable(dialogSession) { mutableStateOf(initialTask?.title ?: "") }
+    var priority by rememberSaveable(dialogSession) { mutableStateOf(initialTask?.priority ?: 1) } // 0=Low, 1=Normal, 2=High
     
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.todo_add_title)) },
+        title = { Text(if (isEdit) stringResource(R.string.todo_edit_title) else stringResource(R.string.todo_add_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 OutlinedTextField(
@@ -230,28 +566,38 @@ fun ScheduleFormDialog(
     accountId: String,
     selectedDay: Int,
     viewModel: ScheduleViewModel,
+    dialogSession: Int = 0,
     onDismiss: () -> Unit,
     onSave: (List<ScheduleEntry>, Boolean) -> Unit,
     onDelete: (ScheduleEntry) -> Unit
 ) {
     val isEdit = initialEntry != null
-    var title by remember { mutableStateOf(initialEntry?.title ?: "") }
-    var teacher by remember { mutableStateOf(initialEntry?.teacher ?: "") }
-    var notes by remember { mutableStateOf(initialEntry?.notes ?: "") }
+    var title by rememberSaveable(dialogSession) { mutableStateOf(initialEntry?.title ?: "") }
+    var teacher by rememberSaveable(dialogSession) { mutableStateOf(initialEntry?.teacher ?: "") }
+    var notes by rememberSaveable(dialogSession) { mutableStateOf(initialEntry?.notes ?: "") }
     
-    var period by remember { mutableStateOf(initialEntry?.period ?: 1) }
-    var expanded by remember { mutableStateOf(false) }
+    var period by rememberSaveable(dialogSession) { mutableStateOf(initialEntry?.period ?: 1) }
+    var expanded by rememberSaveable(dialogSession) { mutableStateOf(false) }
     
     val daysArray = stringResource(R.string.schedule_days).split(",")
-    val selectedDays = remember { mutableStateListOf<Int>() }
-    
-    LaunchedEffect(Unit) {
-        if (!isEdit && selectedDays.isEmpty()) selectedDays.add(selectedDay)
-        else if (isEdit) selectedDays.add(initialEntry!!.dayOfWeek)
+    val selectedDays = rememberSaveable(
+        dialogSession,
+        saver = listSaver<SnapshotStateList<Int>, Int>(
+            save = { it.toList() },
+            restore = { it.toMutableStateList() }
+        )
+    ) {
+        val list = mutableStateListOf<Int>()
+        if (!isEdit) {
+            list.add(selectedDay)
+        } else {
+            list.add(initialEntry!!.dayOfWeek)
+        }
+        list
     }
     
-    var titleError by remember { mutableStateOf<String?>(null) }
-    var overlapWarning by remember { mutableStateOf<String?>(null) }
+    var titleError by rememberSaveable(dialogSession) { mutableStateOf<String?>(null) }
+    var overlapWarning by rememberSaveable(dialogSession) { mutableStateOf<String?>(null) }
     
     fun validate(): Boolean {
         var valid = true

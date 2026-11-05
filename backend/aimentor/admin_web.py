@@ -6,289 +6,1457 @@ ADMIN_HTML = """<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Mentor - Quản trị Kho nội dung</title>
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
-        .sidebar { background: #1e293b; color: white; min-height: 100vh; padding-top: 20px; }
-        .sidebar .nav-link { color: #94a3b8; padding: 12px 20px; border-radius: 8px; margin: 4px 12px; }
-        .sidebar .nav-link.active, .sidebar .nav-link:hover { color: white; background: #334155; }
-        .card { border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .badge-draft { background-color: #f59e0b; color: white; }
-        .badge-published { background-color: #10b981; color: white; }
-        .preview-box { background: #f1f5f9; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 8px; }
+        :root {
+            /* Indigo & Cobalt Theme Tokens */
+            --bg-page: #f1f5f9;
+            --bg-mesh: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.09) 0px, transparent 50%),
+                       radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+                       radial-gradient(at 50% 100%, rgba(139, 92, 246, 0.06) 0px, transparent 50%);
+            --bg-sidebar: linear-gradient(180deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+            --sidebar-color: #ffffff;
+            --sidebar-border: rgba(255, 255, 255, 0.14);
+            --bg-card: rgba(255, 255, 255, 0.90);
+            --bg-card-solid: #ffffff;
+            --bg-card-subtle: #f8fafc;
+            --border-card: rgba(226, 232, 240, 0.88);
+            --border-card-hover: rgba(99, 102, 241, 0.4);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --text-subtle: #94a3b8;
+            --nav-active-bg: linear-gradient(180deg, #ffffff 0%, #fff7ed 100%);
+            --nav-active-color: #78350f;
+            --nav-hover-bg: rgba(255, 255, 255, 0.16);
+            --dropzone-bg: rgba(239, 246, 255, 0.7);
+            --dropzone-border: #93c5fd;
+            --progress-bg: #e2e8f0;
+            --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+            --hero-bg: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #4f46e5 100%);
+            --hero-shadow: 0 20px 45px -10px rgba(67, 56, 202, 0.35);
+            --glass-blur: blur(16px);
+        }
+
+        /* --- Luminous Sapphire & Deep Slate Navy Dark Theme --- */
+        body.dark-theme {
+            --bg-page: #070d1e;
+            --bg-mesh: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.16) 0px, transparent 55%),
+                       radial-gradient(at 100% 10%, rgba(6, 182, 212, 0.12) 0px, transparent 50%),
+                       radial-gradient(at 50% 100%, rgba(139, 92, 246, 0.10) 0px, transparent 60%);
+            --bg-sidebar: linear-gradient(180deg, #091326 0%, #0d1e3d 50%, #122852 100%);
+            --sidebar-color: #f8fafc;
+            --sidebar-border: rgba(255, 255, 255, 0.08);
+            --bg-card: rgba(14, 25, 48, 0.85);
+            --bg-card-solid: #0e1930;
+            --bg-card-subtle: #132242;
+            --border-card: rgba(30, 58, 102, 0.7);
+            --border-card-hover: rgba(99, 102, 241, 0.55);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-subtle: #64748b;
+            --nav-active-bg: linear-gradient(180deg, #fff7ed 0%, #fed7aa 100%);
+            --nav-active-color: #451a03;
+            --nav-hover-bg: rgba(255, 255, 255, 0.12);
+            --dropzone-bg: rgba(18, 31, 54, 0.65);
+            --dropzone-border: #284774;
+            --progress-bg: #0c1626;
+            --card-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            --hero-bg: linear-gradient(135deg, #0f1d3b 0%, #172d5c 45%, #244485 100%);
+            --hero-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.7);
+            --glass-blur: blur(20px);
+        }
+
+        body.dark-theme .text-muted {
+            color: #94a3b8 !important;
+        }
+
+        * { box-sizing: border-box; }
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+        body {
+            background-color: var(--bg-page);
+            background-image: var(--bg-mesh);
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Responsive Mobile Topbar */
+        .mobile-topbar {
+            display: none;
+            height: 64px;
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-card);
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .hamburger-btn {
+            background: transparent;
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .hamburger-btn:hover {
+            background: var(--bg-card-subtle);
+            border-color: #3b82f6;
+            transform: scale(1.05);
+        }
+
+        /* Mobile Drawer Backdrop */
+        #mobile-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 1040;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #mobile-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Layout */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+
+        .sidebar {
+            width: 270px;
+            min-width: 270px;
+            background: var(--bg-sidebar);
+            color: var(--sidebar-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 26px 18px;
+            box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.16), 10px 0 35px -5px rgba(0, 0, 0, 0.08);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+            z-index: 1050;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        body.dark-theme .sidebar {
+            box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.10), 12px 0 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 32px 42px;
+            background-color: transparent;
+            overflow-y: auto;
+            min-height: 100vh;
+            min-width: 0;
+            max-width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 991.98px) {
+            .mobile-topbar {
+                display: flex;
+            }
+            #mobile-backdrop {
+                display: block;
+            }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                height: 100%;
+                width: 280px;
+                max-width: 85vw;
+                transform: translateX(-100%);
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+                box-shadow: 15px 0 50px rgba(0, 0, 0, 0.6);
+            }
+            .main-content {
+                padding: 20px 16px;
+            }
+            .desktop-header-user {
+                display: none !important;
+            }
+        }
+
+        /* Logo Brand */
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 10px 20px 10px;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .sidebar-brand:hover {
+            transform: translateY(-2px);
+            color: white;
+        }
+        .sidebar-logo-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            flex-shrink: 0;
+        }
+        .sidebar-brand-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        .sidebar-brand-sub {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.78);
+            font-weight: 500;
+        }
+
+        .sidebar-category {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: rgba(255, 255, 255, 0.65);
+            margin: 14px 12px 10px 12px;
+            text-transform: uppercase;
+        }
+
+        /* Sidebar Nav Links */
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.92);
+            font-weight: 700;
+            font-size: 1.12rem;
+            letter-spacing: -0.01em;
+            padding: 13px 20px;
+            border-radius: 16px;
+            margin: 5px 4px;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            display: flex;
+            align-items: center;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+            border: 1px solid transparent;
+        }
+        .sidebar .nav-link:hover {
+            color: #ffffff;
+            background: var(--nav-hover-bg);
+            transform: translateX(8px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .sidebar .nav-link.active {
+            color: var(--nav-active-color);
+            background: var(--nav-active-bg);
+            box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.22),
+                        inset 0 2px 0 rgba(255, 255, 255, 0.9),
+                        inset 0 -2px 0 rgba(217, 119, 6, 0.35);
+            transform: translateX(6px);
+            text-shadow: none;
+            font-weight: 800;
+        }
+        .sidebar .nav-link.active::after {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: 25%;
+            height: 50%;
+            width: 5px;
+            border-radius: 4px;
+            background: #ffffff;
+            box-shadow: 0 0 10px #ffffff;
+        }
+
+        .sidebar-notice {
+            background: rgba(0, 0, 0, 0.18);
+            border-radius: 16px;
+            padding: 14px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        /* Top Header */
+        .admin-header-pre {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #3b82f6;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+        body.dark-theme .admin-header-pre {
+            color: #60a5fa;
+        }
+        .admin-header-title {
+            font-weight: 800;
+            font-size: 1.85rem;
+            letter-spacing: -0.02em;
+            margin: 0;
+            color: var(--text-main);
+        }
+        .admin-header-sub {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 4px;
+            margin-bottom: 0;
+        }
+
+        /* Theme toggle & Status buttons */
+        .theme-toggle-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            transition: all 0.25s ease;
+            font-size: 18px;
+            color: var(--text-main);
+        }
+        .theme-toggle-btn:hover {
+            transform: scale(1.08);
+            border-color: #3b82f6;
+        }
+        .badge-status-pill {
+            background: rgba(100, 116, 139, 0.18);
+            color: var(--text-main);
+            border: 1px solid var(--border-card);
+            border-radius: 20px;
+            padding: 7px 16px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .badge-status-logged {
+            background: rgba(16, 185, 129, 0.15) !important;
+            color: #10b981 !important;
+            border-color: rgba(16, 185, 129, 0.35) !important;
+        }
+        .btn-login-pill {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 7px 18px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            transition: all 0.25s ease;
+        }
+        .btn-login-pill:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+        }
+        .btn-logout-pill {
+            background: rgba(239, 68, 68, 0.12);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 20px;
+            padding: 7px 16px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .btn-logout-pill:hover {
+            background: #ef4444;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* 3D Perspective Hero Welcome Banner */
+        .hero-banner-wrapper {
+            perspective: 1200px;
+        }
+        .hero-banner {
+            background: var(--hero-bg);
+            color: white;
+            border-radius: 24px;
+            padding: 34px 38px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--hero-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+            transform-style: preserve-3d;
+        }
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: 20%;
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.25) 0%, rgba(6, 182, 212, 0) 75%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            letter-spacing: 0.02em;
+            transform: translateZ(20px);
+        }
+        .hero-title {
+            font-weight: 800;
+            font-size: 1.85rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            line-height: 1.25;
+            transform: translateZ(15px);
+        }
+        .hero-desc {
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 1rem;
+            max-width: 640px;
+            margin-bottom: 22px;
+            line-height: 1.5;
+            transform: translateZ(10px);
+        }
+        .btn-hero-primary {
+            background: white;
+            color: #1e3a8a;
+            font-weight: 800;
+            border-radius: 14px;
+            padding: 11px 22px;
+            border: none;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-hero-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.22);
+            color: #1d4ed8;
+        }
+        .btn-hero-secondary {
+            background: rgba(255, 255, 255, 0.16);
+            backdrop-filter: blur(8px);
+            color: white;
+            font-weight: 700;
+            border-radius: 14px;
+            padding: 11px 22px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-hero-secondary:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateY(-3px);
+            color: white;
+        }
+
+        /* Guest Notice Card (Issue 2) */
+        .guest-notice-card {
+            background: rgba(245, 158, 11, 0.08);
+            border: 1.5px solid rgba(245, 158, 11, 0.32);
+            border-radius: 20px;
+            padding: 18px 24px;
+            backdrop-filter: blur(12px);
+            color: var(--text-main);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.08);
+            transition: transform 0.25s ease;
+        }
+        body.dark-theme .guest-notice-card {
+            background: rgba(245, 158, 11, 0.12);
+            border-color: rgba(245, 158, 11, 0.4);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            color: #f8fafc;
+        }
+        body.dark-theme .guest-notice-card .text-muted {
+            color: #cbd5e1 !important;
+        }
+        .notice-icon {
+            font-size: 28px;
+            line-height: 1;
+        }
+        .stat-locked-tag {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            padding: 4px 12px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        /* 3D Stat Cards */
+        .stat-card-wrapper {
+            perspective: 800px;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 22px;
+            padding: 22px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            transform-style: preserve-3d;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.35s ease,
+                        border-color 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-6px) translateZ(8px) rotateX(1.5deg);
+            border-color: var(--border-card-hover);
+            box-shadow: 0 16px 36px -6px rgba(59, 130, 246, 0.22);
+        }
+        body.dark-theme .stat-card:hover {
+            box-shadow: 0 18px 42px -6px rgba(37, 99, 235, 0.38);
+        }
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover .stat-icon {
+            transform: scale(1.08);
+        }
+        .stat-icon-blue { background: rgba(37, 99, 235, 0.12); color: #2563eb; }
+        .stat-icon-green { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+        .stat-icon-yellow { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+        body.dark-theme .stat-icon-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        body.dark-theme .stat-icon-green { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+        body.dark-theme .stat-icon-yellow { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+
+        .stat-label {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 2.1rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        /* Content Card / Panel */
+        .content-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 22px;
+            padding: 24px 28px;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .progress-custom {
+            height: 12px;
+            border-radius: 10px;
+            background-color: var(--progress-bg);
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+        body.dark-theme .progress-custom {
+            border: 1px solid #1e3558;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Quick Access Cards (Exact 5s slow 405° rotation) */
+        .quick-card {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-card);
+            border-radius: 26px;
+            padding: 30px 36px;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: var(--text-main);
+            min-height: 130px;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        border-color 0.3s ease,
+                        box-shadow 0.35s ease,
+                        background-color 0.3s ease;
+        }
+        .quick-card:hover {
+            transform: translateY(-7px);
+            border-color: #3b82f6;
+            box-shadow: 0 22px 46px -10px rgba(59, 130, 246, 0.32);
+        }
+        body.dark-theme .quick-card {
+            box-shadow: 0 14px 34px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            border-color: #1e3558;
+        }
+        body.dark-theme .quick-card:hover {
+            background: #162642;
+            border-color: #3b82f6;
+            box-shadow: 0 22px 48px -6px rgba(37, 99, 235, 0.5);
+        }
+        .quick-icon {
+            width: 76px;
+            height: 76px;
+            border-radius: 24px;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            flex-shrink: 0;
+            box-shadow: 0 10px 26px rgba(37, 99, 235, 0.4);
+            /* Trở về vị trí ban đầu êm ái khi bỏ rê chuột */
+            transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.25, 1), box-shadow 0.5s ease;
+            will-change: transform;
+        }
+        .quick-icon svg {
+            width: 38px;
+            height: 38px;
+        }
+        body.dark-theme .quick-icon {
+            box-shadow: 0 0 24px rgba(37, 99, 235, 0.5);
+        }
+        /* Xoay hẳn 360 độ, 45 độ cuối xoay chậm lại, tổng 405 độ rồi dừng hẳn trong 5 giây */
+        .quick-card:hover .quick-icon {
+            transform: scale(1.16) rotate(405deg);
+            box-shadow: 0 14px 32px rgba(37, 99, 235, 0.6);
+            /* 5s thư thái: lướt qua 360 độ rồi 45 độ cuối hãm phanh chậm dần và dừng ở 405 độ */
+            transition: transform 5s cubic-bezier(0.16, 0.85, 0.2, 1.0), box-shadow 0.5s ease;
+        }
+        body.dark-theme .quick-card:hover .quick-icon {
+            transform: scale(1.16) rotate(405deg);
+            box-shadow: 0 0 35px rgba(59, 130, 246, 0.75);
+            transition: transform 5s cubic-bezier(0.16, 0.85, 0.2, 1.0), box-shadow 0.4s ease;
+        }
+        .quick-title {
+            font-weight: 800;
+            font-size: 1.38rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
+        .quick-desc {
+            font-size: 1.02rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .quick-arrow {
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease;
+            margin-left: 12px;
+        }
+        .quick-card:hover .quick-arrow {
+            transform: translateX(12px) scale(1.2);
+            color: #2563eb;
+        }
+        body.dark-theme .quick-card:hover .quick-arrow {
+            color: #60a5fa;
+        }
+
+        /* Wizard Step Cards */
+        .step-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 20px;
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.25s ease;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+        }
+        .step-number {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Dropzone Upload Box */
+        .dropzone-box {
+            border: 2px dashed var(--dropzone-border);
+            border-radius: 24px;
+            padding: 56px 24px;
+            text-align: center;
+            cursor: pointer;
+            background: var(--dropzone-bg);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        .dropzone-box:hover, .dropzone-box.dragover {
+            border-color: #2563eb;
+            background: rgba(37, 99, 235, 0.08);
+            transform: scale(1.01);
+        }
+        body.dark-theme .dropzone-box:hover, body.dark-theme .dropzone-box.dragover {
+            border-color: #60a5fa;
+            background: rgba(37, 99, 235, 0.16);
+        }
+        .dropzone-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 18px;
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+            transition: transform 0.3s ease;
+        }
+        .dropzone-box:hover .dropzone-icon {
+            transform: translateY(-4px) scale(1.08);
+        }
+
+        /* Tables & Lists (Issue 1 zero horizontal overflow) */
+        .table-responsive {
+            border-radius: 18px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .table-modern {
+            width: 100%;
+            margin-bottom: 0;
+            color: var(--text-main);
+            border-color: var(--border-card);
+        }
+        .table-modern th {
+            background: var(--bg-card-subtle);
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 16px 20px;
+            border-bottom: 1.5px solid var(--border-card);
+            white-space: nowrap;
+        }
+        .table-modern td {
+            padding: 18px 20px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-card);
+            background: transparent;
+            color: var(--text-main);
+        }
+        .table-modern tbody tr {
+            transition: background-color 0.2s ease;
+        }
+        .table-modern tbody tr:hover {
+            background-color: rgba(99, 102, 241, 0.04);
+        }
+        body.dark-theme .table-modern tbody tr:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+
+        /* Status Badges */
+        .badge-draft {
+            background-color: rgba(245, 158, 11, 0.14) !important;
+            color: #d97706 !important;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        body.dark-theme .badge-draft {
+            color: #fbbf24 !important;
+        }
+        .badge-published {
+            background-color: rgba(16, 185, 129, 0.14) !important;
+            color: #059669 !important;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        body.dark-theme .badge-published {
+            color: #34d399 !important;
+        }
+
+        /* Form Inputs & Controls */
+        .form-control, .form-select {
+            background-color: var(--bg-card);
+            border: 1.5px solid var(--border-card);
+            color: var(--text-main);
+            border-radius: 14px;
+            padding: 10px 16px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+        body.dark-theme .form-control, body.dark-theme .form-select {
+            background-color: #0c162a;
+            border-color: #1e3558;
+            color: #f8fafc;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+            background-color: var(--bg-card-solid);
+            color: var(--text-main);
+        }
+        body.dark-theme .form-control:focus, body.dark-theme .form-select:focus {
+            background-color: #101c36;
+            color: #ffffff;
+        }
+
+        /* Modals & Backdrop */
+        .modal-content {
+            background-color: var(--bg-card-solid);
+            color: var(--text-main);
+            border: 1px solid var(--border-card);
+            border-radius: 24px;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5);
+            backdrop-filter: var(--glass-blur);
+        }
+        body.dark-theme .modal-content {
+            background-color: #0e1930;
+            border-color: #203a66;
+        }
+        .modal-header {
+            border-bottom: 1px solid var(--border-card);
+            padding: 22px 28px;
+        }
+        .modal-footer {
+            border-top: 1px solid var(--border-card);
+            padding: 18px 28px;
+        }
+        body.dark-theme .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        /* Pre-auth Shield Icon */
+        .auth-prompt-shield-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(37, 99, 235, 0.12);
+            color: #2563eb;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        body.dark-theme .auth-prompt-shield-icon {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        /* Accessibility: prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .quick-card:hover .quick-icon {
+                transform: none !important;
+            }
+            .stat-card:hover {
+                transform: none !important;
+            }
+        }
+
     </style>
 </head>
 <body>
-    <div class="container-fluid" id="app-container">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar">
-                <div class="px-3 mb-4">
-                    <h5 class="fw-bold text-primary">🎓 AI Mentor Admin</h5>
-                    <small class="text-muted">Quản trị Kho nội dung</small>
+    <!-- Mobile Backdrop for off-canvas sidebar (Issue 1) -->
+    <div id="mobile-backdrop" onclick="closeMobileNav()"></div>
+
+    <!-- Mobile Top App Bar (visible on screens < 992px) -->
+    <div class="mobile-topbar">
+        <button id="btn-mobile-nav-toggle" class="hamburger-btn" title="Mở danh mục điều hướng" onclick="toggleMobileNav()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <div class="d-flex align-items-center gap-2">
+            <div class="sidebar-logo-icon" style="width:34px;height:34px;font-size:18px;border-radius:10px;">🎓</div>
+            <div class="fw-bold" style="font-size: 1.05rem; letter-spacing: -0.01em;">AI Mentor</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button id="btn-theme-toggle-mobile" class="theme-toggle-btn" style="width:36px;height:36px;font-size:16px;" title="Chuyển chế độ Sáng / Tối" onclick="toggleTheme()">🌙</button>
+            <span id="user-status-mobile" class="badge-status-pill" style="font-size:0.75rem;padding:5px 12px;">Khách</span>
+        </div>
+    </div>
+
+    <div class="admin-layout" id="app-container">
+        <!-- Sidebar Navigation Drawer -->
+        <aside class="sidebar">
+            <div>
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <a href="#" class="sidebar-brand mb-0 pb-0" onclick="showSection('dashboard')">
+                        <div class="sidebar-logo-icon">🎓</div>
+                        <div>
+                            <div class="sidebar-brand-title">AI Mentor</div>
+                            <div class="sidebar-brand-sub">Admin Console</div>
+                        </div>
+                    </a>
+                    <button id="btn-mobile-nav-close" class="btn-close btn-close-white d-lg-none me-2" onclick="closeMobileNav()" title="Đóng thanh điều hướng"></button>
                 </div>
+
+                <div class="sidebar-category">NỘI DUNG</div>
+
                 <nav class="nav flex-column">
-                    <a class="nav-link active" href="#" onclick="showSection('dashboard')">📊 Tổng quan</a>
-                    <a class="nav-link" href="#" onclick="showSection('import')">📥 Import Excel</a>
-                    <a class="nav-link" href="#" onclick="showSection('questions')">📝 Quản lý câu hỏi</a>
-                    <a class="nav-link" href="#" onclick="showSection('quizzes')">📚 Quản lý bộ đề</a>
-                    <a class="nav-link" href="#" onclick="showSection('exams')">📋 Quản lý đề thi</a>
+                    <a class="nav-link active" data-section="dashboard" href="#" onclick="showSection('dashboard')">
+                        Tổng quan
+                    </a>
+                    <a class="nav-link" data-section="import" href="#" onclick="showSection('import')">
+                        Import Excel
+                    </a>
+                    <a class="nav-link" data-section="questions" href="#" onclick="showSection('questions')">
+                        Quản lý câu hỏi
+                    </a>
+                    <a class="nav-link" data-section="quizzes" href="#" onclick="showSection('quizzes')">
+                        Quản lý bộ đề
+                    </a>
+                    <a class="nav-link" data-section="exams" href="#" onclick="showSection('exams')">
+                        Quản lý đề thi
+                    </a>
                 </nav>
             </div>
 
-            <!-- Main Content -->
-            <div class="col-md-9 col-lg-10 p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h3 class="fw-bold" id="page-title">Tổng quan Kho câu hỏi</h3>
-                        <p class="text-muted mb-0">Quản lý, kiểm tra và xuất bản nội dung trắc nghiệm</p>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <span id="user-status" class="badge bg-secondary p-2">Chưa đăng nhập</span>
-                        <button id="btn-login" class="btn btn-outline-primary btn-sm" onclick="openLoginModal()">🔑 Đăng nhập</button>
-                        <button id="btn-logout" class="btn btn-outline-danger btn-sm" style="display:none;" onclick="handleLogout()">Đăng xuất</button>
+            <div class="sidebar-notice">
+                <span style="font-size: 18px;">🛡️</span>
+                <span>Khu vực dành cho tài khoản Quản trị / Biên soạn nội dung.</span>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header Bar -->
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <div>
+                    <div class="admin-header-pre">ADMIN CONSOLE</div>
+                    <h3 class="admin-header-title" id="page-title">Tổng quan Kho câu hỏi</h3>
+                    <p class="admin-header-sub" id="page-subtitle">Quản lý, kiểm tra và xuất bản nội dung trắc nghiệm</p>
+                </div>
+                <div class="d-flex align-items-center gap-3 desktop-header-user">
+                    <button id="btn-theme-toggle" class="theme-toggle-btn" title="Chuyển chế độ Sáng / Tối" onclick="toggleTheme()">🌙</button>
+                    <span id="user-status" class="badge-status-pill">Chưa đăng nhập</span>
+                    <button id="btn-login" class="btn-login-pill" onclick="openLoginModal()">🔑 Đăng nhập</button>
+                    <button id="btn-logout" class="btn-logout-pill" style="display:none;" onclick="handleLogout()">🚪 Đăng xuất</button>
+                </div>
+            </div>
+
+            <!-- Banner alert for non-admin or error -->
+            <div id="auth-alert" class="alert alert-warning rounded-4 shadow-sm" style="display:none;"></div>
+
+<div id="section-dashboard" class="content-section">
+
+                <!-- Guest Notice Card (Issue 2) -->
+                <div id="dashboard-guest-notice" class="guest-notice-card mb-4" style="display:block;">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="notice-icon">🛡️</div>
+                            <div>
+                                <div class="fw-bold fs-6">Chế độ xem Khách (Chưa đăng nhập)</div>
+                                <div class="text-muted small">Đăng nhập tài khoản Quản trị để mở khóa số liệu thống kê thời gian thực và quản lý toàn bộ kho nội dung.</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" onclick="openLoginModal()">🔑 Đăng nhập ngay</button>
                     </div>
                 </div>
 
-                <!-- Banner alert for non-admin or error -->
-                <div id="auth-alert" class="alert alert-warning" style="display:none;"></div>
+                <!-- Hero Banner -->
+                <div class="hero-banner mb-4">
+                    <div class="hero-tag">✨ Bảng điều khiển</div>
+                    <h3 class="hero-title">Chào mừng đến với Kho nội dung AI Mentor</h3>
+                    <p class="hero-desc">Nhập câu hỏi từ Excel, gom thành bộ đề luyện tập và đề thi — tất cả trong một nơi.</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-hero-primary" onclick="showSection('import')">Import Excel</button>
+                        <button class="btn btn-hero-secondary" onclick="showSection('questions')">Xem câu hỏi</button>
+                    </div>
+                </div>
 
-                <!-- Dashboard Section -->
-                <div id="section-dashboard" class="content-section">
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-4">
-                            <div class="card p-3">
-                                <h6 class="text-muted">Tổng số câu hỏi</h6>
-                                <h2 class="fw-bold text-primary" id="stat-total">0</h2>
+                <!-- 3 Stat Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-blue">
+                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                            </div>
+                            <div>
+                                <div class="stat-label">Tổng số câu hỏi</div>
+                                <div class="stat-value text-primary" id="stat-total"><span class="stat-locked-tag" title="Đăng nhập để xem số liệu">🔒 Đăng nhập để xem</span></div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card p-3">
-                                <h6 class="text-muted">Đã xuất bản</h6>
-                                <h2 class="fw-bold text-success" id="stat-published">0</h2>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-green">
+                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <div>
+                                <div class="stat-label">Đã xuất bản</div>
+                                <div class="stat-value text-success" id="stat-published"><span class="stat-locked-tag" title="Đăng nhập để xem số liệu">🔒 Đăng nhập để xem</span></div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card p-3">
-                                <h6 class="text-muted">Bản nháp</h6>
-                                <h2 class="fw-bold text-warning" id="stat-draft">0</h2>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-yellow">
+                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                            </div>
+                            <div>
+                                <div class="stat-label">Bản nháp</div>
+                                <div class="stat-value text-warning" id="stat-draft"><span class="stat-locked-tag" title="Đăng nhập để xem số liệu">🔒 Đăng nhập để xem</span></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Import Section -->
-                <div id="section-import" class="content-section" style="display:none;">
-                    <div class="card p-4 mb-4">
-                        <h5 class="fw-bold mb-3">Tải mẫu Excel & Tải lên file câu hỏi</h5>
-                        <p class="text-muted">Định dạng file hỗ trợ: CSV, XLSX. Mỗi dòng đại diện cho 1 câu hỏi trắc nghiệm A-D.</p>
-                        <div class="mb-3 d-flex gap-2">
-                            <a href="/admin/template/excel?format=xlsx" class="btn btn-outline-success" download="Mau_Cau_Hoi_AI_Mentor.xlsx">
-                                📊 Tải mẫu Excel (.xlsx)
-                            </a>
-                            <a href="/admin/template/excel?format=csv" class="btn btn-outline-secondary" download="Mau_Cau_Hoi_AI_Mentor.csv">
-                                📄 Tải mẫu CSV (.csv)
-                            </a>
+                <!-- Tiến độ xuất bản -->
+                <div class="content-card mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0" style="font-size: 1.05rem;">Tiến độ xuất bản</h6>
+                        <div class="d-flex align-items-center gap-3 small">
+                            <span class="d-flex align-items-center gap-1">
+                                <span class="legend-dot bg-success"></span> Đã xuất bản <strong id="stat-prog-pub-pct">—%</strong>
+                            </span>
+                            <span class="d-flex align-items-center gap-1">
+                                <span class="legend-dot bg-warning"></span> Bản nháp <strong id="stat-prog-draft-pct">—%</strong>
+                            </span>
                         </div>
-                        <hr>
-                        <form id="import-form" onsubmit="handleImportPreview(event)">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Chọn file dữ liệu câu hỏi:</label>
-                                <input type="file" id="import-file" class="form-control" accept=".csv,.xlsx,.txt" required onchange="handleFileChange()">
-                            </div>
-                            <button type="submit" id="btn-import-preview" class="btn btn-primary">🔍 Tải lên & Kiểm tra lỗi (Preview)</button>
-                        </form>
                     </div>
+                    <div class="progress progress-custom">
+                        <div id="stat-bar-pub" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                        <div id="stat-bar-draft" class="progress-bar bg-warning" role="progressbar" style="width: 0%"></div>
+                    </div>
+                </div>
 
-                    <div id="import-results" style="display:none;">
-                        <div class="card p-4 mb-4">
-                            <h5 class="fw-bold mb-3">Báo cáo kiểm tra dữ liệu Import</h5>
-                            <div id="import-summary" class="alert alert-info"></div>
-
-                            <div id="import-errors" class="alert alert-danger" style="display:none;">
-                                <h6>⚠️ Danh sách lỗi cần sửa trong file:</h6>
-                                <ul id="error-list" class="mb-0"></ul>
-                            </div>
-
-                            <div id="import-preview-list" class="mb-3">
-                                <h6>✅ Danh sách câu hỏi hợp lệ sẵn sàng import:</h6>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Mã</th>
-                                                <th>Môn</th>
-                                                <th>Lớp</th>
-                                                <th>Câu hỏi</th>
-                                                <th>Đáp án đúng</th>
-                                                <th>Độ khó</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="preview-table-body"></tbody>
-                                    </table>
+                <!-- Truy cập nhanh -->
+                <div>
+                    <h5 class="fw-bold mb-3" style="font-size: 1.45rem; letter-spacing: -0.01em;">Truy cập nhanh</h5>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="quick-card" onclick="showSection('questions')">
+                                <div class="d-flex align-items-center gap-4">
+                                    <div class="quick-icon">
+                                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                    </div>
+                                    <div>
+                                        <div class="quick-title">Quản lý câu hỏi</div>
+                                        <div class="quick-desc">Sửa, xuất bản từng câu</div>
+                                    </div>
                                 </div>
+                                <div class="quick-arrow">→</div>
                             </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="quick-card" onclick="showSection('quizzes')">
+                                <div class="d-flex align-items-center gap-4">
+                                    <div class="quick-icon">
+                                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                                    </div>
+                                    <div>
+                                        <div class="quick-title">Quản lý bộ đề</div>
+                                        <div class="quick-desc">Gom câu hỏi để luyện tập</div>
+                                    </div>
+                                </div>
+                                <div class="quick-arrow">→</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="quick-card" onclick="showSection('exams')">
+                                <div class="d-flex align-items-center gap-4">
+                                    <div class="quick-icon">
+                                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><polyline points="9 14 11 16 15 11"></polyline></svg>
+                                    </div>
+                                    <div>
+                                        <div class="quick-title">Quản lý đề thi</div>
+                                        <div class="quick-desc">Đề giữa kỳ, cuối kỳ</div>
+                                    </div>
+                                </div>
+                                <div class="quick-arrow">→</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                            <div class="d-flex gap-2">
-                                <button id="btn-import-draft" class="btn btn-warning" onclick="confirmImport(false)">💾 Lưu dưới dạng BẢN NHÁP (Draft)</button>
-                                <button id="btn-import-publish" class="btn btn-success" onclick="confirmImport(true)">🚀 XUẤT BẢN NGAY (Publish)</button>
+            <!-- Import Section -->
+            <div id="section-import" class="content-section" style="display:none;">
+                <!-- 3 Steps Stepper -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="step-card">
+                            <div class="step-num">1</div>
+                            <div>
+                                <div class="step-title">Tải file mẫu</div>
+                                <div class="step-desc">Điền đúng các cột</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="step-card">
+                            <div class="step-num">2</div>
+                            <div>
+                                <div class="step-title">Chọn file</div>
+                                <div class="step-desc">CSV hoặc XLSX</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="step-card">
+                            <div class="step-num">3</div>
+                            <div>
+                                <div class="step-title">Kiểm tra &amp; lưu</div>
+                                <div class="step-desc">Nháp hoặc xuất bản</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Questions List Section -->
-                <div id="section-questions" class="content-section" style="display:none;">
-                    <div class="card p-3 mb-3">
-                        <div class="row g-2">
-                            <div class="col-md-3">
-                                <select id="filter-subject" class="form-select" onchange="loadQuestions()">
-                                    <option value="">Tất cả môn</option>
-                                    <option value="physics" selected>Vật lý</option>
-                                    <option value="chemistry">Hóa học</option>
-                                    <option value="biology">Sinh học</option>
-                                    <option value="math">Toán</option>
-                                    <option value="literature">Ngữ văn</option>
-                                    <option value="english">Tiếng Anh</option>
-                                    <option value="history">Lịch sử</option>
-                                    <option value="geography">Địa lý</option>
-                                    <option value="economics_law">GDKT & PL</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <select id="filter-grade" class="form-select" onchange="loadQuestions()">
-                                    <option value="">Tất cả lớp</option>
-                                    <option value="10" selected>Lớp 10</option>
-                                    <option value="11">Lớp 11</option>
-                                    <option value="12">Lớp 12</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <select id="filter-status" class="form-select" onchange="loadQuestions()">
-                                    <option value="">Tất cả trạng thái</option>
-                                    <option value="PUBLISHED">Đã xuất bản</option>
-                                    <option value="DRAFT">Bản nháp</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <button class="btn btn-primary w-100" onclick="loadQuestions()">🔄 Tải lại</button>
-                            </div>
-                        </div>
+                <!-- Main Import Card -->
+                <div class="content-card mb-4">
+                    <h5 class="fw-bold mb-2">Tải mẫu Excel &amp; Tải lên file câu hỏi</h5>
+                    <p class="text-muted small mb-4">Định dạng file hỗ trợ: CSV, XLSX. Mỗi dòng đại diện cho 1 câu hỏi trắc nghiệm A-D.</p>
+
+                    <div class="mb-3 d-flex flex-wrap gap-2">
+                        <a href="/admin/template/excel?format=xlsx" class="btn btn-outline-success rounded-pill px-4 py-2 fw-semibold" download="Mau_Cau_Hoi_AI_Mentor.xlsx">
+                            📊 Tải mẫu Excel (.xlsx)
+                        </a>
+                        <a href="/admin/template/excel?format=csv" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-semibold" download="Mau_Cau_Hoi_AI_Mentor.csv">
+                            📄 Tải mẫu CSV (.csv)
+                        </a>
                     </div>
 
-                    <div id="questions-list"></div>
+                    <form id="import-form" onsubmit="handleImportPreview(event)">
+                        <!-- Dropzone Box -->
+                        <div class="dropzone-box" id="dropzone-box" onclick="document.getElementById('import-file').click()">
+                            <div class="dropzone-icon">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+                                    <path d="M12 12v9"></path>
+                                    <path d="m16 16-4-4-4 4"></path>
+                                </svg>
+                            </div>
+                            <div class="dropzone-title">Kéo &amp; thả file vào đây, hoặc bấm để chọn</div>
+                            <div class="dropzone-sub">Hỗ trợ .csv, .xlsx · Mỗi dòng là một câu hỏi</div>
+                            <div id="selected-file-badge" class="selected-file-badge" style="display:none;"></div>
+                        </div>
+
+                        <input type="file" id="import-file" style="display:none;" accept=".csv,.xlsx,.txt" required onchange="handleFileChange()">
+
+                        <div>
+                            <button type="submit" id="btn-import-preview" class="btn btn-primary rounded-pill px-4 py-2 fw-bold">🔍 Tải lên &amp; Kiểm tra lỗi (Preview)</button>
+                        </div>
+                    </form>
                 </div>
 
-                <!-- Quizzes List Section -->
-                <div id="section-quizzes" class="content-section" style="display:none;">
-                    <div class="card p-3 mb-3">
-                        <div class="row g-2 align-items-center">
-                            <div class="col-md-3">
-                                <select id="filter-quiz-subject" class="form-select" onchange="loadQuizzes()">
-                                    <option value="">Tất cả môn</option>
-                                    <option value="physics" selected>Vật lý</option>
-                                    <option value="chemistry">Hóa học</option>
-                                    <option value="biology">Sinh học</option>
-                                    <option value="math">Toán</option>
-                                    <option value="literature">Ngữ văn</option>
-                                    <option value="english">Tiếng Anh</option>
-                                    <option value="history">Lịch sử</option>
-                                    <option value="geography">Địa lý</option>
-                                    <option value="economics_law">GDKT & PL</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <select id="filter-quiz-grade" class="form-select" onchange="loadQuizzes()">
-                                    <option value="">Tất cả lớp</option>
-                                    <option value="10" selected>Lớp 10</option>
-                                    <option value="11">Lớp 11</option>
-                                    <option value="12">Lớp 12</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <select id="filter-quiz-status" class="form-select" onchange="loadQuizzes()">
-                                    <option value="">Tất cả trạng thái</option>
-                                    <option value="PUBLISHED">Đã xuất bản</option>
-                                    <option value="DRAFT">Bản nháp</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-primary w-100" onclick="loadQuizzes()">🔄 Tải lại</button>
-                            </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-success w-100" id="btn-open-create-quiz" onclick="openQuizModal()">➕ Tạo bộ đề</button>
+                <!-- Import Results Section -->
+                <div id="import-results" style="display:none;">
+                    <div class="content-card mb-4">
+                        <h5 class="fw-bold mb-3">Báo cáo kiểm tra dữ liệu Import</h5>
+                        <div id="import-summary" class="alert alert-info rounded-4"></div>
+
+                        <div id="import-errors" class="alert alert-danger rounded-4" style="display:none;">
+                            <h6 class="fw-bold">⚠️ Danh sách lỗi cần sửa trong file:</h6>
+                            <ul id="error-list" class="mb-0"></ul>
+                        </div>
+
+                        <div id="import-preview-list" class="mb-3">
+                            <h6 class="fw-bold">✅ Danh sách câu hỏi hợp lệ sẵn sàng import:</h6>
+                            <div class="table-responsive mt-3">
+                                <table class="table table-bordered table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Mã</th>
+                                            <th>Môn</th>
+                                            <th>Lớp</th>
+                                            <th>Câu hỏi</th>
+                                            <th>Đáp án đúng</th>
+                                            <th>Độ khó</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="preview-table-body"></tbody>
+                                </table>
                             </div>
                         </div>
-                    </div>
 
-                    <div id="quizzes-list"></div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button id="btn-import-draft" class="btn btn-warning rounded-pill px-4 py-2 fw-bold" onclick="confirmImport(false)">💾 Lưu dưới dạng BẢN NHÁP (Draft)</button>
+                            <button id="btn-import-publish" class="btn btn-success rounded-pill px-4 py-2 fw-bold" onclick="confirmImport(true)">🚀 XUẤT BẢN NGAY (Publish)</button>
+                        </div>
+                        <div id="import-confirm-notice" class="mt-2 text-muted small" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions List Section -->
+            <div id="section-questions" class="content-section" style="display:none;">
+                <div class="content-card mb-4">
+                    <div class="row g-2">
+                        <div class="col-md-3">
+                            <select id="filter-subject" class="form-select" onchange="loadQuestions()">
+                                <option value="">Tất cả môn</option>
+                                <option value="physics" selected>Vật lý</option>
+                                <option value="chemistry">Hóa học</option>
+                                <option value="biology">Sinh học</option>
+                                <option value="math">Toán</option>
+                                <option value="literature">Ngữ văn</option>
+                                <option value="english">Tiếng Anh</option>
+                                <option value="history">Lịch sử</option>
+                                <option value="geography">Địa lý</option>
+                                <option value="economics_law">GDKT &amp; PL</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="filter-grade" class="form-select" onchange="loadQuestions()">
+                                <option value="">Tất cả lớp</option>
+                                <option value="10" selected>Lớp 10</option>
+                                <option value="11">Lớp 11</option>
+                                <option value="12">Lớp 12</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="filter-status" class="form-select" onchange="loadQuestions()">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="PUBLISHED">Đã xuất bản</option>
+                                <option value="DRAFT">Bản nháp</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary rounded-pill w-100 fw-bold" onclick="loadQuestions()">🔄 Tải lại</button>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Exams List Section -->
-                <div id="section-exams" class="content-section" style="display:none;">
-                    <div class="card p-3 mb-3">
-                        <div class="row g-2 align-items-center">
-                            <div class="col-md-2">
-                                <label class="form-label small fw-bold mb-1">Môn học</label>
-                                <select id="filter-exam-subject" class="form-select" onchange="loadExams()">
-                                    <option value="">Tất cả môn</option>
-                                    <option value="physics" selected>Vật lý</option>
-                                    <option value="chemistry">Hóa học</option>
-                                    <option value="biology">Sinh học</option>
-                                    <option value="math">Toán</option>
-                                    <option value="literature">Ngữ văn</option>
-                                    <option value="english">Tiếng Anh</option>
-                                    <option value="history">Lịch sử</option>
-                                    <option value="geography">Địa lý</option>
-                                    <option value="economics_law">GDKT & PL</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label small fw-bold mb-1">Khối lớp</label>
-                                <select id="filter-exam-grade" class="form-select" onchange="loadExams()">
-                                    <option value="">Tất cả khối lớp</option>
-                                    <option value="10" selected>Lớp 10</option>
-                                    <option value="11">Lớp 11</option>
-                                    <option value="12">Lớp 12</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label small fw-bold mb-1">Kỳ thi</label>
-                                <select id="filter-exam-type" class="form-select" onchange="loadExams()">
-                                    <option value="">Tất cả kỳ thi</option>
-                                    <option value="MIDTERM">Giữa kỳ</option>
-                                    <option value="FINAL">Cuối kỳ</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label small fw-bold mb-1">Học kỳ</label>
-                                <select id="filter-exam-semester" class="form-select" onchange="loadExams()">
-                                    <option value="">Tất cả học kỳ</option>
-                                    <option value="1">Học kỳ 1</option>
-                                    <option value="2">Học kỳ 2</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label small fw-bold mb-1">Trạng thái</label>
-                                <select id="filter-exam-status" class="form-select" onchange="loadExams()">
-                                    <option value="">Tất cả trạng thái</option>
-                                    <option value="PUBLISHED">Đã xuất bản</option>
-                                    <option value="DRAFT">Bản nháp</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2 d-flex gap-2 align-items-end pt-3">
-                                <button class="btn btn-outline-secondary w-50" onclick="loadExams()">🔄 Tải lại</button>
-                                <button class="btn btn-primary w-50" id="btn-open-create-exam" onclick="openExamModal()">➕ Tạo đề</button>
-                            </div>
+                <div id="questions-list"></div>
+            </div>
+
+            <!-- Quizzes List Section -->
+            <div id="section-quizzes" class="content-section" style="display:none;">
+                <div class="content-card mb-4">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-3">
+                            <select id="filter-quiz-subject" class="form-select" onchange="loadQuizzes()">
+                                <option value="">Tất cả môn</option>
+                                <option value="physics" selected>Vật lý</option>
+                                <option value="chemistry">Hóa học</option>
+                                <option value="biology">Sinh học</option>
+                                <option value="math">Toán</option>
+                                <option value="literature">Ngữ văn</option>
+                                <option value="english">Tiếng Anh</option>
+                                <option value="history">Lịch sử</option>
+                                <option value="geography">Địa lý</option>
+                                <option value="economics_law">GDKT &amp; PL</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select id="filter-quiz-grade" class="form-select" onchange="loadQuizzes()">
+                                <option value="">Tất cả lớp</option>
+                                <option value="10" selected>Lớp 10</option>
+                                <option value="11">Lớp 11</option>
+                                <option value="12">Lớp 12</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="filter-quiz-status" class="form-select" onchange="loadQuizzes()">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="PUBLISHED">Đã xuất bản</option>
+                                <option value="DRAFT">Bản nháp</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-primary rounded-pill w-100 fw-bold" onclick="loadQuizzes()">🔄 Tải lại</button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-success rounded-pill w-100 fw-bold" id="btn-open-create-quiz" onclick="openQuizModal()">➕ Tạo bộ đề</button>
                         </div>
                     </div>
+                </div>
 
-                    <div id="exams-list"></div>
+                <div id="quizzes-list"></div>
+            </div>
+
+            <!-- Exams List Section -->
+            <div id="section-exams" class="content-section" style="display:none;">
+                <div class="content-card mb-4">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold mb-1">Môn học</label>
+                            <select id="filter-exam-subject" class="form-select" onchange="loadExams()">
+                                <option value="">Tất cả môn</option>
+                                <option value="physics" selected>Vật lý</option>
+                                <option value="chemistry">Hóa học</option>
+                                <option value="biology">Sinh học</option>
+                                <option value="math">Toán</option>
+                                <option value="literature">Ngữ văn</option>
+                                <option value="english">Tiếng Anh</option>
+                                <option value="history">Lịch sử</option>
+                                <option value="geography">Địa lý</option>
+                                <option value="economics_law">GDKT &amp; PL</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold mb-1">Khối lớp</label>
+                            <select id="filter-exam-grade" class="form-select" onchange="loadExams()">
+                                <option value="">Tất cả khối lớp</option>
+                                <option value="10" selected>Lớp 10</option>
+                                <option value="11">Lớp 11</option>
+                                <option value="12">Lớp 12</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold mb-1">Kỳ thi</label>
+                            <select id="filter-exam-type" class="form-select" onchange="loadExams()">
+                                <option value="">Tất cả kỳ thi</option>
+                                <option value="MIDTERM">Giữa kỳ</option>
+                                <option value="FINAL">Cuối kỳ</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold mb-1">Học kỳ</label>
+                            <select id="filter-exam-semester" class="form-select" onchange="loadExams()">
+                                <option value="">Tất cả học kỳ</option>
+                                <option value="1">Học kỳ 1</option>
+                                <option value="2">Học kỳ 2</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold mb-1">Trạng thái</label>
+                            <select id="filter-exam-status" class="form-select" onchange="loadExams()">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="PUBLISHED">Đã xuất bản</option>
+                                <option value="DRAFT">Bản nháp</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex gap-2 align-items-end pt-3">
+                            <button class="btn btn-outline-secondary rounded-pill w-50 fw-bold" onclick="loadExams()">🔄</button>
+                            <button class="btn btn-primary rounded-pill w-50 fw-bold" id="btn-open-create-exam" onclick="openExamModal()">➕ Tạo</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="exams-list"></div>
+            </div>
+        </main>
+    </div>
+
+
+    <!-- Pre-auth Action Gate Modal (Issue 3) -->
+    <div class="modal fade" id="authPromptModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body text-center px-4 pb-4 pt-1">
+                    <div class="auth-prompt-shield-icon mb-3">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <h4 class="fw-bold mb-2">Yêu cầu quyền Quản trị</h4>
+                    <p class="text-muted mb-4 fs-6">
+                        Bạn cần đăng nhập tài khoản <strong>Quản trị viên / Biên soạn</strong> để <span id="auth-prompt-action" class="fw-semibold text-primary">thực hiện thao tác này</span>.
+                    </p>
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Để sau</button>
+                        <button type="button" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" onclick="dismissAuthPromptAndOpenLogin()">🔑 Đăng nhập ngay</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Quiz Modal -->
             <!-- Question Edit Modal -->
@@ -589,7 +1757,7 @@ ADMIN_HTML = """<!DOCTYPE html>
                     <div id="login-error" class="alert alert-danger" style="display:none;"></div>
                     <form onsubmit="handleLoginSubmit(event)">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Tên đăng nhập / Email:</label>
+                            <label class="form-label fw-bold">Email tài khoản Supabase nhóm:</label>
                             <input type="text" id="login-identifier" class="form-control" required placeholder="admin@example.com">
                         </div>
                         <div class="mb-3">
@@ -602,11 +1770,171 @@ ADMIN_HTML = """<!DOCTYPE html>
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let token = localStorage.getItem('admin_token') || '';
-        let refreshToken = localStorage.getItem('admin_refresh') || '';
+        let token = readAdminStorage('admin_token');
+
+        // --- Theme & Visual Interaction ---
+        function updateThemeIcon(isDark) {
+            let btn = document.getElementById('btn-theme-toggle');
+            if (btn) btn.innerHTML = isDark ? '☀️' : '🌙';
+            let btnMobile = document.getElementById('btn-theme-toggle-mobile');
+            if (btnMobile) btnMobile.innerHTML = isDark ? '☀️' : '🌙';
+        }
+
+        function toggleTheme() {
+            if (!document.body || !document.body.classList) return;
+            let isDark = document.body.classList.toggle('dark-theme');
+            try { localStorage.setItem('admin_theme', isDark ? 'dark' : 'light'); } catch(e){}
+            updateThemeIcon(isDark);
+        }
+
+        function initTheme() {
+            let isDark = false;
+            try { isDark = localStorage.getItem('admin_theme') === 'dark'; } catch(e){}
+            if (document.body && document.body.classList) {
+                if (isDark) {
+                    document.body.classList.add('dark-theme');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                }
+            }
+            updateThemeIcon(isDark);
+        }
+
+        function updateSelectedFileInfo() {
+            let fileInput = document.getElementById('import-file');
+            let badge = document.getElementById('selected-file-badge');
+            if (!badge) return;
+            if (fileInput && fileInput.files && fileInput.files.length) {
+                let f = fileInput.files[0];
+                badge.innerText = '📁 ' + f.name + ' (' + (f.size / 1024).toFixed(1) + ' KB)';
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // --- Mobile Navigation Drawer Handlers (Issue 1) ---
+        function toggleMobileNav() {
+            let sidebar = document.querySelector('.sidebar');
+            let backdrop = document.getElementById('mobile-backdrop');
+            if (sidebar) sidebar.classList.toggle('mobile-open');
+            if (backdrop) backdrop.classList.toggle('active');
+        }
+
+        function closeMobileNav() {
+            let sidebar = document.querySelector('.sidebar');
+            let backdrop = document.getElementById('mobile-backdrop');
+            if (sidebar) sidebar.classList.remove('mobile-open');
+            if (backdrop) backdrop.classList.remove('active');
+        }
+
+        // --- Pre-auth Gate Modal Handlers (Issue 3) ---
+        function showAuthPromptModal(actionName) {
+            let actionEl = document.getElementById('auth-prompt-action');
+            if (actionEl) actionEl.textContent = actionName;
+            let modalEl = document.getElementById('authPromptModal');
+            if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                let modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            } else {
+                alert('Vui lòng đăng nhập tài khoản Quản trị viên để ' + actionName + '.');
+            }
+        }
+
+        function dismissAuthPromptAndOpenLogin() {
+            let modalEl = document.getElementById('authPromptModal');
+            if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                let modal = typeof bootstrap.Modal.getInstance === 'function' ? bootstrap.Modal.getInstance(modalEl) : null;
+                if (modal) modal.hide();
+                else modalEl.classList.remove('show');
+            }
+            setTimeout(() => {
+                openLoginModal();
+            }, 250);
+        }
+
+        // --- Logged-out Locked Stats Rendering (Issue 2) ---
+        function renderStatsLockedState() {
+            let elTotal = document.getElementById('stat-total');
+            let elPub = document.getElementById('stat-published');
+            let elDraft = document.getElementById('stat-draft');
+            let elPubPct = document.getElementById('stat-prog-pub-pct');
+            let elDraftPct = document.getElementById('stat-prog-draft-pct');
+            let barPub = document.getElementById('stat-bar-pub');
+            let barDraft = document.getElementById('stat-bar-draft');
+            let notice = document.getElementById('dashboard-guest-notice');
+
+            if (notice) notice.style.display = 'block';
+            if (elTotal) elTotal.innerHTML = '<span class="stat-locked-tag" title="Đăng nhập để xem số liệu">🔒 Đăng nhập để xem</span>';
+            if (elPub) elPub.innerHTML = '<span class="stat-locked-tag" title="Đăng nhập để xem số liệu">🔒 Đăng nhập để xem</span>';
+            if (elDraft) elDraft.innerHTML = '<span class="stat-locked-tag" title="Đăng nhập để xem số liệu">🔒 Đăng nhập để xem</span>';
+            if (elPubPct) elPubPct.innerText = '—%';
+            if (elDraftPct) elDraftPct.innerText = '—%';
+            if (barPub) barPub.style.width = '0%';
+            if (barDraft) barDraft.style.width = '0%';
+        }
+
+        let refreshToken = readAdminStorage('admin_refresh');
+        // One refresh at a time; late responses cannot restore a logged-out session.
+        let adminAuthGeneration = 0;
+        let adminRefreshFlight = null;
+
+        function readAdminStorage(key) {
+            try { return localStorage.getItem(key) || ''; } catch (error) { return ''; }
+        }
+
+        function persistAdminSession() {
+            try {
+                localStorage.setItem('admin_token', token);
+                localStorage.setItem('admin_refresh', refreshToken);
+            } catch (error) { /* The current tab can still use its in-memory session. */ }
+        }
+
+        async function refreshAdminSession() {
+            if (!refreshToken) return false;
+            if (adminRefreshFlight) return adminRefreshFlight;
+            const generation = adminAuthGeneration;
+            const previousRefresh = refreshToken;
+            const flight = (async () => {
+                try {
+                    const response = await fetch('/admin/auth/refresh', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ refreshToken: previousRefresh })
+                    });
+                    if (!response.ok) return false;
+                    const data = await response.json();
+                    if (generation !== adminAuthGeneration || previousRefresh !== refreshToken) return false;
+                    if (!data.accessToken || !data.refreshToken) return false;
+                    token = data.accessToken;
+                    refreshToken = data.refreshToken;
+                    persistAdminSession();
+                    return true;
+                } catch (error) { return false; }
+            })();
+            adminRefreshFlight = flight;
+            try { return await flight; }
+            finally { if (adminRefreshFlight === flight) adminRefreshFlight = null; }
+        }
+
+        async function adminFetch(url, options = {}) {
+            const protectedRequest = typeof url === 'string' && url.startsWith('/admin/') && !url.startsWith('/admin/auth/');
+            const identityRequest = url === '/admin/auth/me';
+            if (!protectedRequest && !identityRequest) return fetch(url, options);
+            const generation = adminAuthGeneration;
+            const access = token;
+            const send = () => fetch(url, { ...options, headers: { ...(options.headers || {}), Authorization: 'Bearer ' + token } });
+            const response = await send();
+            if (generation !== adminAuthGeneration) throw new Error('Phiên đăng nhập đã thay đổi.');
+            if (response.status !== 401) return response;
+            if (access !== token || await refreshAdminSession()) {
+                if (generation === adminAuthGeneration) return send();
+            }
+            if (generation !== adminAuthGeneration) throw new Error('Phiên đăng nhập đã thay đổi.');
+            return response;
+        }
+
         let lastPreviewData = null;
         let previewSequence = 0;
         let loginModalObj = null;
@@ -664,6 +1992,7 @@ ADMIN_HTML = """<!DOCTYPE html>
 
             let btnPreview = document.getElementById('btn-import-preview');
             if (btnPreview) btnPreview.disabled = false;
+            updateSelectedFileInfo();
         }
 
         async function parseApiErrorMessage(res, defaultTitle) {
@@ -754,9 +2083,30 @@ ADMIN_HTML = """<!DOCTYPE html>
                     examModalClosingGen = 0;
                 });
             }
+            initTheme();
+            let dropzoneEl = document.getElementById('dropzone-box');
+            if (dropzoneEl) {
+                dropzoneEl.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropzoneEl.classList.add('dragover');
+                });
+                dropzoneEl.addEventListener('dragleave', () => {
+                    dropzoneEl.classList.remove('dragover');
+                });
+                dropzoneEl.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropzoneEl.classList.remove('dragover');
+                    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+                        let fileInput = document.getElementById('import-file');
+                        fileInput.files = e.dataTransfer.files;
+                        handleFileChange();
+                    }
+                });
+            }
             if (token) {
                 checkAuth();
             } else {
+                renderStatsLockedState();
                 showAuthAlert('Vui lòng đăng nhập tài khoản Quản trị viên / Biên soạn để tiếp tục.');
             }
         });
@@ -787,10 +2137,11 @@ ADMIN_HTML = """<!DOCTYPE html>
             let passwordEl = document.getElementById('login-password');
             let identifier = identifierEl.value.trim();
             let password = passwordEl.value;
+            const loginGeneration = ++adminAuthGeneration;
             passwordEl.value = ''; // Clear password immediately after reading
 
             try {
-                let res = await fetch('/auth/sign-in', {
+                let res = await adminFetch('/admin/auth/sign-in', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ identifier, password })
@@ -798,16 +2149,24 @@ ADMIN_HTML = """<!DOCTYPE html>
 
                 if (!res.ok) {
                     let err = await res.json();
-                    document.getElementById('login-error').innerText = 'Đăng nhập thất bại: Tên đăng nhập hoặc mật khẩu không đúng.';
+                    const code = err.code || (err.detail && err.detail.code);
+                    const messages = {
+                        ADMIN_REQUIRED: 'Tài khoản này chưa có quyền quản trị Web Admin. Liên hệ quản trị nhóm để được cấp quyền.',
+                        EMAIL_NOT_CONFIRMED: 'Email tài khoản chưa được xác nhận trên Supabase.',
+                        SUPABASE_EMAIL_REQUIRED: 'Nhập email tài khoản Supabase của nhóm.',
+                        SUPABASE_AUTH_UNAVAILABLE: 'Dịch vụ đăng nhập tạm thời không kết nối được. Vui lòng thử lại.',
+                        RATE_LIMITED: 'Bạn thử quá nhiều lần. Vui lòng chờ rồi đăng nhập lại.'
+                    };
+                    document.getElementById('login-error').innerText = messages[code] || 'Email hoặc mật khẩu không đúng.';
                     document.getElementById('login-error').style.display = 'block';
                     return;
                 }
 
                 let data = await res.json();
+                if (loginGeneration !== adminAuthGeneration) return;
                 token = data.accessToken;
                 refreshToken = data.refreshToken;
-                localStorage.setItem('admin_token', token);
-                localStorage.setItem('admin_refresh', refreshToken);
+                persistAdminSession();
                 loginModalObj.hide();
                 await checkAuth();
             } catch (err) {
@@ -818,7 +2177,7 @@ ADMIN_HTML = """<!DOCTYPE html>
 
         async function checkAuth() {
             try {
-                let res = await fetch('/me/account', {
+                let res = await adminFetch('/admin/auth/me', {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
 
@@ -828,8 +2187,17 @@ ADMIN_HTML = """<!DOCTYPE html>
                     return;
                 }
 
+                if (res.status === 403) {
+                    await handleLogout();
+                    showAuthAlert('Tài khoản chưa có quyền quản trị Web Admin.');
+                    return;
+                }
+                if (!res.ok) {
+                    showAuthAlert('Chưa xác minh được phiên đăng nhập. Vui lòng thử lại.');
+                    return;
+                }
                 let acc = await res.json();
-                let userRes = await fetch('/admin/questions', {
+                let userRes = await adminFetch('/admin/questions', {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
 
@@ -842,10 +2210,26 @@ ADMIN_HTML = """<!DOCTYPE html>
                     return;
                 }
 
-                document.getElementById('user-status').innerText = 'Admin: ' + acc.username;
-                document.getElementById('user-status').className = 'badge bg-success p-2';
-                document.getElementById('btn-login').style.display = 'none';
-                document.getElementById('btn-logout').style.display = 'inline-block';
+                if (!userRes.ok) {
+                    showAuthAlert('Không tải được dữ liệu quản trị. Vui lòng thử lại.');
+                    return;
+                }
+                let userStatusEl = document.getElementById('user-status');
+                if (userStatusEl) {
+                    userStatusEl.innerText = 'Admin: ' + acc.username;
+                    userStatusEl.className = 'badge-status-pill badge-status-logged';
+                }
+                let mobileStatus = document.getElementById('user-status-mobile');
+                if (mobileStatus) {
+                    mobileStatus.innerText = acc.username;
+                    mobileStatus.className = 'badge-status-pill badge-status-logged';
+                }
+                let btnLogin = document.getElementById('btn-login');
+                if (btnLogin) btnLogin.style.display = 'none';
+                let btnLogout = document.getElementById('btn-logout');
+                if (btnLogout) btnLogout.style.display = 'inline-block';
+                let notice = document.getElementById('dashboard-guest-notice');
+                if (notice) notice.style.display = 'none';
                 hideAuthAlert();
                 loadStats();
             } catch (e) {
@@ -854,9 +2238,11 @@ ADMIN_HTML = """<!DOCTYPE html>
         }
 
         async function handleLogout() {
+            ++adminAuthGeneration;
+            adminRefreshFlight = null;
             if (token && refreshToken) {
                 try {
-                    await fetch('/auth/sign-out', {
+                    await adminFetch('/admin/auth/sign-out', {
                         method: 'POST',
                         headers: {
                             'Authorization': 'Bearer ' + token,
@@ -869,23 +2255,55 @@ ADMIN_HTML = """<!DOCTYPE html>
             token = '';
             refreshToken = '';
             lastPreviewData = null;
-            localStorage.removeItem('admin_token');
-            localStorage.removeItem('admin_refresh');
-            document.getElementById('user-status').innerText = 'Chưa đăng nhập';
-            document.getElementById('user-status').className = 'badge bg-secondary p-2';
-            document.getElementById('btn-login').style.display = 'inline-block';
-            document.getElementById('btn-logout').style.display = 'none';
+            try { localStorage.removeItem('admin_token'); localStorage.removeItem('admin_refresh'); } catch (error) {}
+            let userStatusEl = document.getElementById('user-status');
+            if (userStatusEl) {
+                userStatusEl.innerText = 'Chưa đăng nhập';
+                userStatusEl.className = 'badge-status-pill';
+            }
+            let mobileStatus = document.getElementById('user-status-mobile');
+            if (mobileStatus) {
+                mobileStatus.innerText = 'Khách';
+                mobileStatus.className = 'badge-status-pill';
+            }
+            let btnLogin = document.getElementById('btn-login');
+            if (btnLogin) btnLogin.style.display = 'inline-block';
+            let btnLogout = document.getElementById('btn-logout');
+            if (btnLogout) btnLogout.style.display = 'none';
             document.getElementById('import-results').style.display = 'none';
             document.getElementById('questions-list').innerHTML = '';
             let qzList = document.getElementById('quizzes-list');
             if (qzList) qzList.innerHTML = '';
+            renderStatsLockedState();
             showAuthAlert('Bạn đã đăng xuất.');
         }
 
         function showSection(name) {
+            closeMobileNav();
             document.querySelectorAll('.content-section').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.sidebar .nav-link').forEach(el => el.classList.remove('active'));
-            document.getElementById('section-' + name).style.display = 'block';
+            document.querySelectorAll('.sidebar .nav-link').forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('data-section') === name) {
+                    el.classList.add('active');
+                }
+            });
+            let secEl = document.getElementById('section-' + name);
+            if (secEl) secEl.style.display = 'block';
+
+            const sectionMeta = {
+                'dashboard': { title: 'Tổng quan Kho câu hỏi', sub: 'Quản lý, kiểm tra và xuất bản nội dung trắc nghiệm' },
+                'import': { title: 'Import câu hỏi từ Excel', sub: 'Tải mẫu, kiểm tra lỗi và nhập hàng loạt câu hỏi trắc nghiệm A-D' },
+                'questions': { title: 'Quản lý câu hỏi', sub: 'Tìm kiếm, chỉnh sửa và xuất bản câu hỏi trắc nghiệm' },
+                'quizzes': { title: 'Quản lý bộ đề', sub: 'Gom nhóm các câu hỏi thành bộ đề luyện tập cho học sinh' },
+                'exams': { title: 'Quản lý đề thi', sub: 'Tạo và xuất bản đề thi giữa kỳ, cuối kỳ' }
+            };
+
+            let titleEl = document.getElementById('page-title');
+            let subEl = document.getElementById('page-subtitle');
+            if (sectionMeta[name]) {
+                if (titleEl) titleEl.textContent = sectionMeta[name].title;
+                if (subEl) subEl.textContent = sectionMeta[name].sub;
+            }
             if (name === 'dashboard') loadStats();
             if (name === 'questions') loadQuestions();
             if (name === 'quizzes') loadQuizzes();
@@ -893,20 +2311,43 @@ ADMIN_HTML = """<!DOCTYPE html>
         }
 
         async function loadStats() {
-            if (!token) return;
+            if (!token) {
+                renderStatsLockedState();
+                return;
+            }
             try {
-                let res = await fetch('/admin/questions', {
+                let res = await adminFetch('/admin/questions', {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
-                if (!res.ok) return;
+                if (!res.ok) {
+                    renderStatsLockedState();
+                    return;
+                }
+                let notice = document.getElementById('dashboard-guest-notice');
+                if (notice) notice.style.display = 'none';
                 let data = await res.json();
                 let total = data.length;
                 let pub = data.filter(q => q.status === 'PUBLISHED').length;
                 let draft = total - pub;
-                document.getElementById('stat-total').innerText = total;
-                document.getElementById('stat-published').innerText = pub;
-                document.getElementById('stat-draft').innerText = draft;
-            } catch (e) {}
+                let elTotal = document.getElementById('stat-total');
+                let elPub = document.getElementById('stat-published');
+                let elDraft = document.getElementById('stat-draft');
+                if (elTotal) elTotal.innerText = total;
+                if (elPub) elPub.innerText = pub;
+                if (elDraft) elDraft.innerText = draft;
+                let pubPct = total > 0 ? Math.round((pub / total) * 100) : 0;
+                let draftPct = total > 0 ? Math.round((draft / total) * 100) : 0;
+                let elPubPct = document.getElementById('stat-prog-pub-pct');
+                let elDraftPct = document.getElementById('stat-prog-draft-pct');
+                if (elPubPct) elPubPct.innerText = pubPct + '%';
+                if (elDraftPct) elDraftPct.innerText = draftPct + '%';
+                let barPub = document.getElementById('stat-bar-pub');
+                let barDraft = document.getElementById('stat-bar-draft');
+                if (barPub) barPub.style.width = pubPct + '%';
+                if (barDraft) barDraft.style.width = draftPct + '%';
+            } catch (e) {
+                renderStatsLockedState();
+            }
         }
 
         async function handleImportPreview(e) {
@@ -955,7 +2396,7 @@ ADMIN_HTML = """<!DOCTYPE html>
 
             let res;
             try {
-                res = await fetch('/admin/import/preview', {
+                res = await adminFetch('/admin/import/preview', {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + token,
@@ -1117,7 +2558,7 @@ ADMIN_HTML = """<!DOCTYPE html>
                     (publish ? lastPreviewData.operationKeys.publish : lastPreviewData.operationKeys.draft) :
                     ('imp_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9));
 
-                let res = await fetch('/admin/import/confirm', {
+                let res = await adminFetch('/admin/import/confirm', {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + token,
@@ -1194,7 +2635,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             if (gr) url += `grade=${encodeURIComponent(gr)}&`;
             if (st) url += `status=${encodeURIComponent(st)}&`;
 
-            let res = await fetch(url, {
+            let res = await adminFetch(url, {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
 
@@ -1306,6 +2747,10 @@ ADMIN_HTML = """<!DOCTYPE html>
         }
 
         function openQuestionEditModal(q) {
+            if (!token) {
+                showAuthPromptModal('chỉnh sửa câu hỏi');
+                return;
+            }
             if (!q) return;
             questionModalOpenGen++;
             const currentGen = questionModalOpenGen;
@@ -1465,7 +2910,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             try {
                 let res;
                 try {
-                    res = await fetch('/admin/questions', {
+                    res = await adminFetch('/admin/questions', {
                         method: 'POST',
                         headers: {
                             'Authorization': 'Bearer ' + token,
@@ -1570,7 +3015,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             if (isPublishing) return;
             isPublishing = true;
             try {
-                let res = await fetch(`/admin/questions/${encodeURIComponent(qid)}/publish?publish=${publish}`, {
+                let res = await adminFetch(`/admin/questions/${encodeURIComponent(qid)}/publish?publish=${publish}`, {
                     method: 'POST',
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
@@ -1621,7 +3066,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             container.innerHTML = '<div class="text-center py-3 text-muted">Đang tải danh sách bộ đề...</div>';
 
             try {
-                let res = await fetch(url, {
+                let res = await adminFetch(url, {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
 
@@ -1756,6 +3201,10 @@ ADMIN_HTML = """<!DOCTYPE html>
         }
 
         async function openQuizModal(quizData) {
+            if (!token) {
+                showAuthPromptModal('tạo hoặc chỉnh sửa Bộ đề');
+                return;
+            }
             quizModalOpenGen++;
             quizModalActiveGen = quizModalOpenGen;
             modalClosingGen = 0;
@@ -1871,7 +3320,7 @@ ADMIN_HTML = """<!DOCTYPE html>
 
             let res;
             try {
-                res = await fetch('/admin/questions?subject_id=' + encodeURIComponent(targetSubj) + '&grade=' + encodeURIComponent(targetGrade), {
+                res = await adminFetch('/admin/questions?subject_id=' + encodeURIComponent(targetSubj) + '&grade=' + encodeURIComponent(targetGrade), {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
             } catch (err) {
@@ -2128,7 +3577,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             try {
                 let res;
                 try {
-                    res = await fetch('/admin/quizzes', {
+                    res = await adminFetch('/admin/quizzes', {
                         method: 'POST',
                         headers: {
                             'Authorization': 'Bearer ' + token,
@@ -2238,7 +3687,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             isPublishingQuiz = true;
 
             try {
-                let res = await fetch('/admin/quizzes/' + encodeURIComponent(quizId) + '/publish?publish=' + publish, {
+                let res = await adminFetch('/admin/quizzes/' + encodeURIComponent(quizId) + '/publish?publish=' + publish, {
                     method: 'POST',
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
@@ -2300,7 +3749,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             container.innerHTML = '<div class="text-center py-3 text-muted">Đang tải danh sách đề thi...</div>';
 
             try {
-                let res = await fetch(url, {
+                let res = await adminFetch(url, {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
 
@@ -2377,6 +3826,10 @@ ADMIN_HTML = """<!DOCTYPE html>
         }
 
         async function openExamModal(examData) {
+            if (!token) {
+                showAuthPromptModal('tạo hoặc chỉnh sửa Đề thi');
+                return;
+            }
             examModalOpenGen++;
             examModalActiveGen = examModalOpenGen;
             examModalClosingGen = 0;
@@ -2488,7 +3941,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             container.innerHTML = '<div class="text-center py-2 text-muted">Đang tải câu hỏi trong kho...</div>';
 
             try {
-                let res = await fetch(`/admin/questions?subject_id=${encodeURIComponent(subj)}&grade=${encodeURIComponent(gr)}&status=PUBLISHED`, {
+                let res = await adminFetch(`/admin/questions?subject_id=${encodeURIComponent(subj)}&grade=${encodeURIComponent(gr)}&status=PUBLISHED`, {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
 
@@ -2647,7 +4100,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             try {
                 let res;
                 try {
-                    res = await fetch('/admin/exams', {
+                    res = await adminFetch('/admin/exams', {
                         method: 'POST',
                         headers: {
                             'Authorization': 'Bearer ' + token,
@@ -2742,7 +4195,7 @@ ADMIN_HTML = """<!DOCTYPE html>
 
         async function toggleExamPublish(examId, publish) {
             try {
-                let res = await fetch(`/admin/exams/${examId}/publish?publish=${publish}`, {
+                let res = await adminFetch(`/admin/exams/${examId}/publish?publish=${publish}`, {
                     method: 'POST',
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
@@ -2756,6 +4209,7 @@ ADMIN_HTML = """<!DOCTYPE html>
                 alert('Lỗi kết nối khi cập nhật trạng thái xuất bản đề thi');
             }
         }
+
     </script>
 </body>
 </html>

@@ -31,6 +31,10 @@ class SignUp(Input):
 class Refresh(Input):
     refreshToken: str=Field(min_length=20,max_length=256)
 
+class AdminRefresh(Input):
+    # Supabase refresh tokens are opaque and may be shorter than local tokens.
+    refreshToken: str=Field(min_length=1,max_length=4096)
+
 class ProfilePatch(Input):
     nickname: str|None=Field(default=None,min_length=2,max_length=80)
     bio: str|None=Field(default=None,max_length=280)

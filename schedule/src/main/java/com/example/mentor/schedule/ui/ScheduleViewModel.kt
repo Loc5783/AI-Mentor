@@ -177,6 +177,14 @@ class ScheduleViewModel(
             loadData()
         }
     }
+
+    fun updateTodo(task: TodoTask) {
+        viewModelScope.launch(Dispatchers.IO + failures) {
+            repository.updateTodo(task)
+            logAction("UPDATE", "TODO", "Đã cập nhật nhiệm vụ: ${task.title}")
+            loadData()
+        }
+    }
     
     fun toggleTodo(todo: TodoTask) {
         viewModelScope.launch(Dispatchers.IO + failures) {

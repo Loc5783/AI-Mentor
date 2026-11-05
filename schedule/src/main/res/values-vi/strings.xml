@@ -22,6 +22,7 @@
     <string name="todo_deleted">Đã xóa nhiệm vụ</string>
 
     <string name="todo_add_title">Thêm việc cần làm</string>
+    <string name="todo_edit_title">Sửa việc cần làm</string>
     <string name="todo_task_name">Tên nhiệm vụ</string>
     <string name="todo_priority">Mức độ ưu tiên:</string>
     <string name="todo_priority_low">Thấp</string>
@@ -46,4 +47,12 @@
     <string name="schedule_period_morning">(Sáng)</string>
     <string name="schedule_period_afternoon">(Chiều)</string>
     <string name="schedule_repeat_days">Lặp lại các ngày:</string>
+
+    <string name="schedule_page_title">Lịch học</string>
+    <string name="schedule_card_timetable">Thời khóa biểu</string>
+    <string name="schedule_btn_add_class">Thêm lịch</string>
+    <string name="schedule_empty_day">Chưa có lịch học cho ngày này</string>
+    <string name="todo_card_title">Việc cần làm</string>
+    <string name="todo_btn_add_task">Thêm việc</string>
+    <string name="todo_empty_day">Chưa có việc cần làm</string>
 </resources>

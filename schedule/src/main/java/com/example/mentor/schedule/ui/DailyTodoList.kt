@@ -1,6 +1,7 @@
 package com.example.mentor.schedule.ui
 
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -84,13 +85,21 @@ fun DailyTodoList(
 }
 
 @Composable
-private fun TodoCard(task: TodoTask, onToggle: (TodoTask) -> Unit, onDelete: (TodoTask) -> Unit) {
+internal fun TodoCard(
+    task: TodoTask,
+    onToggle: (TodoTask) -> Unit,
+    onDelete: (TodoTask) -> Unit,
+    onClick: ((TodoTask) -> Unit)? = null
+) {
     val alphaFactor = if (task.isCompleted) 0.6f else 1f
     
     Surface(
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surface,
-        modifier = Modifier.fillMaxWidth().alpha(alphaFactor),
+        modifier = Modifier
+            .fillMaxWidth()
+            .alpha(alphaFactor)
+            .then(if (onClick != null) Modifier.clickable { onClick(task) } else Modifier),
         shadowElevation = if (task.isCompleted) 0.dp else 1.dp
     ) {
         Row(

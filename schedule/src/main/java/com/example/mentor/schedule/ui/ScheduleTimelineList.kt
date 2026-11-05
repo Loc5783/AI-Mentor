@@ -49,7 +49,7 @@ fun ScheduleTimelineList(
 }
 
 @Composable
-private fun ScheduleTimelineItemV2(entry: ScheduleEntry, onClick: (ScheduleEntry) -> Unit) {
+internal fun ScheduleTimelineItemV2(entry: ScheduleEntry, onClick: (ScheduleEntry) -> Unit) {
     val isDark = false
     val accentColor = MaterialTheme.colorScheme.primary
     val containerColor = MaterialTheme.colorScheme.primaryContainer

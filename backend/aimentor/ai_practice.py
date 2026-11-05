@@ -1,3 +1,4 @@
+import email.utils
 import hashlib
 import json
 import logging
@@ -49,11 +50,13 @@ DEFAULT_GEMINI_MODEL = None
 
 
 class AiProviderError(Exception):
-    def __init__(self, code: str, message: str, status_code: int = 502):
+    def __init__(self, code: str, message: str, status_code: int = 502, *, upstream_status=None, retry_after=0):
         super().__init__(message)
         self.code = code
         self.message = message
         self.status_code = status_code
+        self.upstream_status = upstream_status
+        self.retry_after = retry_after
 
 
 class AiProvider(ABC):
@@ -219,16 +222,32 @@ class GeminiAiProvider(AiProvider):
         except AiProviderError:
             raise
         except urllib.error.HTTPError as http_err:
+            retry_after=0
+            retry=http_err.headers.get("Retry-After", "") if http_err.headers else ""
+            if retry:
+                try: retry_after=max(0,float(retry))
+                except ValueError:
+                    try: retry_after=max(0,email.utils.parsedate_to_datetime(retry).timestamp()-time.time())
+                    except (ValueError,TypeError,OverflowError): pass
+            bad_key=False
+            if http_err.code==400:
+                try:
+                    details=json.loads(http_err.read(8192)).get("error",{}).get("details",[])
+                    bad_key=any(d.get("reason") in ("API_KEY_INVALID","API_KEY_EXPIRED","API_KEY_SERVICE_BLOCKED") for d in details)
+                except Exception: pass
             if http_err.code == 429:
-                raise AiProviderError("AI_RATE_LIMIT", "Dịch vụ AI đang quá tải (429). Vui lòng thử lại.", 429)
-            elif http_err.code in (401, 403):
-                raise AiProviderError("AI_AUTH_FAILURE", "Xác thực API Key AI thất bại.", 502)
+                raise AiProviderError("AI_RATE_LIMIT", "Dịch vụ AI đang quá tải. Vui lòng thử lại.",429,
+                                      upstream_status=429,retry_after=retry_after)
+            elif bad_key or http_err.code in (401,403):
+                raise AiProviderError("AI_AUTH_FAILURE","Xác thực khóa AI thất bại.",502,
+                                      upstream_status=http_err.code,retry_after=retry_after)
             else:
-                raise AiProviderError("AI_UPSTREAM_ERROR", f"Lỗi dịch vụ AI (HTTP {http_err.code}).", 502)
+                raise AiProviderError("AI_UPSTREAM_ERROR",f"Lỗi dịch vụ AI (HTTP {http_err.code}).",502,
+                                      upstream_status=http_err.code,retry_after=retry_after)
         except (urllib.error.URLError, TimeoutError) as net_err:
             raise AiProviderError("AI_TIMEOUT", "Kết nối tới dịch vụ AI quá thời gian chờ.", 504)
         except Exception as ex:
-            raise AiProviderError("AI_UPSTREAM_ERROR", f"Lỗi không xác định khi gọi AI: {str(ex)}", 502)
+            raise AiProviderError("AI_UPSTREAM_ERROR", "Không thể gọi dịch vụ AI.", 502)
 
     def generate_questions(
         self, subject: str, grade: int, topic: str, difficulty: str, count: int

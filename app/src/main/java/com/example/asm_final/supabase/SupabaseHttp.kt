@@ -21,6 +21,7 @@ object SupabaseAuthRedirect {
 class SupabaseHttp : SupabaseTransport {
     companion object {
         @JvmStatic fun enabled(context: Context): Boolean = BuildConfig.SUPABASE_ENABLED &&
+            !BuildConfig.DEBUG_GUEST_MODE &&
             !context.getSharedPreferences("backend_test", 0).contains("endpoint")
     }
     override fun request(method: String, path: String, body: JSONObject?, token: String?): String {
@@ -56,6 +57,7 @@ class SupabaseHttp : SupabaseTransport {
                     code in listOf("NOT_CONFIGURED","RATE_LIMITED","INVALID_REQUEST","EMPTY_RESPONSE","PROVIDER","UNAUTHORIZED") -> code
                     code.matches(Regex("PT[0-9]{3}")) && failure.optString("message").matches(Regex("[A-Z_]{1,80}")) -> failure.getString("message")
                     code == "email_address_not_authorized" -> "EMAIL_SENDING_NOT_CONFIGURED"
+                    code == "email_address_invalid" -> "EMAIL_INVALID"
                     code == "email_not_confirmed" -> "EMAIL_CONFIRMATION_REQUIRED"
                     code == "invalid_credentials" -> "INVALID_CREDENTIALS"
                     code == "user_already_exists" -> "ACCOUNT_ALREADY_EXISTS"

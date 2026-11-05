@@ -83,7 +83,8 @@ class SubjectHubUi(
                     try {
                         navModel.navigateTo(HubSection.valueOf(section))
                     } catch (_: Exception) {}
-                }
+                },
+                onOpenAiChat = { openAiChat?.run() }
             )
             HubSection.LIBRARY -> {
                 val subject = navModel.selectedSubject
@@ -144,114 +145,83 @@ class SubjectHubUi(
 fun LessonHubMainView(
     grade: Int,
     onChooseGrade: () -> Unit,
-    onSelectSection: (String) -> Unit
+    onSelectSection: (String) -> Unit,
+    onOpenAiChat: () -> Unit
 ) {
-    Column(Modifier.fillMaxSize()) {
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .mentorHeader(com.example.mentor.ui.design.MentorArtwork.LEARNING)
-                .padding(horizontal = MentorTokens.PagePadding, vertical = 18.dp)
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = MentorTokens.PagePadding, vertical = 12.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            shadowElevation = 0.5.dp
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Box(
-                    Modifier
-                        .size(52.dp)
-                        .shadow(3.dp, CircleShape)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_book_course),
-                        contentDescription = null,
-                        tint = MentorTokens.SuccessLightText,
-                        modifier = Modifier.size(30.dp)
-                    )
-                }
+            Row(
+                Modifier.fillMaxWidth().padding(14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text(
-                        text = stringResource(R.string.lesson_title),
-                        style = MaterialTheme.typography.titleLarge,
+                        text = if (grade in 10..12) stringResource(R.string.chat_grade, grade) else stringResource(R.string.chat_choose_grade),
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = "Chọn mục học tập phù hợp với nhu cầu của bạn",
+                        text = "Khối lớp đang chọn",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+                OutlinedButton(onClick = onChooseGrade) { Text("Đổi lớp") }
             }
         }
 
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(MentorTokens.PagePadding)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surface,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                shadowElevation = 0.5.dp
-            ) {
-                Row(
-                    Modifier.fillMaxWidth().padding(14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(
-                            text = if (grade in 10..12) stringResource(R.string.chat_grade, grade) else stringResource(R.string.chat_choose_grade),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = "Khối lớp đang chọn",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    OutlinedButton(onClick = onChooseGrade) { Text("Đổi lớp") }
-                }
-            }
+        HubSectionCard(
+            icon = "01",
+            title = "AI Chat",
+            description = "Hỏi AI Mentor, gửi bài tập và trao đổi về nội dung bạn chưa hiểu.",
+            actionText = "Vào AI Chat",
+            onClick = onOpenAiChat
+        )
 
-            HubSectionCard(
-                icon = "01",
-                title = "Thư viện câu hỏi",
-                description = "Kho bài tập trắc nghiệm có cấu trúc theo môn và lớp. Luyện tập theo chương, chủ đề và lưu sổ câu sai.",
-                actionText = "Vào Thư viện",
-                onClick = { onSelectSection("LIBRARY") }
-            )
+        HubSectionCard(
+            icon = "02",
+            title = "Thư viện câu hỏi",
+            description = "Kho bài tập trắc nghiệm có cấu trúc theo môn và lớp. Luyện tập theo chương, chủ đề và lưu sổ câu sai.",
+            actionText = "Vào Thư viện",
+            onClick = { onSelectSection("LIBRARY") }
+        )
 
-            HubSectionCard(
-                icon = "02",
-                title = "Ôn thi tập trung",
-                description = "Bộ đề tổng hợp và kế hoạch luyện thi theo chương trình học.",
-                actionText = "Xem Ôn thi",
-                onClick = { onSelectSection("EXAM_PREP") }
-            )
+        HubSectionCard(
+            icon = "03",
+            title = "Ôn thi tập trung",
+            description = "Bộ đề tổng hợp và kế hoạch luyện thi theo chương trình học.",
+            actionText = "Xem Ôn thi",
+            onClick = { onSelectSection("EXAM_PREP") }
+        )
 
-            HubSectionCard(
-                icon = "03",
-                title = "Lộ trình học 9 môn",
-                description = "Khung bài học chuẩn 9 môn học phổ thông cùng công cụ môn học.",
-                actionText = "Xem Lộ trình",
-                onClick = { onSelectSection("ROADMAP") }
-            )
+        HubSectionCard(
+            icon = "04",
+            title = "Lộ trình học 9 môn",
+            description = "Khung bài học chuẩn 9 môn học phổ thông cùng công cụ môn học.",
+            actionText = "Xem Lộ trình",
+            onClick = { onSelectSection("ROADMAP") }
+        )
 
-            HubSectionCard(
-                icon = "04",
-                title = "Luyện cùng AI",
-                description = "Thảo luận, giải thích bài tập và luyện tập tương tác cùng Gia sư AI.",
-                actionText = "Luyện cùng AI",
-                onClick = { onSelectSection("AI_PRACTICE") }
-            )
-        }
+        HubSectionCard(
+            icon = "05",
+            title = "Luyện cùng AI",
+            description = "Thảo luận, giải thích bài tập và luyện tập tương tác cùng Gia sư AI.",
+            actionText = "Luyện cùng AI",
+            onClick = { onSelectSection("AI_PRACTICE") }
+        )
     }
 }
 

@@ -40,6 +40,7 @@ public final class AuthFormModel extends ViewModel {
                   "EMAIL_SENDING_NOT_CONFIGURED".equals(code) ? R.string.supabase_email_sender_required
                       : "EMAIL_CONFIRMATION_REQUIRED".equals(code)
                       ? R.string.supabase_confirm_email
+                      : "EMAIL_INVALID".equals(code) ? R.string.auth_invalid_email
                       : "EMAIL_REQUIRED".equals(code) ? R.string.supabase_email_required
                       : "INVALID_CREDENTIALS".equals(code)
                       ? R.string.login_msg_fail

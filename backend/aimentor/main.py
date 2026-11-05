@@ -84,6 +84,18 @@ def create_app(settings=None):
 
     exam.seed_sample_exams()
 
+    admin_library, admin_exam = library, exam
+    if settings.admin_catalog == "supabase":
+        from .supabase_catalog import CatalogTransport, SupabaseCatalog
+        catalog_transport = CatalogTransport(settings.supabase_url, settings.supabase_server_key)
+        admin_library = SupabaseCatalog(catalog_transport, "library")
+        admin_exam = SupabaseCatalog(catalog_transport, "exam")
+
+    admin_auth = None
+    if settings.admin_auth_provider == "supabase":
+        from .supabase_admin_auth import SupabaseAdminAuth
+        admin_auth = SupabaseAdminAuth(settings.supabase_url, settings.supabase_server_key)
+
     app=FastAPI(title="AI Mentor API",version="0.2.0",
 
         description="Working account/chat/profile/event backend. Learning engine integration is in progress; six other subject modules remain framework-only.")
@@ -98,10 +110,24 @@ def create_app(settings=None):
     app.state.exam=exam
     ai_provider = getattr(settings, "ai_provider", None)
     if ai_provider is None:
+        from .gemini_failover import RotatingGeminiProvider
         raw_key = os.environ.get("GEMINI_API_KEY", "")
         gemini_key = raw_key.strip()
+        if "GEMINI_API_KEYS" in os.environ:
+            try: gemini_keys=json.loads(os.environ["GEMINI_API_KEYS"])
+            except ValueError: raise ValueError("GEMINI_API_KEYS must be a JSON array") from None
+            if not isinstance(gemini_keys,list) or len(gemini_keys)>16 or any(not isinstance(k,str) for k in gemini_keys):
+                raise ValueError("GEMINI_API_KEYS must contain at most 16 string keys")
+            gemini_keys=list(dict.fromkeys(k.strip() for k in gemini_keys if k.strip()))
+        elif "GEMINI_API_KEY" in os.environ:
+            gemini_keys=[gemini_key] if gemini_key else []
+        else:
+            gemini_keys=list(settings.gemini_api_keys)
+        gemini_key=gemini_keys[0] if gemini_keys else ""
+        def configured_gemini():
+            return RotatingGeminiProvider(gemini_keys,gemini_model) if len(gemini_keys)>1 else GeminiAiProvider(gemini_key,model=gemini_model)
         provider_type = os.environ.get('AI_PROVIDER_TYPE', 'auto').strip().lower()
-        raw_model = os.environ.get("GEMINI_MODEL", "")
+        raw_model = os.environ.get("GEMINI_MODEL", settings.gemini_model)
         if "GEMINI_MODEL" in os.environ and not raw_model.strip():
             raise ValueError("GEMINI_MODEL không được để trống hoặc chỉ chứa khoảng trắng.")
         gemini_model = raw_model.strip()
@@ -117,11 +143,11 @@ def create_app(settings=None):
                 raise ValueError("GEMINI_API_KEY không được để trống khi AI_PROVIDER_TYPE=gemini.")
             if not gemini_model:
                 raise ValueError("GEMINI_MODEL không được để trống khi AI_PROVIDER_TYPE=gemini. Do Google phân quyền model theo tài khoản, vui lòng thiết lập model khả dụng cho tài khoản của bạn (ví dụ gemini-3.8-flash hoặc gemini-2.5-flash).")
-            ai_provider = GeminiAiProvider(gemini_key, model=gemini_model)
+            ai_provider = configured_gemini()
         elif gemini_key:
             if not gemini_model:
                 raise ValueError("GEMINI_MODEL không được để trống khi cung cấp GEMINI_API_KEY. Vui lòng thiết lập model khả dụng cho tài khoản của bạn (ví dụ gemini-3.8-flash hoặc gemini-2.5-flash).")
-            ai_provider = GeminiAiProvider(gemini_key, model=gemini_model)
+            ai_provider = configured_gemini()
         elif provider_type == 'auto' and getattr(settings, "demo_accounts", False):
             ai_provider = FakeAiProvider(demo_mode=True)
         else:
@@ -1170,7 +1196,14 @@ def create_app(settings=None):
 
     # --- ADMIN ENDPOINTS ---
 
-    def admin_user(user=Depends(current)):
+    def admin_current(authorization: str|None=Header(default=None)):
+        if not authorization or not authorization.startswith("Bearer "):
+            error("AUTHENTICATION_REQUIRED", 401)
+        if admin_auth is not None:
+            return admin_auth.current(authorization[7:])
+        return auth.current(authorization[7:])
+
+    def admin_user(user=Depends(admin_current)):
 
         if user.get("role") not in ("ADMIN", "TEACHER"):
 
@@ -1179,6 +1212,40 @@ def create_app(settings=None):
         return user
 
 
+
+    @app.get("/admin/auth/config", tags=["Admin"])
+    def admin_auth_config():
+        return {"provider": settings.admin_auth_provider}
+
+    @app.post("/admin/auth/sign-in", tags=["Admin"])
+    def admin_signin(body: models.SignIn, request: Request):
+        auth.limit("admin-login:"+str(request.client.host), 20, 60)
+        return admin_auth.signin(body) if admin_auth is not None else auth.signin(body)
+
+    @app.post("/admin/auth/refresh", tags=["Admin"])
+    def admin_refresh(body: models.AdminRefresh, request: Request):
+        auth.limit("admin-refresh:"+str(request.client.host), 60, 60)
+        return admin_auth.refresh(body.refreshToken) if admin_auth is not None else auth.refresh(body.refreshToken)
+
+    @app.get("/admin/auth/me", tags=["Admin"])
+    def admin_me(user=Depends(admin_user)):
+        return {"userId": str(user["id"]), "username": user.get("username") or user.get("email"),
+                "email": user.get("email"), "role": user["role"]}
+
+    @app.post("/admin/auth/sign-out", tags=["Admin"])
+    def admin_signout(body: models.AdminRefresh, authorization: str|None=Header(default=None)):
+        if not authorization or not authorization.startswith("Bearer "):
+            error("AUTHENTICATION_REQUIRED", 401)
+        access = authorization[7:]
+        if admin_auth is not None:
+            return admin_auth.signout(access)
+        user = auth.current(access)
+        return auth.signout(user["id"], body.refreshToken)
+
+    @app.get("/admin/storage", tags=["Admin"])
+    def admin_storage(admin=Depends(admin_user)):
+        return {"catalog": settings.admin_catalog,
+                "adminAuth": settings.admin_auth_provider, "learnerAccounts": "sqlite", "learnerBackend": "sqlite"}
 
     @app.get("/admin", response_class=HTMLResponse, tags=["Admin"])
 
@@ -1208,7 +1275,7 @@ def create_app(settings=None):
 
     ):
 
-        return library.list_questions_admin(subject_id, grade, status, difficulty, chapter, topic)
+        return admin_library.list_questions_admin(subject_id, grade, status, difficulty, chapter, topic)
 
 
 
@@ -1216,7 +1283,7 @@ def create_app(settings=None):
 
     def admin_get_question(qid: str, admin=Depends(admin_user)):
 
-        return library.get_question_by_id(qid)
+        return admin_library.get_question_by_id(qid)
 
 
 
@@ -1236,7 +1303,7 @@ def create_app(settings=None):
 
                 pass
 
-        return library.create_or_update_question_admin(admin["id"], body.model_dump(), expected_version=expected_ver)
+        return admin_library.create_or_update_question_admin(admin["id"], body.model_dump(), expected_version=expected_ver)
 
 
 
@@ -1244,7 +1311,7 @@ def create_app(settings=None):
 
     def admin_publish_question(qid: str, publish: bool = True, admin=Depends(admin_user)):
 
-        return library.publish_question_admin(qid, publish)
+        return admin_library.publish_question_admin(qid, publish)
 
 
 
@@ -1252,7 +1319,7 @@ def create_app(settings=None):
 
     def admin_upsert_quiz(body: models.AdminQuizCreate, admin=Depends(admin_user)):
 
-        return library.create_or_update_quiz_admin(admin["id"], body.model_dump())
+        return admin_library.create_or_update_quiz_admin(admin["id"], body.model_dump())
 
 
 
@@ -1260,7 +1327,7 @@ def create_app(settings=None):
 
     def admin_publish_quiz(quiz_id: str, publish: bool = True, admin=Depends(admin_user)):
 
-        return library.publish_quiz_admin(quiz_id, publish)
+        return admin_library.publish_quiz_admin(quiz_id, publish)
 
 
 
@@ -1268,7 +1335,7 @@ def create_app(settings=None):
 
     def admin_list_quizzes(subject_id: str | None = None, grade: int | None = Query(None, ge=10, le=12), status: str | None = None, admin=Depends(admin_user)):
 
-        return library.list_quizzes_admin(subject_id, grade, status)
+        return admin_library.list_quizzes_admin(subject_id, grade, status)
 
 
 
@@ -1276,7 +1343,7 @@ def create_app(settings=None):
 
     def admin_get_quiz(quiz_id: str, admin=Depends(admin_user)):
 
-        return library.get_quiz_admin_by_id(quiz_id)
+        return admin_library.get_quiz_admin_by_id(quiz_id)
 
 
 
@@ -1298,7 +1365,7 @@ def create_app(settings=None):
 
     ):
 
-        return exam.list_exams_admin(subject_id, grade, exam_type, semester, status)
+        return admin_exam.list_exams_admin(subject_id, grade, exam_type, semester, status)
 
 
 
@@ -1306,7 +1373,7 @@ def create_app(settings=None):
 
     def admin_get_exam(exam_id: str, admin=Depends(admin_user)):
 
-        return exam.get_exam_admin_by_id(exam_id)
+        return admin_exam.get_exam_admin_by_id(exam_id)
 
 
 
@@ -1334,7 +1401,7 @@ def create_app(settings=None):
 
                 pass
 
-        return exam.create_or_update_exam_admin(admin["id"], body.model_dump(), expected_version=expected_ver)
+        return admin_exam.create_or_update_exam_admin(admin["id"], body.model_dump(), expected_version=expected_ver)
 
 
 
@@ -1342,7 +1409,7 @@ def create_app(settings=None):
 
     def admin_publish_exam(exam_id: str, publish: bool = True, admin=Depends(admin_user)):
 
-        return exam.publish_exam_admin(exam_id, publish=publish)
+        return admin_exam.publish_exam_admin(exam_id, publish=publish)
 
 
 
@@ -1350,7 +1417,7 @@ def create_app(settings=None):
 
     def admin_excel_template(format: str = Query("xlsx", pattern="^(xlsx|csv)$")):
 
-        content = library.generate_excel_template(format=format)
+        content = admin_library.generate_excel_template(format=format)
 
         if format == "csv":
 
@@ -1382,7 +1449,7 @@ def create_app(settings=None):
 
         body_bytes = await request.body()
 
-        return library.parse_import_file(body_bytes)
+        return await asyncio.to_thread(admin_library.parse_import_file, body_bytes)
 
 
 
@@ -1390,7 +1457,7 @@ def create_app(settings=None):
 
     def admin_import_confirm(body: models.AdminImportConfirm, admin=Depends(admin_user), key: str | None = Header(None, alias="Idempotency-Key")):
 
-        return library.confirm_import(admin["id"], body.validRows, body.publish, idempotency_key=key or body.importKey)
+        return admin_library.confirm_import(admin["id"], body.validRows, body.publish, idempotency_key=key or body.importKey)
 
 
 

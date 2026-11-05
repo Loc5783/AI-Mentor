@@ -62,9 +62,14 @@ public final class LessonHubFragment extends Fragment {
                 getArguments() == null ? "" : getArguments().getString("USERNAME", "")));
   }
 
+  private long lastChatClickTime = 0;
+
   private void openAiChat() {
+    long now = android.os.SystemClock.elapsedRealtime();
+    if (now - lastChatClickTime < 500) return;
+    lastChatClickTime = now;
     if (getActivity() instanceof com.example.asm_final.activities.HomeActivity) {
-      ((com.example.asm_final.activities.HomeActivity) getActivity()).navigateTo(R.id.nav_chat, false);
+      ((com.example.asm_final.activities.HomeActivity) getActivity()).navigateTo(R.id.nav_chat, true);
     }
   }
 
