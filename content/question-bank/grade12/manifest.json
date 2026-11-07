@@ -1,0 +1,329 @@
+{
+  "title": "Ngân hàng câu hỏi Lớp 12 - Chương trình GDPT 2018 (AI-Mentor)",
+  "grade": 12,
+  "standard_textbook_baseline": "Kết nối tri thức với cuộc sống / Tiếng Anh Global Success",
+  "author": "AI-Mentor Content & Engineering Team",
+  "license": "Nội bộ dự án AI-Mentor",
+  "creation_date": "2026-11-06",
+  "audit_remediation_date": "2026-11-07",
+  "status": "DRAFT",
+  "academic_audit_log": {
+    "file": "academic-audit.csv",
+    "sha256": "16890decf50983a21847017003ac2669d903b71e4dd307b3be0338486cc8e66d",
+    "total_questions_audited": 1800,
+    "status_distribution": {
+      "PASS": 1686,
+      "FIXED_VERIFIED": 114
+    },
+    "status": "COMPLETED_ZERO_NEEDS_REVIEW"
+  },
+  "audit_resolution_log": {
+    "file": "audit-resolution.csv",
+    "sha256": "9dfe1486e4a51cfede86f3bd947681c1421dd33715be4b60beb13ebd7e6c047d",
+    "status": "ACADEMIC_AUDIT_REMEDIATED"
+  },
+  "summary": {
+    "total_subjects": 9,
+    "total_questions": 1800,
+    "target_difficulty": {
+      "EASY": 720,
+      "MEDIUM": 720,
+      "HARD": 360
+    },
+    "actual_difficulty": {
+      "EASY": 720,
+      "MEDIUM": 720,
+      "HARD": 360
+    },
+    "option_distribution": {
+      "A": 450,
+      "B": 450,
+      "C": 450,
+      "D": 450
+    },
+    "all_backend_valid": true,
+    "all_anti_cyclic_verified": true,
+    "all_draft_notes_purged": true
+  },
+  "subjects": [
+    {
+      "subject_id": "math",
+      "subject_name": "Toán",
+      "folder": "Toan-12",
+      "code_range": "AIM_MATH12_BANK01_Q001 - AIM_MATH12_BANK01_Q200",
+      "total_questions": 200,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "options": {
+        "A": 50,
+        "B": 50,
+        "C": 50,
+        "D": 50
+      },
+      "max_consecutive_option": 3,
+      "backend_parser_valid": 200,
+      "backend_parser_errors": 0,
+      "sha256_import_csv": "31214ee6defd7fdf9cae8b860ee1722bd5ab96b00cb746d58b7997e115d90e99",
+      "sha256_review_md": "0c4af88c49f0d727cf541e245885ef0caf82a36da4f378716d2921437d75d713",
+      "files": [
+        "questions-import.csv",
+        "questions-review.md",
+        "matrix.csv",
+        "sources.csv",
+        "validation-report.md",
+        "corrections.md"
+      ]
+    },
+    {
+      "subject_id": "physics",
+      "subject_name": "Vật lí",
+      "folder": "Vat-li-12",
+      "code_range": "AIM_PHY12_BANK01_Q001 - AIM_PHY12_BANK01_Q200",
+      "total_questions": 200,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "options": {
+        "A": 50,
+        "B": 50,
+        "C": 50,
+        "D": 50
+      },
+      "max_consecutive_option": 3,
+      "backend_parser_valid": 200,
+      "backend_parser_errors": 0,
+      "sha256_import_csv": "96437977404a6878e80aa5d6d42cbb24bd95b0cadfea3cfc72c8c422e95295bd",
+      "sha256_review_md": "12e76ec67eb3280480f3c02b16ecf859b006d3234e957eb4232d6c198650dd04",
+      "files": [
+        "questions-import.csv",
+        "questions-review.md",
+        "matrix.csv",
+        "sources.csv",
+        "validation-report.md",
+        "corrections.md"
+      ]
+    },
+    {
+      "subject_id": "chemistry",
+      "subject_name": "Hóa học",
+      "folder": "Hoa-hoc-12",
+      "code_range": "AIM_CHEM12_BANK01_Q001 - AIM_CHEM12_BANK01_Q200",
+      "total_questions": 200,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "options": {
+        "A": 50,
+        "B": 50,
+        "C": 50,
+        "D": 50
+      },
+      "max_consecutive_option": 3,
+      "backend_parser_valid": 200,
+      "backend_parser_errors": 0,
+      "sha256_import_csv": "04a74ed98076dfd971f2593d149eb281933beca6f0bafd1f2d4f9e115b97d405",
+      "sha256_review_md": "441a4a3252a1976a6a618dc40e2c08a96422198bd541eb082e07ac6111721cd8",
+      "files": [
+        "questions-import.csv",
+        "questions-review.md",
+        "matrix.csv",
+        "sources.csv",
+        "validation-report.md",
+        "corrections.md"
+      ]
+    },
+    {
+      "subject_id": "biology",
+      "subject_name": "Sinh học",
+      "folder": "Sinh-hoc-12",
+      "code_range": "AIM_BIO12_BANK01_Q001 - AIM_BIO12_BANK01_Q200",
+      "total_questions": 200,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "options": {
+        "A": 50,
+        "B": 50,
+        "C": 50,
+        "D": 50
+      },
+      "max_consecutive_option": 3,
+      "backend_parser_valid": 200,
+      "backend_parser_errors": 0,
+      "sha256_import_csv": "6cce98f69b5d868f4aa1cadc39908a248938775aabed8c22a90b3ef62a2311db",
+      "sha256_review_md": "22fd7cc345493ddaec13861de5363431af49cf609f2e560b501162044830241a",
+      "files": [
+        "questions-import.csv",
+        "questions-review.md",
+        "matrix.csv",
+        "sources.csv",
+        "validation-report.md",
+        "corrections.md"
+      ]
+    },
+    {
+      "subject_id": "english",
+      "subject_name": "Tiếng Anh",
+      "folder": "Tieng-Anh-12",
+      "code_range": "AIM_ENG12_BANK01_Q001 - AIM_ENG12_BANK01_Q200",
+      "total_questions": 200,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "options": {
+        "A": 50,
+        "B": 50,
+        "C": 50,
+        "D": 50
+      },
+      "max_consecutive_option": 3,
+      "backend_parser_valid": 200,
+      "backend_parser_errors": 0,
+      "sha256_import_csv": "f21d9d5d36e0f388d6983b6273eeacbcb0b6d7bfef740aa5fb91c8c60038ef6b",
+      "sha256_review_md": "aac9f1724c0fce2074a1fc6e9f81014a9737dc388038a19ac1d8153e75d05537",
+      "files": [
+        "questions-import.csv",
+        "questions-review.md",
+        "matrix.csv",
+        "sources.csv",
+        "validation-report.md",
+        "corrections.md"
+      ]
+    },
+    {
+      "subject_id": "history",
+      "subject_name": "Lịch sử",
+      "folder": "Lich-su-12",
+      "code_range": "AIM_HIS12_BANK01_Q001 - AIM_HIS12_BANK01_Q200",
+      "total_questions": 200,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "options": {
+        "A": 50,
+        "B": 50,
+        "C": 50,
+        "D": 50
+      },
+      "max_consecutive_option": 3,
+      "backend_parser_valid": 200,
+      "backend_parser_errors": 0,
+      "sha256_import_csv": "08de10868327f3473c48207839c241985c7c7ba83784f77e2b94523be5cef2d1",
+      "sha256_review_md": "f2464c63ceec48f2c70f566770508ed79ff96ee8e1f859d368e4fff11669c7e3",
+      "files": [
+        "questions-import.csv",
+        "questions-review.md",
+        "matrix.csv",
+        "sources.csv",
+        "validation-report.md",
+        "corrections.md"
+      ]
+    },
+    {
+      "subject_id": "geography",
+      "subject_name": "Địa lí",
+      "folder": "Dia-li-12",
+      "code_range": "AIM_GEO12_BANK01_Q001 - AIM_GEO12_BANK01_Q200",
+      "total_questions": 200,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "options": {
+        "A": 50,
+        "B": 50,
+        "C": 50,
+        "D": 50
+      },
+      "max_consecutive_option": 3,
+      "backend_parser_valid": 200,
+      "backend_parser_errors": 0,
+      "sha256_import_csv": "a6cfeb7bc49615f3fb2af944c97dc13680b4e3e1019da959135a2db82d6f33b2",
+      "sha256_review_md": "3bcad175e3db7abfed92629c3e154bf84989082ff0d47f477fd96a6b1fb3b68b",
+      "files": [
+        "questions-import.csv",
+        "questions-review.md",
+        "matrix.csv",
+        "sources.csv",
+        "validation-report.md",
+        "corrections.md"
+      ]
+    },
+    {
+      "subject_id": "economics_law",
+      "subject_name": "Giáo dục kinh tế và pháp luật",
+      "folder": "GDKT-PL-12",
+      "code_range": "AIM_ECL12_BANK01_Q001 - AIM_ECL12_BANK01_Q200",
+      "total_questions": 200,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "options": {
+        "A": 50,
+        "B": 50,
+        "C": 50,
+        "D": 50
+      },
+      "max_consecutive_option": 3,
+      "backend_parser_valid": 200,
+      "backend_parser_errors": 0,
+      "sha256_import_csv": "0bd211da6aeaece0a14fb4d82dd7cb0e4ed8ef1bda86ff450ec317a00a347dfe",
+      "sha256_review_md": "4944cebb63b851f1db016486efd5a74c4f145286ed930c1a10c0d94f286f82f4",
+      "files": [
+        "questions-import.csv",
+        "questions-review.md",
+        "matrix.csv",
+        "sources.csv",
+        "validation-report.md",
+        "corrections.md"
+      ]
+    },
+    {
+      "subject_id": "literature",
+      "subject_name": "Ngữ văn",
+      "folder": "Ngu-van-12",
+      "code_range": "AIM_LIT12_BANK01_Q001 - AIM_LIT12_BANK01_Q200",
+      "total_questions": 200,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "options": {
+        "A": 50,
+        "B": 50,
+        "C": 50,
+        "D": 50
+      },
+      "max_consecutive_option": 3,
+      "backend_parser_valid": 200,
+      "backend_parser_errors": 0,
+      "sha256_import_csv": "8ce4545a05fd3ce879f614cfb71c25cf83c1cd07873489eb9ca2947947181ce3",
+      "sha256_review_md": "c4ef5a1560d5a5864b0ecaf5ed9fd45a88afa4ba2ec3432af065a20a711c1ae9",
+      "files": [
+        "questions-import.csv",
+        "questions-review.md",
+        "matrix.csv",
+        "sources.csv",
+        "validation-report.md",
+        "corrections.md"
+      ]
+    }
+  ]
+}

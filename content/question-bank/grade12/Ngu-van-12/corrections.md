@@ -1,0 +1,22 @@
+# Nhật ký hiệu chỉnh kỹ thuật & nguồn Ngữ văn 12
+
+| Lần hiệu chỉnh | Mã câu | Nội dung điều chỉnh | Lý do | Trạng thái sau chỉnh |
+| :--- | :--- | :--- | :--- | :--- |
+| R1 | AIM_LIT12_BANK01_Q045 | Làm rõ đặc trưng thi pháp của thơ Mới: sự thức tỉnh sâu sắc của cái tôi cá nhân. | Tránh các nhận định cảm tính; bám sát chuẩn kiến thức bài học Thơ lãng mạn. | PASSED |
+| R1 | AIM_LIT12_BANK01_Q095 | Chuẩn hóa phân tích nghệ thuật trào phúng 'nghịch dị' và tiếng cười châm biếm trong Quan thanh tra (Gogol). | Làm nổi bật tính hiện thực phê phán sâu sắc của kịch Gogol theo SGK KNTT. | PASSED |
+| R2 | AIM_LIT12_BANK01_Q026 | Thay các phương án nhiễu phi lý 'bảng cửu chương' bằng quan niệm đối lập giữa thơ tượng trưng và lối miêu tả thực chứng. | Nâng cao chất lượng học thuật và tính phân hóa câu hỏi theo yêu cầu Codex. | PASSED |
+| R2 | AIM_LIT12_BANK01_Q076 | Thay phương án nhiễu 'ai bảo gì cũng nghe' bằng các nét tính cách đối lập tinh tế (khôn khéo, kiêu căng, trầm tĩnh). | Đảm bảo tính sư phạm và ngữ nghĩa chính xác của từ Hán Việt 'khảng khái'. | PASSED |
+| R2 | AIM_LIT12_BANK01_Q081 | Thay phương án nhiễu 'lấy nước mắt xót thương' bằng mục đích giải trí đơn thuần không có tính thanh lọc. | Phân biệt rạch ròi giữa bi kịch và hài kịch trào phúng. | PASSED |
+| R2 | AIM_LIT12_BANK01_Q091 | Thay phương án nhiễu 'đi tắm nước hoa' bằng chức năng giải trí hời hợt hoặc thù hằn cá nhân. | Làm rõ khái niệm mỹ học 'Thanh lọc' (Catharsis) của Aristote trong kịch nghệ. | PASSED |
+| R2 | AIM_LIT12_BANK01_Q098 | Thay phương án nhiễu 'Tôn Ngộ Không, điệp viên' bằng các giả định mưu mô xảo quyệt hoặc cải cách tiến bộ. | Làm nổi bật nét độc đáo thiên tài của Gogol về tâm lý dối trá hồn nhiên của Khlestakov. | PASSED |
+| R2 | AIM_LIT12_BANK01_Q110 | Thay phương án nhiễu 'chiêm tinh học, 100 tấn vàng' bằng các phương án lập luận tôn giáo hoặc nhân nhượng phi thực tế. | Tôn vinh tính chặt chẽ, luận cứ thép của văn chính luận Hồ Chí Minh. | PASSED |
+| R2 | AIM_LIT12_BANK01_Q130 | Thay phương án phi lý 'buôn bán nô lệ phương Tây' bằng vai trò chia cắt văn hóa cục bộ. | Đảm bảo đúng bối cảnh lịch sử và văn hóa sông Hương. | PASSED |
+| R2 | AIM_LIT12_BANK01_Q159 | Thay phương án cực đoan 'đập phá điện thoại' bằng quan điểm quản lý công nghệ sai lầm. | Nâng cao giá trị giáo dục kỹ năng số trong đọc hiểu văn bản thông tin. | PASSED |
+| R2 | AIM_LIT12_BANK01_Q160 | Thay phương án '50 trang chữ Hán cổ' bằng sai lầm thuyết minh thiếu trực quan. | Khắc phục phương án phi lý theo Codex. | PASSED |
+| R2 | AIM_LIT12_BANK01_Q162 | Thay 'bảng cửu chương' bằng quy luật khoa học thực nghiệm thuần túy. | Phân biệt chức năng nhận thức thẩm mỹ văn học với khoa học tự nhiên. | PASSED |
+| R2 | AIM_LIT12_BANK01_Q163 | Thay 'quỳ gối học thuộc' bằng sự áp đặt giáo điều luân lý một chiều. | Làm sáng tỏ con đường cảm hóa tự giác của nghệ thuật ngôn từ. | PASSED |
+| R2 | AIM_LIT12_BANK01_Q175 | Thay 'giấy dát vàng, 100.000 trang' bằng việc chạy theo trào lưu hình thức cầu kỳ hoặc bí hiểm. | Đảm bảo tính chân xác của chuẩn mực kiệt tác văn chương. | PASSED |
+| R2 | AIM_LIT12_BANK01_Q200 | Thay các lựa chọn vô lý 'hoạt hình 3D, kịch quảng cáo sữa, diễn viên xiếc' bằng các vai trò học thuật chính xác trong kịch nghệ. | Tôn vinh đúng vị thế kịch Lưu Quang Vũ thời kỳ Đổi mới. | PASSED |
+| R2 | AIM_LIT12_BANK01_ALL | Phá bỏ hoàn toàn chu kỳ đáp án tuần hoàn ABCD x 50, áp dụng hoán vị ngẫu nhiên cân bằng xác định. | Triệt tiêu quy luật đáp án tuần hoàn theo biên bản AUDIT-CODEX, bảo đảm 50A-50B-50C-50D với max run <= 3. | PASSED |
+| R3 | AIM_LIT12_BANK01_TOC_STANDARDIZED | Chuẩn hóa cấu trúc chương mục Ngữ văn 12 theo đúng mục lục SGK Kết nối tri thức (Tập 1 & Tập 2, gồm 9 bài học chính khóa); chỉnh tên chuẩn Bài 6, Bài 7, Bài 8 (Dữ liệu trong văn bản thông tin), Bài 9 (Văn học và cuộc đời); định danh chính thức nhóm 10 là 'Chủ đề bổ sung: Nghệ thuật kịch và Tiếng Việt thực hành' của dự án, bỏ hoàn toàn tuyên bố sai lệch về bài 10 SGK. | Thực hiện kết luận AUDIT-CODEX vòng 3 về việc SGK KNTT chỉ có 9 bài học và tên chuẩn của Bài 8 là Dữ liệu trong văn bản thông tin. | RESOLVED |
+| R2 | AIM_LIT12_BANK01_MATRIX | Đồng bộ hóa 100% tên 10 bài học trong matrix.csv khớp hoàn toàn với tên bài học trong SGK Ngữ văn 12 Kết nối tri thức với cuộc sống (Tập 1 & Tập 2) và tệp questions-import.csv. | Khắc phục lỗi ma trận Ngữ văn không khớp chapter ở cả 10 dòng theo kết luận AUDIT-CODEX vòng 2. | RESOLVED |

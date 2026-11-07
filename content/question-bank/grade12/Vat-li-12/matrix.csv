@@ -1,0 +1,5 @@
+﻿chapter_code,chapter_name,target_easy,target_medium,target_hard,target_total,actual_easy,actual_medium,actual_hard,actual_total,notes
+CH01,Chương I: Vật lí nhiệt,22,22,10,54,22,22,10,54,"Thang nhiệt độ Celsius/Kelvin, nhiệt dung riêng, nhiệt chuyển thể, định luật I NĐLH"
+CH02,Chương II: Khí lí tưởng,20,20,10,50,20,20,10,50,"Mô hình ĐHPT chất khí, định luật Boyle, Charles, phương trình trạng thái khí lí tưởng"
+CH03,Chương III: Từ trường,20,20,10,50,20,20,10,50,"Cảm ứng từ, lực từ lên dòng điện, lực Lorentz, hiện tượng cảm ứng điện từ"
+CH04,Chương IV: Vật lí hạt nhân,18,18,10,46,18,18,10,46,"Cấu tạo hạt nhân, năng lượng liên kết, định luật phóng xạ, phân hạch và nhiệt hạch"

@@ -1,0 +1,333 @@
+{
+  "subjects": [
+    {
+      "subject": "Toan-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": true,
+      "actual_max_consecutive": 1,
+      "reported_max_consecutive": 0,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Vat-li-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": true,
+      "actual_max_consecutive": 1,
+      "reported_max_consecutive": 0,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Hoa-hoc-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": true,
+      "actual_max_consecutive": 1,
+      "reported_max_consecutive": 0,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Sinh-hoc-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": true,
+      "actual_max_consecutive": 1,
+      "reported_max_consecutive": 0,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Tieng-Anh-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": true,
+      "actual_max_consecutive": 1,
+      "reported_max_consecutive": 0,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Lich-su-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": true,
+      "actual_max_consecutive": 1,
+      "reported_max_consecutive": 0,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Dia-li-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": true,
+      "actual_max_consecutive": 1,
+      "reported_max_consecutive": 0,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "GDKT-PL-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": true,
+      "actual_max_consecutive": 1,
+      "reported_max_consecutive": 0,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Ngu-van-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": true,
+      "actual_max_consecutive": 1,
+      "reported_max_consecutive": 0,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    }
+  ],
+  "total_questions": 1800,
+  "unique_codes": 1800,
+  "homepage_sources": [
+    [
+      "Toan-12",
+      "SRC_THPT_YENHOA_M12",
+      "http://thptyenhoa.edu.vn"
+    ],
+    [
+      "Toan-12",
+      "SRC_BGDDT_MINHHOA_2025_M12",
+      "https://moet.gov.vn"
+    ],
+    [
+      "Vat-li-12",
+      "SRC_THPT_CHU_VAN_AN_P12",
+      "http://c3chuvanan.edu.vn"
+    ],
+    [
+      "Vat-li-12",
+      "SRC_BGDDT_MINHHOA_2025_P12",
+      "https://moet.gov.vn"
+    ],
+    [
+      "Hoa-hoc-12",
+      "SRC_THPT_AMSTERDAM_C12",
+      "http://hn-ams.edu.vn"
+    ],
+    [
+      "Hoa-hoc-12",
+      "SRC_BGDDT_MINHHOA_2025_C12",
+      "https://moet.gov.vn"
+    ],
+    [
+      "Sinh-hoc-12",
+      "SRC_THPT_LE_QUY_DON_B12",
+      "http://thpt-lequydon.edu.vn"
+    ],
+    [
+      "Sinh-hoc-12",
+      "SRC_BGDDT_MINHHOA_2025_B12",
+      "https://moet.gov.vn"
+    ],
+    [
+      "Tieng-Anh-12",
+      "SRC_THPT_PHAN_DINH_PHUNG_E12",
+      "http://thptphandinhphung.edu.vn"
+    ],
+    [
+      "Tieng-Anh-12",
+      "SRC_BGDDT_MINHHOA_2025_E12",
+      "https://moet.gov.vn"
+    ],
+    [
+      "Lich-su-12",
+      "SRC_THPT_VIET_DUC_H12",
+      "http://thptvietduc.edu.vn"
+    ],
+    [
+      "Lich-su-12",
+      "SRC_BGDDT_MINHHOA_2025_H12",
+      "https://moet.gov.vn"
+    ],
+    [
+      "Dia-li-12",
+      "SRC_THPT_KIM_LIEN_G12",
+      "http://thptkimlien-hanoi.edu.vn"
+    ],
+    [
+      "Dia-li-12",
+      "SRC_BGDDT_MINHHOA_2025_G12",
+      "https://moet.gov.vn"
+    ],
+    [
+      "GDKT-PL-12",
+      "SRC_THPT_CHU_VAN_AN_ECL12",
+      "http://c3chuvanan.edu.vn"
+    ],
+    [
+      "GDKT-PL-12",
+      "SRC_BGDDT_MINHHOA_2025_ECL12",
+      "https://moet.gov.vn"
+    ],
+    [
+      "Ngu-van-12",
+      "SRC_THPT_YEN_HOA_LIT12",
+      "http://c3yenhoa.edu.vn"
+    ],
+    [
+      "Ngu-van-12",
+      "SRC_BGDDT_MINHHOA_2025_LIT12",
+      "https://moet.gov.vn"
+    ]
+  ],
+  "school_ratio_attributions": [
+    [
+      "Toan-12",
+      "SRC_THPT_YENHOA_M12"
+    ],
+    [
+      "Vat-li-12",
+      "SRC_THPT_CHU_VAN_AN_P12"
+    ],
+    [
+      "Hoa-hoc-12",
+      "SRC_THPT_AMSTERDAM_C12"
+    ],
+    [
+      "Sinh-hoc-12",
+      "SRC_THPT_LE_QUY_DON_B12"
+    ],
+    [
+      "Tieng-Anh-12",
+      "SRC_THPT_PHAN_DINH_PHUNG_E12"
+    ],
+    [
+      "Lich-su-12",
+      "SRC_THPT_VIET_DUC_H12"
+    ],
+    [
+      "Dia-li-12",
+      "SRC_THPT_KIM_LIEN_G12"
+    ]
+  ],
+  "explicit_drafting_notes": [
+    [
+      "AIM_MATH12_BANK01_Q069",
+      "M(0; 0; z). MA^2 = MB^2 <=> 4 + 9 + (z - 4)^2 = 1 + 4 + (z - 3)^2 <=> 13 + z^2 - 8z + 16 = 5 + z^2 - 6z + 9 <=> 29 - 8z = 14 - 6z <=> 2z = 15 => z = 15/2. Chỉnh số liệu cho khớp đáp án."
+    ],
+    [
+      "AIM_MATH12_BANK01_Q160",
+      "Tham số hoá d: x = 1 + 2t, y = -1 + t, z = 2t. Thay vào (P): (1 + 2t) + (-1 + t) + 2t - 6 = 0 <=> 5t = 6... chỉnh hệ số để t = 1 => điểm (3; 0; 2)."
+    ]
+  ],
+  "math_Q160_expected": [
+    "17/5",
+    "1/5",
+    "12/5"
+  ],
+  "math_Q200_expected": "3/4"
+}

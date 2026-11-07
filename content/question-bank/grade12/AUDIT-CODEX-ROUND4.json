@@ -1,0 +1,191 @@
+[
+  {
+    "subject": "Toan-12",
+    "questions": 200,
+    "valid": 200,
+    "errors": 0,
+    "difficulty": {
+      "EASY": 80,
+      "MEDIUM": 80,
+      "HARD": 40
+    },
+    "unique_prompts": 200,
+    "duplicate_option_codes": [],
+    "answer_cycle_abcd": false,
+    "actual_max_consecutive": 3,
+    "reported_max_consecutive": 3,
+    "csv_hash_matches": true,
+    "review_hash_matches": true,
+    "matrix_errors": [],
+    "unknown_sources": [],
+    "required_files_present": true
+  },
+  {
+    "subject": "Vat-li-12",
+    "questions": 200,
+    "valid": 200,
+    "errors": 0,
+    "difficulty": {
+      "EASY": 80,
+      "MEDIUM": 80,
+      "HARD": 40
+    },
+    "unique_prompts": 200,
+    "duplicate_option_codes": [],
+    "answer_cycle_abcd": false,
+    "actual_max_consecutive": 3,
+    "reported_max_consecutive": 3,
+    "csv_hash_matches": true,
+    "review_hash_matches": true,
+    "matrix_errors": [],
+    "unknown_sources": [],
+    "required_files_present": true
+  },
+  {
+    "subject": "Hoa-hoc-12",
+    "questions": 200,
+    "valid": 200,
+    "errors": 0,
+    "difficulty": {
+      "EASY": 80,
+      "MEDIUM": 80,
+      "HARD": 40
+    },
+    "unique_prompts": 200,
+    "duplicate_option_codes": [],
+    "answer_cycle_abcd": false,
+    "actual_max_consecutive": 3,
+    "reported_max_consecutive": 3,
+    "csv_hash_matches": true,
+    "review_hash_matches": true,
+    "matrix_errors": [],
+    "unknown_sources": [],
+    "required_files_present": true
+  },
+  {
+    "subject": "Sinh-hoc-12",
+    "questions": 200,
+    "valid": 200,
+    "errors": 0,
+    "difficulty": {
+      "EASY": 80,
+      "MEDIUM": 80,
+      "HARD": 40
+    },
+    "unique_prompts": 200,
+    "duplicate_option_codes": [],
+    "answer_cycle_abcd": false,
+    "actual_max_consecutive": 3,
+    "reported_max_consecutive": 3,
+    "csv_hash_matches": true,
+    "review_hash_matches": true,
+    "matrix_errors": [],
+    "unknown_sources": [],
+    "required_files_present": true
+  },
+  {
+    "subject": "Tieng-Anh-12",
+    "questions": 200,
+    "valid": 200,
+    "errors": 0,
+    "difficulty": {
+      "EASY": 80,
+      "MEDIUM": 80,
+      "HARD": 40
+    },
+    "unique_prompts": 200,
+    "duplicate_option_codes": [],
+    "answer_cycle_abcd": false,
+    "actual_max_consecutive": 3,
+    "reported_max_consecutive": 3,
+    "csv_hash_matches": true,
+    "review_hash_matches": true,
+    "matrix_errors": [],
+    "unknown_sources": [],
+    "required_files_present": true
+  },
+  {
+    "subject": "Lich-su-12",
+    "questions": 200,
+    "valid": 200,
+    "errors": 0,
+    "difficulty": {
+      "EASY": 80,
+      "MEDIUM": 80,
+      "HARD": 40
+    },
+    "unique_prompts": 200,
+    "duplicate_option_codes": [],
+    "answer_cycle_abcd": false,
+    "actual_max_consecutive": 3,
+    "reported_max_consecutive": 3,
+    "csv_hash_matches": true,
+    "review_hash_matches": true,
+    "matrix_errors": [],
+    "unknown_sources": [],
+    "required_files_present": true
+  },
+  {
+    "subject": "Dia-li-12",
+    "questions": 200,
+    "valid": 200,
+    "errors": 0,
+    "difficulty": {
+      "EASY": 80,
+      "MEDIUM": 80,
+      "HARD": 40
+    },
+    "unique_prompts": 200,
+    "duplicate_option_codes": [],
+    "answer_cycle_abcd": false,
+    "actual_max_consecutive": 3,
+    "reported_max_consecutive": 3,
+    "csv_hash_matches": true,
+    "review_hash_matches": true,
+    "matrix_errors": [],
+    "unknown_sources": [],
+    "required_files_present": true
+  },
+  {
+    "subject": "GDKT-PL-12",
+    "questions": 200,
+    "valid": 200,
+    "errors": 0,
+    "difficulty": {
+      "EASY": 80,
+      "MEDIUM": 80,
+      "HARD": 40
+    },
+    "unique_prompts": 200,
+    "duplicate_option_codes": [],
+    "answer_cycle_abcd": false,
+    "actual_max_consecutive": 3,
+    "reported_max_consecutive": 3,
+    "csv_hash_matches": true,
+    "review_hash_matches": true,
+    "matrix_errors": [],
+    "unknown_sources": [],
+    "required_files_present": true
+  },
+  {
+    "subject": "Ngu-van-12",
+    "questions": 200,
+    "valid": 200,
+    "errors": 0,
+    "difficulty": {
+      "EASY": 80,
+      "MEDIUM": 80,
+      "HARD": 40
+    },
+    "unique_prompts": 200,
+    "duplicate_option_codes": [],
+    "answer_cycle_abcd": false,
+    "actual_max_consecutive": 3,
+    "reported_max_consecutive": 3,
+    "csv_hash_matches": true,
+    "review_hash_matches": true,
+    "matrix_errors": [],
+    "unknown_sources": [],
+    "required_files_present": true
+  }
+]

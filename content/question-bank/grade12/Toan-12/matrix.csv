@@ -1,0 +1,7 @@
+﻿chapter_code,chapter_name,target_easy,target_medium,target_hard,target_total,actual_easy,actual_medium,actual_hard,actual_total,notes
+CH01,Chương I: Ứng dụng đạo hàm để khảo sát và vẽ đồ thị hàm số,20,20,10,50,20,20,10,50,"Đơn điệu, cực trị, GTLN-GTNN, tiệm cận, bài toán thực tế tối ưu hóa"
+CH02,Chương II: Vectơ và hệ trục toạ độ trong không gian,12,12,6,30,12,12,6,30,"Vectơ không gian, toạ độ vectơ, tích vô hướng, ứng dụng trọng tâm"
+CH03,Chương III: Các số đặc trưng đo mức độ phân tán của mẫu số liệu ghép nhóm,10,10,4,24,10,10,4,24,"Khoảng biến thiên, tứ phân vị, phương sai, độ lệch chuẩn mẫu ghép nhóm"
+CH04,Chương IV: Nguyên hàm và tích phân,16,16,8,40,16,16,8,40,"Định nghĩa nguyên hàm, bảng nguyên hàm cơ bản, tích phân, diện tích & thể tích"
+CH05,Chương V: Phương pháp toạ độ trong không gian,14,14,8,36,14,14,8,36,"Mặt phẳng, đường thẳng, góc và khoảng cách, phương trình mặt cầu"
+CH06,Chương VI: Xác suất có điều kiện,8,8,4,20,8,8,4,20,"Xác suất có điều kiện, công thức xác suất toàn phần, công thức Bayes"

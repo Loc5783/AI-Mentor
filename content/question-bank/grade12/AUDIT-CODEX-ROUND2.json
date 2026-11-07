@@ -1,0 +1,517 @@
+{
+  "date": "2026-11-07",
+  "verdict": "NOT_ACCEPTED",
+  "scope": "Technical full bank; academic spot check only. No live database mutation.",
+  "subjects": [
+    {
+      "subject": "Toan-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": false,
+      "actual_max_consecutive": 3,
+      "reported_max_consecutive": 3,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Vat-li-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": false,
+      "actual_max_consecutive": 3,
+      "reported_max_consecutive": 3,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Hoa-hoc-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": false,
+      "actual_max_consecutive": 3,
+      "reported_max_consecutive": 3,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Sinh-hoc-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": false,
+      "actual_max_consecutive": 3,
+      "reported_max_consecutive": 3,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Tieng-Anh-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": false,
+      "actual_max_consecutive": 3,
+      "reported_max_consecutive": 3,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Lich-su-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": false,
+      "actual_max_consecutive": 3,
+      "reported_max_consecutive": 3,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Dia-li-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": false,
+      "actual_max_consecutive": 3,
+      "reported_max_consecutive": 3,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "GDKT-PL-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": false,
+      "actual_max_consecutive": 3,
+      "reported_max_consecutive": 3,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [],
+      "unknown_sources": [],
+      "required_files_present": true
+    },
+    {
+      "subject": "Ngu-van-12",
+      "questions": 200,
+      "valid": 200,
+      "errors": 0,
+      "difficulty": {
+        "EASY": 80,
+        "MEDIUM": 80,
+        "HARD": 40
+      },
+      "unique_prompts": 200,
+      "duplicate_option_codes": [],
+      "answer_cycle_abcd": false,
+      "actual_max_consecutive": 3,
+      "reported_max_consecutive": 3,
+      "csv_hash_matches": true,
+      "review_hash_matches": true,
+      "matrix_errors": [
+        [
+          "LESSON01",
+          "actual_easy"
+        ],
+        [
+          "LESSON01",
+          "actual_medium"
+        ],
+        [
+          "LESSON01",
+          "actual_hard"
+        ],
+        [
+          "LESSON01",
+          "actual_total"
+        ],
+        [
+          "LESSON02",
+          "actual_easy"
+        ],
+        [
+          "LESSON02",
+          "actual_medium"
+        ],
+        [
+          "LESSON02",
+          "actual_hard"
+        ],
+        [
+          "LESSON02",
+          "actual_total"
+        ],
+        [
+          "LESSON03",
+          "actual_easy"
+        ],
+        [
+          "LESSON03",
+          "actual_medium"
+        ],
+        [
+          "LESSON03",
+          "actual_hard"
+        ],
+        [
+          "LESSON03",
+          "actual_total"
+        ],
+        [
+          "LESSON04",
+          "actual_easy"
+        ],
+        [
+          "LESSON04",
+          "actual_medium"
+        ],
+        [
+          "LESSON04",
+          "actual_hard"
+        ],
+        [
+          "LESSON04",
+          "actual_total"
+        ],
+        [
+          "LESSON05",
+          "actual_easy"
+        ],
+        [
+          "LESSON05",
+          "actual_medium"
+        ],
+        [
+          "LESSON05",
+          "actual_hard"
+        ],
+        [
+          "LESSON05",
+          "actual_total"
+        ],
+        [
+          "LESSON06",
+          "actual_easy"
+        ],
+        [
+          "LESSON06",
+          "actual_medium"
+        ],
+        [
+          "LESSON06",
+          "actual_hard"
+        ],
+        [
+          "LESSON06",
+          "actual_total"
+        ],
+        [
+          "LESSON07",
+          "actual_easy"
+        ],
+        [
+          "LESSON07",
+          "actual_medium"
+        ],
+        [
+          "LESSON07",
+          "actual_hard"
+        ],
+        [
+          "LESSON07",
+          "actual_total"
+        ],
+        [
+          "LESSON08",
+          "actual_easy"
+        ],
+        [
+          "LESSON08",
+          "actual_medium"
+        ],
+        [
+          "LESSON08",
+          "actual_hard"
+        ],
+        [
+          "LESSON08",
+          "actual_total"
+        ],
+        [
+          "LESSON09",
+          "actual_easy"
+        ],
+        [
+          "LESSON09",
+          "actual_medium"
+        ],
+        [
+          "LESSON09",
+          "actual_hard"
+        ],
+        [
+          "LESSON09",
+          "actual_total"
+        ],
+        [
+          "LESSON10",
+          "actual_easy"
+        ],
+        [
+          "LESSON10",
+          "actual_medium"
+        ],
+        [
+          "LESSON10",
+          "actual_hard"
+        ],
+        [
+          "LESSON10",
+          "actual_total"
+        ]
+      ],
+      "unknown_sources": [],
+      "required_files_present": true
+    }
+  ],
+  "total_questions": 1800,
+  "unique_codes": 1800,
+  "embedded_option_mismatch_codes": [
+    "AIM_ENG12_BANK01_Q001",
+    "AIM_ENG12_BANK01_Q009",
+    "AIM_ENG12_BANK01_Q029",
+    "AIM_ENG12_BANK01_Q041",
+    "AIM_ENG12_BANK01_Q049",
+    "AIM_ENG12_BANK01_Q061",
+    "AIM_ENG12_BANK01_Q081",
+    "AIM_ENG12_BANK01_Q101",
+    "AIM_ENG12_BANK01_Q109",
+    "AIM_ENG12_BANK01_Q129",
+    "AIM_ENG12_BANK01_Q141",
+    "AIM_ENG12_BANK01_Q149",
+    "AIM_ENG12_BANK01_Q161",
+    "AIM_ENG12_BANK01_Q181"
+  ],
+  "findings": [
+    {
+      "priority": "P1",
+      "code": "AIM_MATH12_BANK01_Q175",
+      "issue": "Cả bốn lựa chọn đều đúng. Mọi m thực đều cho đường thẳng đi qua tâm (1,2,0) của mặt cầu bán kính 2. Hai giao điểm luôn cách nhau 4; không có điều kiện z=0 trong đề để suy ra m=0.",
+      "evidence": [
+        {
+          "file": "C:\\Users\\PhamDinhDong\\Documents\\ChatGPT\\Dự án AI-Mentor\\Ngan-hang-cau-hoi\\Lop-12\\Toan-12\\questions-import.csv",
+          "csv_record_end_line": 176,
+          "question": {
+            "code": "AIM_MATH12_BANK01_Q175",
+            "subjectId": "math",
+            "grade": "12",
+            "chapter": "Chương V: Phương pháp toạ độ trong không gian",
+            "topic": "Dây cung lớn nhất mặt cầu",
+            "textbook": "Kết nối tri thức với cuộc sống",
+            "prompt": "Tìm m để đường thẳng d: x = 1 + t, y = 2 - t, z = m*t cắt mặt cầu (S): x^2 + y^2 + z^2 - 2x - 4y + 1 = 0 tại hai điểm phân biệt có khoảng cách lớn nhất.",
+            "optionA": "m = 0",
+            "optionB": "m = 1",
+            "optionC": "m = -1",
+            "optionD": "m = 2",
+            "correctOption": "A",
+            "explanation": "Khoảng cách giữa 2 giao điểm lớn nhất khi d đi qua tâm I của mặt cầu (khi đó dây cung chính là đường kính). Mặt cầu có tâm I(1; 2; 0). Thay toạ độ tâm I vào phương trình tham số của d: 1 = 1 + t => t = 0; thay vào y = 2 - 0 = 2 (thoả mãn); thay vào z: 0 = m*0 (luôn thoả mãn với mọi m). Kết hợp điều kiện cắt theo đường kính z=0 cho m = 0.",
+            "difficulty": "HARD",
+            "points": "10",
+            "source": "SRC_SGK_KNTT_M12; SRC_BGDDT_MINHHOA_2025_M12",
+            "author": "AI-Mentor",
+            "license": "Nội bộ"
+          }
+        }
+      ]
+    },
+    {
+      "priority": "P1",
+      "code": "AIM_ENG12_BANK01_Q021",
+      "issue": "Lời giải nói chữ u trong diverse, nhưng diverse không có chữ u. Đề yêu cầu phần gạch chân nhưng không đánh dấu phần cần so sánh.",
+      "evidence": [
+        {
+          "file": "C:\\Users\\PhamDinhDong\\Documents\\ChatGPT\\Dự án AI-Mentor\\Ngan-hang-cau-hoi\\Lop-12\\Tieng-Anh-12\\questions-import.csv",
+          "csv_record_end_line": 45,
+          "question": {
+            "code": "AIM_ENG12_BANK01_Q021",
+            "subjectId": "english",
+            "grade": "12",
+            "chapter": "Unit 2: A multicultural world",
+            "topic": "Phonetics: Vowel sound",
+            "textbook": "Tiếng Anh 12 Global Success",
+            "prompt": "Mark the letter A, B, C, or D to indicate the word whose underlined part differs from the other three in pronunciation:\nA. culture\nB. custom\nC. mutual\nD. diverse",
+            "optionA": "culture",
+            "optionB": "custom",
+            "optionC": "mutual",
+            "optionD": "diverse",
+            "correctOption": "D",
+            "explanation": "Chữ 'u' trong 'diverse' /daɪˈvɜːs/ phát âm là /ɜː/ hoặc /aɪ/. Trong 'culture' /ˈkʌl.tʃər/, 'custom' /ˈkʌs.təm/ phát âm là /ʌ/.",
+            "difficulty": "EASY",
+            "points": "10",
+            "source": "SRC_SGK_GS_E12; SRC_BGDDT_MINHHOA_2025_E12",
+            "author": "AI-Mentor",
+            "license": "Nội bộ"
+          }
+        }
+      ]
+    },
+    {
+      "priority": "P1",
+      "code": "AIM_ENG12_BANK01_Q141",
+      "issue": "Nếu so sánh chữ a đầu tiên: nature/danger và habitat/manage tạo hai cặp phát âm, không có một từ khác biệt duy nhất. Đề không đánh dấu phần gạch chân.",
+      "evidence": [
+        {
+          "file": "C:\\Users\\PhamDinhDong\\Documents\\ChatGPT\\Dự án AI-Mentor\\Ngan-hang-cau-hoi\\Lop-12\\Tieng-Anh-12\\questions-import.csv",
+          "csv_record_end_line": 273,
+          "question": {
+            "code": "AIM_ENG12_BANK01_Q141",
+            "subjectId": "english",
+            "grade": "12",
+            "chapter": "Unit 8: Wildlife conservation",
+            "topic": "Phonetics: Consonant pronunciation",
+            "textbook": "Tiếng Anh 12 Global Success",
+            "prompt": "Mark the letter A, B, C, or D to indicate the word whose underlined part differs from the other three in pronunciation:\nA. nature\nB. danger\nC. habitat\nD. manage",
+            "optionA": "nature",
+            "optionB": "habitat",
+            "optionC": "danger",
+            "optionD": "manage",
+            "correctOption": "B",
+            "explanation": "Chữ 'a' trong 'nature' /ˈneɪ.tʃər/ và 'danger' /ˈdeɪn.dʒər/ phát âm là /eɪ/. Trong 'habitat' /ˈhæb.ɪ.tæt/ phát âm là /æ/.",
+            "difficulty": "EASY",
+            "points": "10",
+            "source": "SRC_SGK_GS_E12; SRC_BGDDT_MINHHOA_2025_E12",
+            "author": "AI-Mentor",
+            "license": "Nội bộ"
+          }
+        }
+      ]
+    },
+    {
+      "priority": "P1",
+      "code": "AIM_ENG12_BANK01_Q149",
+      "issue": "Lời giải phân tích ecosystem, sanctuary, conservation, biodiversity, không phải natural, habitat, endangered, predator trong câu hỏi. Còn ghi chú Cần xét rõ từ khác biệt duy nhất.",
+      "evidence": [
+        {
+          "file": "C:\\Users\\PhamDinhDong\\Documents\\ChatGPT\\Dự án AI-Mentor\\Ngan-hang-cau-hoi\\Lop-12\\Tieng-Anh-12\\questions-import.csv",
+          "csv_record_end_line": 287,
+          "question": {
+            "code": "AIM_ENG12_BANK01_Q149",
+            "subjectId": "english",
+            "grade": "12",
+            "chapter": "Unit 8: Wildlife conservation",
+            "topic": "Phonetics: Word Stress",
+            "textbook": "Tiếng Anh 12 Global Success",
+            "prompt": "Mark the letter A, B, C, or D to indicate the word that differs from the other three in the position of primary stress:\nA. natural\nB. habitat\nC. endangered\nD. predator",
+            "optionA": "natural",
+            "optionB": "endangered",
+            "optionC": "habitat",
+            "optionD": "predator",
+            "correctOption": "B",
+            "explanation": "'ecosystem' trọng âm rơi vào âm tiết thứ 1 (/ˈiː.kəʊˌsɪs.təm/), 'sanctuary' cũng âm 1 (/ˈsæŋk.tʃʊə.ri/). Chú ý 'conservation' âm 3 (/ˌkɒn.səˈveɪ.ʃən/), 'biodiversity' âm 4. Cần xét rõ từ khác biệt duy nhất.",
+            "difficulty": "MEDIUM",
+            "points": "10",
+            "source": "SRC_SGK_GS_E12; SRC_BGDDT_MINHHOA_2025_E12",
+            "author": "AI-Mentor",
+            "license": "Nội bộ"
+          }
+        }
+      ]
+    },
+    {
+      "priority": "P1",
+      "code": "ENGLISH_EMBEDDED_LABELS",
+      "issue": "Nhãn A/B/C/D trong đề không đồng bộ với bốn trường lựa chọn sau hoán vị; gồm Q001, Q009, Q019. Q019 còn dùng đánh dấu lỗi và phương án không khớp vị trí."
+    },
+    {
+      "priority": "P2",
+      "code": "AUDIT_RESOLUTION",
+      "issue": "Nhật ký mô tả Q069 là hình chiếu, Q160 là hình chiếu lên mặt phẳng khác, Q200 là hai đồng xu, Q047 có hàm số/tiệm cận khác. Không khớp câu hỏi hiện tại dù ghi RESOLVED."
+    },
+    {
+      "priority": "P1",
+      "code": "LITERATURE_MATRIX",
+      "issue": "Ma trận Ngữ văn không khớp chapter của CSV ở cả 10 dòng. Ví dụ matrix Bài 1: Khát vọng tự do (Truyện truyền kì), nhưng CSV Bài 1: Khả năng lớn lao của tiểu thuyết. Không thể dùng ma trận hiện tại làm bằng chứng phân bổ nội dung."
+    }
+  ],
+  "audit_resolution_hash_matches": true
+}
