@@ -151,9 +151,9 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
             Destination(R.id.nav_edit_profile, "edit-profile", R.string.profile_edit, R.drawable.ic_nav_profile, ProfileFragment::class.java)
         )
         val tabs = listOf(
-            destinations.first { it.id == R.id.nav_home },
             destinations.first { it.id == R.id.nav_category },
             destinations.first { it.id == R.id.nav_schedule },
+            destinations.first { it.id == R.id.nav_home },
             destinations.first { it.id == R.id.nav_competition },
             destinations.first { it.id == R.id.nav_profile }
         )
