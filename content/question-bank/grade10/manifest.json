@@ -1,0 +1,17 @@
+{
+  "grade": 10,
+  "status": "DRAFT",
+  "source": "existing lessons",
+  "questionCount": 450,
+  "subjects": {
+    "math": 45,
+    "physics": 60,
+    "chemistry": 60,
+    "biology": 60,
+    "literature": 45,
+    "english": 45,
+    "history": 45,
+    "geography": 45,
+    "economics_law": 45
+  }
+}
