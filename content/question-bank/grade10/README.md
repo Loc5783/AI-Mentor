@@ -12,6 +12,9 @@ chỉ là nhãn nhắc biên tập; tuyệt đối không xuất bản nguyên t
 Mục tiêu nội dung lớp 10 là khoảng 200 câu hỏi và 10 đề cho mỗi môn. Dữ liệu
 bài học hiện mới phủ 15–20 bài nhập môn/môn, chưa phải toàn bộ năm học. Không
 được gọi các đề luyện tổng hợp từ số bài này là đề bao quát chương trình lớp 10.
+Bộ sách đối chiếu để mở rộng tiếp là **Kết nối tri thức với cuộc sống** và
+**Tiếng Anh Global Success**. Câu đã xuất bản cần đúng chủ đề lớp 10, không
+chỉ là kiến thức phổ thông có thể gặp ở nhiều lớp.
 
 Đối chiếu trực tiếp project Supabase `hnxphwuaccztzanjcuca` ngày 10/11/2026:
 450 câu trên đã được thêm vào `mentor_questions` dưới dạng DRAFT (45–60 câu/môn).
@@ -28,6 +31,8 @@ chạy lại an toàn nhờ ID ổn định và `ON CONFLICT DO NOTHING`.
 - 40 câu mới được phân loại lại theo tên bài lớp 10 trong
   `202611140005_grade10_foundation_curriculum_alignment.sql`. Bảy câu kiến thức
   chung trước đó đã được sửa để khớp đúng bài học lớp 10 hiện có.
+  `20261114132201_grade10_math_two_variable_scope.sql` sửa thêm câu Toán về hệ
+  bất phương trình hai ẩn để bám nội dung Kết nối tri thức lớp 10.
 - Kho đề có 90 đề `PUBLISHED`, đúng 10 đề/môn. 59 đề tổng hợp mới chỉ dùng câu
   từ các bài lớp 10 hiện có; mỗi đề có 15 câu khác nhau, nhưng một câu có thể
   xuất hiện trong nhiều đề. Không tính 885 lượt câu trong 59 đề thành 885 câu

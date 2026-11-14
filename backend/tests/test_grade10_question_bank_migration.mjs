@@ -16,6 +16,10 @@ const mixedSets = readFileSync(resolve(
   dirname(fileURLToPath(import.meta.url)),
   '../../supabase/migrations/202611140004_grade10_mixed_practice_sets.sql',
 ), 'utf8');
+const mathScope = readFileSync(resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  '../../supabase/migrations/20261114132201_grade10_math_two_variable_scope.sql',
+), 'utf8');
 const lines = migration.split(/\r?\n/).filter(line => /^\s*\('g10-found-/.test(line));
 const values = lines.map(line => [...line.matchAll(/'((?:[^']|'')*)'/g)]
   .map(match => match[1].replaceAll("''", "'")));
@@ -81,4 +85,10 @@ test('mixed practice sets use enough unique Grade 10 lesson questions for all ni
   assert.match(mixedSets, /c\.grade = 10 and c\.kind = 'LESSON'/);
   assert.match(mixedSets, /question_no <= 15/);
   assert.match(mixedSets, /'Luyện tổng hợp lộ trình hiện có'/);
+});
+
+test('math foundation uses a Grade 10 two-variable inequality', () => {
+  assert.match(mathScope, /x ≥ 0, y ≥ 0, x \+ y ≤ 3/);
+  assert.match(mathScope, /chapter = 'Hệ bất phương trình và miền nghiệm'/);
+  assert.match(mathScope, /where id = 'g10-found-math-01' and grade = 10/);
 });
