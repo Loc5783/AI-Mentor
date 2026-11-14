@@ -1,8 +1,10 @@
 package com.example.mentor.schedule.ui
 
 import com.example.mentor.ui.design.mentorHeader
+import com.example.mentor.ui.design.MentorSkeleton
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -22,11 +24,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.mentor.schedule.R
 import com.example.mentor.schedule.domain.ScheduleEntry
 import com.example.mentor.schedule.domain.ScheduleRepository
@@ -115,11 +121,21 @@ private val NullableTodoTaskSaver: Saver<TodoTask?, Any> = listSaver(
 fun ScheduleScreen(
     accountId: String,
     repository: ScheduleRepository,
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    onAiPhoto: () -> Unit = {},
+    onAiPlan: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val factory = remember { ScheduleViewModelFactory(context.applicationContext as Application, accountId, repository) }
     val viewModel: ScheduleViewModel = viewModel(factory = factory)
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, viewModel) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) viewModel.refreshOnResume()
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
     
     val daysArray = stringResource(R.string.schedule_days).split(",")
     val selectedDay by viewModel.selectedDay
@@ -192,12 +208,51 @@ fun ScheduleScreen(
                 }
             }
 
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = .24f)),
+                shadowElevation = 6.dp,
+                color = MaterialTheme.colorScheme.primaryContainer
+            ) {
+                Column(
+                    Modifier.background(Brush.linearGradient(listOf(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = .8f)
+                    ))).padding(top = 18.dp, bottom = 7.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(stringResource(R.string.schedule_week_title),
+                        modifier = Modifier.padding(horizontal = 18.dp),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Text(stringResource(R.string.schedule_week_hint),
+                        modifier = Modifier.padding(horizontal = 18.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = .82f))
+                    DaySelectorStrip(daysArray, selectedDay) { viewModel.selectDay(it) }
+                }
+            }
+
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.schedule_ai_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold)
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    ScheduleAiActionCard(Modifier.weight(1f), R.string.schedule_ai_photo,
+                        R.string.schedule_ai_photo_hint, onAiPhoto)
+                    ScheduleAiActionCard(Modifier.weight(1f), R.string.schedule_ai_plan,
+                        R.string.schedule_ai_plan_hint, onAiPlan)
+                }
+            }
+
             // === KHUNG 1: THỜI KHÓA BIỂU ===
             Surface(
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.surface,
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)),
-                shadowElevation = 1.dp,
+                shadowElevation = 5.dp,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp)) {
@@ -229,17 +284,12 @@ fun ScheduleScreen(
                         }
                     }
 
-                    // Thanh chọn ngày/thứ
-                    DaySelectorStrip(
-                        days = daysArray,
-                        selectedDay = selectedDay,
-                        onDaySelected = { viewModel.selectDay(it) }
-                    )
-
-                    Spacer(Modifier.height(6.dp))
-
                     // Danh sách các buổi học hoặc trạng thái trống gọn
-                    if (viewModel.entries.isEmpty()) {
+                    if (viewModel.loading.value) {
+                        MentorSkeleton(stringResource(R.string.schedule_loading), Modifier.padding(horizontal = 16.dp))
+                    } else if (viewModel.error.value) {
+                        ScheduleUnavailable()
+                    } else if (viewModel.entries.isEmpty()) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -255,15 +305,6 @@ fun ScheduleScreen(
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                                OutlinedButton(onClick = {
-                                    entryToEdit = null
-                                    scheduleDialogSession++
-                                    showScheduleForm = true
-                                }) {
-                                    Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
-                                    Spacer(Modifier.width(4.dp))
-                                    Text(stringResource(R.string.schedule_btn_add_class))
-                                }
                             }
                         }
                     } else {
@@ -290,7 +331,7 @@ fun ScheduleScreen(
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.surface,
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)),
-                shadowElevation = 1.dp,
+                shadowElevation = 5.dp,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp)) {
@@ -322,7 +363,11 @@ fun ScheduleScreen(
                         }
                     }
 
-                    if (viewModel.todos.isEmpty()) {
+                    if (viewModel.loading.value) {
+                        MentorSkeleton(stringResource(R.string.schedule_loading), Modifier.padding(horizontal = 16.dp))
+                    } else if (viewModel.error.value) {
+                        ScheduleUnavailable()
+                    } else if (viewModel.todos.isEmpty()) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -338,15 +383,6 @@ fun ScheduleScreen(
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                                OutlinedButton(onClick = {
-                                    taskToEdit = null
-                                    todoDialogSession++
-                                    showTodoForm = true
-                                }) {
-                                    Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
-                                    Spacer(Modifier.width(4.dp))
-                                    Text(stringResource(R.string.todo_btn_add_task))
-                                }
                             }
                         }
                     } else {
@@ -363,7 +399,7 @@ fun ScheduleScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    stringResource(R.string.todo_daily_progress),
+                                    stringResource(R.string.todo_progress_short),
                                     style = MaterialTheme.typography.bodySmall,
                                     fontWeight = FontWeight.Medium
                                 )
@@ -380,7 +416,7 @@ fun ScheduleScreen(
                                     .fillMaxWidth()
                                     .height(6.dp)
                                     .clip(RoundedCornerShape(3.dp)),
-                                color = Color(0xFF10B981),
+                                color = MaterialTheme.colorScheme.secondary,
                                 trackColor = MaterialTheme.colorScheme.outlineVariant
                             )
                         }
@@ -514,6 +550,38 @@ fun ScheduleScreen(
             onClearLogs = { viewModel.clearLogs() }
         )
     }
+}
+
+@Composable
+private fun ScheduleAiActionCard(
+    modifier: Modifier,
+    title: Int,
+    hint: Int,
+    onClick: () -> Unit,
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier.heightIn(min = 112.dp),
+        shape = RoundedCornerShape(18.dp),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = .3f)),
+        shadowElevation = 4.dp,
+    ) {
+        Column(Modifier.padding(13.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+            Text(stringResource(title), style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(hint), style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+@Composable
+private fun ScheduleUnavailable() {
+    Text(stringResource(R.string.schedule_unavailable),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 18.dp),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant)
 }
 
 @Composable

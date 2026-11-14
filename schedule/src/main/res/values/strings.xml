@@ -49,6 +49,16 @@
     <string name="schedule_repeat_days">Repeat on days:</string>
 
     <string name="schedule_page_title">Schedule</string>
+    <string name="schedule_week_title">Your 7-day plan</string>
+    <string name="schedule_loading">Loading schedule</string>
+    <string name="schedule_unavailable">Schedule unavailable.</string>
+    <string name="schedule_week_hint">Pick a day to view and plan</string>
+    <string name="schedule_ai_title">Plan with AI</string>
+    <string name="schedule_ai_photo">Photo → timetable</string>
+    <string name="schedule_ai_photo_hint">Review before saving</string>
+    <string name="schedule_ai_plan">Suggest to-dos</string>
+    <string name="schedule_ai_plan_hint">Plan together with AI</string>
+    <string name="todo_progress_short">Done</string>
     <string name="schedule_card_timetable">Timetable</string>
     <string name="schedule_btn_add_class">Add Class</string>
     <string name="schedule_empty_day">No classes scheduled for this day</string>

@@ -137,8 +137,22 @@ public final class GeneralChatFragment extends Fragment {
                   return;
                 }
               }
+              if (!model.loading && model.snapshot != null
+                  && requireActivity() instanceof com.example.asm_final.activities.HomeActivity) {
+                com.example.asm_final.activities.HomeActivity.ScheduleChatRequest request =
+                    ((com.example.asm_final.activities.HomeActivity) requireActivity())
+                        .consumeScheduleChatRequest();
+                if (request != null) {
+                  model.setDraft(request.prompt);
+                  if (request.pickPhoto) photos.launch(new String[] {"image/jpeg", "image/png", "image/webp"});
+                }
+              }
               drainImports();
             });
+    model.setScheduleImportEnabled(
+        requireActivity() instanceof com.example.asm_final.activities.HomeActivity
+            && ((com.example.asm_final.activities.HomeActivity) requireActivity())
+                .isScheduleChatMode());
     model.bind(ActiveUser.get(requireContext()));
   }
 

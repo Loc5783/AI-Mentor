@@ -72,7 +72,7 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
         val top = destinations.firstOrNull { it.route == route }
         val selectedRoute = when (route) {
             "settings", "edit-profile" -> "profile"
-            "chat" -> "lessons"
+            "chat" -> if (activity.isScheduleChatMode) "schedule" else "lessons"
             else -> route
         }
         val motion = motionEnabled()

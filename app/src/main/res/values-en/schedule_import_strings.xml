@@ -9,5 +9,11 @@
     <string name="schedule_import_saving">Saving…</string>
     <string name="schedule_import_save">Add to timetable</string>
     <string name="chat_suggest_schedule">Read my timetable photo and add it to my schedule</string>
+    <string name="chat_suggest_schedule_plan">Suggest study to-dos for this week</string>
+    <string name="schedule_chat_title">Schedule AI assistant</string>
+    <string name="schedule_chat_empty_title">Plan your week with AI</string>
+    <string name="schedule_chat_empty_body">Send a timetable photo or describe your tasks.</string>
+    <string name="schedule_ai_photo_prompt">Read my attached timetable photo and draft the clearly visible classes for me to review before adding them. Ask if a day or period is unclear.</string>
+    <string name="schedule_ai_plan_prompt">Help me make a short study to-do list for this week based on my grade and the tasks I describe. Ask if details are missing; do not claim you saved tasks in the app.</string>
     <string name="schedule_import_invalid">No valid timetable could be extracted. Send a clearer image or clarify the days and periods.</string>
 </resources>

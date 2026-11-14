@@ -49,6 +49,16 @@
     <string name="schedule_repeat_days">Lặp lại các ngày:</string>
 
     <string name="schedule_page_title">Lịch học</string>
+    <string name="schedule_week_title">Lịch học 7 ngày</string>
+    <string name="schedule_loading">Đang tải lịch học</string>
+    <string name="schedule_unavailable">Chưa tải được dữ liệu.</string>
+    <string name="schedule_week_hint">Chọn ngày để xem và sắp xếp</string>
+    <string name="schedule_ai_title">AI hỗ trợ</string>
+    <string name="schedule_ai_photo">Ảnh → TKB</string>
+    <string name="schedule_ai_photo_hint">Đọc ảnh, duyệt rồi lưu</string>
+    <string name="schedule_ai_plan">Gợi ý to-do</string>
+    <string name="schedule_ai_plan_hint">Lên kế hoạch cùng AI</string>
+    <string name="todo_progress_short">Đã xong</string>
     <string name="schedule_card_timetable">Thời khóa biểu</string>
     <string name="schedule_btn_add_class">Thêm lịch</string>
     <string name="schedule_empty_day">Chưa có lịch học cho ngày này</string>

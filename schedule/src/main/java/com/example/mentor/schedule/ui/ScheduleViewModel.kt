@@ -12,7 +12,9 @@ import com.example.mentor.schedule.domain.TodoTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CancellationException
 import java.util.Calendar
+import java.util.concurrent.atomic.AtomicInteger
 
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
@@ -39,6 +41,7 @@ class ScheduleViewModel(
 ) : AndroidViewModel(app) {
 
     val error = mutableStateOf(false)
+    val loading = mutableStateOf(true)
     private val failures = kotlinx.coroutines.CoroutineExceptionHandler { _, _ ->
         viewModelScope.launch(Dispatchers.Main) { error.value = true }
     }
@@ -51,9 +54,16 @@ class ScheduleViewModel(
     
     private var lastDeletedEntry: ScheduleEntry? = null
     private var lastDeletedTodo: TodoTask? = null
+    private var firstResumePending = true
+    private val loadGeneration = AtomicInteger()
 
     init {
         loadData()
+    }
+
+    /** Refresh after returning from the schedule assistant; initial data loads in init. */
+    fun refreshOnResume() {
+        if (firstResumePending) firstResumePending = false else loadData()
     }
 
     private fun getCurrentDayOfWeek(): Int {
@@ -64,23 +74,37 @@ class ScheduleViewModel(
     }
 
     fun loadData() {
-        viewModelScope.launch(Dispatchers.IO + failures) {
-            val entryList = repository.getEntries(accountId, selectedDay.value)
-            val todoList = repository.getTodos(accountId, selectedDay.value)
-            val logList = repository.getLogs(accountId, 20)
-            
-            withContext(Dispatchers.Main) {
-                error.value = false
-                entries.clear()
-                entries.addAll(entryList)
-                
-                todos.clear()
-                todos.addAll(todoList)
-                
-                logs.clear()
-                logs.addAll(logList)
-                
-                calculateTodoProgress()
+        val generation = loadGeneration.incrementAndGet()
+        val day = selectedDay.value
+        viewModelScope.launch(Dispatchers.Main) {
+            if (generation == loadGeneration.get()) loading.value = true
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val entryList = repository.getEntries(accountId, day)
+                val todoList = repository.getTodos(accountId, day)
+                val logList = repository.getLogs(accountId, 20)
+                withContext(Dispatchers.Main) {
+                    if (generation != loadGeneration.get() || selectedDay.value != day) return@withContext
+                    error.value = false
+                    loading.value = false
+                    entries.clear()
+                    entries.addAll(entryList)
+                    todos.clear()
+                    todos.addAll(todoList)
+                    logs.clear()
+                    logs.addAll(logList)
+                    calculateTodoProgress()
+                }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                withContext(Dispatchers.Main) {
+                    if (generation == loadGeneration.get() && selectedDay.value == day) {
+                        error.value = true
+                        loading.value = false
+                    }
+                }
             }
         }
     }
@@ -95,7 +119,12 @@ class ScheduleViewModel(
     }
 
     fun selectDay(day: Int) {
+        if (selectedDay.value == day) return
         selectedDay.value = day
+        entries.clear()
+        todos.clear()
+        calculateTodoProgress()
+        loading.value = true
         loadData()
     }
 

@@ -36,6 +36,7 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
   public String draft = "";
   public int grade, status;
   public boolean loading, importing, requesting;
+  public boolean scheduleImportEnabled;
 
   public ChatViewModel(Application app) {
     this(
@@ -54,6 +55,12 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
 
   public LiveData<Integer> changes() {
     return changes;
+  }
+
+  public void setScheduleImportEnabled(boolean enabled) {
+    if (scheduleImportEnabled == enabled) return;
+    scheduleImportEnabled = enabled;
+    emit();
   }
 
   public int owner() {

@@ -24,6 +24,7 @@ class ScheduleFragment : Fragment() {
         val accountId = ActiveUser.get(requireContext()).toString()
         val repository = (requireContext().applicationContext as? com.example.mentor.schedule.domain.ScheduleRepositoryProvider)?.scheduleRepository()
             ?: ScheduleRepositoryImpl(requireContext())
+        val aiHost = requireActivity() as? ScheduleAiHost
         
         return ComposeView(requireContext()).apply {
             setContent {
@@ -32,7 +33,8 @@ class ScheduleFragment : Fragment() {
                     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
                         ScheduleScreen(accountId, repository, onBack = {
                             requireActivity().onBackPressedDispatcher.onBackPressed()
-                        })
+                        }, onAiPhoto = { aiHost?.openScheduleAi(ScheduleAiAction.TIMETABLE_PHOTO) },
+                            onAiPlan = { aiHost?.openScheduleAi(ScheduleAiAction.TODO_PLAN) })
                     }
                 }
             }

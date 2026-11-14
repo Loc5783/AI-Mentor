@@ -34,6 +34,7 @@ import com.example.asm_final.dashboard.LearningOverviewRepository
 import com.example.asm_final.utils.LocaleHelper
 import com.example.mentor.learning.SubjectId
 import com.example.mentor.ui.design.*
+import java.util.Calendar
 import java.util.function.Consumer
 
 /** A view-only bridge: lifecycle, identity checks and repository work remain in the Fragment. */
@@ -113,8 +114,7 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
         }
 
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 18.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-
-
+            if (!profile) HomeScheduleCard(palette, schedule)
             if (loading) {
                 repeat(3) { MentorSkeleton(stringResource(R.string.course_loading)) }
             } else {
@@ -207,6 +207,42 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                             data.firstTryCorrect, data.questionCount), style = MaterialTheme.typography.bodyMedium)
                         Text(stringResource(R.string.overview_assisted, data.assisted), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeScheduleCard(palette: PremiumDashboardPalette, openSchedule: () -> Unit) {
+    val today = Calendar.getInstance().let { (it.get(Calendar.DAY_OF_WEEK) + 5) % 7 }
+    val days = stringResource(R.string.home_schedule_days).split(",")
+    PremiumDashboardCard(
+        palette,
+        modifier = Modifier.testTag("home-schedule-card").clickable(role = Role.Button, onClick = openSchedule),
+        highlighted = true,
+    ) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Text(stringResource(R.string.home_schedule_title), style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold, color = palette.title)
+                Text(stringResource(R.string.home_schedule_subtitle), style = MaterialTheme.typography.bodySmall,
+                    color = palette.secondary)
+            }
+            Text("›", style = MaterialTheme.typography.headlineMedium, color = palette.accent)
+        }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+            days.take(7).forEachIndexed { index, day ->
+                val active = today == index
+                Box(
+                    Modifier.weight(1f).heightIn(min = 38.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(if (active) palette.accent else palette.iconSurface),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(day, style = MaterialTheme.typography.labelSmall,
+                        color = if (active) palette.onAction else palette.title,
+                        fontWeight = if (active) FontWeight.Bold else FontWeight.Medium)
                 }
             }
         }

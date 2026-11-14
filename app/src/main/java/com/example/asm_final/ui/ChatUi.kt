@@ -75,7 +75,8 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
         Row(Modifier.fillMaxWidth().padding(horizontal = MentorTokens.SpaceSmall, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             ChatIcon(R.drawable.ic_chat_history, R.string.chat_history, ready, actions::history)
             Column(Modifier.weight(1f)) {
-                Text(model.snapshot?.thread?.title?.takeIf { it.isNotBlank() } ?: stringResource(R.string.chat_title),
+                Text(if (model.scheduleImportEnabled) stringResource(R.string.schedule_chat_title)
+                    else model.snapshot?.thread?.title?.takeIf { it.isNotBlank() } ?: stringResource(R.string.chat_title),
                     style = MaterialTheme.typography.titleMedium, maxLines = 2)
                 TextButton(actions::grade, enabled = ready) {
                     Text(if (model.grade in 10..12) stringResource(R.string.chat_grade, model.grade) else stringResource(R.string.chat_choose_grade))
@@ -94,16 +95,22 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
                 MentorCard(Modifier.fillMaxWidth()) {
                     MentorIllustration(MentorArtwork.ASSISTANT)
                     Text(stringResource(R.string.design_mentor), style = MaterialTheme.typography.labelLarge)
-                    Text(stringResource(R.string.chat_empty_title), style = MaterialTheme.typography.titleLarge)
-                    Text(stringResource(R.string.chat_empty_body))
-                    listOf(R.string.chat_suggest_physics, R.string.chat_suggest_chemistry, R.string.chat_suggest_biology, R.string.chat_suggest_schedule).forEach { id ->
+                    Text(stringResource(if (model.scheduleImportEnabled) R.string.schedule_chat_empty_title
+                        else R.string.chat_empty_title), style = MaterialTheme.typography.titleLarge)
+                    Text(stringResource(if (model.scheduleImportEnabled) R.string.schedule_chat_empty_body
+                        else R.string.chat_empty_body))
+                    val suggestions = if (model.scheduleImportEnabled)
+                        listOf(R.string.chat_suggest_schedule, R.string.chat_suggest_schedule_plan)
+                    else listOf(R.string.chat_suggest_physics, R.string.chat_suggest_chemistry, R.string.chat_suggest_biology)
+                    suggestions.forEach { id ->
                         val suggestion = stringResource(id)
                         OutlinedButton({ draft = suggestion; model.setDraft(suggestion) }, enabled = ready) { Text(suggestion) }
                     }
                 }
             }
             items(rows, key = { it.id }) { message ->
-                MessageBubble(message, model.owner(), model.requesting, model.hasUnsavedReply(message.id), model::retry, actions)
+                MessageBubble(message, model.owner(), model.requesting, model.hasUnsavedReply(message.id),
+                    model.scheduleImportEnabled, model::retry, actions)
             }
             if (model.busyHere()) item(key = "typing") { TypingDots() }
         }
@@ -166,6 +173,7 @@ private fun ChatIcon(drawable: Int, label: Int, enabled: Boolean, action: () -> 
 
 @Composable
 private fun MessageBubble(message: ChatRecords.Message, owner: Int, requesting: Boolean, retryable: Boolean,
+    scheduleImportEnabled: Boolean,
     retry: (String) -> Unit, actions: ChatUi.Actions) {
     val user = message.role == "USER"
     var visible by remember(message.id) { mutableStateOf(false) }
@@ -178,7 +186,7 @@ private fun MessageBubble(message: ChatRecords.Message, owner: Int, requesting: 
                 Column(Modifier.widthIn(max = 480.dp).padding(horizontal = 12.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(if (user) R.string.chat_user else R.string.chat_assistant), style = MaterialTheme.typography.labelMedium)
                     if (message.text.isNotBlank()) SelectionContainer { Text(remember(message.text) { readableMessage(if (user) message.text else ScheduleProposal.displayText(message.text)) }, style = MaterialTheme.typography.bodyMedium) }
-                    if (!user) ScheduleImportAction(message.text, owner)
+                    if (!user && scheduleImportEnabled) ScheduleImportAction(message.text, owner)
                     message.files.forEach { file ->
                         if (file.mime.startsWith("image/")) {
                             val context = LocalContext.current

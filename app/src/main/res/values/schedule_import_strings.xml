@@ -9,5 +9,11 @@
     <string name="schedule_import_saving">Đang lưu…</string>
     <string name="schedule_import_save">Thêm vào lịch</string>
     <string name="chat_suggest_schedule">Đọc ảnh và điền thời khóa biểu giúp tôi</string>
+    <string name="chat_suggest_schedule_plan">Gợi ý to-do học tập cho tuần này</string>
+    <string name="schedule_chat_title">AI hỗ trợ lịch học</string>
+    <string name="schedule_chat_empty_title">Lên lịch học cùng AI</string>
+    <string name="schedule_chat_empty_body">Gửi ảnh thời khóa biểu hoặc mô tả việc cần làm.</string>
+    <string name="schedule_ai_photo_prompt">Hãy đọc ảnh thời khóa biểu tôi đính kèm và tạo bản nháp để tôi kiểm tra trước khi thêm vào lịch. Chỉ ghi những tiết nhìn rõ; nếu không rõ thứ hoặc tiết, hãy hỏi lại.</string>
+    <string name="schedule_ai_plan_prompt">Hãy dựa trên lớp học của tôi và các việc tôi mô tả để gợi ý một to-do list học tập ngắn gọn cho tuần này. Hỏi thêm nếu thiếu thông tin; đừng nói rằng bạn đã lưu việc vào app.</string>
     <string name="schedule_import_invalid">Chưa đọc được lịch hợp lệ. Hãy gửi ảnh rõ hơn hoặc xác nhận lại thứ và tiết học.</string>
 </resources>
