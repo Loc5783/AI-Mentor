@@ -27,11 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontFamily
 import coil3.compose.AsyncImage
 import com.example.asm_final.R
 import com.example.asm_final.chat.*
@@ -185,9 +180,15 @@ private fun MessageBubble(message: ChatRecords.Message, owner: Int, requesting: 
                 color = if (user) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface) {
                 Column(Modifier.widthIn(max = 480.dp).padding(horizontal = 12.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(if (user) R.string.chat_user else R.string.chat_assistant), style = MaterialTheme.typography.labelMedium)
-                    if (message.text.isNotBlank()) SelectionContainer { Text(remember(message.text) {
-                        readableMessage(if (user) message.text else TodoProposal.displayText(ScheduleProposal.displayText(message.text)))
-                    }, style = MaterialTheme.typography.bodyMedium) }
+                    if (message.text.isNotBlank()) {
+                        if (user) SelectionContainer { Text(message.text, style = MaterialTheme.typography.bodyMedium) }
+                        else {
+                            val visibleText = remember(message.text) {
+                                TodoProposal.displayText(ScheduleProposal.displayText(message.text))
+                            }
+                            if (visibleText.isNotBlank()) ChatAnswerView(visibleText)
+                        }
+                    }
                     if (!user && scheduleImportEnabled) {
                         ScheduleImportAction(message.text, owner)
                         TodoImportAction(message.text, owner)
@@ -237,18 +238,4 @@ private fun TypingDots() {
                 .clip(MaterialTheme.shapes.small).background(MaterialTheme.colorScheme.primary))
         }
     }
-}
-
-private fun readableMessage(source: String) = buildAnnotatedString {
-    val pattern = Regex("""\*\*(.+?)\*\*|`([^`]+)`""")
-    var position = 0
-    pattern.findAll(source).forEach { match ->
-        append(source.substring(position, match.range.first))
-        val bold = match.groupValues[1].isNotEmpty()
-        withStyle(if (bold) SpanStyle(fontWeight = FontWeight.Bold) else SpanStyle(fontFamily = FontFamily.Monospace)) {
-            append(if (bold) match.groupValues[1] else match.groupValues[2])
-        }
-        position = match.range.last + 1
-    }
-    append(source.substring(position))
 }
