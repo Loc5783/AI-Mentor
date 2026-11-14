@@ -40,3 +40,14 @@ chạy lại an toàn nhờ ID ổn định và `ON CONFLICT DO NOTHING`.
 - Mốc 200 câu/môn của kho câu hỏi **chưa đạt**. Cần biên soạn thêm nội dung lớp
   10 theo từng chủ đề, kiểm tra học thuật rồi mới xuất bản; không sao chép câu
   lớp 12 xuống hoặc nhân bản câu cũ để đủ số lượng.
+
+## Cập nhật bộ Toán 10
+
+Migration `20261114134001_grade10_math_question_bank.sql` thêm 195 câu Toán
+được tạo từ 15 dạng bài có quy tắc tính và lời giải xác định. Bộ kiểm tra tự
+động đối chiếu đáp án độc lập cho từng câu, bảo đảm bốn phương án khác nhau,
+ID và đề bài không trùng nhau. Đã áp dụng trên project Supabase
+`hnxphwuaccztzanjcuca`: Toán hiện có **200 câu PUBLISHED** (5 cũ + 195 mới).
+Mười bốn chủ đề của bộ này thuộc các bài Toán 10 đang có trong app; nhiều câu
+chỉ khác dữ kiện số, vì vậy chưa thể coi là bao phủ toàn bộ SGK hoặc có độ đa
+dạng tương đương 200 dạng bài. Tám môn còn lại chưa đạt 200 câu/môn.
