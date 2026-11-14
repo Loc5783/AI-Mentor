@@ -15,5 +15,19 @@
     <string name="schedule_chat_empty_body">Send a timetable photo or describe your tasks.</string>
     <string name="schedule_ai_photo_prompt">Read my attached timetable photo and draft the clearly visible classes for me to review before adding them. Ask if a day or period is unclear.</string>
     <string name="schedule_ai_plan_prompt">Help me make a short study to-do list for this week based on my grade and the tasks I describe. Ask if details are missing; do not claim you saved tasks in the app.</string>
+    <string name="todo_import_preview">Review plan</string>
+    <string name="todo_import_note">AI can be wrong. Edit or uncheck tasks before saving.</string>
+    <string name="todo_import_invalid">Could not read the to-do draft. Ask AI to create it again.</string>
+    <string name="todo_import_task_index">Task %1$d</string>
+    <string name="todo_import_task">To-do</string>
+    <string name="todo_import_subject">Subject (optional)</string>
+    <string name="todo_import_days">Mo,Tu,We,Th,Fr,Sa,Su</string>
+    <string name="todo_import_low">Low priority</string>
+    <string name="todo_import_normal">Normal</string>
+    <string name="todo_import_high">High priority</string>
+    <string name="todo_import_save">Add selected tasks</string>
+    <string name="todo_import_saving">Saving…</string>
+    <string name="todo_import_result">Added %1$d tasks · Skipped %2$d duplicates</string>
+    <string name="todo_import_error">Could not save. Your existing tasks are unchanged; retry.</string>
     <string name="schedule_import_invalid">No valid timetable could be extracted. Send a clearer image or clarify the days and periods.</string>
 </resources>

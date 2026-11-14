@@ -25,6 +25,15 @@ public class TutorPolicyTest {
   }
 
   @Test
+  public void scheduleModeIsExplicitAndOrdinaryChatRemainsGeneral() {
+    LearningContext learner = new LearningContext(1, 10, "vi");
+    List<TutorTurn> turns = Arrays.asList(turn(1, TutorTurn.Role.USER, "Plan my study"));
+    assertEquals(TutorRequest.Mode.GENERAL, new TutorRequest(learner, turns, null).mode);
+    assertEquals(TutorRequest.Mode.SCHEDULE,
+        new TutorRequest(learner, turns, null, TutorRequest.Mode.SCHEDULE).mode);
+  }
+
+  @Test
   public void promptUsesActualGradeAndAllNineSubjectsInBothLanguages() {
     for (int grade = 10; grade <= 12; grade++)
       for (String language : new String[] {"vi", "en"}) {

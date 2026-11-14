@@ -150,6 +150,45 @@ class ScheduleRepositoryImpl(context: Context) : ScheduleRepository, com.example
         } finally { db.endTransaction() }
     }
 
+    override fun importTodos(accountId: String, tasks: List<TodoTask>): Int {
+        require(accountId.toIntOrNull()?.let { it > 0 } == true)
+        require(tasks.size in 1..21 && tasks.all {
+            it.accountId == accountId && it.id == 0L && !it.isCompleted &&
+                it.dayOfWeek in 1..7 && it.priority in 0..2 &&
+                it.title.isNotBlank() && it.title.length <= 160 && it.title.none(Char::isISOControl) &&
+                (it.linkedSubject?.length ?: 0) <= 80 && it.linkedSubject.orEmpty().none(Char::isISOControl)
+        })
+        val db = dbHelper.writableDatabase
+        db.beginTransaction()
+        try {
+            var inserted = 0
+            tasks.distinctBy { Triple(it.dayOfWeek, it.title.trim().lowercase(), it.linkedSubject?.trim()?.lowercase()) }
+                .forEach { task ->
+                    val title = task.title.trim()
+                    val subject = task.linkedSubject?.trim()?.ifEmpty { null }
+                    val exists = db.rawQuery(
+                        "SELECT 1 FROM todo_tasks WHERE account_id=? AND day_of_week=? AND lower(trim(title))=? AND coalesce(lower(trim(linked_subject)),'')=? LIMIT 1",
+                        arrayOf(accountId, task.dayOfWeek.toString(), title.lowercase(), subject?.lowercase() ?: "")
+                    ).use { it.moveToFirst() }
+                    if (!exists) {
+                        val values = ContentValues().apply {
+                            put("account_id", accountId)
+                            put("title", title)
+                            put("is_completed", 0)
+                            put("day_of_week", task.dayOfWeek)
+                            put("priority", task.priority)
+                            put("linked_subject", subject)
+                            put("created_at", System.currentTimeMillis())
+                        }
+                        db.insertOrThrow("todo_tasks", null, values)
+                        inserted++
+                    }
+                }
+            db.setTransactionSuccessful()
+            return inserted
+        } finally { db.endTransaction() }
+    }
+
     override fun close() { dbHelper.close() }
 
     override fun insertEntry(entry: ScheduleEntry): Long {

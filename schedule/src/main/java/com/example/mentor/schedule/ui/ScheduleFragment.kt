@@ -33,8 +33,8 @@ class ScheduleFragment : Fragment() {
                     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
                         ScheduleScreen(accountId, repository, onBack = {
                             requireActivity().onBackPressedDispatcher.onBackPressed()
-                        }, onAiPhoto = { aiHost?.openScheduleAi(ScheduleAiAction.TIMETABLE_PHOTO) },
-                            onAiPlan = { aiHost?.openScheduleAi(ScheduleAiAction.TODO_PLAN) })
+                        }, onAiPhoto = { aiHost?.openScheduleAi(ScheduleAiAction.TIMETABLE_PHOTO, null) },
+                            onAiPlan = { details -> aiHost?.openScheduleAi(ScheduleAiAction.TODO_PLAN, details) })
                     }
                 }
             }

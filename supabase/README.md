@@ -11,7 +11,7 @@ Supabase is the cloud path when `SUPABASE_ENABLED=true`. The app keeps the old F
 - **Friends:** global-rank entries can send requests; the competition screen lists accepted friends and incoming/outgoing requests, accepts/declines, and removes friends with revision checks. Profile displays accepted friends' current streaks.
 - **Study ledger and badges:** `mentor_study_action` records short, bounded, idempotent active-study intervals; `mentor_study_summary` aggregates recorded seconds; `mentor_badges` unlocks badges only from completed lesson/XP/streak facts. Profile reads the actual study total and badge states, with explicit empty/unavailable states.
 - **Practice library:** published quiz metadata, private answer-key snapshots, resumable sessions and wrong-answer retry are served by `mentor_library_api`; practice awards no XP or streak. Migration `202610290018_seed_practice_from_lessons.sql` builds 10–15 question review quizzes for complete five-lesson groups from the existing Lý–Hóa–Sinh lesson bank.
-- **Schedule:** uses the Supabase schedule repository when cloud mode is enabled.
+- **Schedule:** uses the Supabase schedule repository when cloud mode is enabled. The Schedule assistant can propose a weekly study to-do draft; the learner edits, deselects and confirms tasks before one atomic import. The `mentor_import_todos` RPC skips existing day/title/subject matches.
 - **Chat:** folders, conversations, drafts, messages and attachments use the Supabase chat store; realtime chat changes trigger a refresh.
 - **Realtime refresh:** profile, enrollment, learning, friendship, chat and schedule table changes are translated into app refresh events.
 - **AI:** the `mentor-ai` Edge Function authenticates the bearer session, applies account quota, adapts to grade/language, and calls Gemini with server-side keys. `config.toml` keeps `verify_jwt = true`; it must be deployed and its Gemini secrets configured before cloud AI chat works.
@@ -23,7 +23,7 @@ Supabase is the cloud path when `SUPABASE_ENABLED=true`. The app keeps the old F
 - Chat data is cloud-backed when Supabase is enabled; verify the storage bucket and migration `202610290007_chat_storage.sql` are deployed for attachments.
 - Foreground lesson/review attempts send bounded study intervals; the profile reads `mentor_study_summary` and `mentor_badges`. These sections show an explicit empty/unavailable message if the cloud contract is unavailable.
 - Live Supabase auth/recovery, ranking and realtime behavior have not all been exercised against the user's project from this checkout.
-- Gemini cloud chat cannot be verified until the Edge Function is deployed and Gemini secrets are present.
+- The `mentor-ai` function was deployed to project `hnxphwuaccztzanjcuca` on 2026-11-14 with separate general and schedule modes. A complete AI reply still requires a signed-in app session and working Gemini secrets; this has not been verified on a device in this checkout.
 
 ## Configuration and secrets
 
@@ -35,11 +35,11 @@ Supabase is the cloud path when `SUPABASE_ENABLED=true`. The app keeps the old F
 
 ## Deploying Supabase changes
 
-This checkout has no Supabase CLI session attached, so database migrations and Edge Functions have not been deployed from here. First compare remote migration history, then apply only pending migrations in ascending order. For the function, link the selected AI Mentor project `hnxphwuaccztzanjcuca` (e.g. `supabase link --project-ref hnxphwuaccztzanjcuca`) and deploy `mentor-ai`; keep JWT verification enabled. Add `GEMINI_API_KEY_1` (and optional `_2`, `_3`) through Supabase Edge Function Secrets. Never place those values in this repository, Android config, or chat. Keep public client key public and service_role secret out of repository. Set `GEMINI_MODEL` only if selecting a model other than the function default. Afterward run `tests/cloud_learning_smoke.sql` and verify the function with an authenticated app session.
+Check remote migration history before any bulk database push. On 2026-11-14, `202611140001_ai_todo_import.sql` was applied individually to project `hnxphwuaccztzanjcuca` and recorded as applied; `tests/ai_todo_import_smoke.sql` passed on that project and rolled back its test rows. Several older migrations are still pending on the remote, so a future bulk push needs its own review. The `mentor-ai` Edge Function was deployed with JWT verification enabled. Gemini secrets belong only in Edge Function Secrets, never in Android resources, source code or Git.
 
 ## Database migrations
 
-Apply migrations in `migrations/` in ascending order. `202610290001_foundation.sql` was previously confirmed as applied; verify the Supabase migration history before applying anything so an already-applied migration is not run twice. This checkout contains migrations through `202610300002_adaptive_placement.sql`; apply pending migrations in order. Migration `202610300001_remaining_grade10_curricula.sql` adds 15 introductory lessons to Math, Literature, English, History, Geography and Economics-Law, plus three 10-question review quizzes per course. Migration `202610300002_adaptive_placement.sql` asks two questions per published lesson, marks only demonstrated lessons as mastered, and skips a review checkpoint only when all five lessons are mastered. This does not complete the full Grade 10 curriculum or add Grade 11–12 content.
+Apply migrations in `migrations/` in ascending order after comparing remote history. Migration `202610300001_remaining_grade10_curricula.sql` adds 15 introductory lessons to Math, Literature, English, History, Geography and Economics-Law, plus three 10-question review quizzes per course. Migration `202610300002_adaptive_placement.sql` asks two questions per published lesson, marks only demonstrated lessons as mastered, and skips a review checkpoint only when all five lessons are mastered. This does not complete the full Grade 10 curriculum or add Grade 11–12 content. Migration `202611140001_ai_todo_import.sql` adds the reviewed to-do import RPC.
 
 The latest overview RPC counts progress only for selected subjects and uses the existing rank thresholds: Silver 500 XP, Gold 2,000, Platinum 5,000 and Diamond 10,000. No XP or activity is fabricated for empty accounts.
 

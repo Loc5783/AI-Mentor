@@ -83,10 +83,11 @@ public class HomeActivity extends AppCompatActivity
   }
 
   @Override
-  public void openScheduleAi(com.example.mentor.schedule.ui.ScheduleAiAction action) {
+  public void openScheduleAi(com.example.mentor.schedule.ui.ScheduleAiAction action, String details) {
     scheduleChatMode = true;
     String prompt = getString(action == com.example.mentor.schedule.ui.ScheduleAiAction.TIMETABLE_PHOTO
         ? R.string.schedule_ai_photo_prompt : R.string.schedule_ai_plan_prompt);
+    if (details != null && !details.isBlank()) prompt += "\n" + details;
     pendingScheduleChat = new ScheduleChatRequest(
         prompt, action == com.example.mentor.schedule.ui.ScheduleAiAction.TIMETABLE_PHOTO);
     new androidx.lifecycle.ViewModelProvider(this)

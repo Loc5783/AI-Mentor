@@ -46,5 +46,21 @@ class SupabaseScheduleRepository(private val context: Context): ScheduleReposito
         val rows=JSONArray(); entries.forEach {rows.put(entryData(it))}
         return call(accountId,"import",JSONObject().put("entries",rows)).getInt("inserted")
     }
+    override fun importTodos(accountId:String,tasks:List<TodoTask>):Int {
+        val owner=accountId.toInt()
+        check(owner>0 && ActiveUser.get(context)==owner)
+        require(tasks.size in 1..21 && tasks.all {
+            it.accountId==accountId && it.id==0L && !it.isCompleted && it.dayOfWeek in 1..7 &&
+            it.priority in 0..2 && it.title.isNotBlank() && it.title.length<=160 &&
+            it.title.none(Char::isISOControl) && (it.linkedSubject?.length ?: 0)<=80 &&
+            it.linkedSubject.orEmpty().none(Char::isISOControl)
+        })
+        val rows=JSONArray()
+        tasks.forEach { rows.put(JSONObject().put("day",it.dayOfWeek).put("title",it.title.trim())
+            .put("priority",it.priority).put("linked_subject",it.linkedSubject?.trim() ?: JSONObject.NULL)) }
+        val body=JSONObject().put("data",JSONObject().put("tasks",rows))
+        return JSONObject(SupabaseAccounts(context).requestFor(owner,"POST","/rest/v1/rpc/mentor_import_todos",body))
+            .getInt("inserted")
+    }
     override fun close() { }
 }

@@ -185,8 +185,13 @@ private fun MessageBubble(message: ChatRecords.Message, owner: Int, requesting: 
                 color = if (user) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface) {
                 Column(Modifier.widthIn(max = 480.dp).padding(horizontal = 12.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(if (user) R.string.chat_user else R.string.chat_assistant), style = MaterialTheme.typography.labelMedium)
-                    if (message.text.isNotBlank()) SelectionContainer { Text(remember(message.text) { readableMessage(if (user) message.text else ScheduleProposal.displayText(message.text)) }, style = MaterialTheme.typography.bodyMedium) }
-                    if (!user && scheduleImportEnabled) ScheduleImportAction(message.text, owner)
+                    if (message.text.isNotBlank()) SelectionContainer { Text(remember(message.text) {
+                        readableMessage(if (user) message.text else TodoProposal.displayText(ScheduleProposal.displayText(message.text)))
+                    }, style = MaterialTheme.typography.bodyMedium) }
+                    if (!user && scheduleImportEnabled) {
+                        ScheduleImportAction(message.text, owner)
+                        TodoImportAction(message.text, owner)
+                    }
                     message.files.forEach { file ->
                         if (file.mime.startsWith("image/")) {
                             val context = LocalContext.current

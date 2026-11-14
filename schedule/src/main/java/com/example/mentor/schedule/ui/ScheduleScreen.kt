@@ -35,6 +35,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.mentor.schedule.R
 import com.example.mentor.schedule.domain.ScheduleEntry
+import com.example.mentor.schedule.domain.ScheduleAiContext
 import com.example.mentor.schedule.domain.ScheduleRepository
 import com.example.mentor.schedule.domain.TodoTask
 import kotlinx.coroutines.launch
@@ -123,7 +124,7 @@ fun ScheduleScreen(
     repository: ScheduleRepository,
     onBack: () -> Unit = {},
     onAiPhoto: () -> Unit = {},
-    onAiPlan: () -> Unit = {}
+    onAiPlan: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
     val factory = remember { ScheduleViewModelFactory(context.applicationContext as Application, accountId, repository) }
@@ -243,7 +244,10 @@ fun ScheduleScreen(
                     ScheduleAiActionCard(Modifier.weight(1f), R.string.schedule_ai_photo,
                         R.string.schedule_ai_photo_hint, onAiPhoto)
                     ScheduleAiActionCard(Modifier.weight(1f), R.string.schedule_ai_plan,
-                        R.string.schedule_ai_plan_hint, onAiPlan)
+                        R.string.schedule_ai_plan_hint,
+                        onClick = { onAiPlan(ScheduleAiContext.forDay(selectedDay,
+                            viewModel.entries.toList(), viewModel.todos.toList())) },
+                        enabled = !viewModel.loading.value && !viewModel.error.value)
                 }
             }
 
@@ -558,9 +562,11 @@ private fun ScheduleAiActionCard(
     title: Int,
     hint: Int,
     onClick: () -> Unit,
+    enabled: Boolean = true,
 ) {
     Surface(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier.heightIn(min = 112.dp),
         shape = RoundedCornerShape(18.dp),
         color = MaterialTheme.colorScheme.surface,

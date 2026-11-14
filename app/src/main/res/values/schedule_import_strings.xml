@@ -15,5 +15,19 @@
     <string name="schedule_chat_empty_body">Gửi ảnh thời khóa biểu hoặc mô tả việc cần làm.</string>
     <string name="schedule_ai_photo_prompt">Hãy đọc ảnh thời khóa biểu tôi đính kèm và tạo bản nháp để tôi kiểm tra trước khi thêm vào lịch. Chỉ ghi những tiết nhìn rõ; nếu không rõ thứ hoặc tiết, hãy hỏi lại.</string>
     <string name="schedule_ai_plan_prompt">Hãy dựa trên lớp học của tôi và các việc tôi mô tả để gợi ý một to-do list học tập ngắn gọn cho tuần này. Hỏi thêm nếu thiếu thông tin; đừng nói rằng bạn đã lưu việc vào app.</string>
+    <string name="todo_import_preview">Duyệt kế hoạch</string>
+    <string name="todo_import_note">AI có thể sai. Chỉnh sửa hoặc bỏ chọn việc trước khi lưu.</string>
+    <string name="todo_import_invalid">Chưa đọc được bản nháp to-do. Hãy yêu cầu AI tạo lại.</string>
+    <string name="todo_import_task_index">Việc %1$d</string>
+    <string name="todo_import_task">Việc cần làm</string>
+    <string name="todo_import_subject">Môn học (tùy chọn)</string>
+    <string name="todo_import_days">T2,T3,T4,T5,T6,T7,CN</string>
+    <string name="todo_import_low">Ưu tiên thấp</string>
+    <string name="todo_import_normal">Bình thường</string>
+    <string name="todo_import_high">Ưu tiên cao</string>
+    <string name="todo_import_save">Thêm việc đã chọn</string>
+    <string name="todo_import_saving">Đang lưu…</string>
+    <string name="todo_import_result">Đã thêm %1$d việc · Bỏ qua %2$d việc trùng</string>
+    <string name="todo_import_error">Chưa lưu được. Danh sách cũ vẫn được giữ; hãy thử lại.</string>
     <string name="schedule_import_invalid">Chưa đọc được lịch hợp lệ. Hãy gửi ảnh rõ hơn hoặc xác nhận lại thứ và tiết học.</string>
 </resources>

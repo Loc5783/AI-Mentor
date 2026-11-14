@@ -525,6 +525,8 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
     requesting = true;
     loading = true;
     String target = threadId, text = draft, token = UUID.randomUUID().toString();
+    TutorRequest.Mode requestMode = scheduleImportEnabled
+        ? TutorRequest.Mode.SCHEDULE : TutorRequest.Mode.GENERAL;
     busyThreadId = target;
     busyMessageId = null;
     jobToken = token;
@@ -546,7 +548,8 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
                         owner,
                         profile == null ? 0 : profile.grade,
                         com.example.asm_final.utils.LocaleHelper.getLanguage(getApplication())));
-            return new Prepared(message, request);
+            return new Prepared(message,
+                new TutorRequest(request.context, request.turns, request.handoff, requestMode));
           } catch (Exception error) {
             store.finish(owner, target, message, null, "INVALID_REQUEST");
             throw error;
