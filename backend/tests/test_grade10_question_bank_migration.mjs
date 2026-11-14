@@ -8,6 +8,14 @@ const migration = readFileSync(resolve(
   dirname(fileURLToPath(import.meta.url)),
   '../../supabase/migrations/202611140002_grade10_question_bank_and_physics_quiz.sql',
 ), 'utf8');
+const alignment = readFileSync(resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  '../../supabase/migrations/202611140005_grade10_foundation_curriculum_alignment.sql',
+), 'utf8');
+const mixedSets = readFileSync(resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  '../../supabase/migrations/202611140004_grade10_mixed_practice_sets.sql',
+), 'utf8');
 const lines = migration.split(/\r?\n/).filter(line => /^\s*\('g10-found-/.test(line));
 const values = lines.map(line => [...line.matchAll(/'((?:[^']|'')*)'/g)]
   .map(match => match[1].replaceAll("''", "'")));
@@ -39,4 +47,38 @@ test('starter physics quiz extends only five-question version with five publishe
   assert.match(migration, /jsonb_array_length\(q\.questions\) = 5/);
   assert.match(migration, /and status = 'PUBLISHED'/);
   assert.match(migration, /and not exists \(/);
+});
+
+test('new question topics match actual Grade 10 lessons', () => {
+  const aliases = { chem: 'chemistry', bio: 'biology', lit: 'literature',
+    eng: 'english', hist: 'history', geo: 'geography', law: 'economics_law' };
+  const topics = [...alignment.matchAll(/\('g10-found-([a-z]+)-\d\d','([^']+)'\)/g)]
+    .map(([, shortSubject, title]) => [aliases[shortSubject] ?? shortSubject, title]);
+  assert.equal(topics.length, 40);
+  for (const [subject, title] of topics) {
+    const curriculum = JSON.parse(readFileSync(resolve(
+      dirname(fileURLToPath(import.meta.url)), `../curriculum/${subject}-10.json`,
+    ), 'utf8'));
+    assert.ok(curriculum.lessons.some(lesson => lesson.title === title), `${subject}: ${title}`);
+  }
+  assert.match(alignment, /g10-found-hist-05','Nguồn năng lượng tiêu biểu/);
+  assert.match(alignment, /g10-found-math-01','Giải bất phương trình/);
+});
+
+test('mixed practice sets use enough unique Grade 10 lesson questions for all nine subjects', () => {
+  const subjects = [
+    'math', 'literature', 'english', 'history', 'geography',
+    'economics_law', 'physics', 'chemistry', 'biology',
+  ];
+  for (const subject of subjects) {
+    const curriculum = JSON.parse(readFileSync(resolve(
+      dirname(fileURLToPath(import.meta.url)), `../curriculum/${subject}-10.json`,
+    ), 'utf8'));
+    const questions = curriculum.lessons.flatMap(lesson => lesson.questions);
+    assert.ok(questions.length >= 15, subject);
+    assert.equal(new Set(questions.map(question => question.id)).size, questions.length, subject);
+  }
+  assert.match(mixedSets, /c\.grade = 10 and c\.kind = 'LESSON'/);
+  assert.match(mixedSets, /question_no <= 15/);
+  assert.match(mixedSets, /'Luyện tổng hợp lộ trình hiện có'/);
 });
