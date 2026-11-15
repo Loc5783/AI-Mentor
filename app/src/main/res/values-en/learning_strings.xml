@@ -28,6 +28,9 @@
   <string name="course_intro_description">Start where it suits you. Lessons you have mastered can be skipped.</string>
   <string name="course_source_info">About this content</string>
   <string name="course_placement_note">Each lesson has 2 questions. Answer both correctly to skip a lesson you know; the rest stay on your path. There is no time limit, EXP or streak.</string>
+  <string name="course_start_choice_title">Start %1$s</string>
+  <string name="course_start_choice_message">Would you like to start with the first lesson or take a placement check to find what you already know?</string>
+  <string name="course_start_from_beginning">Start from the beginning</string>
   <string name="course_understood">Got it</string>
   <string name="course_exit">Exit</string>
   <string name="course_continue">Resume your lesson</string>

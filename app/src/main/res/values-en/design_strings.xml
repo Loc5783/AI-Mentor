@@ -33,6 +33,8 @@
   <string name="lesson_hub_remove_failed">Could not remove the subject. Please try again.</string>
   <string name="lesson_hub_enter">Learn</string>
   <string name="lesson_hub_add">Add to learning path</string>
+  <string name="lesson_hub_add_success">Subject added to your path</string>
+  <string name="lesson_hub_add_failed">Could not add the subject. Please try again.</string>
   <string name="home_study_time_title">Study time</string>
   <string name="home_study_time_week">Last 7 days</string>
   <string name="home_study_time_hours">%1$d hr %2$d min studied</string>

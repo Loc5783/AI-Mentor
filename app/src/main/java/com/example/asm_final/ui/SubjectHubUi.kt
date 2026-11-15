@@ -38,6 +38,9 @@ import com.example.mentor.data.ActiveUser
 import com.example.asm_final.utils.LocaleHelper
 import com.example.mentor.learning.SubjectId
 import com.example.mentor.ui.design.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.function.Consumer
 
 class SubjectHubUi(
@@ -253,20 +256,50 @@ fun RoadmapSubjectList(
     val ownerId = ActiveUser.get(context)
     val allSubjects = SubjectId.values()
     val palette = premiumDashboardPalette(com.example.asm_final.utils.ThemeHelper.isDarkMode(context))
+    val scope = rememberCoroutineScope()
 
     var selectedSubjects by remember(ownerId, grade) {
         mutableStateOf(
             try {
-                val store = LearningSetupStore(context)
-                val sel = store.selected(ownerId, grade)
-                store.close()
-                sel
+                LearningSetupStore(context).use { it.selected(ownerId, grade) }
             } catch (e: Exception) {
                 emptySet()
             }
         )
     }
     var subjectPendingRemoval by remember(ownerId, grade) { mutableStateOf<SubjectId?>(null) }
+    var selectionLoading by remember(ownerId, grade) { mutableStateOf(true) }
+    var selectionSaving by remember(ownerId, grade) { mutableStateOf(false) }
+    LaunchedEffect(ownerId, grade) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                LearningSetupStore(context).use { it.selected(ownerId, grade) }
+            }
+        }.getOrNull()?.let { selectedSubjects = it }
+        selectionLoading = false
+    }
+    fun saveSelection(updated: Set<SubjectId>, removing: Boolean) {
+        if (selectionLoading || selectionSaving) return
+        selectionSaving = true
+        scope.launch {
+            val saved = try {
+                withContext(Dispatchers.IO) {
+                    LearningSetupStore(context).use { it.save(ownerId, grade, updated) }
+                }
+                true
+            } catch (_: Exception) { false }
+            if (saved) selectedSubjects = updated
+            if (removing && saved) subjectPendingRemoval = null
+            selectionSaving = false
+            android.widget.Toast.makeText(context, context.getString(when {
+                removing && saved -> R.string.lesson_hub_remove_success
+                removing -> R.string.lesson_hub_remove_failed
+                saved -> R.string.lesson_hub_add_success
+                else -> R.string.lesson_hub_add_failed
+            }),
+                android.widget.Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Column(Modifier.fillMaxSize()) {
         PremiumDashboardHeader(artwork = MentorArtwork.LEARNING) {
@@ -321,6 +354,7 @@ fun RoadmapSubjectList(
                                 OutlinedButton(
                                     modifier = Modifier.weight(1f),
                                     onClick = { subjectPendingRemoval = subject },
+                                    enabled = !selectionLoading && !selectionSaving,
                                     shape = RoundedCornerShape(12.dp),
                                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
                                 ) {
@@ -337,15 +371,9 @@ fun RoadmapSubjectList(
                                 Button(
                                     modifier = Modifier.fillMaxWidth(),
                                     onClick = {
-                                        val updated = selectedSubjects + subject
-                                        try {
-                                            val store = LearningSetupStore(context)
-                                            store.save(ownerId, grade, updated)
-                                            store.close()
-                                        } catch (_: Exception) {}
-                                        selectedSubjects = updated
-                                        android.widget.Toast.makeText(context, "Đã thêm môn học vào lộ trình hiện tại", android.widget.Toast.LENGTH_SHORT).show()
+                                        saveSelection(selectedSubjects + subject, false)
                                     },
+                                    enabled = !selectionLoading && !selectionSaving,
                                     shape = RoundedCornerShape(12.dp),
                                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                                 ) {
@@ -365,19 +393,8 @@ fun RoadmapSubjectList(
             text = { Text(stringResource(R.string.lesson_hub_remove_message,
                 subject.label(LocaleHelper.getLanguage(context)), grade)) },
             confirmButton = {
-                TextButton(onClick = {
-                    val updated = selectedSubjects - subject
-                    val saved = try {
-                        val store = LearningSetupStore(context)
-                        try { store.save(ownerId, grade, updated) } finally { store.close() }
-                        true
-                    } catch (_: Exception) { false }
-                    if (saved) selectedSubjects = updated
-                    subjectPendingRemoval = null
-                    android.widget.Toast.makeText(context, context.getString(if (saved)
-                        R.string.lesson_hub_remove_success else R.string.lesson_hub_remove_failed),
-                        android.widget.Toast.LENGTH_SHORT).show()
-                }) { Text(stringResource(R.string.lesson_hub_remove)) }
+                TextButton(onClick = { saveSelection(selectedSubjects - subject, true) },
+                    enabled = !selectionLoading && !selectionSaving) { Text(stringResource(R.string.lesson_hub_remove)) }
             },
             dismissButton = {
                 TextButton(onClick = { subjectPendingRemoval = null }) {

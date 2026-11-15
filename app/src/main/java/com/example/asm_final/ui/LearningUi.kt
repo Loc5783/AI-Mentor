@@ -33,9 +33,11 @@ import androidx.compose.ui.unit.dp
 import com.example.asm_final.utils.ThemeHelper
 import com.example.asm_final.R
 import com.example.asm_final.learning.LessonPathData
+import com.example.asm_final.learning.PathChoiceStore
 import com.example.asm_final.learning.LessonViewModel
 import com.example.asm_final.utils.LocaleHelper
 import com.example.mentor.learning.SubjectId
+import com.example.mentor.data.ActiveUser
 import com.example.mentor.ui.design.*
 import androidx.compose.ui.graphics.toArgb
 import kotlinx.coroutines.delay
@@ -335,8 +337,18 @@ private fun LessonScreen(
                     val path = state.path!!
                     var showSourceNote by remember(path) { mutableStateOf(false) }
                     var showPlacementInfo by remember(path) { mutableStateOf(false) }
+                    val ownerId = ActiveUser.get(context)
+                    val choiceStore = remember(context) { PathChoiceStore(context) }
+                    var startedFromBeginning by remember(ownerId, state.grade, subjectId) {
+                        mutableStateOf(choiceStore.startedFromBeginning(ownerId, state.grade, subjectId))
+                    }
+                    var placementRequested by remember(ownerId, state.grade, subjectId) { mutableStateOf(false) }
                     val enrollment = path.optJSONObject("enrollment")
                     val placementComplete = enrollment?.has("placement") == true && !enrollment.isNull("placement")
+                    val units = path.optJSONArray("units")
+                    val hasPriorProgress = units != null && (0 until units.length()).any {
+                        units.optJSONObject(it)?.optString("state") in listOf("COMPLETED", "SKIPPED")
+                    }
                     MentorCard(Modifier.fillMaxWidth()) {
                         Text(stringResource(R.string.course_intro_title, subjectLabel), style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
@@ -357,8 +369,24 @@ private fun LessonScreen(
                     val pending = path.optJSONArray("pendingAttempts")
                     if (pending != null && pending.length() > 0)
                         MentorButton(stringResource(R.string.course_continue), { model.resume(pending.getJSONObject(0).getString("id")) })
-                    if (!placementComplete && (pending == null || pending.length() == 0)) {
-                        MentorButton(stringResource(R.string.course_placement), { showPlacementInfo = true })
+                    if (!placementComplete && !hasPriorProgress && !startedFromBeginning &&
+                        !placementRequested && !showPlacementInfo && (pending == null || pending.length() == 0)) {
+                        AlertDialog(
+                            onDismissRequest = leave,
+                            title = { Text(stringResource(R.string.course_start_choice_title, subjectLabel)) },
+                            text = { Text(stringResource(R.string.course_start_choice_message)) },
+                            confirmButton = {
+                                Button(onClick = { showPlacementInfo = true }) {
+                                    Text(stringResource(R.string.course_placement))
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(onClick = {
+                                    if (choiceStore.markStartedFromBeginning(ownerId, state.grade, subjectId))
+                                        startedFromBeginning = true
+                                }) { Text(stringResource(R.string.course_start_from_beginning)) }
+                            }
+                        )
                     }
                     if (showPlacementInfo && !placementComplete) {
                         AlertDialog(
@@ -368,6 +396,7 @@ private fun LessonScreen(
                             confirmButton = {
                                 Button(onClick = {
                                     showPlacementInfo = false
+                                    placementRequested = true
                                     model.start("placement", true)
                                 }) { Text(stringResource(R.string.course_understood)) }
                             },
@@ -378,7 +407,6 @@ private fun LessonScreen(
                             }
                         )
                     }
-                    val units = path.optJSONArray("units")
                     if (units != null) PathContent(LessonPathData(units)) { model.start(it, false) }
                 }
             }

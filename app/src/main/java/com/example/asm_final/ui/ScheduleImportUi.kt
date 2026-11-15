@@ -1,6 +1,7 @@
 package com.example.asm_final.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -36,6 +37,7 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
     var skipped by remember { mutableStateOf(0) }
     var failed by remember { mutableStateOf(false) }
     var invalid by remember { mutableStateOf(false) }
+    var selectedDay by remember(text) { mutableIntStateOf(1) }
     val dayNames = stringResource(R.string.schedule_import_day_names).split(",")
     fun update(index: Int, change: (ReviewSlot) -> ReviewSlot) {
         edits = edits.mapIndexed { position, slot -> if (position == index) change(slot) else slot }
@@ -48,42 +50,44 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
     if (preview) AlertDialog(
         onDismissRequest = { if (!saving) preview = false },
         title = { Text(stringResource(R.string.schedule_import_preview)) },
-        text = { Column(Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState())) {
-            Text(stringResource(R.string.schedule_import_note))
-            edits.forEachIndexed { index, slot ->
-                Column(Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-                    Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                        Checkbox(slot.selected, onCheckedChange = { checked -> update(index) { it.copy(selected = checked) } }, enabled = !saving)
-                        OutlinedTextField(slot.subject, onValueChange = { value -> update(index) { it.copy(subject = value.take(120)) } },
-                            label = { Text(stringResource(R.string.schedule_import_subject_label)) },
-                            singleLine = true, enabled = !saving && slot.selected, modifier = Modifier.weight(1f))
+        text = { Column(Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.schedule_import_note), style = MaterialTheme.typography.bodySmall)
+            Spacer(Modifier.height(8.dp))
+            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                (1..7).forEach { day ->
+                    FilterChip(selected = selectedDay == day, onClick = { selectedDay = day },
+                        label = { Text(dayNames[day - 1]) }, enabled = !saving)
+                }
+            }
+            Text(dayNames[selectedDay - 1], style = MaterialTheme.typography.titleMedium)
+            Row(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                Text(stringResource(R.string.schedule_import_period_header), modifier = Modifier.width(64.dp))
+                Text(stringResource(R.string.schedule_import_subject_label))
+            }
+            HorizontalDivider()
+            Column(Modifier.heightIn(max = 340.dp).verticalScroll(rememberScrollState())) {
+                (1..10).forEach { period ->
+                    val index = edits.indexOfFirst { it.day == selectedDay && it.period == period }
+                    val slot = edits.getOrNull(index)
+                    Row(Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                        Text("$period", modifier = Modifier.width(22.dp))
+                        if (slot != null) {
+                            Checkbox(slot.selected, onCheckedChange = { checked -> update(index) { it.copy(selected = checked) } },
+                                enabled = !saving, modifier = Modifier.width(42.dp))
+                        } else Spacer(Modifier.width(42.dp))
+                        OutlinedTextField(slot?.subject.orEmpty(), onValueChange = { value ->
+                            if (index >= 0) update(index) { it.copy(subject = value.take(120)) }
+                            else if (value.isNotBlank()) {
+                                edits = edits + ReviewSlot(selectedDay, period, value.take(120))
+                                invalid = false
+                            }
+                        }, placeholder = { Text(stringResource(R.string.schedule_import_empty_slot)) },
+                            singleLine = true, enabled = !saving && (slot?.selected != false),
+                            modifier = Modifier.weight(1f))
                     }
-                    Row(Modifier.padding(start = 48.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        var dayMenu by remember { mutableStateOf(false) }
-                        Box {
-                            OutlinedButton(onClick = { dayMenu = true }, enabled = !saving && slot.selected) {
-                                Text(dayNames[slot.day - 1])
-                            }
-                            DropdownMenu(expanded = dayMenu, onDismissRequest = { dayMenu = false }) {
-                                (1..7).forEach { day ->
-                                    DropdownMenuItem(text = { Text(dayNames[day - 1]) },
-                                        onClick = { update(index) { it.copy(day = day) }; dayMenu = false })
-                                }
-                            }
-                        }
-                        var periodMenu by remember { mutableStateOf(false) }
-                        Box {
-                            OutlinedButton(onClick = { periodMenu = true }, enabled = !saving && slot.selected) {
-                                Text(stringResource(R.string.schedule_import_period_label, slot.period))
-                            }
-                            DropdownMenu(expanded = periodMenu, onDismissRequest = { periodMenu = false }) {
-                                (1..10).forEach { period ->
-                                    DropdownMenuItem(text = { Text(stringResource(R.string.schedule_import_period_label, period)) },
-                                        onClick = { update(index) { it.copy(period = period) }; periodMenu = false })
-                                }
-                            }
-                        }
-                    }
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 }
             }
             if (invalid) Text(stringResource(R.string.schedule_import_check_entries), color = MaterialTheme.colorScheme.error)
