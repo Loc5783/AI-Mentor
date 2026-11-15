@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.asm_final.utils.ThemeHelper
 import com.example.asm_final.R
 import com.example.asm_final.learning.LessonPathData
 import com.example.asm_final.learning.LessonViewModel
@@ -62,7 +63,7 @@ object LearningUi {
         leave: Runnable,
         openTool: Runnable?,
         ask: Consumer<String>
-    ): View = composeHost(context) {
+    ): View = composeHost(context, scenicBackground = true) {
         val revision by model.changes().observeAsState(0)
         val state = remember(revision) { LessonUiState(model.busy, model.needsLogin, model.hasPending(),
             model.error, model.path, model.attempt, model.completion, model.grade()) }
@@ -86,28 +87,39 @@ internal fun PathContent(path: LessonPathData, open: (String) -> Unit) {
         }
     }
     var selected by remember(path) { mutableStateOf<LessonPathData.Unit?>(null) }
-    Surface(Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.primaryContainer) {
+    val colors = MaterialTheme.colorScheme
+    Surface(Modifier.fillMaxWidth(), shape = RoundedCornerShape(24.dp),
+        color = colors.primaryContainer,
+        border = BorderStroke(1.dp, colors.primary.copy(alpha = .3f)),
+        shadowElevation = 7.dp) {
         Column(Modifier.padding(MentorTokens.SpaceLarge),
             verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceSmall)) {
             Text(stringResource(R.string.design_path), style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold)
+                fontWeight = FontWeight.Bold, color = colors.onPrimaryContainer)
             Text(stringResource(R.string.course_path_progress, path.completedLessons, path.totalLessons, path.skippedLessons),
-                style = MaterialTheme.typography.bodyMedium)
+                style = MaterialTheme.typography.bodyMedium, color = colors.onPrimaryContainer)
             MentorProgress(if (path.totalLessons == 0) 0f else path.completedLessons.toFloat() / path.totalLessons)
-            Text(stringResource(R.string.course_path_note), style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.course_path_note), style = MaterialTheme.typography.bodySmall,
+                color = colors.onPrimaryContainer)
         }
     }
     stages.forEachIndexed { index, units ->
-        Row(Modifier.fillMaxWidth().padding(top = MentorTokens.SpaceMedium),
-            horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
-            Text(stringResource(R.string.course_stage_title, index + 1),
-                style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-            Text(stringResource(R.string.course_stage_count,
-                units.count { it.state == "COMPLETED" && !it.review }, units.count { !it.review }),
-                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Surface(Modifier.fillMaxWidth().padding(top = 8.dp),
+            shape = RoundedCornerShape(24.dp), color = colors.surface,
+            border = BorderStroke(1.dp, colors.outlineVariant), shadowElevation = 5.dp) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Bottom) {
+                    Text(stringResource(R.string.course_stage_title, index + 1),
+                        style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+                        color = colors.onSurface)
+                    Text(stringResource(R.string.course_stage_count,
+                        units.count { it.state == "COMPLETED" && !it.review }, units.count { !it.review }),
+                        style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
+                }
+                LessonPathStage(units, path.units.firstOrNull { it.state == "AVAILABLE" }?.id) { selected = it }
+            }
         }
-        LessonPathStage(units, path.units.firstOrNull { it.state == "AVAILABLE" }?.id) { selected = it }
     }
     selected?.let { unit ->
         LessonPathSheet(unit, { selected = null }) {
@@ -127,7 +139,7 @@ private fun nodeOffset(index: Int): Float = when (index % 5) {
 private fun LessonPathStage(
     units: List<LessonPathData.Unit>, currentId: String?, select: (LessonPathData.Unit) -> Unit,
 ) {
-    val dark = androidx.compose.foundation.isSystemInDarkTheme()
+    val dark = ThemeHelper.isDarkMode(androidx.compose.ui.platform.LocalContext.current)
     val fontScale = LocalDensity.current.fontScale
     val step = if (fontScale > 1.3f) 180.dp else 148.dp
     val nodeSize = 72.dp
@@ -253,9 +265,24 @@ private fun LessonScreen(
     Column(Modifier.fillMaxSize()
         .verticalScroll(scroll).padding(MentorTokens.PagePadding), verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceMedium)) {
         
-        Row(Modifier.fillMaxWidth().mentorHeader().padding(vertical = 8.dp, horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(Modifier.fillMaxWidth().mentorHeader(MentorArtwork.LEARNING)
+            .padding(horizontal = 14.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             TextButton(leave) { Text(stringResource(R.string.course_back)) }
-            Text("$subjectLabel • Lớp $grade", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+            Surface(shape = RoundedCornerShape(14.dp),
+                color = SubjectPalette.getAccent(subjectId.wireId),
+                shadowElevation = 3.dp) {
+                Box(Modifier.size(44.dp), contentAlignment = Alignment.Center) {
+                    Text(subjectLabel.take(1).uppercase(), fontWeight = FontWeight.Bold,
+                        color = MentorTokens.OnBrand)
+                }
+            }
+            Column(Modifier.weight(1f)) {
+                Text(subjectLabel, style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.chat_grade, grade), style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
         }
 
         // Supporting Tools Section if available
@@ -336,9 +363,14 @@ private fun LessonScreen(
                 state.attempt != null -> key(attemptId) { PracticeContent(state.attempt!!, model, state.busy, ask) }
                 state.path != null -> {
                     val path = state.path!!
-                    Text(path.optString("title"), style = MaterialTheme.typography.headlineMedium)
-                    Text(stringResource(R.string.chat_grade, state.grade))
-                    Text(path.optString("sourceNote"), style = MaterialTheme.typography.bodySmall)
+                    MentorCard(Modifier.fillMaxWidth()) {
+                        Text(path.optString("title"), style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                        Text(stringResource(R.string.chat_grade, state.grade),
+                            color = MaterialTheme.colorScheme.primary)
+                        Text(path.optString("sourceNote"), style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
                     if (configuration.locales[0].language == "en") Text(stringResource(R.string.course_content_language))
                     val pending = path.optJSONArray("pendingAttempts")
                     if (pending != null && pending.length() > 0)
@@ -398,14 +430,24 @@ private fun PracticeContent(attempt: JSONObject, model: LessonViewModel, busy: B
     Text(stringResource(when (question.optString("difficulty")) {
         "EASY" -> R.string.course_easy; "MEDIUM" -> R.string.course_medium; else -> R.string.course_applied
     }), style = MaterialTheme.typography.labelLarge)
-    Text(question.getString("prompt"), style = MaterialTheme.typography.headlineSmall)
+    Surface(Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.primaryContainer,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = .3f)),
+        shadowElevation = 4.dp) {
+        Text(question.getString("prompt"), Modifier.padding(18.dp),
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onPrimaryContainer)
+    }
     val options = question.getJSONArray("options")
     Column(Modifier.selectableGroup().testTag("quiz-options"), verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceSmall)) {
         repeat(options.length()) { i ->
             val option = options.getJSONObject(i)
             val id = option.getString("id")
-            Surface(shape = MaterialTheme.shapes.medium,
-                color = if (selection == id) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface) {
+            Surface(shape = RoundedCornerShape(16.dp),
+                color = if (selection == id) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+                border = BorderStroke(if (selection == id) 2.dp else 1.dp,
+                    if (selection == id) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
+                shadowElevation = if (selection == id) 4.dp else 2.dp) {
                 Row(Modifier.fillMaxWidth().selectable(selection == id, enabled = !busy && !correct && !(placement && answered),
                     role = Role.RadioButton, onClick = { selection = id }).padding(MentorTokens.SpaceCompact), verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(selection == id, onClick = null, enabled = !busy && !correct && !(placement && answered))
