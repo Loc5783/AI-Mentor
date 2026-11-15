@@ -61,7 +61,8 @@ class SchedulePlannerGateway(context: Context) {
             bounds.outWidth.toLong() * bounds.outHeight > 60_000_000)
             throw BackendClient.Failure("INVALID_IMAGE", 400)
         var sample = 1
-        while (maxOf(bounds.outWidth, bounds.outHeight) / sample > 2048) sample *= 2
+        // Timetables often contain many tiny cells; retain more pixels for OCR.
+        while (maxOf(bounds.outWidth, bounds.outHeight) / sample > 3072) sample *= 2
         val options = BitmapFactory.Options().apply { inSampleSize = sample }
         val decoded = resolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, options) }
             ?: throw BackendClient.Failure("INVALID_IMAGE", 400)

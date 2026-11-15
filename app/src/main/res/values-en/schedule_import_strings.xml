@@ -1,6 +1,10 @@
 <resources>
     <string name="schedule_import_preview">Review timetable</string>
-    <string name="schedule_import_note">Review detected lessons and uncheck incorrect entries. Only empty slots are filled; existing entries stay unchanged. Afternoon periods are numbered 6–10.</string>
+    <string name="schedule_import_note">Review and correct any subject, day or period before saving. Uncheck uncertain cells; existing lessons stay unchanged.</string>
+    <string name="schedule_import_day_names">Mon,Tue,Wed,Thu,Fri,Sat,Sun</string>
+    <string name="schedule_import_subject_label">Subject</string>
+    <string name="schedule_import_period_label">Period %1$d</string>
+    <string name="schedule_import_check_entries">Enter a subject and avoid two lessons in the same day and period.</string>
     <string name="schedule_import_result">Added %1$d lessons; skipped %2$d occupied slots.</string>
     <string name="schedule_import_slot">%1$s · Period %2$d — %3$s</string>
     <string name="schedule_import_sunday">Sunday</string>
