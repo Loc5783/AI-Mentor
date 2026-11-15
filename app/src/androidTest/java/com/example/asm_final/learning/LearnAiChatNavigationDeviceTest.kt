@@ -49,7 +49,7 @@ class LearnAiChatNavigationDeviceTest {
         LearningSetupStore(context).use { it.save(owner, 10, setOf(SubjectId.PHYSICS, SubjectId.MATH)) }
         ActiveUser.set(context, owner)
         scenario = ActivityScenario.launch(Intent(context, HomeActivity::class.java).putExtra("USERNAME", qaUsername))
-        waitForTag("dashboard-subject:physics")
+        waitForTag("home-schedule-card")
     }
 
     @After
@@ -174,7 +174,7 @@ class LearnAiChatNavigationDeviceTest {
 
         // --- 6. Tab cycle: Home -> Learn -> Ranks -> Profile -> Learn ---
         navigate(R.id.nav_home)
-        waitForTag("dashboard-subject:physics")
+        waitForTag("home-schedule-card")
         navigate(R.id.nav_competition)
         waitForText(label(R.string.competition_title))
         navigate(R.id.nav_profile)

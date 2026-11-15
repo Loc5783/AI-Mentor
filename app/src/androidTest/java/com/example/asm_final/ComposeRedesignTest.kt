@@ -46,7 +46,7 @@ class ComposeRedesignTest {
         LearningSetupStore(context).use { it.save(owner, 11, setOf(SubjectId.BIOLOGY, SubjectId.PHYSICS)) }
         ActiveUser.set(context, owner)
         scenario = ActivityScenario.launch(Intent(context, HomeActivity::class.java).putExtra("USERNAME", qaUsername))
-        waitForTag("dashboard-subject:biology")
+        waitForTag("home-schedule-card")
     }
 
     @After fun cleanup() {
@@ -103,7 +103,8 @@ class ComposeRedesignTest {
             compose.onAllNodesWithText(label(it)).onFirst().assertExists()
         }
         capture("home")
-        compose.onNodeWithTag("dashboard-subject:physics").assertExists()
+        compose.onNodeWithTag("home-schedule-card").assertExists()
+        compose.onNodeWithTag("dashboard-subject:physics").assertDoesNotExist()
         compose.onNodeWithTag("dashboard-subject:chemistry").assertDoesNotExist()
         compose.onAllNodesWithText(label(R.string.design_week_empty)).onFirst().assertExists()
         navigate(R.id.nav_competition)
@@ -200,7 +201,8 @@ class ComposeRedesignTest {
         compose.onNodeWithTag("subject-list").performScrollToNode(hasTestTag("subject:chemistry"))
         compose.onNodeWithTag("subject:chemistry").assertExists()
         navigate(R.id.nav_home)
-        waitForTag("dashboard-subject:chemistry")
+        waitForTag("home-schedule-card")
+        compose.onNodeWithTag("dashboard-subject:chemistry").assertDoesNotExist()
         compose.onNodeWithTag("dashboard-subject:biology").assertDoesNotExist()
     }
 
