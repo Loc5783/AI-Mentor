@@ -38,6 +38,27 @@ public final class CompetitionViewModel extends AndroidViewModel {
     }
   }
 
+  public static final class SearchItem {
+    public final String id, nickname;
+
+    public SearchItem(String id, String nickname) {
+      this.id = id;
+      this.nickname = nickname;
+    }
+  }
+
+  public static final class SearchState {
+    public final List<SearchItem> items;
+    public final boolean loading, failed, searched;
+
+    SearchState(List<SearchItem> items, boolean loading, boolean failed, boolean searched) {
+      this.items = Collections.unmodifiableList(new ArrayList<>(items));
+      this.loading = loading;
+      this.failed = failed;
+      this.searched = searched;
+    }
+  }
+
   private final CompetitionRepository repository;
   private final FriendshipRepository friendships;
   private final SavedStateHandle saved;
@@ -47,6 +68,9 @@ public final class CompetitionViewModel extends AndroidViewModel {
   private final Handler main = new Handler(Looper.getMainLooper());
   private final MutableLiveData<State> state = new MutableLiveData<>();
   private final MutableLiveData<FriendsState> friendsState = new MutableLiveData<>(new FriendsState(Collections.emptyList(), true, false, ""));
+  private final MutableLiveData<SearchState> searchState = new MutableLiveData<>(
+      new SearchState(Collections.emptyList(), false, false, false));
+  private int searchGeneration;
   private boolean running, pending;
   private volatile boolean closed;
   private CompetitionQuery query;
@@ -83,6 +107,30 @@ public final class CompetitionViewModel extends AndroidViewModel {
   }
 
   public LiveData<FriendsState> friendsState() { return friendsState; }
+
+  public LiveData<SearchState> searchState() { return searchState; }
+
+  public void searchLearners(String text) {
+    if (closed || ActiveUser.get(getApplication()) != owner) return;
+    String query = text.trim();
+    if (query.length() < 2 || query.length() > 40) return;
+    int version = ++searchGeneration;
+    searchState.setValue(new SearchState(Collections.emptyList(), true, false, true));
+    network.execute(() -> {
+      try {
+        List<SearchItem> found = new SupabaseLearnerSearch(getApplication()).search(owner, query);
+        main.post(() -> {
+          if (!closed && version == searchGeneration && ActiveUser.get(getApplication()) == owner)
+            searchState.setValue(new SearchState(found, false, false, true));
+        });
+      } catch (Exception failure) {
+        main.post(() -> {
+          if (!closed && version == searchGeneration && ActiveUser.get(getApplication()) == owner)
+            searchState.setValue(new SearchState(Collections.emptyList(), false, true, true));
+        });
+      }
+    });
+  }
 
   public boolean isCurrentLearner(String id) { return id != null && !profileId.isEmpty() && profileId.equals(id); }
 

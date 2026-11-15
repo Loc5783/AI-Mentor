@@ -645,6 +645,128 @@ public final class LessonViewModel extends AndroidViewModel {
         });
   }
 
+  private String placementDraftKey() {
+    return currentScopeKey() + ":placementDraft:" + attempt.optString("id");
+  }
+
+  private String placementIndexKey() {
+    return currentScopeKey() + ":placementIndex:" + attempt.optString("id");
+  }
+
+  private JSONObject placementDraft() {
+    try {
+      String value = saved.get(placementDraftKey());
+      if (value == null) value = durablePlacementValue(placementDraftKey());
+      return value == null ? new JSONObject() : new JSONObject(value);
+    } catch (JSONException invalid) {
+      return new JSONObject();
+    }
+  }
+
+  private String durablePlacementValue(String key) {
+    try {
+      return getApplication().getSharedPreferences("placement_drafts", 0).getString(key, null);
+    } catch (RuntimeException unavailable) {
+      return null;
+    }
+  }
+
+  private void persistPlacementValue(String key, String value) {
+    saved.set(key, value);
+    try {
+      getApplication().getSharedPreferences("placement_drafts", 0)
+          .edit().putString(key, value).commit();
+    } catch (RuntimeException unavailable) {
+      // SavedStateHandle still retains the answer until the next restore.
+    }
+  }
+
+  public int placementIndex() {
+    if (attempt == null || !"PLACEMENT".equals(attempt.optString("kind"))) return 0;
+    Integer savedIndex = null;
+    try {
+      String value = saved.get(placementIndexKey());
+      if (value == null) value = durablePlacementValue(placementIndexKey());
+      if (value != null) savedIndex = Integer.parseInt(value);
+    } catch (NumberFormatException ignored) { }
+    int count = attempt.optJSONArray("questions") != null ? attempt.optJSONArray("questions").length() : 0;
+    return Math.max(0, Math.min(savedIndex != null ? savedIndex : attempt.optInt("step"), Math.max(0, count - 1)));
+  }
+
+  public void setPlacementIndex(int index) {
+    if (attempt == null || !"PLACEMENT".equals(attempt.optString("kind"))) return;
+    int count = attempt.optJSONArray("questions") != null ? attempt.optJSONArray("questions").length() : 0;
+    if (index < 0 || index >= count) return;
+    persistPlacementValue(placementIndexKey(), Integer.toString(index));
+    emit();
+  }
+
+  public String placementAnswer(String questionId) {
+    if (attempt == null || !"PLACEMENT".equals(attempt.optString("kind"))) return "";
+    String draft = placementDraft().optString(questionId);
+    if (!draft.isEmpty()) return draft;
+    JSONArray submitted = attempt.optJSONArray("answers");
+    if (submitted != null) for (int i = 0; i < submitted.length(); i++) {
+      JSONObject answer = submitted.optJSONObject(i);
+      if (answer != null && questionId.equals(answer.optString("questionId")))
+        return answer.optString("selectedOptionId");
+    }
+    return "";
+  }
+
+  public void setPlacementAnswer(String questionId, String optionId) {
+    if (attempt == null || !"PLACEMENT".equals(attempt.optString("kind")) || busy || hasPending()) return;
+    try {
+      JSONObject draft = placementDraft();
+      draft.put(questionId, optionId);
+      persistPlacementValue(placementDraftKey(), draft.toString());
+      emit();
+    } catch (JSONException invalid) {
+      error = "INVALID_PLACEMENT_DRAFT";
+      emit();
+    }
+  }
+
+  public boolean placementReady() {
+    if (attempt == null || !"PLACEMENT".equals(attempt.optString("kind"))) return false;
+    JSONArray questions = attempt.optJSONArray("questions");
+    if (questions == null || questions.length() == 0) return false;
+    for (int i = 0; i < questions.length(); i++) {
+      JSONObject question = questions.optJSONObject(i);
+      if (question == null || placementAnswer(question.optString("id")).isEmpty()) return false;
+    }
+    return true;
+  }
+
+  public void submitPlacement() {
+    if (attempt == null || !"PLACEMENT".equals(attempt.optString("kind"))
+        || busy || hasPending() || closed || currentActiveUser() != owner) return;
+    try {
+      JSONArray questions = attempt.getJSONArray("questions");
+      if (questions.length() == 0) return;
+      JSONArray answers = new JSONArray();
+      for (int i = 0; i < questions.length(); i++) {
+        JSONObject question = questions.getJSONObject(i);
+        String selected = placementAnswer(question.getString("id"));
+        if (selected.isEmpty()) continue;
+        answers.put(new JSONObject()
+            .put("questionId", question.getString("id"))
+            .put("selectedOptionId", selected)
+            .put("submissionId", UUID.randomUUID().toString()));
+      }
+      JSONObject body = new JSONObject().put("step", questions.length()).put("answers", answers);
+      setScoped("pendingMethod", "PATCH");
+      setScoped("pendingPath", "/attempts/" + attempt.getString("id"));
+      setScoped("pendingBody", body.toString());
+      setScopedInt("pendingRevision", attempt.getInt("revision"));
+      setScoped("pendingKey", UUID.randomUUID().toString());
+      retry();
+    } catch (JSONException invalid) {
+      error = "INVALID_SERVER_RESPONSE";
+      emit();
+    }
+  }
+
   public void save(int step, String questionId, String selected) {
     if (attempt == null || busy || hasPending() || closed) return;
     if (currentActiveUser() != owner) return;
@@ -701,7 +823,17 @@ public final class LessonViewModel extends AndroidViewModel {
         ctx,
         () -> {
           try {
-            return ctx.client.request(method, route, new JSONObject(body), key, revision);
+            JSONObject result = ctx.client.request(method, route, new JSONObject(body), key, revision);
+            if ("POST".equals(method) && "/completions".equals(route)
+                && "PLACEMENT".equals(result.optString("kind")) && currentAttemptId != null) {
+              try {
+                result.put("__placementReview", ctx.client.request(
+                    "GET", "/attempts/" + currentAttemptId, null, null, null));
+              } catch (Exception unavailable) {
+                // The scored summary remains available if detailed review cannot be loaded.
+              }
+            }
+            return result;
           } catch (BackendClient.Failure conflict) {
             boolean isRevisionMismatch = conflict.status == 412;
             boolean isAlreadyCompleted = conflict.status == 409 && "ATTEMPT_ALREADY_COMPLETED".equals(conflict.code);
@@ -713,6 +845,8 @@ public final class LessonViewModel extends AndroidViewModel {
           setScoped("pendingPath", null);
           if (result.has("xpAwarded")) {
             completion = result;
+            if (result.optJSONObject("__placementReview") != null)
+              attempt = result.optJSONObject("__placementReview");
           } else {
             attempt = result;
             if (result.has("completion")) {

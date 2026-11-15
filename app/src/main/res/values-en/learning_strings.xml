@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-  <string name="course_path_progress">Progress: %1$d/%2$d lessons · %3$d marked as already mastered</string>
+  <string name="course_path_progress">Studied %1$d/%2$d lessons to learn · %3$d already mastered</string>
+  <string name="course_path_all_mastered">You have mastered all %1$d lessons on this path.</string>
   <string name="course_stage_title">Stage %1$d</string>
   <string name="course_stage_count">%1$d / %2$d lessons</string>
   <string name="course_stage_reward">First completion +%1$d EXP</string>
@@ -32,6 +33,7 @@
   <string name="course_continue">Resume your lesson</string>
   <string name="course_locked">Locked</string>
   <string name="course_done">Completed · review again</string>
+  <string name="course_done_short">Completed</string>
   <string name="course_placement_skipped_status">Mastered on entry assessment</string>
   <string name="course_placement_skipped_note">Your entry assessment shows that you know this lesson’s foundations. Skipping it gives no EXP or streak, and you can still choose to study it.</string>
   <string name="course_retake_skipped">Study this lesson</string>
@@ -40,12 +42,29 @@
   <string name="course_example">A worked example</string>
   <string name="course_next">Continue</string>
   <string name="course_question">Question %1$d / %2$d</string>
+  <string name="course_placement_no_xp">No EXP</string>
+  <string name="course_placement_screen_title">Your entry assessment</string>
+  <string name="course_placement_previous">Previous</string>
+  <string name="course_placement_next">Next question</string>
+  <string name="course_placement_submit">Submit answers</string>
+  <string name="course_placement_submit_title">Submit assessment?</string>
+  <string name="course_placement_submit_complete">Completed %1$d/%2$d questions. Submit now?</string>
+  <string name="course_placement_submit_missing">Completed %1$d/%2$d questions. Unanswered: %3$s. Submit now?</string>
+  <string name="course_placement_return">Go back</string>
+  <string name="course_placement_scoring">Scoring your answers and creating your path…</string>
+  <string name="course_placement_unanswered">Unanswered</string>
+  <string name="course_placement_review_answers">Review answers</string>
+  <string name="course_placement_your_answer">Your answer: %1$s</string>
+  <string name="course_placement_correct_answer">Correct answer: %1$s</string>
   <string name="course_easy">Get familiar</string>
   <string name="course_medium">Practice</string>
   <string name="course_applied">Apply what you learned</string>
   <string name="course_check">Check answer</string>
   <string name="course_correct">Correct! Keep going.</string>
   <string name="course_wrong">Not quite. Read the question again and have another try.</string>
+  <string name="course_explanation_pending">A detailed explanation is not available for this question yet.</string>
+  <string name="course_ask_ai_wrong">Explain more with AI</string>
+  <string name="course_ai_wrong_context">Question: %1$s\nI chose: %2$s\nExplain why my choice was incorrect.</string>
   <string name="course_help">Let’s work through the solution</string>
   <string name="course_ask_ai">Ask more in Chat AI</string>
   <string name="course_ai_prompt">I am studying %1$s in grade %2$d. Explain this step by step at my level and give hints so I can solve it myself:\n\n%3$s</string>

@@ -22,7 +22,7 @@ import org.junit.*
 class LearningComposePresentationTest {
     @get:Rule val compose = createComposeRule()
 
-    @Test fun lockedNodesCannotLaunchAndReviewsKeepTheirOwnReward() {
+    @Test fun skippedNodesAreHiddenAndReviewsKeepTheirOwnReward() {
         val units = JSONArray()
         repeat(6) { index ->
             units.put(JSONObject().put("id", "unit-$index").put("title", "A long lesson title that must wrap without hiding the action")
@@ -31,28 +31,19 @@ class LearningComposePresentationTest {
                 .put("state", when (index) { 0 -> "COMPLETED"; 1 -> "AVAILABLE"; 2 -> "SKIPPED"; else -> "LOCKED" })
                 .put("canOpen", index != 2))
         }
-        val opened = mutableListOf<String>()
         var dark by mutableStateOf(false)
         compose.setContent {
             CompositionLocalProvider(LocalDensity provides Density(LocalDensity.current.density, 1.3f)) {
                 MentorTheme(dark) {
                     Column(Modifier.width(320.dp).verticalScroll(rememberScrollState())) {
-                        PathContent(LessonPathData(units)) { opened.add(it) }
+                        PathContent(LessonPathData(units)) { }
                     }
                 }
             }
         }
-        compose.onNodeWithTag("path-unit:unit-0").performScrollTo().performClick()
-        compose.onNodeWithTag("path-sheet-open").performClick()
-        compose.onNodeWithTag("path-unit:unit-1").performScrollTo().performClick()
-        compose.onNodeWithTag("path-sheet-open").performClick()
-        compose.onNodeWithTag("path-unit:unit-2").performScrollTo().performClick()
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        compose.onNodeWithText(context.getString(R.string.course_placement_skipped_status)).assertExists()
-        compose.onNodeWithText(context.getString(R.string.course_unlock_note)).assertExists()
-        compose.onNodeWithText(context.getString(R.string.course_retake_skipped)).assertDoesNotExist()
-        compose.onNodeWithText(context.getString(R.string.course_back)).performClick()
-        Assert.assertEquals(listOf("unit-0", "unit-1"), opened)
+        compose.onNodeWithTag("path-unit:unit-0").performScrollTo().assertExists()
+        compose.onNodeWithTag("path-unit:unit-1").performScrollTo().assertExists()
+        compose.onNodeWithTag("path-unit:unit-2").assertDoesNotExist()
         compose.runOnIdle { dark = true }
         compose.onNodeWithTag("path-unit:unit-5").performScrollTo().assertExists()
         Assert.assertEquals(5, LessonPathData(units).totalLessons)

@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-  <string name="course_path_progress">Tiến độ: %1$d/%2$d bài · %3$d bài được xếp đã nắm vững</string>
+  <string name="course_path_progress">Đã học %1$d/%2$d bài cần học · %3$d bài đã vững</string>
+  <string name="course_path_all_mastered">Bạn đã nắm vững cả %1$d bài trong lộ trình.</string>
   <string name="course_stage_title">Chặng %1$d</string>
   <string name="course_stage_count">%1$d / %2$d bài</string>
   <string name="course_stage_reward">Lần đầu +%1$d EXP</string>
@@ -32,6 +33,7 @@
   <string name="course_continue">Học tiếp bài đang dở</string>
   <string name="course_locked">Chưa mở khóa</string>
   <string name="course_done">Đã hoàn thành · ôn lại</string>
+  <string name="course_done_short">Đã hoàn thành</string>
   <string name="course_placement_skipped_status">Đã nắm vững qua đầu vào</string>
   <string name="course_placement_skipped_note">Kết quả đầu vào cho thấy bạn đã nắm phần nền tảng của bài này. Bài được bỏ qua trong lộ trình; việc bỏ qua không cộng EXP hoặc streak. Bạn vẫn có thể mở học lại.</string>
   <string name="course_retake_skipped">Học bài này</string>
@@ -40,12 +42,29 @@
   <string name="course_example">Cùng xem ví dụ</string>
   <string name="course_next">Tiếp tục</string>
   <string name="course_question">Câu %1$d / %2$d</string>
+  <string name="course_placement_no_xp">Không tính EXP</string>
+  <string name="course_placement_screen_title">Kiểm tra đầu vào của bạn</string>
+  <string name="course_placement_previous">Câu trước</string>
+  <string name="course_placement_next">Câu tiếp theo</string>
+  <string name="course_placement_submit">Nộp bài</string>
+  <string name="course_placement_submit_title">Nộp bài kiểm tra?</string>
+  <string name="course_placement_submit_complete">Đã hoàn thành %1$d/%2$d câu. Nộp bài?</string>
+  <string name="course_placement_submit_missing">Đã hoàn thành %1$d/%2$d câu. Các câu bỏ qua: %3$s. Nộp bài?</string>
+  <string name="course_placement_return">Quay lại</string>
+  <string name="course_placement_scoring">Đang chấm bài và tạo lộ trình cho bạn…</string>
+  <string name="course_placement_unanswered">Chưa trả lời</string>
+  <string name="course_placement_review_answers">Xem lại đáp án</string>
+  <string name="course_placement_your_answer">Bạn chọn: %1$s</string>
+  <string name="course_placement_correct_answer">Đáp án đúng: %1$s</string>
   <string name="course_easy">Làm quen</string>
   <string name="course_medium">Luyện tập</string>
   <string name="course_applied">Vận dụng</string>
   <string name="course_check">Kiểm tra đáp án</string>
   <string name="course_correct">Chính xác! Tiếp tục nhé.</string>
   <string name="course_wrong">Chưa đúng. Đọc lại đề và thử thêm lần nữa nhé.</string>
+  <string name="course_explanation_pending">Câu này chưa có lời giải chi tiết.</string>
+  <string name="course_ask_ai_wrong">Giải thích thêm với AI</string>
+  <string name="course_ai_wrong_context">Câu hỏi: %1$s\nEm đã chọn: %2$s\nHãy giải thích vì sao lựa chọn của em chưa đúng.</string>
   <string name="course_help">Cùng phân tích cách giải</string>
   <string name="course_ask_ai">Hỏi thêm trong Chat AI</string>
   <string name="course_ai_prompt">Mình đang học %1$s, lớp %2$d. Hãy giải thích từng bước, vừa sức và gợi ý để mình tự làm câu này:\n\n%3$s</string>
