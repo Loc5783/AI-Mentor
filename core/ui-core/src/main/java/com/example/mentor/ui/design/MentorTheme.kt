@@ -74,7 +74,7 @@ object MentorTokens {
     val ErrorDarkText = Color(0xFFFF9AA0)
     val ErrorDarkBg = Color(0xFF54272D)
 
-    val Primary = Blue300
+    val Primary = Blue600
     val PrimaryDark = Blue700
     val PrimaryLight = Blue200
     val PrimaryContainer = Blue200
@@ -161,8 +161,8 @@ object SubjectPalette {
 }
 
 private val LightColors = lightColorScheme(
-    primary = MentorTokens.Blue300, 
-    onPrimary = MentorTokens.OnBrand,
+    primary = MentorTokens.Blue600,
+    onPrimary = Color.White,
     primaryContainer = MentorTokens.Blue200, 
     onPrimaryContainer = MentorTokens.OnBrand,
     secondary = MentorTokens.Gold,

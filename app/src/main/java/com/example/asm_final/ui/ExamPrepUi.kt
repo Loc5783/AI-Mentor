@@ -1044,7 +1044,7 @@ private fun ExamResultContent(
                                     isCurrent -> MaterialTheme.colorScheme.primary
                                     isCorrect -> Color(0xFF2E7D32) // Forest Green
                                     isAnswered -> MaterialTheme.colorScheme.error // Red
-                                    else -> Color.Gray
+                                    else -> Color(0xFF53627B)
                                 }
                             )
                             .clickable { onSelectReviewQuestion(index) },

@@ -4,10 +4,10 @@
     <color name="neumorphic_shadow_light">#FFFFFF</color>
     <color name="neumorphic_shadow_dark">#D9E1F0</color>
 
-    <color name="primaryColor">#8DB6F7</color>
+    <color name="primaryColor">#2F5FB3</color>
     <color name="primaryDarkColor">#3A5A94</color>
     <color name="primaryContainerColor">#D6E4FB</color>
-    <color name="accentColor">#8DB6F7</color>
+    <color name="accentColor">#2F5FB3</color>
 
     <color name="backgroundColor">#EDF2FC</color>
     <color name="backgroundEndColor">#DFE9FA</color>
@@ -23,10 +23,10 @@
     <color name="buttonShadowColor">#DFE9FA</color>
 
     <color name="reminderAccentColor">#D99119</color>
-    <color name="themeAccentColor">#8DB6F7</color>
-    <color name="heroEndColor">#6A9BEF</color>
+    <color name="themeAccentColor">#2F5FB3</color>
+    <color name="heroEndColor">#2F5FB3</color>
 
-    <color name="onPrimaryColor">#0B2545</color>
+    <color name="onPrimaryColor">#FFFFFF</color>
 
     <color name="secondaryColor">#FFD166</color>
     <color name="onSecondaryColor">#4D3110</color>
@@ -42,21 +42,21 @@
     <color name="auth_surface">#FFFFFF</color>
     <color name="auth_surface_glass">#F5FFFFFF</color>
     <color name="auth_surface_soft">#D6E4FB</color>
-    <color name="auth_primary">#8DB6F7</color>
-    <color name="auth_on_primary">#0B2545</color>
+    <color name="auth_primary">#2F5FB3</color>
+    <color name="auth_on_primary">#FFFFFF</color>
     <color name="auth_border">#D9E1F0</color>
     <color name="auth_text">#18243A</color>
     <color name="auth_muted">#4A5A74</color>
     <color name="auth_success">#1E7F5C</color>
     <color name="auth_error">#C62828</color>
-    <color name="auth_pressed">#6A9BEF</color>
+    <color name="auth_pressed">#3A5A94</color>
 
     <color name="mentor_quiz_surface">#FFFFFF</color>
     <color name="mentor_quiz_text">#18243A</color>
     <color name="mentor_quiz_secondary">#4A5A74</color>
     <color name="mentor_quiz_background">#EDF2FC</color>
-    <color name="mentor_quiz_accent">#8DB6F7</color>
-    <color name="mentor_quiz_on_accent">#0B2545</color>
+    <color name="mentor_quiz_accent">#2F5FB3</color>
+    <color name="mentor_quiz_on_accent">#FFFFFF</color>
     <color name="mentor_quiz_border">#D9E1F0</color>
     <color name="headerOutlineColor">#6B8DBCE8</color>
 </resources>

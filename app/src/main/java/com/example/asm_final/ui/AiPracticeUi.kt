@@ -542,7 +542,7 @@ private fun AiPracticeActiveContent(
                             modifier = Modifier
                                 .size(32.dp)
                                 .clip(CircleShape)
-                                .background(if (isSelected) MentorTokens.Blue500 else MaterialTheme.colorScheme.surfaceVariant),
+                                .background(if (isSelected) MentorTokens.Blue600 else MaterialTheme.colorScheme.surfaceVariant),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
