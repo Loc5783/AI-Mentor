@@ -231,11 +231,12 @@ object CompetitionUi {
                                         .background(palette.iconSurface),
                                     contentAlignment = Alignment.Center
                                 ) {
+                                    val rankText = if (entry.value > 0) "${entry.rank}" else "—"
                                     Text(
-                                        text = "${entry.rank}",
+                                        text = rankText,
                                         style = MaterialTheme.typography.titleSmall,
                                         fontWeight = FontWeight.Bold,
-                                        color = rankTint
+                                        color = if (entry.value > 0) rankTint else palette.muted
                                     )
                                 }
 
