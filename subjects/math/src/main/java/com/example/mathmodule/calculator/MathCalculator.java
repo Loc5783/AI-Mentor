@@ -189,6 +189,34 @@ public final class MathCalculator {
     scroll.setTag("mentor_calculator_keypad");
     LinearLayout panel = new LinearLayout(a);
     panel.setOrientation(LinearLayout.VERTICAL);
+    LinearLayout modes = new LinearLayout(a);
+    View[] modeViews = {body, null, null};
+    com.google.android.material.button.MaterialButton[] modeButtons = new com.google.android.material.button.MaterialButton[3];
+    int[] modeNames = {R.string.math_mode_calculate, R.string.math_mode_matrix, R.string.math_mode_statistics};
+    for (int index = 0; index < modeButtons.length; index++) {
+      final int mode = index;
+      com.google.android.material.button.MaterialButton control = new com.google.android.material.button.MaterialButton(a);
+      control.setText(modeNames[index]);
+      control.setTextSize(12);
+      control.setMinWidth(0);
+      control.setMinimumWidth(0);
+      control.setPadding(0, 0, 0, 0);
+      modeButtons[index] = control;
+      modes.addView(control, new LinearLayout.LayoutParams(0, -2, 1));
+      control.setOnClickListener(v -> {
+        if (modeViews[mode] == null)
+          modeViews[mode] = mode == 1 ? CalculatorExtras.matrixPanel(a) : CalculatorExtras.statisticsPanel(a);
+        scroll.removeAllViews();
+        scroll.addView(modeViews[mode]);
+        status.setVisibility(mode == 0 ? View.VISIBLE : View.GONE);
+        display.setVisibility(mode == 0 ? View.VISIBLE : View.GONE);
+        for (int i = 0; i < modeButtons.length; i++) modeButtons[i].setAlpha(i == mode ? 1f : 0.6f);
+        scroll.post(() -> scroll.scrollTo(0, 0));
+      });
+    }
+    modeButtons[1].setAlpha(0.6f);
+    modeButtons[2].setAlpha(0.6f);
+    panel.addView(modes, new LinearLayout.LayoutParams(-1, -2));
     panel.addView(status, new LinearLayout.LayoutParams(-1, -2));
     panel.addView(display, new LinearLayout.LayoutParams(-1, -2));
     panel.addView(scroll, new LinearLayout.LayoutParams(-1, -2));
