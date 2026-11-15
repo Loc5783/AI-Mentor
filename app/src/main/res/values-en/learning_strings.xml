@@ -3,7 +3,6 @@
   <string name="course_path_progress">Progress: %1$d/%2$d lessons · %3$d marked as already mastered</string>
   <string name="course_stage_title">Stage %1$d</string>
   <string name="course_stage_count">%1$d / %2$d lessons</string>
-  <string name="course_path_note">Review after every five lessons. Lessons mastered on entry are skipped; EXP is awarded only the first time you complete a lesson or review.</string>
   <string name="course_stage_reward">First completion +%1$d EXP</string>
   <string name="course_review_badge">Quiz</string>
   <string name="course_review_range">Review lessons %1$d–%2$d</string>
@@ -24,7 +23,12 @@
   <string name="course_retry">Retry</string>
   <string name="course_loading">Loading progress…</string>
   <string name="course_placement">Entry assessment</string>
-  <string name="course_placement_note">There are 2 questions for each published lesson. A lesson is skipped only if you answer both correctly; unsure lessons stay on your path. No time limit, EXP or streak. This does not assess the entire school year.</string>
+  <string name="course_intro_title">Your %1$s journey</string>
+  <string name="course_intro_description">Start where it suits you. Lessons you have mastered can be skipped.</string>
+  <string name="course_source_info">About this content</string>
+  <string name="course_placement_note">Each lesson has 2 questions. Answer both correctly to skip a lesson you know; the rest stay on your path. There is no time limit, EXP or streak.</string>
+  <string name="course_understood">Got it</string>
+  <string name="course_exit">Exit</string>
   <string name="course_continue">Resume your lesson</string>
   <string name="course_locked">Locked</string>
   <string name="course_done">Completed · review again</string>

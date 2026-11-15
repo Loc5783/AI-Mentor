@@ -99,8 +99,6 @@ internal fun PathContent(path: LessonPathData, open: (String) -> Unit) {
             Text(stringResource(R.string.course_path_progress, path.completedLessons, path.totalLessons, path.skippedLessons),
                 style = MaterialTheme.typography.bodyMedium, color = colors.onPrimaryContainer)
             MentorProgress(if (path.totalLessons == 0) 0f else path.completedLessons.toFloat() / path.totalLessons)
-            Text(stringResource(R.string.course_path_note), style = MaterialTheme.typography.bodySmall,
-                color = colors.onPrimaryContainer)
         }
     }
     stages.forEachIndexed { index, units ->
@@ -363,21 +361,50 @@ private fun LessonScreen(
                 state.attempt != null -> key(attemptId) { PracticeContent(state.attempt!!, model, state.busy, ask) }
                 state.path != null -> {
                     val path = state.path!!
+                    var showSourceNote by remember(path) { mutableStateOf(false) }
+                    var showPlacementInfo by remember(path) { mutableStateOf(false) }
+                    val enrollment = path.optJSONObject("enrollment")
+                    val placementComplete = enrollment?.has("placement") == true && !enrollment.isNull("placement")
                     MentorCard(Modifier.fillMaxWidth()) {
-                        Text(path.optString("title"), style = MaterialTheme.typography.headlineMedium,
+                        Text(stringResource(R.string.course_intro_title, subjectLabel), style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                         Text(stringResource(R.string.chat_grade, state.grade),
                             color = MaterialTheme.colorScheme.primary)
-                        Text(path.optString("sourceNote"), style = MaterialTheme.typography.bodySmall,
+                        Text(stringResource(R.string.course_intro_description), style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        val sourceNote = path.optString("sourceNote")
+                        if (sourceNote.isNotBlank()) {
+                            TextButton(onClick = { showSourceNote = !showSourceNote }) {
+                                Text(stringResource(R.string.course_source_info))
+                            }
+                            if (showSourceNote) Text(sourceNote, style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
                     }
                     if (configuration.locales[0].language == "en") Text(stringResource(R.string.course_content_language))
                     val pending = path.optJSONArray("pendingAttempts")
                     if (pending != null && pending.length() > 0)
                         MentorButton(stringResource(R.string.course_continue), { model.resume(pending.getJSONObject(0).getString("id")) })
-                    if (path.optJSONObject("enrollment")?.optString("placementStatus") != "COMPLETED") {
-                        Text(stringResource(R.string.course_placement_note))
-                        MentorButton(stringResource(R.string.course_placement), { model.start("placement", true) })
+                    if (!placementComplete && (pending == null || pending.length() == 0)) {
+                        MentorButton(stringResource(R.string.course_placement), { showPlacementInfo = true })
+                    }
+                    if (showPlacementInfo && !placementComplete) {
+                        AlertDialog(
+                            onDismissRequest = { showPlacementInfo = false },
+                            title = { Text(stringResource(R.string.course_placement)) },
+                            text = { Text(stringResource(R.string.course_placement_note)) },
+                            confirmButton = {
+                                Button(onClick = {
+                                    showPlacementInfo = false
+                                    model.start("placement", true)
+                                }) { Text(stringResource(R.string.course_understood)) }
+                            },
+                            dismissButton = {
+                                TextButton(onClick = { showPlacementInfo = false }) {
+                                    Text(stringResource(R.string.course_exit))
+                                }
+                            }
+                        )
                     }
                     val units = path.optJSONArray("units")
                     if (units != null) PathContent(LessonPathData(units)) { model.start(it, false) }

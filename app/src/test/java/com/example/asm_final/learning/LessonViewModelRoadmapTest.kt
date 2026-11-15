@@ -56,6 +56,30 @@ class LessonViewModelRoadmapTest {
     private val app = android.app.Application()
 
     @Test
+    fun completedPlacementCannotStartAgain() {
+        val client = FakeRoadmapApiClient()
+        val directExecutor = DirectExecutor()
+        client.customHandler = { method, path, _, _, _ ->
+            when ("$method $path") {
+                "POST /enrollments" -> JSONObject().put("id", "enr_1")
+                "GET /enrollments/enr_1/path" -> JSONObject()
+                    .put("enrollment", JSONObject().put("id", "enr_1")
+                        .put("placement", JSONObject().put("completedAt", "2026-11-15")))
+                    .put("curriculumVersion", "v1")
+                    .put("units", JSONArray())
+                else -> error("Unexpected request: $method $path")
+            }
+        }
+        val vm = LessonViewModel(app, SavedStateHandle(), client, directExecutor, directExecutor) { 1 }
+
+        vm.bind(1, "physics", 10)
+        vm.start("placement", true)
+
+        assertFalse(client.requests.contains("POST /placements"))
+        assertNull(vm.error)
+    }
+
+    @Test
     fun testResumeCompletedAttemptRestoresCompletionObject() {
         val client = FakeRoadmapApiClient()
         val savedState = SavedStateHandle()

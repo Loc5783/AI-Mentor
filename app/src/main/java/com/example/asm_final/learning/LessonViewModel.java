@@ -604,6 +604,7 @@ public final class LessonViewModel extends AndroidViewModel {
     String requestKey = UUID.randomUUID().toString();
     try {
       JSONObject enrollment = path.getJSONObject("enrollment");
+      if (placement && enrollment.has("placement") && !enrollment.isNull("placement")) return;
       String enrollmentId = enrollment.getString("id");
       String curriculumVersion = placement ? null : path.getString("curriculumVersion");
       task(

@@ -3,7 +3,6 @@
   <string name="course_path_progress">Tiến độ: %1$d/%2$d bài · %3$d bài được xếp đã nắm vững</string>
   <string name="course_stage_title">Chặng %1$d</string>
   <string name="course_stage_count">%1$d / %2$d bài</string>
-  <string name="course_path_note">Sau mỗi 5 bài là một chặng ôn tập. Bài đã nắm vững qua đầu vào được bỏ qua; EXP nhận ở lần đầu tự hoàn thành bài hoặc bài ôn.</string>
   <string name="course_stage_reward">Lần đầu +%1$d EXP</string>
   <string name="course_review_badge">Ôn</string>
   <string name="course_review_range">Ôn tập bài %1$d–%2$d</string>
@@ -24,7 +23,12 @@
   <string name="course_retry">Thử lại</string>
   <string name="course_loading">Đang tải tiến độ…</string>
   <string name="course_placement">Kiểm tra đầu vào</string>
-  <string name="course_placement_note">Có 2 câu cho mỗi bài đã xuất bản. Chỉ bài đúng cả 2 câu mới được bỏ qua; bài chưa chắc vẫn nằm trong lộ trình. Không giới hạn thời gian, không tính EXP/streak và không đánh giá toàn bộ chương trình.</string>
+  <string name="course_intro_title">Hành trình %1$s</string>
+  <string name="course_intro_description">Học từ bài phù hợp với bạn. Những phần đã nắm vững sẽ được bỏ qua.</string>
+  <string name="course_source_info">Thông tin nội dung</string>
+  <string name="course_placement_note">Mỗi bài có 2 câu hỏi. Trả lời đúng cả 2 để bỏ qua bài đã vững; bài còn lại vẫn ở trong lộ trình. Không giới hạn thời gian và không tính EXP hoặc streak.</string>
+  <string name="course_understood">Đã hiểu</string>
+  <string name="course_exit">Thoát</string>
   <string name="course_continue">Học tiếp bài đang dở</string>
   <string name="course_locked">Chưa mở khóa</string>
   <string name="course_done">Đã hoàn thành · ôn lại</string>
