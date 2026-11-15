@@ -26,6 +26,28 @@ class SupabaseScheduleRepository(private val context: Context): ScheduleReposito
     }
     override fun insertEntry(entry:ScheduleEntry)=call(entry.accountId,"insert_entry",entryData(entry)).getLong("id")
     override fun updateEntry(entry:ScheduleEntry) {call(entry.accountId,"update_entry",entryData(entry))}
+    override fun saveEntries(entries:List<ScheduleEntry>,isEdit:Boolean) {
+        require(entries.isNotEmpty())
+        if (isEdit) require(entries.size == 1)
+        val duplicateInput=entries.groupBy { it.accountId to (it.dayOfWeek to it.period) }
+            .values.firstOrNull { it.size > 1 }
+        if (duplicateInput != null) {
+            val first=duplicateInput.first()
+            throw DuplicateScheduleEntryException(first.dayOfWeek,first.period,duplicateInput)
+        }
+        val conflicts=entries.flatMap { entry ->
+            getEntries(entry.accountId,entry.dayOfWeek).filter {
+                it.period==entry.period && (!isEdit || it.id!=entry.id)
+            }
+        }
+        conflicts.firstOrNull()?.let { duplicate ->
+            throw DuplicateScheduleEntryException(
+                duplicate.dayOfWeek,duplicate.period,
+                conflicts.filter { it.dayOfWeek==duplicate.dayOfWeek && it.period==duplicate.period }
+            )
+        }
+        entries.forEach { if (isEdit) updateEntry(it) else insertEntry(it) }
+    }
     override fun deleteEntry(id:Long,accountId:String) {call(accountId,"delete_entry",JSONObject().put("id",id))}
     override fun getTodos(accountId:String,dayOfWeek:Int):List<TodoTask> {
         val rows=call(accountId,"todos",JSONObject().put("day",dayOfWeek)).getJSONArray("items")

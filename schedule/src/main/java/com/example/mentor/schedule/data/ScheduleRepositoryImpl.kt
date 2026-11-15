@@ -3,6 +3,7 @@ package com.example.mentor.schedule.data
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import com.example.mentor.schedule.domain.DuplicateScheduleEntryException
 import com.example.mentor.data.ModuleDatabaseHelper
 import com.example.mentor.schedule.domain.ScheduleEntry
 import com.example.mentor.schedule.domain.ScheduleRepository
@@ -10,7 +11,7 @@ import com.example.mentor.schedule.domain.ScheduleRepository
 import com.example.mentor.schedule.domain.TodoTask
 import com.example.mentor.schedule.domain.ScheduleActivityLog
 
-class ScheduleDatabaseHelper(context: Context) : ModuleDatabaseHelper(context, "schedule_schema", null, 2) {
+class ScheduleDatabaseHelper(context: Context) : ModuleDatabaseHelper(context, "schedule_schema", null, 3) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             """
@@ -57,6 +58,7 @@ class ScheduleDatabaseHelper(context: Context) : ModuleDatabaseHelper(context, "
             """.trimIndent()
         )
         db.execSQL("CREATE INDEX IF NOT EXISTS idx_logs_account ON activity_logs(account_id)")
+        ensureUniqueScheduleIndexIfSafe(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -93,6 +95,7 @@ class ScheduleDatabaseHelper(context: Context) : ModuleDatabaseHelper(context, "
             )
             db.execSQL("CREATE INDEX IF NOT EXISTS idx_logs_account ON activity_logs(account_id)")
         }
+        if (oldVersion < 3) ensureUniqueScheduleIndexIfSafe(db)
     }
 }
 
@@ -132,6 +135,7 @@ class ScheduleRepositoryImpl(context: Context) : ScheduleRepository, com.example
         val db = dbHelper.writableDatabase
         db.beginTransaction()
         try {
+            ensureUniqueScheduleIndexIfSafe(db)
             var inserted = 0
             entries.distinctBy { it.dayOfWeek to it.period }.forEach { entry ->
                 val occupied = db.rawQuery("SELECT 1 FROM schedule_entries WHERE account_id=? AND day_of_week=? AND period=? LIMIT 1",
@@ -191,34 +195,110 @@ class ScheduleRepositoryImpl(context: Context) : ScheduleRepository, com.example
 
     override fun close() { dbHelper.close() }
 
-    override fun insertEntry(entry: ScheduleEntry): Long {
-        val db = dbHelper.writableDatabase
-        val cv = ContentValues().apply {
-            put("account_id", entry.accountId)
-            put("title", entry.title)
-            put("day_of_week", entry.dayOfWeek)
-            put("period", entry.period)
-            put("teacher", entry.teacher)
-            put("notes", entry.notes)
-        }
-        return db.insert("schedule_entries", null, cv)
-    }
+    override fun insertEntry(entry: ScheduleEntry): Long =
+        persistEntries(listOf(entry), isEdit = false).single()
 
     override fun updateEntry(entry: ScheduleEntry) {
+        persistEntries(listOf(entry), isEdit = true)
+    }
+
+    override fun saveEntries(entries: List<ScheduleEntry>, isEdit: Boolean) {
+        persistEntries(entries, isEdit)
+    }
+
+    private fun persistEntries(entries: List<ScheduleEntry>, isEdit: Boolean): List<Long> {
+        require(entries.isNotEmpty())
+        if (isEdit) require(entries.size == 1)
         val db = dbHelper.writableDatabase
-        val cv = ContentValues().apply {
-            put("title", entry.title)
-            put("day_of_week", entry.dayOfWeek)
-            put("period", entry.period)
-            put("teacher", entry.teacher)
-            put("notes", entry.notes)
+        db.beginTransaction()
+        try {
+            ensureUniqueScheduleIndexIfSafe(db)
+            val duplicateInput = entries.groupBy { it.accountId to (it.dayOfWeek to it.period) }
+                .values.firstOrNull { it.size > 1 }
+            if (duplicateInput != null) {
+                val first = duplicateInput.first()
+                throw DuplicateScheduleEntryException(first.dayOfWeek, first.period, duplicateInput)
+            }
+
+            val conflicts = entries.flatMap { entry ->
+                val rows = mutableListOf<ScheduleEntry>()
+                db.rawQuery(
+                    "SELECT id, account_id, title, day_of_week, period, teacher, notes " +
+                        "FROM schedule_entries WHERE account_id=? AND day_of_week=? AND period=? " +
+                        if (isEdit) "AND id<>?" else "",
+                    if (isEdit) arrayOf(
+                        entry.accountId,
+                        entry.dayOfWeek.toString(),
+                        entry.period.toString(),
+                        entry.id.toString()
+                    ) else arrayOf(
+                        entry.accountId,
+                        entry.dayOfWeek.toString(),
+                        entry.period.toString()
+                    )
+                ).use { cursor ->
+                    while (cursor.moveToNext()) {
+                        rows.add(
+                            ScheduleEntry(
+                                id = cursor.getLong(cursor.getColumnIndexOrThrow("id")),
+                                accountId = cursor.getString(cursor.getColumnIndexOrThrow("account_id")),
+                                title = cursor.getString(cursor.getColumnIndexOrThrow("title")),
+                                dayOfWeek = cursor.getInt(cursor.getColumnIndexOrThrow("day_of_week")),
+                                period = cursor.getInt(cursor.getColumnIndexOrThrow("period")),
+                                teacher = cursor.getString(cursor.getColumnIndexOrThrow("teacher")),
+                                notes = cursor.getString(cursor.getColumnIndexOrThrow("notes"))
+                            )
+                        )
+                    }
+                }
+                rows
+            }
+            conflicts.firstOrNull()?.let { duplicate ->
+                throw DuplicateScheduleEntryException(
+                    duplicate.dayOfWeek,
+                    duplicate.period,
+                    conflicts.filter { it.dayOfWeek == duplicate.dayOfWeek && it.period == duplicate.period }
+                )
+            }
+
+            val ids = entries.map { entry ->
+                val values = ContentValues().apply {
+                    put("account_id", entry.accountId)
+                    put("title", entry.title)
+                    put("day_of_week", entry.dayOfWeek)
+                    put("period", entry.period)
+                    put("teacher", entry.teacher)
+                    put("notes", entry.notes)
+                }
+                if (isEdit) {
+                    db.update(
+                        "schedule_entries",
+                        values,
+                        "id = ? AND account_id = ?",
+                        arrayOf(entry.id.toString(), entry.accountId)
+                    )
+                    entry.id
+                } else {
+                    db.insertOrThrow("schedule_entries", null, values)
+                }
+            }
+            db.setTransactionSuccessful()
+            return ids
+        } finally {
+            db.endTransaction()
         }
-        db.update("schedule_entries", cv, "id = ? AND account_id = ?", arrayOf(entry.id.toString(), entry.accountId))
     }
 
     override fun deleteEntry(id: Long, accountId: String) {
         val db = dbHelper.writableDatabase
-        db.delete("schedule_entries", "id = ? AND account_id = ?", arrayOf(id.toString(), accountId))
+        db.beginTransaction()
+        try {
+            db.delete("schedule_entries", "id = ? AND account_id = ?", arrayOf(id.toString(), accountId))
+            ensureUniqueScheduleIndexIfSafe(db)
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
     }
 
     override fun getTodos(accountId: String, dayOfWeek: Int): List<TodoTask> {
@@ -332,5 +412,19 @@ class ScheduleRepositoryImpl(context: Context) : ScheduleRepository, com.example
     override fun clearLogs(accountId: String) {
         val db = dbHelper.writableDatabase
         db.delete("activity_logs", "account_id = ?", arrayOf(accountId))
+    }
+}
+
+private fun ensureUniqueScheduleIndexIfSafe(db: SQLiteDatabase) {
+    val hasDuplicateSlots = db.rawQuery(
+        "SELECT 1 FROM schedule_entries " +
+            "GROUP BY account_id, day_of_week, period HAVING COUNT(*) > 1 LIMIT 1",
+        null
+    ).use { it.moveToFirst() }
+    if (!hasDuplicateSlots) {
+        db.execSQL(
+            "CREATE UNIQUE INDEX IF NOT EXISTS idx_schedule_account_day_period " +
+                "ON schedule_entries(account_id, day_of_week, period)"
+        )
     }
 }

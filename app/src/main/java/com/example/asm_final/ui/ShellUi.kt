@@ -49,6 +49,7 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
             && navigation?.popBackStack("profile", false) == true) return
         if (route == "lessons" && navigation?.currentDestination?.route == "chat"
             && navigation?.popBackStack("lessons", false) == true) return
+        com.example.asm_final.utils.HapticHelper.performHaptic(activity)
         navigation?.navigate(route) {
             launchSingleTop = true
             if (!remember) {

@@ -9,15 +9,21 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.content.ContextCompat
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.asm_final.R
@@ -145,70 +151,245 @@ private fun PlannerScreen(
         error = 0
     }
     val isPhoto = action == ScheduleAiActivity.PHOTO
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-        .padding(horizontal = 16.dp, vertical = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 18.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
         TextButton(onClick = onBack) { Text(stringResource(R.string.planner_back)) }
-        Surface(Modifier.fillMaxWidth().mentorHeader(MentorArtwork.PLANNER),
-            shape = MaterialTheme.shapes.large) {
-            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                Text(stringResource(if (isPhoto) R.string.planner_photo_title else R.string.planner_todo_title),
-                    style = MaterialTheme.typography.headlineSmall)
-                Text(stringResource(if (isPhoto) R.string.planner_photo_hint else R.string.planner_todo_hint),
-                    style = MaterialTheme.typography.bodyMedium)
+
+        Surface(
+            Modifier.fillMaxWidth().mentorHeader(MentorArtwork.PLANNER),
+            shape = RoundedCornerShape(24.dp),
+            tonalElevation = 2.dp
+        ) {
+            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    stringResource(if (isPhoto) R.string.planner_photo_title else R.string.planner_todo_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    stringResource(if (isPhoto) R.string.planner_photo_hint else R.string.planner_todo_hint),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
+
         if (isPhoto) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedButton(onClick = onGallery, enabled = !busy) { Text(stringResource(R.string.planner_choose_photo)) }
-                OutlinedButton(onClick = onCamera, enabled = !busy) { Text(stringResource(R.string.planner_take_photo)) }
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                OutlinedButton(
+                    onClick = onCamera,
+                    enabled = !busy,
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(14.dp)
+                ) {
+                    Icon(painterResource(R.drawable.ic_home), null, Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.planner_take_photo))
+                }
+                OutlinedButton(
+                    onClick = onGallery,
+                    enabled = !busy,
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(14.dp)
+                ) {
+                    Icon(painterResource(R.drawable.ic_category), null, Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.planner_choose_photo))
+                }
             }
-            image?.let {
-                Card(Modifier.fillMaxWidth()) {
-                    AsyncImage(it, stringResource(R.string.planner_selected_photo),
-                        Modifier.fillMaxWidth().height(220.dp).clip(MaterialTheme.shapes.medium))
-                    TextButton(onClick = onClearImage, enabled = !busy) { Text(stringResource(R.string.planner_remove_photo)) }
+
+            Surface(
+                Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                color = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                shadowElevation = 1.dp
+            ) {
+                Column(
+                    Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    if (image != null) {
+                        AsyncImage(
+                            image,
+                            stringResource(R.string.planner_selected_photo),
+                            Modifier
+                                .fillMaxWidth()
+                                .height(240.dp)
+                                .clip(RoundedCornerShape(14.dp)),
+                            contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                        )
+                        OutlinedButton(
+                            onClick = onClearImage,
+                            enabled = !busy,
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
+                        ) {
+                            Text(stringResource(R.string.planner_remove_photo))
+                        }
+                    } else {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(180.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_book_course),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(36.dp)
+                                )
+                                Text(
+                                    "Chưa chọn ảnh thời khóa biểu",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    "Chụp ảnh hoặc chọn từ thư viện để AI tự động nhận diện thời khóa biểu của bạn.",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)
+            ) {
+                Row(
+                    Modifier.padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_lightning),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        "💡 Mẹo chụp hiệu quả: Chụp đủ sáng, giữ trọn vẹn bảng và đảm bảo chữ viết các tiết rõ nét.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         } else {
-            OutlinedTextField(value = goal, onValueChange = { if (it.length <= 1000) { goal = it; result = null; error = 0 } },
-                modifier = Modifier.fillMaxWidth(), minLines = 3, maxLines = 6,
+            OutlinedTextField(
+                value = goal,
+                onValueChange = { if (it.length <= 1000) { goal = it; result = null; error = 0 } },
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 3,
+                maxLines = 6,
                 label = { Text(stringResource(R.string.planner_goal_label)) },
                 placeholder = { Text(stringResource(R.string.planner_goal_example)) },
-                enabled = !busy)
+                enabled = !busy,
+                shape = RoundedCornerShape(14.dp)
+            )
         }
+
         if (busy) {
-            LinearProgressIndicator(Modifier.fillMaxWidth())
-            TextButton(onClick = { generation++; job?.cancel(); job = null; busy = false }) {
-                Text(stringResource(R.string.planner_cancel))
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant
+            ) {
+                Column(
+                    Modifier.padding(16.dp).fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    LinearProgressIndicator(Modifier.fillMaxWidth())
+                    Text(
+                        "AI đang phân tích thời khóa biểu...",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    TextButton(onClick = { generation++; job?.cancel(); job = null; busy = false }) {
+                        Text(stringResource(R.string.planner_cancel))
+                    }
+                }
             }
         } else {
-            Button(onClick = {
-                error = 0; result = null; busy = true
-                val token = ++generation
-                job = scope.launch {
-                    try {
-                        val proposal = if (isPhoto) gateway.scanTimetable(owner, image!!)
-                            else gateway.planTodos(owner, details, goal)
-                        if (token == generation) result = proposal
-                    } catch (cancelled: CancellationException) { throw cancelled }
-                    catch (failure: Exception) { if (token == generation) error = plannerMessage(failure, isPhoto) }
-                    finally { if (token == generation) { busy = false; job = null } }
-                }
-            }, enabled = if (isPhoto) image != null else goal.isNotBlank(),
-                modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(if (isPhoto) R.string.planner_scan else R.string.planner_create))
+            Button(
+                onClick = {
+                    error = 0; result = null; busy = true
+                    val token = ++generation
+                    job = scope.launch {
+                        try {
+                            val proposal = if (isPhoto) gateway.scanTimetable(owner, image!!)
+                                else gateway.planTodos(owner, details, goal)
+                            if (token == generation) result = proposal
+                        } catch (cancelled: CancellationException) { throw cancelled }
+                        catch (failure: Exception) { if (token == generation) error = plannerMessage(failure, isPhoto) }
+                        finally { if (token == generation) { busy = false; job = null } }
+                    }
+                },
+                enabled = if (isPhoto) image != null else goal.isNotBlank(),
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+                shape = RoundedCornerShape(26.dp)
+            ) {
+                Text(
+                    stringResource(if (isPhoto) R.string.planner_scan else R.string.planner_create),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
+
         if (error != 0) {
-            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
-                Text(stringResource(error), Modifier.padding(14.dp), color = MaterialTheme.colorScheme.onErrorContainer)
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.errorContainer
+            ) {
+                Text(
+                    stringResource(error),
+                    Modifier.padding(16.dp),
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         }
+
         result?.let { text ->
-            Text(stringResource(R.string.planner_review_note), style = MaterialTheme.typography.bodyMedium)
-            if (isPhoto) ScheduleImportAction(text, owner, onBack)
-            else TodoImportAction(text, owner, onBack)
+            Surface(
+                shape = RoundedCornerShape(18.dp),
+                color = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            ) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(
+                        stringResource(R.string.planner_review_note),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    if (isPhoto) ScheduleImportAction(text, owner, onBack)
+                    else TodoImportAction(text, owner, onBack)
+                }
+            }
         }
     }
 }

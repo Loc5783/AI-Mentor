@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -61,8 +62,11 @@ object LearningUi {
         ask: Consumer<String>
     ): View = composeHost(context, scenicBackground = true) {
         val revision by model.changes().observeAsState(0)
+        SideEffect {
+            android.util.Log.d("PlacementTrace", "REVISION_OBSERVED: revision=$revision, vm=${System.identityHashCode(model)}")
+        }
         val state = remember(revision) { LessonUiState(model.busy, model.needsLogin, model.hasPending(),
-            model.error, model.path, model.attempt, model.completion, model.grade()) }
+            model.error, model.path, model.attempt, model.completion, model.grade(), revision) }
         LessonScreen(model, state, subjectId, grade, hasLessons, { leave.run() }, openTool, { ask.accept(it) })
     }
 }
@@ -207,7 +211,7 @@ private fun LessonPathSheet(unit: LessonPathData.Unit, dismiss: () -> Unit, open
 }
 
 private data class LessonUiState(val busy: Boolean, val needsLogin: Boolean, val pending: Boolean,
-    val error: String?, val path: JSONObject?, val attempt: JSONObject?, val completion: JSONObject?, val grade: Int)
+    val error: String?, val path: JSONObject?, val attempt: JSONObject?, val completion: JSONObject?, val grade: Int, val revision: Int = 0)
 
 @Composable
 private fun LessonScreen(
@@ -222,6 +226,9 @@ private fun LessonScreen(
 ) {
     val configuration = LocalConfiguration.current
     val attemptId = state.attempt?.optString("id").orEmpty()
+    SideEffect {
+        android.util.Log.d("PlacementTrace", "LESSON_SCREEN_COMPOSED: revision=${state.revision}, attemptId=$attemptId, vm=${System.identityHashCode(model)}")
+    }
     val scroll = rememberScrollState()
     val stage = when {
         state.completion != null -> "complete:${state.completion.optString("id")}"
@@ -332,7 +339,7 @@ private fun LessonScreen(
                     MentorButton(stringResource(R.string.course_retry), model::retry)
                 }
                 state.completion != null -> CompletionContent(model, state.completion!!)
-                state.attempt != null -> key(attemptId) { PracticeContent(state.attempt!!, model, state.busy, ask) }
+                state.attempt != null -> key(attemptId) { PracticeContent(state.attempt!!, model, state.busy, state.revision, ask) }
                 state.path != null -> {
                     val path = state.path!!
                     var showSourceNote by remember(path) { mutableStateOf(false) }
@@ -429,7 +436,7 @@ private fun LoginContent(model: LessonViewModel) {
 }
 
 @Composable
-private fun PracticeContent(attempt: JSONObject, model: LessonViewModel, busy: Boolean, ask: (String) -> Unit) {
+private fun PracticeContent(attempt: JSONObject, model: LessonViewModel, busy: Boolean, @Suppress("UNUSED_PARAMETER") revision: Int, ask: (String) -> Unit) {
     val step = attempt.optInt("step")
     val lesson = attempt.optString("kind") == "LESSON"
     val placement = attempt.optString("kind") == "PLACEMENT"
@@ -442,6 +449,10 @@ private fun PracticeContent(attempt: JSONObject, model: LessonViewModel, busy: B
     }
     val questions = attempt.getJSONArray("questions")
     val index = if (placement) model.placementIndex() else maxOf(0, step - if (lesson) 2 else 0)
+    SideEffect {
+        val qidText = if (index < questions.length()) questions.getJSONObject(index).optString("id") else ""
+        android.util.Log.d("PlacementTrace", "PRACTICE_CONTENT_COMPOSED: revision=$revision, index=$index, qid=$qidText, selection=${model.placementAnswer(qidText)}, vm=${System.identityHashCode(model)}")
+    }
     var confirmPlacementSubmit by rememberSaveable(attempt.optString("id")) { mutableStateOf(false) }
     if (placement && step >= questions.length()) {
         if (!busy && !model.hasPending()) LaunchedEffect(attempt.optString("id"), step) { model.complete() }
@@ -452,12 +463,21 @@ private fun PracticeContent(attempt: JSONObject, model: LessonViewModel, busy: B
         MentorButton(stringResource(R.string.course_finish), model::complete)
         return
     }
+    val context = LocalContext.current
     val question = questions.getJSONObject(index)
     val qid = question.getString("id")
     val answers = attempt.getJSONArray("answers")
     val previous = (0 until answers.length()).map { answers.getJSONObject(it) }.lastOrNull { it.optString("questionId") == qid }
     val correct = previous?.optBoolean("correct") == true
     val answered = previous != null
+    var lastHandledAnswersCount by rememberSaveable(qid, attempt.optString("id")) { mutableStateOf(answers.length()) }
+    LaunchedEffect(answers.length(), qid, attempt.optString("id")) {
+        val currentCount = answers.length()
+        if (currentCount > lastHandledAnswersCount) {
+            lastHandledAnswersCount = currentCount
+            com.example.asm_final.utils.HapticHelper.performHaptic(context)
+        }
+    }
     var lessonSelection by rememberSaveable(attempt.optString("id"), qid) {
         mutableStateOf(previous?.optString("selectedOptionId").orEmpty())
     }
@@ -493,6 +513,8 @@ private fun PracticeContent(attempt: JSONObject, model: LessonViewModel, busy: B
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onPrimaryContainer)
     }
+    val submittingPlacement = placement && model.isSubmittingPlacement()
+    val canInteract = if (placement) !submittingPlacement else (!busy && !correct)
     val options = question.getJSONArray("options")
     Column(Modifier.selectableGroup().testTag("quiz-options"), verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceSmall)) {
         repeat(options.length()) { i ->
@@ -503,11 +525,14 @@ private fun PracticeContent(attempt: JSONObject, model: LessonViewModel, busy: B
                 border = BorderStroke(if (selection == id) 2.dp else 1.dp,
                     if (selection == id) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
                 shadowElevation = if (selection == id) 4.dp else 2.dp) {
-                Row(Modifier.fillMaxWidth().selectable(selection == id, enabled = !busy && (placement || !correct),
+                Row(Modifier.fillMaxWidth().selectable(selection == id, enabled = canInteract,
                     role = Role.RadioButton, onClick = {
-                        if (placement) model.setPlacementAnswer(qid, id) else lessonSelection = id
+                        if (selection != id) {
+                            com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                            if (placement) model.setPlacementAnswer(qid, id) else lessonSelection = id
+                        }
                     }).padding(MentorTokens.SpaceCompact), verticalAlignment = Alignment.CenterVertically) {
-                    RadioButton(selection == id, onClick = null, enabled = !busy && (placement || !correct))
+                    RadioButton(selection == id, onClick = null, enabled = canInteract)
                     Text(option.getString("text"), Modifier.padding(start = MentorTokens.SpaceSmall), style = MaterialTheme.typography.bodyLarge)
                 }
             }
@@ -545,16 +570,16 @@ private fun PracticeContent(attempt: JSONObject, model: LessonViewModel, busy: B
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically) {
             OutlinedButton(onClick = { model.setPlacementIndex(index - 1) },
-                enabled = !busy && index > 0, modifier = Modifier.weight(1f)) {
+                enabled = !submittingPlacement && index > 0, modifier = Modifier.weight(1f)) {
                 Text(stringResource(R.string.course_placement_previous))
             }
             if (index + 1 < questions.length()) {
-                Button(onClick = { model.setPlacementIndex(index + 1) }, enabled = !busy,
-                    modifier = Modifier.weight(1f)) {
+                Button(onClick = { model.setPlacementIndex(index + 1) },
+                    enabled = !submittingPlacement, modifier = Modifier.weight(1f)) {
                     Text(stringResource(R.string.course_placement_next))
                 }
             } else {
-                Button(onClick = { confirmPlacementSubmit = true }, enabled = !busy,
+                Button(onClick = { confirmPlacementSubmit = true }, enabled = !submittingPlacement,
                     modifier = Modifier.weight(1f)) {
                     Text(stringResource(R.string.course_placement_submit))
                 }

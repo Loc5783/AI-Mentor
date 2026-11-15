@@ -1,14 +1,20 @@
 package com.example.asm_final.ui
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.asm_final.R
 import com.example.asm_final.chat.ScheduleProposal
@@ -25,7 +31,9 @@ private data class ReviewSlot(val day: Int, val period: Int, val subject: String
 internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) {
     val slots = remember(text) { ScheduleProposal.parse(text) }
     if (slots == null) {
-        if (text.contains("```ai_schedule", ignoreCase = true)) Text(stringResource(R.string.schedule_import_invalid), color = MaterialTheme.colorScheme.error)
+        if (text.contains("```ai_schedule", ignoreCase = true)) {
+            Text(stringResource(R.string.schedule_import_invalid), color = MaterialTheme.colorScheme.error)
+        }
         return
     }
     val context = LocalContext.current
@@ -38,90 +46,331 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
     var failed by remember { mutableStateOf(false) }
     var invalid by remember { mutableStateOf(false) }
     var selectedDay by remember(text) { mutableIntStateOf(1) }
+    var showAddDialog by remember { mutableStateOf(false) }
     val dayNames = stringResource(R.string.schedule_import_day_names).split(",")
+
     fun update(index: Int, change: (ReviewSlot) -> ReviewSlot) {
         edits = edits.mapIndexed { position, slot -> if (position == index) change(slot) else slot }
         invalid = false
     }
-    OutlinedButton(onClick = { preview = true }, enabled = !saving) { Text(stringResource(R.string.schedule_import_preview)) }
-    saved?.let { Text(stringResource(R.string.schedule_import_result, it, skipped))
-        TextButton(onClick = onDone) { Text(stringResource(R.string.home_schedule_title)) }
+
+    fun remove(index: Int) {
+        edits = edits.filterIndexed { position, _ -> position != index }
+        invalid = false
     }
-    if (preview) AlertDialog(
-        onDismissRequest = { if (!saving) preview = false },
-        title = { Text(stringResource(R.string.schedule_import_preview)) },
-        text = { Column(Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.schedule_import_note), style = MaterialTheme.typography.bodySmall)
-            Spacer(Modifier.height(8.dp))
-            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                (1..7).forEach { day ->
-                    FilterChip(selected = selectedDay == day, onClick = { selectedDay = day },
-                        label = { Text(dayNames[day - 1]) }, enabled = !saving)
+
+    if (saved != null) {
+        Surface(
+            shape = RoundedCornerShape(18.dp),
+            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
+        ) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    stringResource(R.string.schedule_import_result, saved!!, skipped),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Button(onClick = onDone, shape = RoundedCornerShape(12.dp)) {
+                    Text(stringResource(R.string.home_schedule_title))
                 }
             }
-            Text(dayNames[selectedDay - 1], style = MaterialTheme.typography.titleMedium)
-            Row(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                Text(stringResource(R.string.schedule_import_period_header), modifier = Modifier.width(64.dp))
-                Text(stringResource(R.string.schedule_import_subject_label))
-            }
-            HorizontalDivider()
-            Column(Modifier.heightIn(max = 340.dp).verticalScroll(rememberScrollState())) {
-                (1..10).forEach { period ->
-                    val index = edits.indexOfFirst { it.day == selectedDay && it.period == period }
-                    val slot = edits.getOrNull(index)
-                    Row(Modifier.fillMaxWidth().padding(vertical = 2.dp),
-                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                        Text("$period", modifier = Modifier.width(22.dp))
-                        if (slot != null) {
-                            Checkbox(slot.selected, onCheckedChange = { checked -> update(index) { it.copy(selected = checked) } },
-                                enabled = !saving, modifier = Modifier.width(42.dp))
-                        } else Spacer(Modifier.width(42.dp))
-                        OutlinedTextField(slot?.subject.orEmpty(), onValueChange = { value ->
-                            if (index >= 0) update(index) { it.copy(subject = value.take(120)) }
-                            else if (value.isNotBlank()) {
-                                edits = edits + ReviewSlot(selectedDay, period, value.take(120))
-                                invalid = false
+        }
+        return
+    }
+
+    if (!preview) {
+        Button(
+            onClick = { preview = true },
+            enabled = !saving,
+            modifier = Modifier.fillMaxWidth().height(50.dp),
+            shape = RoundedCornerShape(24.dp)
+        ) {
+            Text(stringResource(R.string.schedule_import_preview), fontWeight = FontWeight.Bold)
+        }
+    } else {
+        Surface(
+            Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(22.dp),
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            shadowElevation = 2.dp
+        ) {
+            Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                // Review Header
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Text(
+                            stringResource(R.string.schedule_import_preview),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            "Kiểm tra và chỉnh sửa các tiết học thực tế",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    TextButton(onClick = { if (!saving) preview = false }) {
+                        Text("Đóng")
+                    }
+                }
+
+                Text(
+                    stringResource(R.string.schedule_import_note),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                // Day Selector Chips
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    (1..7).forEach { day ->
+                        val countForDay = edits.count { it.day == day && it.selected && it.subject.isNotBlank() }
+                        FilterChip(
+                            selected = selectedDay == day,
+                            onClick = { selectedDay = day },
+                            label = { Text("${dayNames[day - 1]} ($countForDay)") },
+                            enabled = !saving
+                        )
+                    }
+                }
+
+                // Day Title & Add Period Button
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = dayNames[selectedDay - 1],
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    OutlinedButton(
+                        onClick = { showAddDialog = true },
+                        enabled = !saving,
+                        shape = RoundedCornerShape(12.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                    ) {
+                        Text("+ Thêm tiết")
+                    }
+                }
+
+                // Dynamic Slots for Selected Day (sorted by period)
+                val daySlots = edits.mapIndexed { index, slot -> index to slot }
+                    .filter { it.second.day == selectedDay }
+                    .sortedBy { it.second.period }
+
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 380.dp)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    if (daySlots.isEmpty()) {
+                        Box(
+                            Modifier.fillMaxWidth().height(100.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "Chưa có tiết học nào trong ngày này. Nhấn '+ Thêm tiết' để bổ sung.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    } else {
+                        daySlots.forEach { (index, slot) ->
+                            ScheduleSlotCard(
+                                index = index,
+                                slot = slot,
+                                saving = saving,
+                                update = ::update,
+                                remove = ::remove
+                            )
+                        }
+                    }
+                }
+
+                if (invalid) {
+                    Text(stringResource(R.string.schedule_import_check_entries), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                }
+                if (failed) {
+                    Text(stringResource(R.string.schedule_import_error), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                }
+
+                // Save Action Button
+                Button(
+                    onClick = {
+                        val chosen = edits.filter { it.selected && it.subject.isNotBlank() }
+                        if (chosen.any { it.subject.any(Char::isISOControl) } ||
+                            chosen.distinctBy { it.day to it.period }.size != chosen.size) {
+                            invalid = true
+                            return@Button
+                        }
+                        saving = true; failed = false
+                        scope.launch {
+                            try {
+                                val count = withContext(Dispatchers.IO) {
+                                    check(owner > 0 && ActiveUser.get(context) == owner)
+                                    val repository = (context.applicationContext as AiMentorApplication).services().scheduleImport()
+                                    try {
+                                        repository.importVacantEntries(
+                                            owner.toString(),
+                                            chosen.map { ScheduleEntry(accountId = owner.toString(), title = it.subject.trim(), dayOfWeek = it.day, period = it.period) }
+                                        )
+                                    } finally {
+                                        repository.close()
+                                    }
+                                }
+
+                                try {
+                                    val helperClass = Class.forName("com.example.asm_final.utils.ReminderHelper")
+                                    val method = helperClass.getMethod("reschedule", android.content.Context::class.java)
+                                    method.invoke(null, context.applicationContext)
+                                } catch (_: Exception) {}
+
+                                saved = count
+                                skipped = chosen.size - count
+                                preview = false
+                            } catch (cancelled: kotlinx.coroutines.CancellationException) {
+                                throw cancelled
+                            } catch (_: Exception) {
+                                failed = true
+                            } finally {
+                                saving = false
                             }
-                        }, placeholder = { Text(stringResource(R.string.schedule_import_empty_slot)) },
-                            singleLine = true, enabled = !saving && (slot?.selected != false),
-                            modifier = Modifier.weight(1f))
-                    }
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        }
+                    },
+                    enabled = !saving && edits.any { it.selected && it.subject.isNotBlank() },
+                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    shape = RoundedCornerShape(24.dp)
+                ) {
+                    Text(
+                        if (saving) stringResource(R.string.schedule_import_saving) else stringResource(R.string.schedule_import_save),
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
-            if (invalid) Text(stringResource(R.string.schedule_import_check_entries), color = MaterialTheme.colorScheme.error)
-            if (failed) Text(stringResource(R.string.schedule_import_error), color = MaterialTheme.colorScheme.error)
-        } },
-        confirmButton = { TextButton(enabled = !saving && edits.any { it.selected }, onClick = {
-            val chosen = edits.filter { it.selected }
-            if (chosen.any { it.subject.isBlank() || it.subject.any(Char::isISOControl) } ||
-                chosen.distinctBy { it.day to it.period }.size != chosen.size) {
-                invalid = true
-                return@TextButton
+        }
+    }
+
+    if (showAddDialog) {
+        var newPeriod by remember { mutableIntStateOf(1) }
+        var newSubject by remember { mutableStateOf("") }
+        AlertDialog(
+            onDismissRequest = { showAddDialog = false },
+            title = { Text("Thêm tiết học mới") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text("Chọn số tiết (1-10) và tên môn học cho ${dayNames[selectedDay - 1]}:", style = MaterialTheme.typography.bodySmall)
+                    OutlinedTextField(
+                        value = newPeriod.toString(),
+                        onValueChange = { newPeriod = it.toIntOrNull()?.coerceIn(1, 10) ?: 1 },
+                        label = { Text("Số tiết") },
+                        singleLine = true
+                    )
+                    OutlinedTextField(
+                        value = newSubject,
+                        onValueChange = { newSubject = it.take(120) },
+                        label = { Text("Tên môn học") },
+                        singleLine = true
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (newSubject.isNotBlank()) {
+                            val existingIndex = edits.indexOfFirst { it.day == selectedDay && it.period == newPeriod }
+                            if (existingIndex >= 0) {
+                                update(existingIndex) { it.copy(subject = newSubject.trim(), selected = true) }
+                            } else {
+                                edits = edits + ReviewSlot(selectedDay, newPeriod, newSubject.trim(), true)
+                            }
+                            showAddDialog = false
+                        }
+                    },
+                    enabled = newSubject.isNotBlank()
+                ) {
+                    Text("Thêm")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAddDialog = false }) {
+                    Text("Hủy")
+                }
             }
-            saving = true; failed = false
-            scope.launch {
-                try {
-                    val count = withContext(Dispatchers.IO) {
-                        check(owner > 0 && ActiveUser.get(context) == owner)
-                        val repository = (context.applicationContext as AiMentorApplication).services().scheduleImport()
-                        try { repository.importVacantEntries(owner.toString(), chosen.map { ScheduleEntry(accountId = owner.toString(), title = it.subject.trim(), dayOfWeek = it.day, period = it.period) }) }
-                        finally { repository.close() }
-                    }
-                    
-                    try {
-                        val helperClass = Class.forName("com.example.asm_final.utils.ReminderHelper")
-                        val method = helperClass.getMethod("reschedule", android.content.Context::class.java)
-                        method.invoke(null, context.applicationContext)
-                    } catch (e: Exception) {}
-                    
-                    saved = count; skipped = chosen.size - count; preview = false
-                } catch (cancelled: kotlinx.coroutines.CancellationException) { throw cancelled }
-                catch (_: Exception) { failed = true }
-                finally { saving = false }
+        )
+    }
+}
+
+@Composable
+private fun ScheduleSlotCard(
+    index: Int,
+    slot: ReviewSlot,
+    saving: Boolean,
+    update: (Int, (ReviewSlot) -> ReviewSlot) -> Unit,
+    remove: (Int) -> Unit
+) {
+    Surface(
+        Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        color = if (slot.selected && slot.subject.isNotBlank()) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        border = BorderStroke(1.dp, if (slot.selected && slot.subject.isNotBlank()) MaterialTheme.colorScheme.primary.copy(alpha = 0.4f) else MaterialTheme.colorScheme.outlineVariant)
+    ) {
+        Row(
+            Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Box(
+                Modifier.size(32.dp).clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("T${slot.period}", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
             }
-        }) { Text(stringResource(if (saving) R.string.schedule_import_saving else R.string.schedule_import_save)) } },
-        dismissButton = { TextButton(onClick = { preview = false }, enabled = !saving) { Text(stringResource(android.R.string.cancel)) } }
-    )
+
+            Checkbox(
+                checked = slot.selected,
+                onCheckedChange = { checked -> update(index) { it.copy(selected = checked) } },
+                enabled = !saving
+            )
+
+            var localSubj by remember(slot.subject) { mutableStateOf(slot.subject) }
+            OutlinedTextField(
+                value = localSubj,
+                onValueChange = { value ->
+                    localSubj = value
+                    update(index) { it.copy(subject = value.take(120)) }
+                },
+                placeholder = { Text(stringResource(R.string.schedule_import_empty_slot)) },
+                singleLine = true,
+                enabled = !saving && slot.selected,
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(10.dp)
+            )
+
+            TextButton(
+                onClick = { remove(index) },
+                enabled = !saving,
+                contentPadding = PaddingValues(horizontal = 4.dp)
+            ) {
+                Text("Xóa", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
+            }
+        }
+    }
 }

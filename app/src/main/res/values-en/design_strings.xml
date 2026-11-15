@@ -90,4 +90,11 @@
   <string name="competition_error_title">Could not load the leaderboard</string>
   <string name="competition_error_subtitle">Check your connection and try again.</string>
   <string name="settings_haptic_feedback">Haptic feedback</string>
+  <string name="public_profile_about">About</string>
+  <string name="public_profile_bio_empty">No bio available.</string>
+  <string name="public_profile_streak_value">%1$d days</string>
+  <string name="public_profile_streak_label">Learning streak</string>
+  <string name="public_profile_xp_value">%1$d XP</string>
+  <string name="public_profile_xp_label">Daily XP</string>
+  <string name="public_profile_privacy_notice">Public profile complies with privacy rules (Personal &amp; sensitive data hidden).</string>
 </resources>

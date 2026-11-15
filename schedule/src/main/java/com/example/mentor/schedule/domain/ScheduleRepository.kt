@@ -4,6 +4,15 @@ interface ScheduleRepository {
     fun getEntries(accountId: String, dayOfWeek: Int): List<ScheduleEntry>
     fun insertEntry(entry: ScheduleEntry): Long
     fun updateEntry(entry: ScheduleEntry)
+    fun saveEntries(entries: List<ScheduleEntry>, isEdit: Boolean) {
+        require(entries.isNotEmpty())
+        if (isEdit) {
+            require(entries.size == 1)
+            updateEntry(entries.single())
+        } else {
+            entries.forEach(::insertEntry)
+        }
+    }
     fun deleteEntry(id: Long, accountId: String)
 
     fun getTodos(accountId: String, dayOfWeek: Int): List<TodoTask>
@@ -16,3 +25,9 @@ interface ScheduleRepository {
     fun insertLog(log: ScheduleActivityLog)
     fun clearLogs(accountId: String)
 }
+
+class DuplicateScheduleEntryException(
+    val dayOfWeek: Int,
+    val period: Int,
+    val existingEntries: List<ScheduleEntry>
+) : IllegalStateException("Period $period on day $dayOfWeek already has a scheduled class")

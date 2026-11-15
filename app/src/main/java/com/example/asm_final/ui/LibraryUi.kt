@@ -32,6 +32,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 
 import androidx.compose.ui.Alignment
 
@@ -1153,9 +1154,10 @@ private fun LibrarySessionPracticeView(
                                     .fillMaxWidth()
 
                                     .clickable(enabled = !isAnswered && !isSubmittingAnswer) {
-
-                                        controller.selectOption(optKey)
-
+                                        if (selectedOption != optKey) {
+                                            com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                                            controller.selectOption(optKey)
+                                        }
                                     }
 
                             ) {
@@ -1220,13 +1222,25 @@ private fun LibrarySessionPracticeView(
 
 
 
+                val wasAnsweredInitially = remember(q.id) { q.userAnswer != null }
+                var hasTriggeredSubmissionHaptic by rememberSaveable(q.id) { mutableStateOf(q.userAnswer != null) }
+                LaunchedEffect(q.userAnswer, q.id) {
+                    if (q.userAnswer != null && !wasAnsweredInitially && !hasTriggeredSubmissionHaptic) {
+                        hasTriggeredSubmissionHaptic = true
+                        com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                    }
+                }
+
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
 
                     if (!isAnswered) {
 
                         Button(
 
-                            onClick = { controller.submitAnswer() },
+                            onClick = {
+                                com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                                controller.submitAnswer()
+                            },
 
                             enabled = selectedOption != null && !isSubmittingAnswer
 

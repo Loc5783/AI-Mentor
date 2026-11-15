@@ -199,11 +199,17 @@ public class SettingsFragment extends Fragment {
         });
   }
 
+  private boolean updatingHapticSwitch = false;
+
   private void setupHaptic(View view) {
     SwitchMaterial switchHaptic = view.findViewById(R.id.switch_haptic);
     if (switchHaptic != null) {
+      updatingHapticSwitch = true;
       switchHaptic.setChecked(HapticHelper.isHapticEnabled(requireContext()));
+      updatingHapticSwitch = false;
+
       switchHaptic.setOnCheckedChangeListener((button, enabled) -> {
+        if (updatingHapticSwitch) return;
         HapticHelper.setHapticEnabled(requireContext(), enabled);
         if (enabled) HapticHelper.performHaptic(requireContext());
       });

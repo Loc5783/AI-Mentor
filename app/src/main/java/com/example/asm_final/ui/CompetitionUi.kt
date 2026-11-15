@@ -90,14 +90,24 @@ object CompetitionUi {
                                 label = stringResource(R.string.competition_streak),
                                 selected = !xp,
                                 palette = palette,
-                                onClick = { model.select(CompetitionQuery(CompetitionQuery.Metric.STREAK, query.scope)) },
+                                onClick = {
+                                    if (xp) {
+                                        com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                                        model.select(CompetitionQuery(CompetitionQuery.Metric.STREAK, query.scope))
+                                    }
+                                },
                                 modifier = Modifier.weight(1f)
                             )
                             PremiumDashboardSegment(
                                 label = stringResource(R.string.competition_daily),
                                 selected = xp,
                                 palette = palette,
-                                onClick = { model.select(CompetitionQuery(CompetitionQuery.Metric.DAILY_XP, query.scope)) },
+                                onClick = {
+                                    if (!xp) {
+                                        com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                                        model.select(CompetitionQuery(CompetitionQuery.Metric.DAILY_XP, query.scope))
+                                    }
+                                },
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -109,14 +119,24 @@ object CompetitionUi {
                                 label = stringResource(R.string.competition_friends),
                                 selected = query.scope == CompetitionQuery.Scope.FRIENDS,
                                 palette = palette,
-                                onClick = { model.select(CompetitionQuery(query.metric, CompetitionQuery.Scope.FRIENDS)) },
+                                onClick = {
+                                    if (query.scope != CompetitionQuery.Scope.FRIENDS) {
+                                        com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                                        model.select(CompetitionQuery(query.metric, CompetitionQuery.Scope.FRIENDS))
+                                    }
+                                },
                                 modifier = Modifier.weight(1f)
                             )
                             PremiumDashboardSegment(
                                 label = stringResource(R.string.competition_everyone),
                                 selected = query.scope == CompetitionQuery.Scope.GLOBAL,
                                 palette = palette,
-                                onClick = { model.select(CompetitionQuery(query.metric, CompetitionQuery.Scope.GLOBAL)) },
+                                onClick = {
+                                    if (query.scope != CompetitionQuery.Scope.GLOBAL) {
+                                        com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                                        model.select(CompetitionQuery(query.metric, CompetitionQuery.Scope.GLOBAL))
+                                    }
+                                },
                                 modifier = Modifier.weight(1f)
                             )
                         }

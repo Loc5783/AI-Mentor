@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import com.example.asm_final.R;
+import com.example.asm_final.utils.HapticHelper;
 
 public class ProfileFragment extends Fragment {
 
@@ -54,6 +55,7 @@ public class ProfileFragment extends Fragment {
                   }
                   avatarUri = uri.toString();
                   imgAvatar.setImageURI(uri);
+                  HapticHelper.performHaptic(getContext());
                 }
               }
             });
@@ -131,6 +133,7 @@ public class ProfileFragment extends Fragment {
                 btnUpdate.setEnabled(true);
                 if (updated) {
                   edtPassword.setText("");
+                  HapticHelper.performHaptic(getContext());
                   Toast.makeText(getContext(), R.string.prof_update_success, Toast.LENGTH_SHORT)
                       .show();
                   if (getActivity() instanceof OnProfileUpdatedListener) {

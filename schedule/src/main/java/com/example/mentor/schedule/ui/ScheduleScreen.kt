@@ -36,6 +36,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.mentor.schedule.R
 import com.example.mentor.schedule.domain.ScheduleEntry
 import com.example.mentor.schedule.domain.ScheduleAiContext
+import com.example.mentor.schedule.domain.DuplicateScheduleEntryException
 import com.example.mentor.schedule.domain.ScheduleRepository
 import com.example.mentor.schedule.domain.TodoTask
 import kotlinx.coroutines.launch
@@ -127,8 +128,10 @@ fun ScheduleScreen(
     onAiPlan: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
-    val factory = remember { ScheduleViewModelFactory(context.applicationContext as Application, accountId, repository) }
-    val viewModel: ScheduleViewModel = viewModel(factory = factory)
+    val factory = remember(accountId, repository) {
+        ScheduleViewModelFactory(context.applicationContext as Application, accountId, repository)
+    }
+    val viewModel: ScheduleViewModel = viewModel(key = "ScheduleViewModel:$accountId", factory = factory)
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner, viewModel) {
         val observer = LifecycleEventObserver { _, event ->
@@ -285,6 +288,39 @@ fun ScheduleScreen(
                             Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_add), modifier = Modifier.size(18.dp))
                             Spacer(Modifier.width(4.dp))
                             Text(stringResource(R.string.schedule_btn_add_class))
+                        }
+                    }
+
+                    val duplicateSlots = viewModel.entries.groupBy { it.period }
+                        .filterValues { it.size > 1 }.toSortedMap()
+                    if (!viewModel.loading.value && !viewModel.error.value && duplicateSlots.isNotEmpty()) {
+                        Surface(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            color = MaterialTheme.colorScheme.errorContainer
+                        ) {
+                            Column(
+                                Modifier.padding(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Text(
+                                    stringResource(R.string.schedule_duplicate_legacy_notice),
+                                    color = MaterialTheme.colorScheme.onErrorContainer,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                duplicateSlots.forEach { (period, duplicates) ->
+                                    Text(
+                                        stringResource(
+                                            R.string.schedule_duplicate_legacy_item,
+                                            period,
+                                            duplicates.joinToString { it.title }
+                                        ),
+                                        color = MaterialTheme.colorScheme.onErrorContainer,
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+                            }
                         }
                     }
 
@@ -510,10 +546,27 @@ fun ScheduleScreen(
                 showScheduleForm = false
                 entryToEdit = null
             },
-            onSave = { entries, isEdit ->
-                viewModel.saveEntries(entries, isEdit)
-                showScheduleForm = false
-                entryToEdit = null
+            onSave = { entries, isEdit, reportError ->
+                viewModel.saveEntries(entries, isEdit) { result ->
+                    val failure = result.exceptionOrNull()
+                    if (failure == null) {
+                        reportError(null)
+                        showScheduleForm = false
+                        entryToEdit = null
+                    } else {
+                        val message = if (failure is DuplicateScheduleEntryException) {
+                            context.getString(
+                                R.string.schedule_duplicate_slot_error,
+                                failure.period,
+                                daysArray.getOrElse(failure.dayOfWeek - 1) { failure.dayOfWeek.toString() },
+                                failure.existingEntries.joinToString { it.title }
+                            )
+                        } else {
+                            context.getString(R.string.schedule_save_failed)
+                        }
+                        reportError(message)
+                    }
+                }
             },
             onDelete = { entry ->
                 viewModel.deleteEntry(entry)
@@ -642,9 +695,10 @@ fun ScheduleFormDialog(
     viewModel: ScheduleViewModel,
     dialogSession: Int = 0,
     onDismiss: () -> Unit,
-    onSave: (List<ScheduleEntry>, Boolean) -> Unit,
+    onSave: (List<ScheduleEntry>, Boolean, (String?) -> Unit) -> Unit,
     onDelete: (ScheduleEntry) -> Unit
 ) {
+    val context = LocalContext.current
     val isEdit = initialEntry != null
     var title by rememberSaveable(dialogSession) { mutableStateOf(initialEntry?.title ?: "") }
     var teacher by rememberSaveable(dialogSession) { mutableStateOf(initialEntry?.teacher ?: "") }
@@ -652,6 +706,9 @@ fun ScheduleFormDialog(
     
     var period by rememberSaveable(dialogSession) { mutableStateOf(initialEntry?.period ?: 1) }
     var expanded by rememberSaveable(dialogSession) { mutableStateOf(false) }
+    var saving by rememberSaveable(dialogSession) { mutableStateOf(false) }
+    var saveError by rememberSaveable(dialogSession) { mutableStateOf<String?>(null) }
+    var confirmDelete by rememberSaveable(dialogSession) { mutableStateOf(false) }
     
     val daysArray = stringResource(R.string.schedule_days).split(",")
     val selectedDays = rememberSaveable(
@@ -683,11 +740,12 @@ fun ScheduleFormDialog(
     }
 
     LaunchedEffect(period, selectedDays.toList()) {
-        val overlaps = selectedDays.any { day ->
-            viewModel.checkOverlap(day, period, initialEntry?.id ?: 0L)
+        val overlaps = selectedDays.flatMap { day ->
+            viewModel.findOverlaps(day, period, initialEntry?.id ?: 0L)
+        }.distinctBy { it.id }
+        overlapWarning = overlaps.takeIf { it.isNotEmpty() }?.joinToString {
+            "${daysArray[it.dayOfWeek - 1]} · ${it.period}: ${it.title}"
         }
-        if (overlaps) overlapWarning = "Cảnh báo: Tiết này đã có môn học khác"
-        else overlapWarning = null
     }
 
     AlertDialog(
@@ -735,7 +793,16 @@ fun ScheduleFormDialog(
                     }
                 }
                 
-                if (overlapWarning != null) Text(overlapWarning!!, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                if (overlapWarning != null) {
+                    Text(
+                        stringResource(R.string.schedule_duplicate_slot_warning, overlapWarning!!),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+                saveError?.let {
+                    Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                }
                 
                 if (!isEdit) {
                     Text(stringResource(R.string.schedule_repeat_days), style = MaterialTheme.typography.bodySmall)
@@ -762,8 +829,15 @@ fun ScheduleFormDialog(
             }
         },
         confirmButton = {
-            Button(onClick = {
+            Button(enabled = !saving, onClick = {
                 if (validate()) {
+                    if (overlapWarning != null) {
+                        saveError = context.getString(
+                            R.string.schedule_duplicate_slot_warning,
+                            overlapWarning!!
+                        )
+                        return@Button
+                    }
                     val entries = selectedDays.map { d ->
                         ScheduleEntry(
                             id = initialEntry?.id ?: 0L,
@@ -775,15 +849,49 @@ fun ScheduleFormDialog(
                             notes = notes.trim().takeIf { it.isNotBlank() }
                         )
                     }
-                    onSave(entries, isEdit)
+                    saving = true
+                    saveError = null
+                    onSave(entries, isEdit) { error ->
+                        saving = false
+                        saveError = error
+                    }
                 }
-            }) { Text(stringResource(R.string.schedule_save)) }
+            }) {
+                Text(if (saving) stringResource(R.string.schedule_loading) else stringResource(R.string.schedule_save))
+            }
         },
         dismissButton = {
             Row {
-                if (isEdit) TextButton(onClick = { onDelete(initialEntry!!) }) { Text(stringResource(R.string.schedule_delete), color = MaterialTheme.colorScheme.error) }
-                TextButton(onClick = onDismiss) { Text(stringResource(R.string.schedule_cancel)) }
+                if (isEdit) TextButton(enabled = !saving, onClick = { confirmDelete = true }) {
+                    Text(stringResource(R.string.schedule_delete), color = MaterialTheme.colorScheme.error)
+                }
+                TextButton(enabled = !saving, onClick = onDismiss) {
+                    Text(stringResource(R.string.schedule_cancel))
+                }
             }
         }
     )
+
+    if (confirmDelete && initialEntry != null) {
+        AlertDialog(
+            onDismissRequest = { confirmDelete = false },
+            title = { Text(stringResource(R.string.schedule_confirm_delete_title)) },
+            text = {
+                Text(stringResource(R.string.schedule_confirm_delete_message, initialEntry.title))
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmDelete = false
+                    onDelete(initialEntry)
+                }) {
+                    Text(stringResource(R.string.schedule_delete), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmDelete = false }) {
+                    Text(stringResource(R.string.schedule_cancel))
+                }
+            }
+        )
+    }
 }

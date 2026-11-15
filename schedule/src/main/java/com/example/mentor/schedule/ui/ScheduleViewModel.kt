@@ -128,31 +128,38 @@ class ScheduleViewModel(
         loadData()
     }
 
-    fun saveEntries(entriesToSave: List<ScheduleEntry>, isEdit: Boolean) {
+    fun saveEntries(
+        entriesToSave: List<ScheduleEntry>,
+        isEdit: Boolean,
+        onComplete: (Result<Unit>) -> Unit
+    ) {
         viewModelScope.launch(Dispatchers.IO + failures) {
-            val titles = entriesToSave.joinToString { it.title }
-            entriesToSave.forEach { entry ->
-                if (isEdit) {
-                    repository.updateEntry(entry)
-                } else {
-                    repository.insertEntry(entry.copy(accountId = accountId))
+            val result = try {
+                val entries = entriesToSave.map {
+                    if (isEdit) it else it.copy(accountId = accountId)
                 }
+                repository.saveEntries(entries, isEdit)
+                val titles = entries.joinToString { it.title }
+                logAction(
+                    actionType = if (isEdit) "UPDATE" else "CREATE",
+                    entityType = "SCHEDULE",
+                    description = if (isEdit) "Đã cập nhật môn: $titles" else "Đã thêm môn: $titles"
+                )
+
+                try {
+                    val helperClass = Class.forName("com.example.asm_final.utils.ReminderHelper")
+                    val method = helperClass.getMethod("reschedule", android.content.Context::class.java)
+                    method.invoke(null, getApplication<Application>())
+                } catch (e: Exception) {}
+
+                Result.success(Unit)
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (failure: Exception) {
+                Result.failure(failure)
             }
-            
-            logAction(
-                actionType = if (isEdit) "UPDATE" else "CREATE",
-                entityType = "SCHEDULE",
-                description = if (isEdit) "Đã cập nhật môn: $titles" else "Đã thêm môn: $titles"
-            )
-            
-            // Auto-reschedule notifications if changed
-            try {
-                val helperClass = Class.forName("com.example.asm_final.utils.ReminderHelper")
-                val method = helperClass.getMethod("reschedule", android.content.Context::class.java)
-                method.invoke(null, getApplication<Application>())
-            } catch (e: Exception) {}
-            
             loadData()
+            withContext(Dispatchers.Main) { onComplete(result) }
         }
     }
 
@@ -269,10 +276,10 @@ class ScheduleViewModel(
         }
     }
 
-    suspend fun checkOverlap(day: Int, period: Int, ignoreId: Long = 0L): Boolean {
+    suspend fun findOverlaps(day: Int, period: Int, ignoreId: Long = 0L): List<ScheduleEntry> {
         return withContext(Dispatchers.IO) {
             val listToCheck = repository.getEntries(accountId, day)
-            listToCheck.any { 
+            listToCheck.filter {
                 it.id != ignoreId && it.period == period
             }
         }

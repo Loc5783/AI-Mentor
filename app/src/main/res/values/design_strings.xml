@@ -90,4 +90,11 @@
   <string name="competition_error_title">Không tải được bảng thi đua</string>
   <string name="competition_error_subtitle">Kiểm tra kết nối rồi thử lại.</string>
   <string name="settings_haptic_feedback">Phản hồi xúc giác (Haptic)</string>
+  <string name="public_profile_about">Giới thiệu</string>
+  <string name="public_profile_bio_empty">Chưa có giới thiệu bản thân.</string>
+  <string name="public_profile_streak_value">%1$d ngày</string>
+  <string name="public_profile_streak_label">Chuỗi học</string>
+  <string name="public_profile_xp_value">%1$d KN</string>
+  <string name="public_profile_xp_label">KN hôm nay</string>
+  <string name="public_profile_privacy_notice">Hồ sơ công khai tuân thủ quyền riêng tư (Ẩn thông tin cá nhân &amp; dữ liệu nhạy cảm).</string>
 </resources>

@@ -37,6 +37,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -903,7 +905,7 @@ fun PublicProfileContent(
     onRetry: () -> Unit
 ) {
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
-    val heroBg = if (dark) Color(0xFF2C192E) else Color(0xFFFDE8F1)
+    val heroBg = if (dark) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.35f)
 
     Column(
         Modifier
@@ -915,7 +917,7 @@ fun PublicProfileContent(
             Modifier
                 .fillMaxWidth()
                 .background(heroBg)
-                .padding(vertical = 24.dp),
+                .padding(vertical = 24.dp, horizontal = 16.dp),
             contentAlignment = Alignment.Center
         ) {
             Column(
@@ -926,7 +928,7 @@ fun PublicProfileContent(
                     Modifier
                         .size(80.dp)
                         .shadow(4.dp, CircleShape)
-                        .border(3.dp, Color.White, CircleShape)
+                        .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
@@ -952,13 +954,18 @@ fun PublicProfileContent(
                     text = learner?.nickname ?: stringResource(R.string.ranking_loading),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = "@LEARNER_${learner?.id ?: "0"}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                if (learner != null) {
+                    Text(
+                        text = "@LEARNER_${learner.id}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
 
@@ -970,7 +977,7 @@ fun PublicProfileContent(
         ) {
             if (loading && learner == null) {
                 Box(
-                    Modifier.fillMaxWidth().height(120.dp),
+                    Modifier.fillMaxWidth().height(140.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
@@ -983,7 +990,7 @@ fun PublicProfileContent(
                     Column(
                         Modifier.padding(16.dp).fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         Text(
                             text = stringResource(R.string.ranking_profile_error),
@@ -991,7 +998,10 @@ fun PublicProfileContent(
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             textAlign = TextAlign.Center
                         )
-                        OutlinedButton(onClick = onRetry) {
+                        OutlinedButton(
+                            onClick = onRetry,
+                            modifier = Modifier.heightIn(min = 48.dp)
+                        ) {
                             Text(stringResource(R.string.ranking_retry))
                         }
                     }
@@ -1004,25 +1014,34 @@ fun PublicProfileContent(
                 ) {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Text(
-                            text = "Giới thiệu",
+                            text = stringResource(R.string.public_profile_about),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = learner?.bio?.takeIf { it.isNotBlank() } ?: "Chưa có giới thiệu bản thân.",
+                            text = learner?.bio?.takeIf { it.isNotBlank() } ?: stringResource(R.string.public_profile_bio_empty),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
 
+                val streakVal = stringResource(R.string.public_profile_streak_value, learner?.streakDays ?: 0)
+                val streakLbl = stringResource(R.string.public_profile_streak_label)
+                val xpVal = stringResource(R.string.public_profile_xp_value, learner?.dailyXp ?: 0)
+                val xpLbl = stringResource(R.string.public_profile_xp_label)
+
                 Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Surface(
-                        Modifier.weight(1f),
+                        Modifier
+                            .weight(1f)
+                            .semantics(mergeDescendants = true) {
+                                contentDescription = "$streakLbl: $streakVal"
+                            },
                         shape = RoundedCornerShape(16.dp),
                         color = MaterialTheme.colorScheme.surface,
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
@@ -1040,12 +1059,12 @@ fun PublicProfileContent(
                             )
                             Column {
                                 Text(
-                                    text = "${learner?.streakDays ?: 0} ngày",
+                                    text = streakVal,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = "Chuỗi học",
+                                    text = streakLbl,
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -1054,7 +1073,11 @@ fun PublicProfileContent(
                     }
 
                     Surface(
-                        Modifier.weight(1f),
+                        Modifier
+                            .weight(1f)
+                            .semantics(mergeDescendants = true) {
+                                contentDescription = "$xpLbl: $xpVal"
+                            },
                         shape = RoundedCornerShape(16.dp),
                         color = MaterialTheme.colorScheme.surface,
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
@@ -1072,12 +1095,12 @@ fun PublicProfileContent(
                             )
                             Column {
                                 Text(
-                                    text = "${learner?.dailyXp ?: 0} KN",
+                                    text = xpVal,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = "Kinh nghiệm",
+                                    text = xpLbl,
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -1103,7 +1126,7 @@ fun PublicProfileContent(
                         modifier = Modifier.size(18.dp)
                     )
                     Text(
-                        text = "Hồ sơ công khai tuân thủ quyền riêng tư (Ẩn thông tin cá nhân & dữ liệu nhạy cảm).",
+                        text = stringResource(R.string.public_profile_privacy_notice),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

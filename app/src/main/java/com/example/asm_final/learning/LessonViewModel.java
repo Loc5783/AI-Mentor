@@ -142,7 +142,10 @@ public final class LessonViewModel extends AndroidViewModel {
 
   private void emit() {
     if (!closed) {
-      changes.setValue(++version);
+      int oldVer = version;
+      version++;
+      android.util.Log.d("PlacementTrace", "REVISION_EMITTED: old=" + oldVer + " new=" + version + " vm=" + System.identityHashCode(this));
+      changes.setValue(version);
     }
   }
 
@@ -694,10 +697,12 @@ public final class LessonViewModel extends AndroidViewModel {
   }
 
   public void setPlacementIndex(int index) {
+    android.util.Log.d("PlacementTrace", "NEXT_CLICK: targetIndex=" + index + " currentIndex=" + placementIndex() + " vm=" + System.identityHashCode(this));
     if (attempt == null || !"PLACEMENT".equals(attempt.optString("kind"))) return;
     int count = attempt.optJSONArray("questions") != null ? attempt.optJSONArray("questions").length() : 0;
     if (index < 0 || index >= count) return;
     persistPlacementValue(placementIndexKey(), Integer.toString(index));
+    android.util.Log.d("PlacementTrace", "INDEX_SAVED: newIndex=" + placementIndex());
     emit();
   }
 
@@ -714,12 +719,32 @@ public final class LessonViewModel extends AndroidViewModel {
     return "";
   }
 
+  public boolean isSubmittingPlacement() {
+    if (attempt == null || !"PLACEMENT".equals(attempt.optString("kind"))) return false;
+    if (busy) return true;
+    String pending = getScoped("pendingPath");
+    return pending != null && (pending.contains("/attempts/") || pending.contains("/completions") || pending.contains("/placements"));
+  }
+
   public void setPlacementAnswer(String questionId, String optionId) {
-    if (attempt == null || !"PLACEMENT".equals(attempt.optString("kind")) || busy || hasPending()) return;
+    android.util.Log.d("PlacementTrace", "ANSWER_CLICK: qid=" + questionId + " opt=" + optionId + " vm=" + System.identityHashCode(this));
+    if (attempt == null) {
+      android.util.Log.d("PlacementTrace", "ANSWER_SAVED: rejected - attempt is null");
+      return;
+    }
+    if (!"PLACEMENT".equals(attempt.optString("kind"))) {
+      android.util.Log.d("PlacementTrace", "ANSWER_SAVED: rejected - kind is " + attempt.optString("kind"));
+      return;
+    }
+    if (isSubmittingPlacement()) {
+      android.util.Log.d("PlacementTrace", "ANSWER_SAVED: rejected - isSubmittingPlacement is true");
+      return;
+    }
     try {
       JSONObject draft = placementDraft();
       draft.put(questionId, optionId);
       persistPlacementValue(placementDraftKey(), draft.toString());
+      android.util.Log.d("PlacementTrace", "ANSWER_SAVED: success, val=" + placementAnswer(questionId));
       emit();
     } catch (JSONException invalid) {
       error = "INVALID_PLACEMENT_DRAFT";

@@ -65,4 +65,11 @@
     <string name="todo_card_title">To-Do List</string>
     <string name="todo_btn_add_task">Add Task</string>
     <string name="todo_empty_day">No tasks yet</string>
+    <string name="schedule_duplicate_slot_warning">This period is already used: %1$s</string>
+    <string name="schedule_duplicate_slot_error">Cannot save: period %1$d on %2$s already has: %3$s</string>
+    <string name="schedule_duplicate_legacy_notice">Saved duplicate periods were found. All entries remain visible; tap one to edit or delete it.</string>
+    <string name="schedule_duplicate_legacy_item">Period %1$d: %2$s</string>
+    <string name="schedule_save_failed">Could not save this schedule. Please try again.</string>
+    <string name="schedule_confirm_delete_title">Delete this class?</string>
+    <string name="schedule_confirm_delete_message">Delete “%1$s” from this day’s schedule?</string>
 </resources>
