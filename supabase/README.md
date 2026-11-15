@@ -23,7 +23,7 @@ Supabase is the cloud path when `SUPABASE_ENABLED=true`. The app keeps the old F
 - Chat data is cloud-backed when Supabase is enabled; verify the storage bucket and migration `202610290007_chat_storage.sql` are deployed for attachments.
 - Foreground lesson/review attempts send bounded study intervals; the profile reads `mentor_study_summary` and `mentor_badges`. These sections show an explicit empty/unavailable message if the cloud contract is unavailable.
 - Live Supabase auth/recovery, ranking and realtime behavior have not all been exercised against the user's project from this checkout.
-- The `mentor-ai` function was deployed to project `hnxphwuaccztzanjcuca` on 2026-11-14 with separate general and schedule modes. A complete AI reply still requires a signed-in app session and working Gemini secrets; this has not been verified on a device in this checkout.
+- The `mentor-ai` function was updated on 2026-11-15 with separate study-chat, image-only timetable scan, and to-do planning modes. The timetable scan rejects blurry and unrelated images before presenting a draft. A complete AI reply still requires a signed-in app session and working Gemini secrets; that end-to-end path has not been verified on a signed-in device in this checkout.
 
 ## Configuration and secrets
 

@@ -30,7 +30,12 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.asm_final.R
 import com.example.asm_final.chat.*
+import com.example.asm_final.BuildConfig
+import com.example.asm_final.accounts.RemoteAccountLinks
+import com.example.asm_final.supabase.SupabaseStorage
 import com.example.mentor.ui.design.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 object ChatUi {
     interface Actions {
@@ -70,8 +75,7 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
         Row(Modifier.fillMaxWidth().padding(horizontal = MentorTokens.SpaceSmall, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             ChatIcon(R.drawable.ic_chat_history, R.string.chat_history, ready, actions::history)
             Column(Modifier.weight(1f)) {
-                Text(if (model.scheduleImportEnabled) stringResource(R.string.schedule_chat_title)
-                    else model.snapshot?.thread?.title?.takeIf { it.isNotBlank() } ?: stringResource(R.string.chat_title),
+                Text(model.snapshot?.thread?.title?.takeIf { it.isNotBlank() } ?: stringResource(R.string.chat_title),
                     style = MaterialTheme.typography.titleMedium, maxLines = 2)
                 TextButton(actions::grade, enabled = ready) {
                     Text(if (model.grade in 10..12) stringResource(R.string.chat_grade, model.grade) else stringResource(R.string.chat_choose_grade))
@@ -85,18 +89,14 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
             Modifier.fillMaxWidth().padding(horizontal = MentorTokens.SpaceMedium))
         LazyColumn(Modifier.weight(1f).fillMaxWidth(), state = list,
             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            if (model.loading) items(3) { MentorSkeleton(stringResource(R.string.course_loading)) }
+            if (model.loading && model.snapshot == null) items(3) { MentorSkeleton(stringResource(R.string.course_loading)) }
             else if (rows.isEmpty()) item {
                 MentorCard(Modifier.fillMaxWidth()) {
                     MentorIllustration(MentorArtwork.ASSISTANT)
                     Text(stringResource(R.string.design_mentor), style = MaterialTheme.typography.labelLarge)
-                    Text(stringResource(if (model.scheduleImportEnabled) R.string.schedule_chat_empty_title
-                        else R.string.chat_empty_title), style = MaterialTheme.typography.titleLarge)
-                    Text(stringResource(if (model.scheduleImportEnabled) R.string.schedule_chat_empty_body
-                        else R.string.chat_empty_body))
-                    val suggestions = if (model.scheduleImportEnabled)
-                        listOf(R.string.chat_suggest_schedule, R.string.chat_suggest_schedule_plan)
-                    else listOf(R.string.chat_suggest_physics, R.string.chat_suggest_chemistry, R.string.chat_suggest_biology)
+                    Text(stringResource(R.string.chat_empty_title), style = MaterialTheme.typography.titleLarge)
+                    Text(stringResource(R.string.chat_empty_body))
+                    val suggestions = listOf(R.string.chat_suggest_physics, R.string.chat_suggest_chemistry, R.string.chat_suggest_biology)
                     suggestions.forEach { id ->
                         val suggestion = stringResource(id)
                         OutlinedButton({ draft = suggestion; model.setDraft(suggestion) }, enabled = ready) { Text(suggestion) }
@@ -105,7 +105,7 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
             }
             items(rows, key = { it.id }) { message ->
                 MessageBubble(message, model.owner(), model.requesting, model.hasUnsavedReply(message.id),
-                    model.scheduleImportEnabled, model::retry, actions)
+                    model::retry, actions)
             }
             if (model.busyHere()) item(key = "typing") { TypingDots() }
         }
@@ -117,7 +117,11 @@ private fun ChatScreen(model: ChatViewModel, revision: Int, actions: ChatUi.Acti
         }
         if (status != 0) Text(stringResource(status), Modifier.padding(horizontal = MentorTokens.PagePadding)
             .semantics { liveRegion = LiveRegionMode.Polite }, style = MaterialTheme.typography.bodySmall)
-        if (model.importing) MentorSkeleton(stringResource(R.string.chat_importing), Modifier.padding(horizontal = MentorTokens.SpaceMedium))
+        if (model.importing) Row(Modifier.fillMaxWidth().padding(horizontal = MentorTokens.SpaceMedium),
+            verticalAlignment = Alignment.CenterVertically) {
+            MentorSkeleton(stringResource(R.string.chat_importing), Modifier.weight(1f))
+            TextButton(model::cancelImport) { Text(stringResource(R.string.chat_cancel_upload)) }
+        }
         Surface(Modifier.fillMaxWidth().padding(MentorTokens.SpaceCompact), shape = MaterialTheme.shapes.large,
             color = MaterialTheme.colorScheme.surface.copy(alpha = .92f),
             border = BorderStroke(1.dp, Brush.linearGradient(listOf(
@@ -168,7 +172,6 @@ private fun ChatIcon(drawable: Int, label: Int, enabled: Boolean, action: () -> 
 
 @Composable
 private fun MessageBubble(message: ChatRecords.Message, owner: Int, requesting: Boolean, retryable: Boolean,
-    scheduleImportEnabled: Boolean,
     retry: (String) -> Unit, actions: ChatUi.Actions) {
     val user = message.role == "USER"
     var visible by remember(message.id) { mutableStateOf(false) }
@@ -186,19 +189,17 @@ private fun MessageBubble(message: ChatRecords.Message, owner: Int, requesting: 
                             val visibleText = remember(message.text) {
                                 TodoProposal.displayText(ScheduleProposal.displayText(message.text))
                             }
-                            if (visibleText.isNotBlank()) ChatAnswerView(visibleText)
+                            if (visibleText.isNotBlank()) {
+                                if (remember(visibleText) { visibleText.any { it in "*_`$\\#[]<>" } ||
+                                        Regex("(?m)^\\s*(?:[-+]\\s|\\d+[.)]\\s)").containsMatchIn(visibleText) })
+                                    ChatAnswerView(visibleText)
+                                else SelectionContainer { Text(visibleText, style = MaterialTheme.typography.bodyMedium) }
+                            }
                         }
-                    }
-                    if (!user && scheduleImportEnabled) {
-                        ScheduleImportAction(message.text, owner)
-                        TodoImportAction(message.text, owner)
                     }
                     message.files.forEach { file ->
                         if (file.mime.startsWith("image/")) {
-                            val context = LocalContext.current
-                            val source = remember(owner, file.id) {
-                                runCatching { LocalChatFiles(context).resolve(owner, file) }.getOrNull()
-                            }
+                            val source = rememberChatFile(owner, file)
                             AsyncImage(source, file.name, Modifier.fillMaxWidth().heightIn(max = 200.dp).clip(MaterialTheme.shapes.small))
                         }
                         TextButton({ actions.file(file) }) { Text(file.name) }
@@ -220,6 +221,26 @@ private fun MessageBubble(message: ChatRecords.Message, owner: Int, requesting: 
             }
         }
     }
+}
+
+@Composable
+private fun rememberChatFile(owner: Int, file: ChatRecords.FileItem): android.net.Uri? {
+    val context = LocalContext.current.applicationContext
+    var source by remember(owner, file.id) { mutableStateOf<android.net.Uri?>(null) }
+    LaunchedEffect(owner, file.id) {
+        source = withContext(Dispatchers.IO) {
+            runCatching {
+                val local = LocalChatFiles(context).resolve(owner, file)
+                if (!local.isFile || local.length() != file.size.toLong()) {
+                    val online = RemoteAccountLinks(context).use { it.bound(owner, BuildConfig.SUPABASE_URL) }
+                    if (online) SupabaseStorage(context).ensureCached(owner, file)
+                }
+                local.takeIf { it.isFile && it.length() == file.size.toLong() }
+                    ?.let { android.net.Uri.fromFile(it) }
+            }.getOrNull()
+        }
+    }
+    return source
 }
 
 @Composable

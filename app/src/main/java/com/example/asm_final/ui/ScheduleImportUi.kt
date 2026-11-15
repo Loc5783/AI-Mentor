@@ -11,7 +11,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.asm_final.R
 import com.example.asm_final.chat.ScheduleProposal
-import com.example.asm_final.activities.HomeActivity
 import com.example.mentor.data.ActiveUser
 import com.example.asm_final.AiMentorApplication
 import com.example.mentor.schedule.domain.ScheduleEntry
@@ -20,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-internal fun ScheduleImportAction(text: String, owner: Int) {
+internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) {
     val slots = remember(text) { ScheduleProposal.parse(text) }
     if (slots == null) {
         if (text.contains("```ai_schedule", ignoreCase = true)) Text(stringResource(R.string.schedule_import_invalid), color = MaterialTheme.colorScheme.error)
@@ -36,7 +35,7 @@ internal fun ScheduleImportAction(text: String, owner: Int) {
     var failed by remember { mutableStateOf(false) }
     OutlinedButton(onClick = { preview = true }, enabled = !saving) { Text(stringResource(R.string.schedule_import_preview)) }
     saved?.let { Text(stringResource(R.string.schedule_import_result, it, skipped))
-        TextButton(onClick = { (context as? HomeActivity)?.navigateTo(0, true) }) { Text(stringResource(R.string.home_schedule_title)) }
+        TextButton(onClick = onDone) { Text(stringResource(R.string.home_schedule_title)) }
     }
     if (preview) AlertDialog(
         onDismissRequest = { if (!saving) preview = false },

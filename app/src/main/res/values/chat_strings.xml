@@ -17,6 +17,8 @@
   <string name="chat_thinking">AI Mentor đang trả lời…</string>
   <string name="chat_thinking_other">AI đang trả lời trong một chat khác. Bạn vẫn có thể đọc và soạn câu hỏi.</string>
   <string name="chat_importing">Đang thêm tệp…</string>
+  <string name="chat_cancel_upload">Hủy tải tệp</string>
+  <string name="chat_upload_cancelled">Đã hủy tải tệp.</string>
   <string name="chat_service_unavailable">Dịch vụ AI chưa sẵn sàng. Câu hỏi và tệp của bạn vẫn được giữ lại.</string>
   <string name="chat_offline">Không thể kết nối. Bạn có thể thử lại khi có mạng.</string>
   <string name="chat_rate_limit">AI đang bận. Vui lòng chờ một chút rồi thử lại.</string>

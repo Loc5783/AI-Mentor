@@ -81,8 +81,10 @@ public final class GeneralChatFragment extends Fragment {
             model,
             new com.example.asm_final.ui.ChatUi.Actions() {
               public void history() {
-                if (getChildFragmentManager().findFragmentByTag("chat_history") == null)
+                if (getChildFragmentManager().findFragmentByTag("chat_history") == null) {
+                  model.refresh();
                   new ChatHistoryDialog().show(getChildFragmentManager(), "chat_history");
+                }
               }
 
               public void options() {
@@ -137,22 +139,8 @@ public final class GeneralChatFragment extends Fragment {
                   return;
                 }
               }
-              if (!model.loading && model.snapshot != null
-                  && requireActivity() instanceof com.example.asm_final.activities.HomeActivity) {
-                com.example.asm_final.activities.HomeActivity.ScheduleChatRequest request =
-                    ((com.example.asm_final.activities.HomeActivity) requireActivity())
-                        .consumeScheduleChatRequest();
-                if (request != null) {
-                  model.setDraft(request.prompt);
-                  if (request.pickPhoto) photos.launch(new String[] {"image/jpeg", "image/png", "image/webp"});
-                }
-              }
               drainImports();
             });
-    model.setScheduleImportEnabled(
-        requireActivity() instanceof com.example.asm_final.activities.HomeActivity
-            && ((com.example.asm_final.activities.HomeActivity) requireActivity())
-                .isScheduleChatMode());
     model.bind(ActiveUser.get(requireContext()));
   }
 
@@ -292,20 +280,35 @@ public final class GeneralChatFragment extends Fragment {
   }
 
   private void openFile(ChatRecords.FileItem file) {
-    try {
-      File source = new LocalChatFiles(requireContext()).resolve(model.owner(), file);
-      if (!source.isFile()) throw new IOException("Missing local attachment");
-      Uri uri =
-          FileProvider.getUriForFile(
-              requireContext(), requireContext().getPackageName() + ".fileprovider", source);
-      startActivity(
-          new Intent(Intent.ACTION_VIEW)
-              .setDataAndType(uri, file.mime)
-              .putExtra(Intent.EXTRA_TITLE, file.name)
-              .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION));
-    } catch (IOException | RuntimeException invalid) {
-      toast(R.string.chat_file_open_failed);
-    }
+    Context context = requireContext().getApplicationContext();
+    android.app.Activity activity = requireActivity();
+    int owner = model.owner();
+    ((com.example.asm_final.AiMentorApplication) activity.getApplication())
+        .services().io().execute(() -> {
+          try {
+            File source = new LocalChatFiles(context).resolve(owner, file);
+            if (!source.isFile() || source.length() != file.size) {
+              try (com.example.asm_final.accounts.RemoteAccountLinks links =
+                  new com.example.asm_final.accounts.RemoteAccountLinks(context)) {
+                if (links.bound(owner, com.example.asm_final.BuildConfig.SUPABASE_URL))
+                  new com.example.asm_final.supabase.SupabaseStorage(context).ensureCached(owner, file);
+              }
+            }
+            if (!source.isFile() || source.length() != file.size) throw new IOException("Missing local attachment");
+            activity.runOnUiThread(() -> {
+              if (!isAdded()) return;
+              try {
+                Uri uri = FileProvider.getUriForFile(requireContext(),
+                    requireContext().getPackageName() + ".fileprovider", source);
+                startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, file.mime)
+                    .putExtra(Intent.EXTRA_TITLE, file.name)
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION));
+              } catch (RuntimeException invalid) { toast(R.string.chat_file_open_failed); }
+            });
+          } catch (Exception invalid) {
+            activity.runOnUiThread(() -> toast(R.string.chat_file_open_failed));
+          }
+        });
   }
 
   private void toast(int message) {

@@ -26,6 +26,7 @@ class SupabaseStorage(private val context:Context) {
    if(bytes!=null) {require(bytes.size<=limit);c.doOutput=true;c.setRequestProperty("Content-Type",mime);c.setRequestProperty("x-upsert","true");c.setFixedLengthStreamingMode(bytes.size);c.outputStream.use {it.write(bytes)}}
    val code=c.responseCode
    if(code !in 200..299) throw BackendClient.Failure("STORAGE_UNAVAILABLE",code)
+   if(code==204) return ByteArray(0)
    return c.inputStream.use { source -> val out=java.io.ByteArrayOutputStream();val buf=ByteArray(8192);while(true) {val n=source.read(buf);if(n<0)break;require(out.size()+n<=limit);out.write(buf,0,n)};out.toByteArray() }
   } finally { c.disconnect() }
  }
@@ -33,6 +34,15 @@ class SupabaseStorage(private val context:Context) {
   val path=LocalChatFiles(context).resolve(owner,file)
   require(path.length()==file.size.toLong())
   SupabaseAccounts(context).authorized(owner) { transfer("POST",objectPath(owner,file),it,path.readBytes(),file.mime) }
+ }
+ fun removeDraft(owner:Int,file:ChatRecords.FileItem) {
+  try {
+   SupabaseAccounts(context).authorized(owner) {
+    transfer("DELETE",objectPath(owner,file),it,limit=1024)
+   }
+  } finally {
+   LocalChatFiles(context).delete(owner,file)
+  }
  }
  fun ensureCached(owner:Int,file:ChatRecords.FileItem) {
   val path=LocalChatFiles(context).resolve(owner,file)

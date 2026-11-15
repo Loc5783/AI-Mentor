@@ -13,7 +13,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.asm_final.AiMentorApplication
 import com.example.asm_final.R
-import com.example.asm_final.activities.HomeActivity
 import com.example.asm_final.chat.TodoProposal
 import com.example.mentor.data.ActiveUser
 import com.example.mentor.schedule.domain.TodoTask
@@ -35,7 +34,7 @@ private data class DraftTodo(
 }
 
 @Composable
-internal fun TodoImportAction(text: String, owner: Int) {
+internal fun TodoImportAction(text: String, owner: Int, onDone: () -> Unit) {
     val suggested = remember(text) { TodoProposal.parse(text) }
     if (suggested == null) {
         if (text.contains("```ai_todo", ignoreCase = true))
@@ -65,7 +64,7 @@ internal fun TodoImportAction(text: String, owner: Int) {
     }
     saved?.let { count ->
         Text(stringResource(R.string.todo_import_result, count, skipped))
-        TextButton(onClick = { (context as? HomeActivity)?.navigateTo(0, true) }) {
+        TextButton(onClick = onDone) {
             Text(stringResource(R.string.home_schedule_title))
         }
     }

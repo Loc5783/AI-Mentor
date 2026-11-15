@@ -1,0 +1,26 @@
+<resources>
+    <string name="planner_back">← Back to Schedule</string>
+    <string name="planner_photo_title">Import timetable from a photo</string>
+    <string name="planner_photo_hint">Choose or take a timetable photo. AI reads only the image, then you review the draft before saving.</string>
+    <string name="planner_todo_title">Plan to-dos with AI</string>
+    <string name="planner_todo_hint">Describe your study goal. AI suggests concrete tasks for you to review and edit.</string>
+    <string name="planner_choose_photo">Choose photo</string>
+    <string name="planner_take_photo">Take photo</string>
+    <string name="planner_selected_photo">Selected timetable photo</string>
+    <string name="planner_remove_photo">Remove photo</string>
+    <string name="planner_goal_label">Goal or tasks to plan</string>
+    <string name="planner_goal_example">For example: Review functions, complete two math practice tests, and learn English vocabulary this week.</string>
+    <string name="planner_cancel">Cancel</string>
+    <string name="planner_scan">Read timetable</string>
+    <string name="planner_create">Suggest to-dos</string>
+    <string name="planner_review_note">This is an AI draft. Review every item before adding it to your schedule.</string>
+    <string name="planner_blurry">The photo is blurry, cropped, or its days and periods are unreadable. Retake the full timetable in good light.</string>
+    <string name="planner_not_timetable">This photo is not a timetable. Choose an image showing weekdays, periods, and subjects.</string>
+    <string name="planner_need_details">Describe the subject, goal, or tasks you need to finish so AI can create a plan.</string>
+    <string name="planner_invalid_image">This image cannot be read or is too large. Choose another JPEG, PNG, or WebP image.</string>
+    <string name="planner_invalid_result">AI could not produce a valid draft. Try again with a clearer image or description.</string>
+    <string name="planner_photo_error">Could not read the timetable. Check your connection and try again.</string>
+    <string name="planner_todo_error">Could not create a plan. Check your connection and try again.</string>
+    <string name="planner_camera_permission">Allow camera access to photograph your timetable.</string>
+    <string name="planner_camera_unavailable">Could not open the camera. You can choose an image from your library.</string>
+</resources>

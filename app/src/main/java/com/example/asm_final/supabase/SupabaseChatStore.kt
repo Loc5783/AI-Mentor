@@ -31,7 +31,6 @@ class SupabaseChatStore(private val context:Context):ChatStore {
   val r=call(owner,"snapshot",data(id));val rows=r.getJSONArray("messages")
   val messages=(0 until rows.length()).map {val m=rows.getJSONObject(it);ChatRecords.Message(m.getString("id"),m.getString("text"),m.getString("role"),m.getString("status"),m.getString("error"),m.getBoolean("truncated"),files(m.getJSONArray("files")))}
   val drafts=files(r.getJSONArray("draftFiles"))
-  (messages.flatMap {it.files}+drafts).forEach { storage.ensureCached(owner,it) }
   return ChatRecords.Snapshot(thread(r.getJSONObject("thread")),messages,drafts)
  }
  override fun createFolder(owner:Int,title:String)=call(owner,"create_folder",JSONObject().put("title",title)).getString("id")
@@ -43,9 +42,19 @@ class SupabaseChatStore(private val context:Context):ChatStore {
  override fun saveDraft(owner:Int,id:String,text:String) {call(owner,"draft",data(id).put("text",text))}
  override fun addDraftFile(owner:Int,threadId:String,file:ChatRecords.FileItem) {
   storage.upload(owner,file)
-  call(owner,"add_file",data(threadId).put("file",JSONObject().put("id",file.id).put("name",file.name).put("mime",file.mime).put("storageKey",file.storageKey).put("size",file.size)))
+  try {
+   if(Thread.currentThread().isInterrupted) throw java.util.concurrent.CancellationException("Upload cancelled")
+   call(owner,"add_file",data(threadId).put("file",JSONObject().put("id",file.id).put("name",file.name).put("mime",file.mime).put("storageKey",file.storageKey).put("size",file.size)))
+  } catch(error:Exception) {
+   runCatching {storage.removeDraft(owner,file)}
+   throw error
+  }
  }
- override fun removeDraftFile(owner:Int,threadId:String,fileId:String) {call(owner,"remove_file",data(threadId).put("fileId",fileId))}
+ override fun removeDraftFile(owner:Int,threadId:String,fileId:String) {
+  val file=snapshot(owner,threadId).draftFiles.firstOrNull {it.id==fileId}
+  call(owner,"remove_file",data(threadId).put("fileId",fileId))
+  if(file!=null) runCatching {storage.removeDraft(owner,file)}
+ }
  override fun stageMessage(owner:Int,threadId:String,text:String)=call(owner,"stage",data(threadId).put("text",text)).getString("id")
  override fun markPending(owner:Int,threadId:String,messageId:String) {call(owner,"retry",data(threadId).put("messageId",messageId))}
  override fun finish(owner:Int,threadId:String,messageId:String,reply:TutorReply?,error:String?):Boolean {
@@ -56,19 +65,26 @@ class SupabaseChatStore(private val context:Context):ChatStore {
  override fun recoverInterrupted(owner:Int) {call(owner,"recover")}
  override fun request(owner:Int,threadId:String,messageId:String,context:LearningContext):TutorRequest {
   require(context.userId==owner)
-  val snap=snapshot(owner,threadId);val turns=mutableListOf<TutorTurn>()
+  val snap=snapshot(owner,threadId)
+  val recent=mutableListOf<ChatRecords.Message>()
   snap.messages.forEachIndexed { index,m ->
    if(m.role=="USER") {
     if(m.id==messageId) {
-     turns.add(TutorTurn(owner,TutorTurn.Role.USER,m.text,m.files.map {localFiles.payload(owner,it)}))
-     // Keep recent complete pairs within the existing request budget.
-     while(turns.size>41) {turns.removeAt(0);turns.removeAt(0)}
+     recent.add(m)
+     // Only materialize attachment bytes for turns that will actually be sent.
+     val selected=recent.takeLast(21)
+     val turns=selected.map { turn ->
+      if(turn.role=="USER") TutorTurn(owner,TutorTurn.Role.USER,turn.text,
+       turn.files.map { storage.ensureCached(owner,it);localFiles.payload(owner,it) })
+      else TutorTurn(owner,TutorTurn.Role.ASSISTANT,turn.text,emptyList())
+     }
      return TutorRequest(context,turns,null)
     }
     val next=snap.messages.getOrNull(index+1)
     if(m.status=="SENT" && next?.role=="ASSISTANT") {
-     turns.add(TutorTurn(owner,TutorTurn.Role.USER,m.text,m.files.map {localFiles.payload(owner,it)}))
-     turns.add(TutorTurn(owner,TutorTurn.Role.ASSISTANT,next.text,emptyList()))
+     recent.add(m)
+     recent.add(next)
+     while(recent.size>20) {recent.removeAt(0);recent.removeAt(0)}
     }
    }
   }

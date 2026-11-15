@@ -28,6 +28,9 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
   private long selectionVersion, draftVersion;
   private String threadId, jobToken, busyThreadId, busyMessageId;
   private Future<?> call;
+  private Future<?> importTask;
+  private File importCameraSource;
+  private volatile long importGeneration;
   private Runnable pendingSave;
   private PendingSave unsavedReply;
   public ChatRecords.Snapshot snapshot;
@@ -36,7 +39,6 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
   public String draft = "";
   public int grade, status;
   public boolean loading, importing, requesting;
-  public boolean scheduleImportEnabled;
 
   public ChatViewModel(Application app) {
     this(
@@ -55,12 +57,6 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
 
   public LiveData<Integer> changes() {
     return changes;
-  }
-
-  public void setScheduleImportEnabled(boolean enabled) {
-    if (scheduleImportEnabled == enabled) return;
-    scheduleImportEnabled = enabled;
-    emit();
   }
 
   public int owner() {
@@ -83,9 +79,9 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
     if (!closed) changes.setValue(++version);
   }
 
-  private <T> void work(Callable<T> task, Consumer<T> success, Consumer<Exception> failure) {
-    if (closed) return;
-    database.execute(
+  private <T> Future<?> work(Callable<T> task, Consumer<T> success, Consumer<Exception> failure) {
+    if (closed) return null;
+    return database.submit(
         () -> {
           try {
             T value = task.call();
@@ -223,6 +219,22 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
         () -> read(target),
         data -> {
           if (selected == selectionVersion && target.equals(threadId)) accept(data, draftAtStart);
+        },
+        this::fail);
+  }
+
+  private void refreshMessages() {
+    if (threadId == null || closed) return;
+    String target = threadId;
+    long selected = ++selectionVersion, draftAtStart = draftVersion;
+    work(
+        () -> store.snapshot(owner, target),
+        data -> {
+          if (selected != selectionVersion || !target.equals(threadId)) return;
+          snapshot = data;
+          if (draftVersion == draftAtStart) draft = data.thread.draft;
+          loading = false;
+          emit();
         },
         this::fail);
   }
@@ -412,7 +424,7 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
           store.removeDraftFile(owner, target, id);
           return true;
         },
-        ignored -> refresh(),
+        ignored -> refreshMessages(),
         this::fail);
   }
 
@@ -424,30 +436,49 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
       return;
     }
     final String target = threadId;
+    final long generation = ++importGeneration;
     importing = true;
     status = 0;
     emit();
-    work(
+    importTask = work(
         () -> {
           int rejected = 0;
+          List<ChatRecords.FileItem> added = new ArrayList<>();
           for (Uri uri : uris) {
+            if (generation != importGeneration || Thread.currentThread().isInterrupted()) break;
             ChatRecords.FileItem file = null;
             try {
               file = files.importUri(owner, uri);
+              if (generation != importGeneration || Thread.currentThread().isInterrupted()) {
+                files.delete(owner, file);
+                break;
+              }
               store.addDraftFile(owner, target, file);
+              added.add(file);
             } catch (RuntimeException error) {
               if (file != null) files.delete(owner, file);
               rejected++;
             }
           }
+          if (generation != importGeneration || Thread.currentThread().isInterrupted()) {
+            for (ChatRecords.FileItem file : added)
+              try { store.removeDraftFile(owner, target, file.id); }
+              catch (RuntimeException ignored) { /* Best effort after cancellation. */ }
+          }
           return rejected;
         },
         rejected -> {
+          if (generation != importGeneration) return;
+          importTask = null;
           importing = false;
           if (rejected > 0) status = R.string.chat_some_files_invalid;
-          refresh();
+          refreshMessages();
         },
-        this::fail);
+        error -> {
+          if (generation != importGeneration) return;
+          importTask = null;
+          fail(error);
+        });
   }
 
   public void importCamera(File source, String capturedThread) {
@@ -462,15 +493,26 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
       return;
     }
     final String target = threadId;
+    final long generation = ++importGeneration;
+    importCameraSource = source;
     importing = true;
     status = 0;
     emit();
-    work(
+    importTask = work(
         () -> {
           ChatRecords.FileItem file = null;
           try {
             file = files.importCamera(owner, source);
+            if (generation != importGeneration || Thread.currentThread().isInterrupted()) {
+              files.delete(owner, file);
+              return false;
+            }
             store.addDraftFile(owner, target, file);
+            if (generation != importGeneration || Thread.currentThread().isInterrupted()) {
+              try { store.removeDraftFile(owner, target, file.id); }
+              catch (RuntimeException ignored) { /* Best effort after cancellation. */ }
+              return false;
+            }
             return true;
           } catch (RuntimeException error) {
             if (file != null) files.delete(owner, file);
@@ -480,10 +522,31 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
           }
         },
         ignored -> {
+          if (generation != importGeneration) return;
+          importTask = null;
           importing = false;
-          refresh();
+          importCameraSource = null;
+          refreshMessages();
         },
-        this::fail);
+        error -> {
+          if (generation != importGeneration) return;
+          importTask = null;
+          importCameraSource = null;
+          fail(error);
+        });
+  }
+
+  public void cancelImport() {
+    if (!importing) return;
+    ++importGeneration;
+    if (importTask != null) importTask.cancel(true);
+    if (importCameraSource != null) importCameraSource.delete();
+    importCameraSource = null;
+    importTask = null;
+    importing = false;
+    status = R.string.chat_upload_cancelled;
+    emit();
+    refreshMessages();
   }
 
   public void send() {
@@ -525,8 +588,6 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
     requesting = true;
     loading = true;
     String target = threadId, text = draft, token = UUID.randomUUID().toString();
-    TutorRequest.Mode requestMode = scheduleImportEnabled
-        ? TutorRequest.Mode.SCHEDULE : TutorRequest.Mode.GENERAL;
     busyThreadId = target;
     busyMessageId = null;
     jobToken = token;
@@ -537,8 +598,6 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
           if (message == null) message = store.stageMessage(owner, target, text);
           else store.markPending(owner, target, message);
           try {
-            com.example.asm_final.onboarding.LearnerProfile profile =
-                services.learners().load(owner);
             TutorRequest request =
                 store.request(
                     owner,
@@ -546,10 +605,10 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
                     message,
                     new LearningContext(
                         owner,
-                        profile == null ? 0 : profile.grade,
+                        grade,
                         com.example.asm_final.utils.LocaleHelper.getLanguage(getApplication())));
             return new Prepared(message,
-                new TutorRequest(request.context, request.turns, request.handoff, requestMode));
+                new TutorRequest(request.context, request.turns, request.handoff, TutorRequest.Mode.GENERAL));
           } catch (Exception error) {
             store.finish(owner, target, message, null, "INVALID_REQUEST");
             throw error;
@@ -569,7 +628,7 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
             draftVersion++;
           }
           loading = false;
-          refresh();
+          refreshMessages();
           call =
               network.submit(
                   () -> {
@@ -679,6 +738,7 @@ public final class ChatViewModel extends AndroidViewModel implements AutoCloseab
   public void close() {
     if (closed) return;
     flush();
+    cancelImport();
     cancel();
     closed = true;
     if (pendingSave != null) main.removeCallbacks(pendingSave);

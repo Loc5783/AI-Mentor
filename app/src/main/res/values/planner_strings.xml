@@ -1,0 +1,26 @@
+<resources>
+    <string name="planner_back">← Quay lại Lịch học</string>
+    <string name="planner_photo_title">Điền thời khóa biểu từ ảnh</string>
+    <string name="planner_photo_hint">Chọn ảnh hoặc chụp thời khóa biểu. AI chỉ đọc nội dung trong ảnh; bạn kiểm tra bản nháp trước khi lưu.</string>
+    <string name="planner_todo_title">AI lên kế hoạch to-do</string>
+    <string name="planner_todo_hint">Nêu mục tiêu học tập của bạn. AI gợi ý các việc cụ thể để bạn duyệt và chỉnh sửa.</string>
+    <string name="planner_choose_photo">Chọn ảnh</string>
+    <string name="planner_take_photo">Chụp ảnh</string>
+    <string name="planner_selected_photo">Ảnh thời khóa biểu đã chọn</string>
+    <string name="planner_remove_photo">Bỏ ảnh này</string>
+    <string name="planner_goal_label">Mục tiêu hoặc việc cần làm</string>
+    <string name="planner_goal_example">Ví dụ: Tuần này ôn chương Hàm số, làm 2 đề Toán và học từ vựng tiếng Anh.</string>
+    <string name="planner_cancel">Hủy xử lý</string>
+    <string name="planner_scan">Đọc thời khóa biểu</string>
+    <string name="planner_create">Gợi ý to-do</string>
+    <string name="planner_review_note">Đây là bản nháp của AI. Kiểm tra từng mục trước khi thêm vào lịch.</string>
+    <string name="planner_blurry">Ảnh bị mờ, thiếu góc hoặc không đọc rõ thứ và tiết học. Hãy chụp lại dưới ánh sáng tốt, giữ trọn bảng.</string>
+    <string name="planner_not_timetable">Ảnh này không phải thời khóa biểu. Hãy chọn ảnh có các thứ, tiết và môn học.</string>
+    <string name="planner_need_details">Hãy mô tả rõ hơn môn học, mục tiêu hoặc việc bạn cần hoàn thành để AI lập kế hoạch.</string>
+    <string name="planner_camera_permission">Cần cho phép dùng máy ảnh để chụp thời khóa biểu.</string>
+    <string name="planner_camera_unavailable">Không mở được máy ảnh. Bạn có thể chọn ảnh từ thư viện.</string>
+    <string name="planner_invalid_image">Không đọc được ảnh này hoặc ảnh quá lớn. Hãy chọn ảnh JPEG, PNG hoặc WebP khác.</string>
+    <string name="planner_invalid_result">AI chưa tạo được bản nháp hợp lệ. Hãy thử lại với ảnh hoặc mô tả rõ hơn.</string>
+    <string name="planner_photo_error">Chưa đọc được thời khóa biểu. Kiểm tra kết nối rồi thử lại.</string>
+    <string name="planner_todo_error">Chưa lập được kế hoạch. Kiểm tra kết nối rồi thử lại.</string>
+</resources>

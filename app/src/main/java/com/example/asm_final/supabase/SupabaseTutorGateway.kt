@@ -19,7 +19,7 @@ class SupabaseTutorGateway(private val context:Context):TutorGateway {
     turns.put(JSONObject().put("role",if(turn.role==TutorTurn.Role.USER)"user" else "model").put("text",turn.text).put("files",files))
    }
    val result=JSONObject(SupabaseAccounts(context).requestFor(request.context.userId,"POST","/functions/v1/mentor-ai",
-    JSONObject().put("turns",turns).put("mode",if(request.mode==TutorRequest.Mode.SCHEDULE)"schedule" else "general")))
+    JSONObject().put("turns",turns).put("mode","general")))
    return TutorReply(result.getString("text"),result.optBoolean("truncated"))
   } catch(e:BackendClient.Failure) {
    throw TutorFailure(when(e.code) {

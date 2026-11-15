@@ -57,6 +57,7 @@ public final class LocalChatFiles {
       byte[] buffer = new byte[8192];
       int count;
       while ((count = source.read(buffer)) != -1) {
+        if (Thread.currentThread().isInterrupted()) throw new FileFailure(false);
         if (bytes.size() + count > TutorAttachment.MAX_BYTES) throw new FileFailure(true);
         bytes.write(buffer, 0, count);
       }

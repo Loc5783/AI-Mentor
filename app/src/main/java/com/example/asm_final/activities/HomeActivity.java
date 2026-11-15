@@ -10,29 +10,10 @@ public class HomeActivity extends AppCompatActivity
     implements ProfileFragment.OnProfileUpdatedListener,
         com.example.mentor.schedule.ui.ScheduleAiHost {
   private int authenticatedOwner;
-  private ScheduleChatRequest pendingScheduleChat;
-  private boolean scheduleChatMode;
-
-  public static final class ScheduleChatRequest {
-    public final String prompt;
-    public final boolean pickPhoto;
-
-    private ScheduleChatRequest(String prompt, boolean pickPhoto) {
-      this.prompt = prompt;
-      this.pickPhoto = pickPhoto;
-    }
-  }
 
   @Override
   protected void onCreate(Bundle state) {
     super.onCreate(state);
-    if (state != null) {
-      scheduleChatMode = state.getBoolean("schedule_chat_mode");
-      String prompt = state.getString("schedule_chat_prompt");
-      if (prompt != null)
-        pendingScheduleChat = new ScheduleChatRequest(
-            prompt, state.getBoolean("schedule_chat_pick_photo"));
-    }
     String username = getIntent().getStringExtra("USERNAME");
     if (username == null || username.trim().isEmpty()) {
       logout();
@@ -73,46 +54,16 @@ public class HomeActivity extends AppCompatActivity
   private com.example.asm_final.ui.ShellUi composeShell;
 
   public void navigateTo(int id, boolean remember) {
-    if (id == R.id.nav_chat) {
-      scheduleChatMode = false;
-      pendingScheduleChat = null;
-      androidx.lifecycle.ViewModelProvider provider = new androidx.lifecycle.ViewModelProvider(this);
-      provider.get(com.example.asm_final.chat.ChatViewModel.class).setScheduleImportEnabled(false);
-    }
     if (composeShell != null) composeShell.navigate(id, remember);
   }
 
   @Override
   public void openScheduleAi(com.example.mentor.schedule.ui.ScheduleAiAction action, String details) {
-    scheduleChatMode = true;
-    String prompt = getString(action == com.example.mentor.schedule.ui.ScheduleAiAction.TIMETABLE_PHOTO
-        ? R.string.schedule_ai_photo_prompt : R.string.schedule_ai_plan_prompt);
-    if (details != null && !details.isBlank()) prompt += "\n" + details;
-    pendingScheduleChat = new ScheduleChatRequest(
-        prompt, action == com.example.mentor.schedule.ui.ScheduleAiAction.TIMETABLE_PHOTO);
-    new androidx.lifecycle.ViewModelProvider(this)
-        .get(com.example.asm_final.chat.ChatViewModel.class).setScheduleImportEnabled(true);
-    if (composeShell != null) composeShell.navigate(R.id.nav_chat, true);
-  }
-
-  public boolean isScheduleChatMode() {
-    return scheduleChatMode;
-  }
-
-  public ScheduleChatRequest consumeScheduleChatRequest() {
-    ScheduleChatRequest request = pendingScheduleChat;
-    pendingScheduleChat = null;
-    return request;
-  }
-
-  @Override
-  protected void onSaveInstanceState(Bundle state) {
-    state.putBoolean("schedule_chat_mode", scheduleChatMode);
-    if (pendingScheduleChat != null) {
-      state.putString("schedule_chat_prompt", pendingScheduleChat.prompt);
-      state.putBoolean("schedule_chat_pick_photo", pendingScheduleChat.pickPhoto);
-    }
-    super.onSaveInstanceState(state);
+    startActivity(new Intent(this, ScheduleAiActivity.class)
+        .putExtra(ScheduleAiActivity.EXTRA_ACTION,
+            action == com.example.mentor.schedule.ui.ScheduleAiAction.TIMETABLE_PHOTO
+                ? ScheduleAiActivity.PHOTO : ScheduleAiActivity.TODO)
+        .putExtra(ScheduleAiActivity.EXTRA_DETAILS, details));
   }
 
   @Override
