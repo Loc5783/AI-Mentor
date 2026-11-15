@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 import androidx.core.content.ContextCompat;
@@ -13,14 +12,10 @@ import androidx.core.view.ViewCompat;
 import com.example.mathmodule.R;
 
 /** In-app Mathematics bubble; never requests system overlay access. */
-public final class MathCalculator implements Application.ActivityLifecycleCallbacks {
+public final class MathCalculator {
   private static final java.util.Map<Activity, android.app.Dialog> PANELS =
       new java.util.WeakHashMap<>();
   public static final String TAG = "mentor_math_calculator";
-
-  public static void install(Application app) {
-    app.registerActivityLifecycleCallbacks(new MathCalculator());
-  }
 
   private static int dp(Context c, int n) {
     return Math.round(n * c.getResources().getDisplayMetrics().density);
@@ -31,14 +26,13 @@ public final class MathCalculator implements Application.ActivityLifecycleCallba
   }
 
   public static void show(Activity a) {
-    prefs(a).edit().putBoolean("hidden", false).apply();
     attach(a);
     open(a);
   }
 
-  private static void attach(Activity a) {
+  public static void attach(Activity a) {
     FrameLayout root = a.findViewById(android.R.id.content);
-    if (root == null || root.findViewWithTag(TAG) != null || prefs(a).getBoolean("hidden", false))
+    if (root == null || root.findViewWithTag(TAG) != null)
       return;
     FrameLayout layer = new FrameLayout(a);
     layer.setTag(TAG);
@@ -70,15 +64,6 @@ public final class MathCalculator implements Application.ActivityLifecycleCallba
                   0, Math.min(bubble.getY(), layer.getHeight() - bubble.getHeight() - dp(a, 88))));
         });
     bubble.setOnClickListener(v -> open(a));
-    bubble.setOnLongClickListener(
-        v -> {
-          new androidx.appcompat.app.AlertDialog.Builder(a)
-              .setMessage(R.string.math_calculator_hide_hint)
-              .setPositiveButton(R.string.math_calculator_hide, (d, w) -> hide(a))
-              .setNegativeButton(android.R.string.cancel, null)
-              .show();
-          return true;
-        });
     bubble.setOnTouchListener(
         new View.OnTouchListener() {
           float x, y, startX, startY;
@@ -129,9 +114,11 @@ public final class MathCalculator implements Application.ActivityLifecycleCallba
         });
   }
 
-  private static void hide(Activity a) {
-    prefs(a).edit().putBoolean("hidden", true).apply();
+  public static void detach(Activity a) {
+    android.app.Dialog dialog = PANELS.remove(a);
+    if (dialog != null) dialog.dismiss();
     ViewGroup root = a.findViewById(android.R.id.content);
+    if (root == null) return;
     View layer = root.findViewWithTag(TAG);
     if (layer != null) root.removeView(layer);
   }
@@ -144,116 +131,65 @@ public final class MathCalculator implements Application.ActivityLifecycleCallba
     body.setPadding(dp(a, 12), dp(a, 8), dp(a, 12), dp(a, 8));
     TextView display = new TextView(a);
     display.setTextSize(24);
-    display.setTextColor(ContextCompat.getColor(a, R.color.math_text_primary));
+    display.setTextColor(com.google.android.material.color.MaterialColors.getColor(
+        a, com.google.android.material.R.attr.colorOnSurface, Color.BLACK));
     display.setMinHeight(dp(a, 64));
     display.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
     display.setTextIsSelectable(true);
     display.setMaxLines(2);
     display.setEllipsize(android.text.TextUtils.TruncateAt.START);
-    StringBuilder expression = new StringBuilder(prefs(a).getString("expression", ""));
-    display.setText(expression.length() == 0 ? "0" : expression.toString());
     display.setTag("mentor_calculator_display");
     display.setPadding(dp(a, 16), dp(a, 4), dp(a, 16), dp(a, 4));
-    final boolean[] justCalculated = {prefs(a).getBoolean("result", false)};
-    String[] keys = {
-      "C", "(", ")", "⌫", "7", "8", "9", "÷", "4", "5", "6", "×", "1", "2", "3", "−", "±", "0", ".",
-      "+", "%", "√", "x²", "="
+    TextView status = new TextView(a);
+    status.setTextColor(com.google.android.material.color.MaterialColors.getColor(
+        a, com.google.android.material.R.attr.colorOnSurfaceVariant, Color.DKGRAY));
+    status.setPadding(dp(a, 16), dp(a, 4), 0, 0);
+    CalculatorSession session = new CalculatorSession(a, display, status);
+    String[][] keys = {
+      {"DEG", "sin", "cos", "tan", "⌫"},
+      {"MC", "asin", "acos", "atan", "C"},
+      {"log", "ln", "√", "∛", "^"},
+      {"π", "e", "x²", "x!", "1/x"},
+      {"nPr", "nCr", "(", ")", "÷"},
+      {"7", "8", "9", "×", "%"},
+      {"4", "5", "6", "−", "M+"},
+      {"1", "2", "3", "+", "MR"},
+      {"±", "0", ".", "Ans", "="},
+      {"abs", "exp", "10^", "x³", "M−"}
     };
-    for (int row = 0; row < 6; row++) {
+    for (String[] row : keys) {
       LinearLayout line = new LinearLayout(a);
-      for (int col = 0; col < 4; col++) {
-        String key = keys[row * 4 + col];
+      for (String key : row) {
         com.google.android.material.button.MaterialButton button =
             new com.google.android.material.button.MaterialButton(a);
-        button.setText(key);
-        button.setTextSize(18);
+        button.setText(key.equals("DEG") && !session.degrees ? "RAD" : key);
+        button.setTextSize(key.length() > 3 ? 13 : 16);
         button.setMinWidth(0);
         button.setMinimumWidth(0);
         button.setPadding(0, 0, 0, 0);
         button.setCornerRadius(dp(a, 12));
-        button.setMinHeight(dp(a, 48));
+        button.setMinHeight(dp(a, 44));
         LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(0, -2, 1);
         p.setMargins(dp(a, 2), 0, dp(a, 2), 0);
         line.addView(button, p);
         if (key.equals("⌫"))
           button.setContentDescription(a.getString(R.string.math_calculator_backspace));
-        button.setOnClickListener(
-            v -> {
-              try {
-                if (justCalculated[0]
-                    && (Character.isDigit(key.charAt(0)) || key.equals(".") || key.equals("(")))
-                  expression.setLength(0);
-                justCalculated[0] = false;
-                switch (key) {
-                  case "C":
-                    expression.setLength(0);
-                    break;
-                  case "⌫":
-                    if (expression.length() > 0) expression.deleteCharAt(expression.length() - 1);
-                    break;
-                  case "±":
-                    if (expression.length() > 0) {
-                      String previous = expression.toString();
-                      expression.setLength(0);
-                      expression.append("-(").append(previous).append(")");
-                    }
-                    break;
-                  case "√":
-                    boolean complete = expression.length() > 0;
-                    if (complete) {
-                      try {
-                        CalculatorEngine.calculate(expression.toString());
-                      } catch (IllegalArgumentException incomplete) {
-                        complete = false;
-                      }
-                    }
-                    if (complete) {
-                      String root = CalculatorEngine.calculate("sqrt(" + expression + ")");
-                      expression.setLength(0);
-                      expression.append(root);
-                      justCalculated[0] = true;
-                    } else expression.append("sqrt(");
-                    break;
-                  case "x²":
-                    String square =
-                        CalculatorEngine.calculate(
-                            "(" + (expression.length() == 0 ? "0" : expression) + ")^2");
-                    expression.setLength(0);
-                    expression.append(square);
-                    justCalculated[0] = true;
-                    break;
-                  case "=":
-                    String result = CalculatorEngine.calculate(expression.toString());
-                    expression.setLength(0);
-                    expression.append(result);
-                    justCalculated[0] = true;
-                    break;
-                  default:
-                    if (expression.length() < 160) expression.append(key);
-                }
-                display.setText(expression.length() == 0 ? "0" : expression.toString());
-                prefs(a)
-                    .edit()
-                    .putString("expression", expression.toString())
-                    .putBoolean("result", justCalculated[0])
-                    .apply();
-              } catch (IllegalArgumentException error) {
-                display.setText(R.string.math_calculator_error);
-              }
-            });
+        button.setOnClickListener(v -> session.press(key, button));
       }
       body.addView(line);
     }
     TextView hint = new TextView(a);
     hint.setText(R.string.math_calculator_hint);
     hint.setTextSize(12);
-    hint.setTextColor(ContextCompat.getColor(a, R.color.math_text_secondary));
+    hint.setTextColor(com.google.android.material.color.MaterialColors.getColor(
+        a, com.google.android.material.R.attr.colorOnSurfaceVariant, Color.DKGRAY));
     body.addView(hint);
     ScrollView scroll = new ScrollView(a);
     scroll.addView(body);
     scroll.setTag("mentor_calculator_keypad");
     LinearLayout panel = new LinearLayout(a);
     panel.setOrientation(LinearLayout.VERTICAL);
+    panel.addView(status, new LinearLayout.LayoutParams(-1, -2));
     panel.addView(display, new LinearLayout.LayoutParams(-1, -2));
     panel.addView(scroll, new LinearLayout.LayoutParams(-1, -2));
     androidx.appcompat.app.AlertDialog dialog =
@@ -261,7 +197,6 @@ public final class MathCalculator implements Application.ActivityLifecycleCallba
             .setTitle(R.string.math_calculator_title)
             .setView(panel)
             .setNegativeButton(R.string.math_calculator_collapse, null)
-            .setNeutralButton(R.string.math_calculator_hide, (d, w) -> hide(a))
             .create();
     PANELS.put(a, dialog);
     dialog.setOnDismissListener(d -> PANELS.remove(a));
@@ -272,9 +207,9 @@ public final class MathCalculator implements Application.ActivityLifecycleCallba
           Math.min(dp(a, 360), a.getResources().getDisplayMetrics().widthPixels - dp(a, 24));
       window.setLayout(width, -2);
       window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-      int available = a.getResources().getDisplayMetrics().heightPixels - dp(a, 310);
+      int available = a.getResources().getDisplayMetrics().heightPixels - dp(a, 260);
       scroll.setLayoutParams(
-          new LinearLayout.LayoutParams(-1, Math.min(dp(a, 376), Math.max(dp(a, 72), available))));
+          new LinearLayout.LayoutParams(-1, Math.min(dp(a, 480), Math.max(dp(a, 72), available))));
       // Large text can stack dialog actions. Keep the keypad scrollable above both actions.
       View decor = window.getDecorView();
       decor
@@ -289,11 +224,7 @@ public final class MathCalculator implements Application.ActivityLifecycleCallba
                   decor.getLocationOnScreen(origin);
                   int bottom = origin[1] + decor.getHeight() - dp(a, 12);
                   int overflow = 0;
-                  for (int action :
-                      new int[] {
-                        android.content.DialogInterface.BUTTON_NEGATIVE,
-                        android.content.DialogInterface.BUTTON_NEUTRAL
-                      }) {
+                  for (int action : new int[] {android.content.DialogInterface.BUTTON_NEGATIVE}) {
                     Button button = dialog.getButton(action);
                     if (button != null) {
                       int[] position = new int[2];
@@ -310,27 +241,127 @@ public final class MathCalculator implements Application.ActivityLifecycleCallba
     }
   }
 
-  public void onActivityResumed(Activity a) {
-    if (a.getClass().getName().startsWith("com.example.mathmodule.")) {
-      ViewGroup root = a.findViewById(android.R.id.content);
-      View old = root == null ? null : root.findViewWithTag(TAG);
-      if (old != null) root.removeView(old);
-      attach(a);
+  private static final class CalculatorSession {
+    final Activity activity;
+    final TextView display;
+    final TextView status;
+    final StringBuilder expression;
+    boolean degrees;
+    boolean justCalculated;
+    double answer;
+    double memory;
+
+    CalculatorSession(Activity activity, TextView display, TextView status) {
+      this.activity = activity;
+      this.display = display;
+      this.status = status;
+      SharedPreferences saved = prefs(activity);
+      expression = new StringBuilder(saved.getString("expression", ""));
+      justCalculated = saved.getBoolean("result", false);
+      degrees = saved.getBoolean("degrees", true);
+      answer = storedNumber(saved.getString("answer", "0"));
+      memory = storedNumber(saved.getString("memory", "0"));
+      render();
     }
-  }
 
-  public void onActivityCreated(Activity a, Bundle b) {}
+    private static double storedNumber(String value) {
+      try {
+        double parsed = Double.parseDouble(value);
+        return Double.isFinite(parsed) ? parsed : 0;
+      }
+      catch (RuntimeException invalid) { return 0; }
+    }
 
-  public void onActivityStarted(Activity a) {}
+    private String evaluate(String value) {
+      return CalculatorEngine.calculate(value, degrees, answer, memory);
+    }
 
-  public void onActivityPaused(Activity a) {}
+    private void replaceWithResult(String value) {
+      String result = evaluate(value);
+      expression.setLength(0);
+      expression.append(result);
+      answer = Double.parseDouble(result);
+      justCalculated = true;
+    }
 
-  public void onActivityStopped(Activity a) {}
+    private void append(String value) {
+      if (expression.length() + value.length() <= 160) expression.append(value);
+    }
 
-  public void onActivitySaveInstanceState(Activity a, Bundle b) {}
+    private void render() {
+      display.setText(expression.length() == 0 ? "0" : expression.toString());
+      status.setText((degrees ? "DEG" : "RAD") + (memory == 0 ? "" : "  ·  M=" + CalculatorEngine.format(memory)));
+      prefs(activity).edit().putString("expression", expression.toString())
+          .putBoolean("result", justCalculated).putBoolean("degrees", degrees)
+          .putString("answer", Double.toString(answer)).putString("memory", Double.toString(memory)).apply();
+    }
 
-  public void onActivityDestroyed(Activity a) {
-    android.app.Dialog dialog = PANELS.remove(a);
-    if (dialog != null) dialog.dismiss();
+    void press(String key, com.google.android.material.button.MaterialButton button) {
+      try {
+        if (key.equals("DEG")) {
+          degrees = !degrees;
+          button.setText(degrees ? "DEG" : "RAD");
+          render();
+          return;
+        }
+        if (key.equals("MC")) {
+          memory = 0;
+          render();
+          return;
+        }
+        if (key.equals("M+") || key.equals("M−")) {
+          double value = Double.parseDouble(evaluate(expression.toString()));
+          double updated = memory + (key.equals("M+") ? value : -value);
+          if (!Double.isFinite(updated)) throw new IllegalArgumentException("Memory overflow");
+          memory = updated;
+          render();
+          return;
+        }
+        boolean startsNew = Character.isDigit(key.charAt(0)) || key.equals(".") || key.equals("(")
+            || key.equals("π") || key.equals("e") || key.equals("Ans") || key.equals("MR")
+            || key.equals("abs") || key.equals("exp") || key.equals("10^")
+            || key.equals("sin") || key.equals("cos") || key.equals("tan")
+            || key.equals("asin") || key.equals("acos") || key.equals("atan")
+            || key.equals("log") || key.equals("ln");
+        if (justCalculated && startsNew) expression.setLength(0);
+        justCalculated = false;
+        switch (key) {
+          case "C": expression.setLength(0); break;
+          case "⌫":
+            if (expression.length() > 0) expression.deleteCharAt(expression.length() - 1);
+            break;
+          case "±":
+            if (expression.length() == 0) append("-");
+            else {
+              String previous = expression.toString();
+              expression.setLength(0);
+              append("-(" + previous + ")");
+            }
+            break;
+          case "√":
+          case "∛":
+            String root = key.equals("√") ? "sqrt" : "cbrt";
+            boolean complete = expression.length() > 0;
+            if (complete) try { evaluate(expression.toString()); }
+            catch (IllegalArgumentException incomplete) { complete = false; }
+            if (complete) replaceWithResult(root + "(" + expression + ")");
+            else append(root + "(");
+            break;
+          case "x²": replaceWithResult("(" + expression + ")^2"); break;
+          case "x³": replaceWithResult("(" + expression + ")^3"); break;
+          case "x!": replaceWithResult("(" + expression + ")!"); break;
+          case "1/x": replaceWithResult("1/(" + expression + ")"); break;
+          case "=": replaceWithResult(expression.toString()); break;
+          case "MR": append("M"); break;
+          case "10^": append("10^("); break;
+          case "sin": case "cos": case "tan": case "asin": case "acos": case "atan":
+          case "log": case "ln": case "abs": case "exp": append(key + "("); break;
+          default: append(key);
+        }
+        render();
+      } catch (IllegalArgumentException error) {
+        display.setText(R.string.math_calculator_error);
+      }
+    }
   }
 }

@@ -42,6 +42,8 @@ public final class LessonActivity extends AppCompatActivity {
     model = new ViewModelProvider(this).get(LessonViewModel.class);
     setContentView(
         com.example.asm_final.ui.LearningUi.screen(this, model, subjectId, grade, hasLessons, this::leave, openTool, this::askAi));
+    if (subjectId == SubjectId.MATH)
+      com.example.mathmodule.calculator.MathCalculator.attach(this);
     if (hasLessons) {
       model.bind(owner, subjectStr, grade);
     }
@@ -73,6 +75,13 @@ public final class LessonActivity extends AppCompatActivity {
       returning = false;
       model.reload();
     }
+  }
+
+  @Override
+  protected void onDestroy() {
+    if (subjectId == SubjectId.MATH)
+      com.example.mathmodule.calculator.MathCalculator.detach(this);
+    super.onDestroy();
   }
 
   private void leave() {

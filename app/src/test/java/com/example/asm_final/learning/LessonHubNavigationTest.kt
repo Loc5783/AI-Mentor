@@ -194,11 +194,7 @@ class LessonHubNavigationTest {
     // 7. Công cụ đúng môn: Kiểm tra trực tiếp SubjectToolResolver sản phẩm được LessonActivity sử dụng
     @Test
     fun test7_SubjectTools_ProductResolverMapping() {
-        assertEquals(
-            "Toán phải mở MathToolsActivity",
-            com.example.mathmodule.MathToolsActivity::class.java,
-            SubjectToolResolver.resolveToolActivity(SubjectId.MATH)
-        )
+        assertNull("Toán dùng bong bóng trong màn học", SubjectToolResolver.resolveToolActivity(SubjectId.MATH))
         assertEquals(
             "Vật lý phải mở CircuitDiagramActivity",
             com.example.mentor.physics.presentation.CircuitDiagramActivity::class.java,

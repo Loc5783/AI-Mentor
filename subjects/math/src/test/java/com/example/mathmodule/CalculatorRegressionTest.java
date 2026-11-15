@@ -36,6 +36,32 @@ public class CalculatorRegressionTest {
     assertEquals("2", CalculatorEngine.calculate("-3+5"));
   }
 
+  @Test
+  public void scientificFunctionsAndAngleModes() {
+    assertEquals("1", CalculatorEngine.calculate("sin(90)"));
+    assertEquals("0", CalculatorEngine.calculate("cos(90)"));
+    assertEquals("0.5", CalculatorEngine.calculate("sin(30)"));
+    assertEquals("90", CalculatorEngine.calculate("asin(1)"));
+    assertEquals("1", CalculatorEngine.calculate("sin(π/2)", false, 0, 0));
+    assertEquals("2", CalculatorEngine.calculate("log(100)+ln(e)-1"));
+    assertEquals("-2", CalculatorEngine.calculate("cbrt(-8)"));
+  }
+
+  @Test
+  public void combinationsMemoryAndPreviousAnswer() {
+    assertEquals("10", CalculatorEngine.calculate("5nCr2"));
+    assertEquals("20", CalculatorEngine.calculate("5nPr2"));
+    assertEquals("120", CalculatorEngine.calculate("5!"));
+    assertEquals("24", CalculatorEngine.calculate("Ans×M", true, 6, 4));
+    assertEquals("6.28318530718", CalculatorEngine.calculate("2π"));
+    assertEquals("14", CalculatorEngine.calculate("2(3+4)"));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void tangentAtRightAngleIsRejected() {
+    CalculatorEngine.calculate("tan(90)");
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void divisionByZeroIsRejected() {
     CalculatorEngine.calculate("1÷0");

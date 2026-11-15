@@ -38,7 +38,7 @@ public class CalculatorInteractionDebugTest {
     prefs.edit().clear().apply();
     activity =
         ins.startActivitySync(
-            new Intent(ins.getTargetContext(), com.example.mathmodule.MathToolsActivity.class)
+            new Intent(ins.getTargetContext(), CalculatorHostActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     ins.waitForIdleSync();
   }
@@ -98,7 +98,7 @@ public class CalculatorInteractionDebugTest {
     touch(bubble[0], MotionEvent.ACTION_UP, -4000, 4000, down);
     SystemClock.sleep(180);
     ins.waitForIdleSync();
-    onView(withText(com.example.mathmodule.R.string.math_calculator_hide_hint))
+    onView(withText(com.example.mathmodule.R.string.math_calculator_title))
         .check(doesNotExist());
     main(
         () -> {
