@@ -89,4 +89,5 @@
   <string name="competition_progress_title">Your progress</string>
   <string name="competition_error_title">Could not load the leaderboard</string>
   <string name="competition_error_subtitle">Check your connection and try again.</string>
+  <string name="settings_haptic_feedback">Haptic feedback</string>
 </resources>

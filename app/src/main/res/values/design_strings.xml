@@ -89,4 +89,5 @@
   <string name="competition_progress_title">Tiến độ của bạn</string>
   <string name="competition_error_title">Không tải được bảng thi đua</string>
   <string name="competition_error_subtitle">Kiểm tra kết nối rồi thử lại.</string>
+  <string name="settings_haptic_feedback">Phản hồi xúc giác (Haptic)</string>
 </resources>
