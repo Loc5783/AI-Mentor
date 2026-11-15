@@ -172,6 +172,13 @@ public final class AppServices {
   }
 
   public com.example.asm_final.learning.AiPracticeRepository aiPractice(int owner) {
+    if (BuildConfig.SUPABASE_ENABLED && !BuildConfig.DEBUG_GUEST_MODE) {
+      try (RemoteAccountLinks links = new RemoteAccountLinks(context)) {
+        if (links.bound(owner, BuildConfig.SUPABASE_URL)) {
+          return new com.example.asm_final.learning.SupabaseAiPracticeRepository(context, owner);
+        }
+      }
+    }
     return new com.example.asm_final.learning.BackendAiPracticeRepository(context, owner);
   }
 

@@ -18,6 +18,7 @@ class AiPracticeViewModelTest {
         var resumable: AiPracticeSession? = null
         override suspend fun getResumableSession(): AiPracticeSession? = resumable
         var getConfigCalls = 0
+        var failConfigWith: Exception? = null
         val creationKeys = mutableListOf<String?>()
         val answerKeys = mutableListOf<String>()
         var failAnswerWith: Exception? = null
@@ -67,6 +68,7 @@ class AiPracticeViewModelTest {
 
         override suspend fun getConfig(): AiPracticeConfig {
             getConfigCalls++
+            failConfigWith?.let { throw it }
             return AiPracticeConfig(
                 configured = true,
                 subjects = listOf("math", "physics", "chemistry"),
@@ -271,6 +273,18 @@ class AiPracticeViewModelTest {
         assertNotNull(vm.config)
         assertTrue(vm.config?.configured == true)
         assertEquals(3, vm.config?.subjects?.size)
+    }
+
+    @Test
+    fun testConnectionFailureDoesNotExposeLocalAddress() = runTest {
+        fakeRepo.failConfigWith = java.io.IOException("Failed to connect to /127.0.0.1:18080")
+        val vm = AiPracticeViewModel(fakeRepo, backgroundScope)
+        currentVm = vm
+        runCurrent()
+
+        assertNotNull(vm.errorMessage)
+        assertFalse(vm.errorMessage!!.contains("127.0.0.1"))
+        assertTrue(vm.errorMessage!!.contains("kiểm tra mạng"))
     }
 
     @Test

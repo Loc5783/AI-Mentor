@@ -49,6 +49,18 @@ class AiPracticeViewModel(
     private var answerPayload: List<String>? = null
     private var answerKey: String? = null
 
+    private fun friendlyError(error: Exception): String = when ((error as? BackendClient.Failure)?.code) {
+        "NOT_CONFIGURED" -> "Gia sư AI đang được cấu hình. Vui lòng thử lại sau."
+        "RATE_LIMITED" -> "AI đang bận hoặc đã đạt giới hạn lượt dùng. Vui lòng thử lại sau."
+        "AI_VALIDATION_FAILED", "EMPTY_RESPONSE" -> "AI chưa tạo được bộ câu hỏi hợp lệ. Vui lòng thử lại."
+        "SESSION_CHANGED" -> "Bài luyện đã thay đổi trên thiết bị khác. Vui lòng mở lại bài."
+        "CLOUD_REQUEST_FAILED" -> if ((error as BackendClient.Failure).status == 404)
+            "Tính năng luyện tập chưa được cập nhật trên máy chủ. Vui lòng thử lại sau."
+            else "Không kết nối được Gia sư AI. Vui lòng kiểm tra mạng và thử lại."
+        "AUTHENTICATION_REQUIRED", "UNAUTHORIZED" -> "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+        else -> "Không kết nối được Gia sư AI. Vui lòng kiểm tra mạng và thử lại."
+    }
+
     var screenState by mutableStateOf(AiPracticeScreenState.SETUP)
         private set
 
@@ -113,7 +125,7 @@ class AiPracticeViewModel(
                 throw ce
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
-                errorMessage = "Không thể tải cấu hình AI: ${e.message}"
+                errorMessage = friendlyError(e)
             }
         }
     }
@@ -175,7 +187,7 @@ class AiPracticeViewModel(
                         // user retry may start fresh; uncertain transport failures keep the key.
                         generationKey = null
                     }
-                    errorMessage = e.message ?: "Tạo bài luyện tập thất bại. Vui lòng thử lại."
+                    errorMessage = friendlyError(e)
                     screenState = AiPracticeScreenState.SETUP
                 }
             }
@@ -268,7 +280,7 @@ class AiPracticeViewModel(
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isSubmitting = false
-                errorMessage = "Gửi đáp án thất bại: ${e.message}"
+                errorMessage = friendlyError(e)
             }
         }
     }
@@ -294,7 +306,7 @@ class AiPracticeViewModel(
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isSubmitting = false
-                errorMessage = "Bỏ qua câu hỏi thất bại: ${e.message}"
+                errorMessage = friendlyError(e)
             }
         }
     }
@@ -347,7 +359,7 @@ class AiPracticeViewModel(
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isSubmitting = false
-                errorMessage = "Không thể hoàn thành phiên: ${e.message}"
+                errorMessage = friendlyError(e)
             }
         }
     }
@@ -372,7 +384,7 @@ class AiPracticeViewModel(
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isReporting = false
-                reportStatus = "Gửi báo cáo thất bại: ${e.message}"
+                reportStatus = friendlyError(e)
             }
         }
     }
@@ -398,7 +410,7 @@ class AiPracticeViewModel(
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isExplainingMore = false
-                explainMoreText = "Không thể kết nối Gia sư AI: ${e.message}"
+                explainMoreText = friendlyError(e)
             }
         }
     }

@@ -8,6 +8,7 @@ import com.example.asm_final.chat.LocalChatFiles
 import com.example.asm_final.backend.BackendClient
 import java.net.HttpURLConnection
 import java.net.URL
+import java.security.MessageDigest
 
 class SupabaseStorage(private val context:Context) {
  private fun userId(owner:Int)=RemoteAccountLinks(context).use { it.remoteId(owner,BuildConfig.SUPABASE_URL) }
@@ -44,23 +45,79 @@ class SupabaseStorage(private val context:Context) {
  }
  fun uploadAvatar(owner:Int,uri:android.net.Uri):String {
   val uid=userId(owner);require(uid.matches(Regex("[0-9a-fA-F-]{36}")))
-  val mime=context.contentResolver.getType(uri)?.takeIf { it.startsWith("image/") } ?: "image/jpeg"
-  val bytes=context.contentResolver.openInputStream(uri)?.use { input ->
+  var mime=context.contentResolver.getType(uri)?.takeIf { it.startsWith("image/") } ?: "image/jpeg"
+  var bytes=context.contentResolver.openInputStream(uri)?.use { input ->
    val out=java.io.ByteArrayOutputStream();val buffer=ByteArray(8192)
-   while(true) {val count=input.read(buffer);if(count<0)break;require(out.size()+count<=2097152);out.write(buffer,0,count)}
+   while(true) {val count=input.read(buffer);if(count<0)break;require(out.size()+count<=16777216);out.write(buffer,0,count)}
    out.toByteArray()
   } ?: error("Avatar could not be read")
+  if(bytes.size>2097152) {
+   bytes=compressAvatar(bytes)
+   mime="image/jpeg"
+  }
   SupabaseAccounts(context).authorized(owner) { transfer("POST","/storage/v1/object/mentor-avatars/$uid/profile/avatar",it,bytes,mime,2097152) }
+  cacheAvatarBytes(owner, bytes)
   return avatarPath(owner)
+ }
+
+ private fun compressAvatar(source:ByteArray):ByteArray {
+  val bounds=android.graphics.BitmapFactory.Options().apply {inJustDecodeBounds=true}
+  android.graphics.BitmapFactory.decodeByteArray(source,0,source.size,bounds)
+  require(bounds.outWidth>0 && bounds.outHeight>0) {"Invalid avatar image"}
+  var sample=1
+  while(maxOf(bounds.outWidth,bounds.outHeight)/sample>1600) sample*=2
+  val options=android.graphics.BitmapFactory.Options().apply {inSampleSize=sample}
+  val original=android.graphics.BitmapFactory.decodeByteArray(source,0,source.size,options)
+      ?: error("Avatar image could not be decoded")
+  var bitmap=original
+  try {
+   val orientation=runCatching {
+    android.media.ExifInterface(java.io.ByteArrayInputStream(source))
+        .getAttributeInt(android.media.ExifInterface.TAG_ORIENTATION,android.media.ExifInterface.ORIENTATION_NORMAL)
+   }.getOrDefault(android.media.ExifInterface.ORIENTATION_NORMAL)
+   val rotation=when(orientation) {
+    android.media.ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+    android.media.ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+    android.media.ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+    else -> 0f
+   }
+   if(rotation!=0f) {
+    bitmap=android.graphics.Bitmap.createBitmap(original,0,0,original.width,original.height,
+        android.graphics.Matrix().apply {postRotate(rotation)},true)
+   }
+   for(quality in intArrayOf(85,70,55)) {
+    val output=java.io.ByteArrayOutputStream()
+    check(bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG,quality,output))
+    if(output.size()<=2097152) return output.toByteArray()
+   }
+   error("Avatar image is too large")
+  } finally {
+   if(bitmap!==original) bitmap.recycle()
+   original.recycle()
+  }
  }
  fun cacheAvatar(owner:Int,path:String):String? {
   val uid=userId(owner);if(path!="$uid/profile/avatar")return null
-  val target=java.io.File(context.cacheDir,"supabase-avatar-$uid")
+  val name=context.getSharedPreferences("supabase_avatar_cache",0).getString(uid,null)
+  val cached=name?.takeIf { it.startsWith("supabase-avatar-$uid-") }
+      ?.let { java.io.File(context.cacheDir,it) }
+  if(cached?.isFile==true) return android.net.Uri.fromFile(cached).toString()
+  val bytes=SupabaseAccounts(context).authorized(owner) { transfer("GET","/storage/v1/object/mentor-avatars/$path",it,limit=2097152) }
+  return cacheAvatarBytes(owner,bytes)
+ }
+
+ private fun cacheAvatarBytes(owner:Int,bytes:ByteArray):String {
+  val uid=userId(owner)
+  val digest=MessageDigest.getInstance("SHA-256").digest(bytes)
+      .take(12).joinToString("") { "%02x".format(it.toInt() and 0xff) }
+  val target=java.io.File(context.cacheDir,"supabase-avatar-$uid-$digest")
   if(!target.isFile) {
-   val bytes=SupabaseAccounts(context).authorized(owner) { transfer("GET","/storage/v1/object/mentor-avatars/$path",it,limit=2097152) }
-   val temp=java.io.File(target.parentFile,target.name+".tmp")
-   try {temp.writeBytes(bytes);check(temp.renameTo(target))} finally {temp.delete()}
+   val file=android.util.AtomicFile(target)
+   val stream=file.startWrite()
+   try {stream.write(bytes);file.finishWrite(stream)}
+   catch(error:Exception) {file.failWrite(stream);throw error}
   }
+  context.getSharedPreferences("supabase_avatar_cache",0).edit().putString(uid,target.name).apply()
   return android.net.Uri.fromFile(target).toString()
  }
 
