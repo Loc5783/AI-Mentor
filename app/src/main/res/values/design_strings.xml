@@ -26,6 +26,11 @@
   <string name="lesson_hub_enrolled">Đang học trong lộ trình</string>
   <string name="lesson_hub_preview">Chưa thêm vào lộ trình</string>
   <string name="lesson_hub_remove">Xóa môn</string>
+  <string name="lesson_hub_remove_title">Xóa khỏi lộ trình?</string>
+  <string name="lesson_hub_remove_message">Xóa %1$s khỏi lộ trình lớp %2$d? Tiến độ học đã lưu vẫn được giữ.</string>
+  <string name="lesson_hub_cancel">Hủy</string>
+  <string name="lesson_hub_remove_success">Đã xóa môn khỏi lộ trình</string>
+  <string name="lesson_hub_remove_failed">Chưa xóa được môn. Hãy thử lại.</string>
   <string name="lesson_hub_enter">Vào học</string>
   <string name="lesson_hub_add">Thêm vào lộ trình</string>
   <string name="home_study_time_title">Thời gian học</string>

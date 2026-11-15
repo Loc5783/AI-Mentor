@@ -26,6 +26,11 @@
   <string name="lesson_hub_enrolled">In your learning path</string>
   <string name="lesson_hub_preview">Not added to your path</string>
   <string name="lesson_hub_remove">Remove</string>
+  <string name="lesson_hub_remove_title">Remove from your path?</string>
+  <string name="lesson_hub_remove_message">Remove %1$s from your Grade %2$d path? Your saved learning progress will remain.</string>
+  <string name="lesson_hub_cancel">Cancel</string>
+  <string name="lesson_hub_remove_success">Subject removed from your path</string>
+  <string name="lesson_hub_remove_failed">Could not remove the subject. Please try again.</string>
   <string name="lesson_hub_enter">Learn</string>
   <string name="lesson_hub_add">Add to learning path</string>
   <string name="home_study_time_title">Study time</string>

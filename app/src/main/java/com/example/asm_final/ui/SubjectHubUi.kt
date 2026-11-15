@@ -266,6 +266,7 @@ fun RoadmapSubjectList(
             }
         )
     }
+    var subjectPendingRemoval by remember(ownerId, grade) { mutableStateOf<SubjectId?>(null) }
 
     Column(Modifier.fillMaxSize()) {
         PremiumDashboardHeader(artwork = MentorArtwork.LEARNING) {
@@ -319,16 +320,7 @@ fun RoadmapSubjectList(
                             if (isEnrolled) {
                                 OutlinedButton(
                                     modifier = Modifier.weight(1f),
-                                    onClick = {
-                                        val updated = selectedSubjects - subject
-                                        try {
-                                            val store = LearningSetupStore(context)
-                                            store.save(ownerId, grade, updated)
-                                            store.close()
-                                        } catch (_: Exception) {}
-                                        selectedSubjects = updated
-                                        android.widget.Toast.makeText(context, "Đã xóa môn học khỏi lộ trình", android.widget.Toast.LENGTH_SHORT).show()
-                                    },
+                                    onClick = { subjectPendingRemoval = subject },
                                     shape = RoundedCornerShape(12.dp),
                                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
                                 ) {
@@ -365,5 +357,33 @@ fun RoadmapSubjectList(
                 }
             }
         }
+    }
+    subjectPendingRemoval?.let { subject ->
+        AlertDialog(
+            onDismissRequest = { subjectPendingRemoval = null },
+            title = { Text(stringResource(R.string.lesson_hub_remove_title)) },
+            text = { Text(stringResource(R.string.lesson_hub_remove_message,
+                subject.label(LocaleHelper.getLanguage(context)), grade)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    val updated = selectedSubjects - subject
+                    val saved = try {
+                        val store = LearningSetupStore(context)
+                        try { store.save(ownerId, grade, updated) } finally { store.close() }
+                        true
+                    } catch (_: Exception) { false }
+                    if (saved) selectedSubjects = updated
+                    subjectPendingRemoval = null
+                    android.widget.Toast.makeText(context, context.getString(if (saved)
+                        R.string.lesson_hub_remove_success else R.string.lesson_hub_remove_failed),
+                        android.widget.Toast.LENGTH_SHORT).show()
+                }) { Text(stringResource(R.string.lesson_hub_remove)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { subjectPendingRemoval = null }) {
+                    Text(stringResource(R.string.lesson_hub_cancel))
+                }
+            }
+        )
     }
 }
