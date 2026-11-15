@@ -34,8 +34,10 @@ class PublicLearnerDialog : DialogFragment() {
             val state by model.state().observeAsState(PublicProfileViewModel.State(null, null, true, false, false))
             PublicProfileContent(
                 learner = state.learner,
+                avatar = state.avatar,
                 loading = state.loading,
-                failed = state.failed
+                failed = state.failed,
+                onRetry = { model.refresh() }
             )
         }
 

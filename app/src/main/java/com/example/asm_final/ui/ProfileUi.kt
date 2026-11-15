@@ -9,6 +9,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,6 +28,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
@@ -895,8 +897,10 @@ private fun ProfileSectionTitle(title: String) {
 @Composable
 fun PublicProfileContent(
     learner: PublicLearner?,
+    avatar: android.graphics.Bitmap?,
     loading: Boolean,
-    failed: Boolean
+    failed: Boolean,
+    onRetry: () -> Unit
 ) {
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
     val heroBg = if (dark) Color(0xFF2C192E) else Color(0xFFFDE8F1)
@@ -927,22 +931,31 @@ fun PublicProfileContent(
                         .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = learner?.nickname?.trim()?.firstOrNull()?.uppercase() ?: "U",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
+                    if (avatar != null) {
+                        Image(
+                            bitmap = avatar.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Text(
+                            text = learner?.nickname?.trim()?.firstOrNull()?.uppercase() ?: "U",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
                 }
 
                 Text(
-                    text = learner?.nickname ?: "Học viên",
+                    text = learner?.nickname ?: stringResource(R.string.ranking_loading),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "@LEARNER_${learner?.id ?: "0"} · THAM GIA TỪ 2026",
+                    text = "@LEARNER_${learner?.id ?: "0"}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -955,90 +968,120 @@ fun PublicProfileContent(
                 .padding(MentorTokens.PagePadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surface,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-            ) {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(
-                        text = "Giới thiệu",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = learner?.bio?.takeIf { it.isNotBlank() } ?: "Chưa có giới thiệu bản thân.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-            }
-
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Surface(
-                    Modifier.weight(1f),
-                    shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            if (loading && learner == null) {
+                Box(
+                    Modifier.fillMaxWidth().height(120.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Row(
-                        Modifier.padding(14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    CircularProgressIndicator()
+                }
+            } else if (failed && learner == null) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.errorContainer
+                ) {
+                    Column(
+                        Modifier.padding(16.dp).fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_flame),
-                            contentDescription = null,
-                            tint = Color(0xFFEA580C),
-                            modifier = Modifier.size(24.dp)
+                        Text(
+                            text = stringResource(R.string.ranking_profile_error),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            textAlign = TextAlign.Center
                         )
-                        Column {
-                            Text(
-                                text = "${learner?.streakDays ?: 0} ngày",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = "Chuỗi học",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                        OutlinedButton(onClick = onRetry) {
+                            Text(stringResource(R.string.ranking_retry))
                         }
                     }
                 }
-
+            } else {
                 Surface(
-                    Modifier.weight(1f),
                     shape = RoundedCornerShape(16.dp),
                     color = MaterialTheme.colorScheme.surface,
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                 ) {
-                    Row(
-                        Modifier.padding(14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_lightning),
-                            contentDescription = null,
-                            tint = Color(0xFFEAB308),
-                            modifier = Modifier.size(24.dp)
+                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(
+                            text = "Giới thiệu",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontWeight = FontWeight.Bold
                         )
-                        Column {
-                            Text(
-                                text = "${learner?.dailyXp ?: 0} KN",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
+                        Text(
+                            text = learner?.bio?.takeIf { it.isNotBlank() } ?: "Chưa có giới thiệu bản thân.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Surface(
+                        Modifier.weight(1f),
+                        shape = RoundedCornerShape(16.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                    ) {
+                        Row(
+                            Modifier.padding(14.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_flame),
+                                contentDescription = null,
+                                tint = Color(0xFFEA580C),
+                                modifier = Modifier.size(24.dp)
                             )
-                            Text(
-                                text = "Kinh nghiệm",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            Column {
+                                Text(
+                                    text = "${learner?.streakDays ?: 0} ngày",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = "Chuỗi học",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+
+                    Surface(
+                        Modifier.weight(1f),
+                        shape = RoundedCornerShape(16.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                    ) {
+                        Row(
+                            Modifier.padding(14.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_lightning),
+                                contentDescription = null,
+                                tint = Color(0xFFEAB308),
+                                modifier = Modifier.size(24.dp)
                             )
+                            Column {
+                                Text(
+                                    text = "${learner?.dailyXp ?: 0} KN",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = "Kinh nghiệm",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         }
                     }
                 }
