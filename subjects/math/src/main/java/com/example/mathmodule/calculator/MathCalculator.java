@@ -21,6 +21,51 @@ public final class MathCalculator {
     return Math.round(n * c.getResources().getDisplayMetrics().density);
   }
 
+  private static int themeColor(Context context, int attribute, int fallback) {
+    return com.google.android.material.color.MaterialColors.getColor(
+        context, attribute, fallback);
+  }
+
+  private static void styleModeButton(
+      Context context,
+      com.google.android.material.button.MaterialButton button,
+      boolean selected) {
+    int primary = themeColor(context, androidx.appcompat.R.attr.colorPrimary, 0xff4267d5);
+    int surfaceVariant = themeColor(
+        context, com.google.android.material.R.attr.colorSurfaceVariant, 0xffe8eaf2);
+    int onSurface = themeColor(context, com.google.android.material.R.attr.colorOnSurface, Color.BLACK);
+    button.setCornerRadius(dp(context, 18));
+    button.setMinHeight(dp(context, 42));
+    button.setInsetTop(0);
+    button.setInsetBottom(0);
+    button.setBackgroundTintList(android.content.res.ColorStateList.valueOf(selected ? primary : surfaceVariant));
+    button.setTextColor(selected ? Color.WHITE : onSurface);
+    button.setStrokeWidth(selected ? 0 : dp(context, 1));
+    button.setStrokeColor(android.content.res.ColorStateList.valueOf(
+        themeColor(context, com.google.android.material.R.attr.colorOutline, 0xffc5cad5)));
+  }
+
+  private static void styleKey(Context context, com.google.android.material.button.MaterialButton button, String key) {
+    int primary = themeColor(context, androidx.appcompat.R.attr.colorPrimary, 0xff4267d5);
+    int surface = themeColor(context, com.google.android.material.R.attr.colorSurface, Color.WHITE);
+    int surfaceVariant = themeColor(context, com.google.android.material.R.attr.colorSurfaceVariant, 0xffe8eaf2);
+    int onSurface = themeColor(context, com.google.android.material.R.attr.colorOnSurface, Color.BLACK);
+    int onPrimary = themeColor(context, com.google.android.material.R.attr.colorOnPrimary, Color.WHITE);
+    boolean equals = "=".equals(key);
+    boolean number = key.length() == 1 && key.charAt(0) >= '0' && key.charAt(0) <= '9';
+    boolean operator = "+−×÷^()%".contains(key);
+    int fill = equals ? primary : number ? surface : operator ? surfaceVariant : surface;
+    button.setBackgroundTintList(android.content.res.ColorStateList.valueOf(fill));
+    button.setTextColor(equals ? onPrimary : operator ? primary : onSurface);
+    button.setCornerRadius(dp(context, 14));
+    button.setStrokeWidth(number ? dp(context, 1) : 0);
+    if (number) {
+      button.setStrokeColor(android.content.res.ColorStateList.valueOf(
+          themeColor(context, com.google.android.material.R.attr.colorOutlineVariant, 0xffe3e6ee)));
+    }
+    button.setElevation(dp(context, number ? 1 : 0));
+  }
+
   private static SharedPreferences prefs(Context c) {
     return c.getApplicationContext().getSharedPreferences("math_calculator", 0);
   }
@@ -128,18 +173,24 @@ public final class MathCalculator {
       return;
     LinearLayout body = new LinearLayout(a);
     body.setOrientation(LinearLayout.VERTICAL);
-    body.setPadding(dp(a, 12), dp(a, 8), dp(a, 12), dp(a, 8));
+    body.setPadding(dp(a, 4), dp(a, 6), dp(a, 4), dp(a, 8));
     TextView display = new TextView(a);
-    display.setTextSize(24);
+    display.setTextSize(28);
+    display.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
     display.setTextColor(com.google.android.material.color.MaterialColors.getColor(
         a, com.google.android.material.R.attr.colorOnSurface, Color.BLACK));
-    display.setMinHeight(dp(a, 64));
+    display.setMinHeight(dp(a, 82));
     display.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
     display.setTextIsSelectable(true);
     display.setMaxLines(2);
     display.setEllipsize(android.text.TextUtils.TruncateAt.START);
     display.setTag("mentor_calculator_display");
-    display.setPadding(dp(a, 16), dp(a, 4), dp(a, 16), dp(a, 4));
+    display.setPadding(dp(a, 18), dp(a, 10), dp(a, 18), dp(a, 10));
+    GradientDrawable displayBackground = new GradientDrawable();
+    displayBackground.setColor(themeColor(a, com.google.android.material.R.attr.colorSurfaceVariant, 0xffedf0f7));
+    displayBackground.setCornerRadius(dp(a, 20));
+    displayBackground.setStroke(dp(a, 1), themeColor(a, com.google.android.material.R.attr.colorOutlineVariant, 0xffe0e4ec));
+    display.setBackground(displayBackground);
     TextView status = new TextView(a);
     status.setTextColor(com.google.android.material.color.MaterialColors.getColor(
         a, com.google.android.material.R.attr.colorOnSurfaceVariant, Color.DKGRAY));
@@ -163,15 +214,16 @@ public final class MathCalculator {
         com.google.android.material.button.MaterialButton button =
             new com.google.android.material.button.MaterialButton(a);
         button.setText(key.equals("DEG") && !session.degrees ? "RAD" : key);
-        button.setTextSize(key.length() > 3 ? 13 : 16);
+      button.setTextSize(key.length() > 3 ? 12 : 16);
         button.setMinWidth(0);
         button.setMinimumWidth(0);
         button.setPadding(0, 0, 0, 0);
         button.setCornerRadius(dp(a, 12));
-        button.setMinHeight(dp(a, 44));
+      button.setMinHeight(dp(a, 48));
         LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(0, -2, 1);
-        p.setMargins(dp(a, 2), 0, dp(a, 2), 0);
+        p.setMargins(dp(a, 3), dp(a, 3), dp(a, 3), dp(a, 3));
         line.addView(button, p);
+        styleKey(a, button, key);
         if (key.equals("⌫"))
           button.setContentDescription(a.getString(R.string.math_calculator_backspace));
         button.setOnClickListener(v -> session.press(key, button));
@@ -190,6 +242,8 @@ public final class MathCalculator {
     LinearLayout panel = new LinearLayout(a);
     panel.setOrientation(LinearLayout.VERTICAL);
     LinearLayout modes = new LinearLayout(a);
+    modes.setOrientation(LinearLayout.HORIZONTAL);
+    modes.setPadding(dp(a, 4), dp(a, 4), dp(a, 4), dp(a, 8));
     View[] modeViews = {body, null, null};
     com.google.android.material.button.MaterialButton[] modeButtons = new com.google.android.material.button.MaterialButton[3];
     int[] modeNames = {R.string.math_mode_calculate, R.string.math_mode_matrix, R.string.math_mode_statistics};
@@ -201,8 +255,15 @@ public final class MathCalculator {
       control.setMinWidth(0);
       control.setMinimumWidth(0);
       control.setPadding(0, 0, 0, 0);
+      control.setAllCaps(false);
+      control.setElevation(0);
+      control.setRippleColor(android.content.res.ColorStateList.valueOf(
+          themeColor(a, androidx.appcompat.R.attr.colorPrimary, 0xff4267d5)));
+      styleModeButton(a, control, index == 0);
       modeButtons[index] = control;
-      modes.addView(control, new LinearLayout.LayoutParams(0, -2, 1));
+      LinearLayout.LayoutParams modeParams = new LinearLayout.LayoutParams(0, -2, 1);
+      modeParams.setMargins(dp(a, 3), 0, dp(a, 3), 0);
+      modes.addView(control, modeParams);
       control.setOnClickListener(v -> {
         if (modeViews[mode] == null)
           modeViews[mode] = mode == 1 ? CalculatorExtras.matrixPanel(a) : CalculatorExtras.statisticsPanel(a);
@@ -210,13 +271,12 @@ public final class MathCalculator {
         scroll.addView(modeViews[mode]);
         status.setVisibility(mode == 0 ? View.VISIBLE : View.GONE);
         display.setVisibility(mode == 0 ? View.VISIBLE : View.GONE);
-        for (int i = 0; i < modeButtons.length; i++) modeButtons[i].setAlpha(i == mode ? 1f : 0.6f);
+        for (int i = 0; i < modeButtons.length; i++) styleModeButton(a, modeButtons[i], i == mode);
         scroll.post(() -> scroll.scrollTo(0, 0));
       });
     }
-    modeButtons[1].setAlpha(0.6f);
-    modeButtons[2].setAlpha(0.6f);
     panel.addView(modes, new LinearLayout.LayoutParams(-1, -2));
+    panel.setPadding(dp(a, 18), dp(a, 8), dp(a, 18), dp(a, 0));
     panel.addView(status, new LinearLayout.LayoutParams(-1, -2));
     panel.addView(display, new LinearLayout.LayoutParams(-1, -2));
     panel.addView(scroll, new LinearLayout.LayoutParams(-1, -2));
@@ -234,6 +294,11 @@ public final class MathCalculator {
       int width =
           Math.min(dp(a, 360), a.getResources().getDisplayMetrics().widthPixels - dp(a, 24));
       window.setLayout(width, -2);
+      GradientDrawable dialogBackground = new GradientDrawable();
+      dialogBackground.setColor(themeColor(a, com.google.android.material.R.attr.colorSurface, Color.WHITE));
+      dialogBackground.setCornerRadius(dp(a, 28));
+      dialogBackground.setStroke(dp(a, 1), themeColor(a, com.google.android.material.R.attr.colorOutlineVariant, 0xffe0e4ec));
+      window.setBackgroundDrawable(dialogBackground);
       window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
       int available = a.getResources().getDisplayMetrics().heightPixels - dp(a, 260);
       scroll.setLayoutParams(

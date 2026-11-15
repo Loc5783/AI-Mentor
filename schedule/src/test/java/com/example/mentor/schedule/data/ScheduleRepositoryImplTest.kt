@@ -124,6 +124,45 @@ class ScheduleRepositoryImplTest {
     }
 
     @Test
+    fun replacePhotoImportReplacesOnlyIncludedDaysAtomically() {
+        repository.insertEntry(entry("Old Monday 1", day = 1, period = 1).copy(accountId = "42"))
+        repository.insertEntry(entry("Old Monday 2", day = 1, period = 2).copy(accountId = "42"))
+        repository.insertEntry(entry("Old Tuesday", day = 2, period = 1).copy(accountId = "42"))
+        repository.insertEntry(entry("Keep Wednesday", day = 3, period = 1).copy(accountId = "42"))
+
+        val result = repository.replaceEntriesForImportedDays(
+            "42",
+            listOf(
+                entry("New Monday", day = 1, period = 5).copy(accountId = "42"),
+                entry("New Tuesday", day = 2, period = 4).copy(accountId = "42")
+            )
+        )
+
+        assertEquals(3, result.removed)
+        assertEquals(2, result.inserted)
+        assertEquals(listOf("New Monday"), repository.getEntries("42", 1).map { it.title })
+        assertEquals(listOf("New Tuesday"), repository.getEntries("42", 2).map { it.title })
+        assertEquals(listOf("Keep Wednesday"), repository.getEntries("42", 3).map { it.title })
+    }
+
+    @Test
+    fun invalidPhotoReplacementLeavesExistingScheduleUntouched() {
+        repository.insertEntry(entry("Keep Monday", day = 1, period = 1).copy(accountId = "42"))
+
+        assertThrows(IllegalArgumentException::class.java) {
+            repository.replaceEntriesForImportedDays(
+                "42",
+                listOf(
+                    entry("New A", day = 1, period = 2).copy(accountId = "42"),
+                    entry("New B", day = 1, period = 2).copy(accountId = "42")
+                )
+            )
+        }
+
+        assertEquals(listOf("Keep Monday"), repository.getEntries("42", 1).map { it.title })
+    }
+
+    @Test
     fun upgradePreservesLegacyDuplicatesAndDoesNotFailCreatingUniqueIndex() {
         createLegacyVersionTwoDatabaseWithDuplicates()
 

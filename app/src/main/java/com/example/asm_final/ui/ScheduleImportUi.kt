@@ -43,11 +43,46 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
     var saving by remember { mutableStateOf(false) }
     var saved by remember { mutableStateOf<Int?>(null) }
     var skipped by remember { mutableStateOf(0) }
+    var retainedBeforeImport by remember { mutableIntStateOf(0) }
+    var replacedExisting by remember { mutableIntStateOf(0) }
+    var replacedDays by remember { mutableIntStateOf(0) }
+    var didReplace by remember { mutableStateOf(false) }
+    var existingCountsLoaded by remember(owner) { mutableStateOf(false) }
+    var existingCountsFailed by remember(owner) { mutableStateOf(false) }
     var failed by remember { mutableStateOf(false) }
     var invalid by remember { mutableStateOf(false) }
     var selectedDay by remember(text) { mutableIntStateOf(1) }
     var showAddDialog by remember { mutableStateOf(false) }
+    var showImportOptions by remember { mutableStateOf(false) }
+    var pendingImport by remember { mutableStateOf<List<ReviewSlot>>(emptyList()) }
+    val existingCounts = remember(owner) { mutableStateMapOf<Int, Int>() }
     val dayNames = stringResource(R.string.schedule_import_day_names).split(",")
+
+    val importDays = remember(edits) {
+        edits.filter { it.selected && it.subject.isNotBlank() }.map { it.day }.distinct().sorted()
+    }
+    LaunchedEffect(preview, owner, importDays) {
+        if (!preview || owner <= 0) return@LaunchedEffect
+        existingCountsLoaded = false
+        existingCountsFailed = false
+        existingCounts.clear()
+        withContext(Dispatchers.IO) {
+            val repository = (context.applicationContext as AiMentorApplication).services().scheduleImport()
+            try {
+                importDays.forEach { day ->
+                    val count = repository.getEntries(owner.toString(), day).size
+                    withContext(Dispatchers.Main) { existingCounts[day] = count }
+                }
+            } catch (cancelled: kotlinx.coroutines.CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                withContext(Dispatchers.Main) { existingCountsFailed = true }
+            } finally {
+                repository.close()
+                withContext(Dispatchers.Main) { existingCountsLoaded = true }
+            }
+        }
+    }
 
     fun update(index: Int, change: (ReviewSlot) -> ReviewSlot) {
         edits = edits.mapIndexed { position, slot -> if (position == index) change(slot) else slot }
@@ -57,6 +92,55 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
     fun remove(index: Int) {
         edits = edits.filterIndexed { position, _ -> position != index }
         invalid = false
+    }
+
+    fun saveChosen(chosen: List<ReviewSlot>, replaceDays: Boolean) {
+        retainedBeforeImport = if (replaceDays) 0 else importDays.sumOf { existingCounts[it] ?: 0 }
+        didReplace = replaceDays
+        saving = true
+        failed = false
+        scope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    check(owner > 0 && ActiveUser.get(context) == owner)
+                    val repository = (context.applicationContext as AiMentorApplication).services().scheduleImport()
+                    val entries = chosen.map {
+                        ScheduleEntry(
+                            accountId = owner.toString(),
+                            title = it.subject.trim(),
+                            dayOfWeek = it.day,
+                            period = it.period
+                        )
+                    }
+                    try {
+                        if (replaceDays) repository.replaceEntriesForImportedDays(owner.toString(), entries)
+                        else com.example.mentor.schedule.domain.ScheduleReplaceResult(
+                            removed = 0,
+                            inserted = repository.importVacantEntries(owner.toString(), entries)
+                        )
+                    } finally {
+                        repository.close()
+                    }
+                }
+                try {
+                    val helperClass = Class.forName("com.example.asm_final.utils.ReminderHelper")
+                    val method = helperClass.getMethod("reschedule", android.content.Context::class.java)
+                    method.invoke(null, context.applicationContext)
+                } catch (_: Exception) {}
+
+                saved = result.inserted
+                skipped = if (replaceDays) 0 else chosen.size - result.inserted
+                replacedExisting = result.removed
+                replacedDays = chosen.map { it.day }.distinct().size
+                preview = false
+            } catch (cancelled: kotlinx.coroutines.CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                failed = true
+            } finally {
+                saving = false
+            }
+        }
     }
 
     if (saved != null) {
@@ -72,6 +156,19 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
+                if (didReplace) {
+                    Text(
+                        "Đã thay lịch trong $replacedDays ngày: xóa $replacedExisting tiết cũ và lưu ${saved!!} tiết theo ảnh.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                } else if (retainedBeforeImport > 0) {
+                    Text(
+                        "Trong các ngày được nhập: $retainedBeforeImport tiết đã có sẵn + ${saved!!} tiết mới = ${retainedBeforeImport + saved!!} tiết. Các tiết cũ được giữ nguyên.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
                 Button(onClick = onDone, shape = RoundedCornerShape(12.dp)) {
                     Text(stringResource(R.string.home_schedule_title))
                 }
@@ -128,6 +225,15 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
+                val retainedExisting = importDays.sumOf { existingCounts[it] ?: 0 }
+                if (existingCounts.isNotEmpty() && retainedExisting > 0) {
+                    Text(
+                        "Các tiết đã có trong lịch sẽ được giữ lại. Hiện có $retainedExisting tiết ở những ngày trong ảnh; sau khi xác nhận, tổng lịch có thể nhiều hơn số tiết mới nhập.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+
                 // Day Selector Chips
                 Row(
                     Modifier
@@ -140,7 +246,11 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
                         FilterChip(
                             selected = selectedDay == day,
                             onClick = { selectedDay = day },
-                            label = { Text("${dayNames[day - 1]} ($countForDay)") },
+                            label = {
+                                val alreadySaved = existingCounts[day]
+                                Text(if (alreadySaved == null) "${dayNames[day - 1]} ($countForDay)"
+                                    else "${dayNames[day - 1]} ($countForDay · $alreadySaved cũ)")
+                            },
                             enabled = !saving
                         )
                     }
@@ -210,6 +320,13 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
                 if (failed) {
                     Text(stringResource(R.string.schedule_import_error), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
                 }
+                if (existingCountsFailed) {
+                    Text(
+                        "Chưa kiểm tra được thời khóa biểu hiện tại. Đóng bản xem trước rồi mở lại để tải lại lịch trước khi xác nhận.",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
 
                 // Save Action Button
                 Button(
@@ -220,41 +337,15 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
                             invalid = true
                             return@Button
                         }
-                        saving = true; failed = false
-                        scope.launch {
-                            try {
-                                val count = withContext(Dispatchers.IO) {
-                                    check(owner > 0 && ActiveUser.get(context) == owner)
-                                    val repository = (context.applicationContext as AiMentorApplication).services().scheduleImport()
-                                    try {
-                                        repository.importVacantEntries(
-                                            owner.toString(),
-                                            chosen.map { ScheduleEntry(accountId = owner.toString(), title = it.subject.trim(), dayOfWeek = it.day, period = it.period) }
-                                        )
-                                    } finally {
-                                        repository.close()
-                                    }
-                                }
-
-                                try {
-                                    val helperClass = Class.forName("com.example.asm_final.utils.ReminderHelper")
-                                    val method = helperClass.getMethod("reschedule", android.content.Context::class.java)
-                                    method.invoke(null, context.applicationContext)
-                                } catch (_: Exception) {}
-
-                                saved = count
-                                skipped = chosen.size - count
-                                preview = false
-                            } catch (cancelled: kotlinx.coroutines.CancellationException) {
-                                throw cancelled
-                            } catch (_: Exception) {
-                                failed = true
-                            } finally {
-                                saving = false
-                            }
+                        val priorCount = importDays.sumOf { existingCounts[it] ?: 0 }
+                        if (priorCount > 0) {
+                            pendingImport = chosen
+                            showImportOptions = true
+                        } else {
+                            saveChosen(chosen, replaceDays = false)
                         }
                     },
-                    enabled = !saving && edits.any { it.selected && it.subject.isNotBlank() },
+                    enabled = !saving && existingCountsLoaded && !existingCountsFailed && edits.any { it.selected && it.subject.isNotBlank() },
                     modifier = Modifier.fillMaxWidth().height(50.dp),
                     shape = RoundedCornerShape(24.dp)
                 ) {
@@ -265,6 +356,44 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
                 }
             }
         }
+    }
+
+    if (showImportOptions) {
+        val priorCount = importDays.sumOf { existingCounts[it] ?: 0 }
+        AlertDialog(
+            onDismissRequest = { if (!saving) showImportOptions = false },
+            title = { Text("Lịch các ngày này đã có tiết") },
+            text = {
+                Text(
+                    "Đã có $priorCount tiết trong ${importDays.size} ngày của ảnh. Thay thế sẽ xóa các tiết cũ trong đúng những ngày này rồi lưu ${pendingImport.size} tiết đã chọn. Các ngày khác được giữ nguyên.",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showImportOptions = false
+                        saveChosen(pendingImport, replaceDays = true)
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text("Thay lịch các ngày trong ảnh")
+                }
+            },
+            dismissButton = {
+                Column(horizontalAlignment = Alignment.End) {
+                    TextButton(onClick = {
+                        showImportOptions = false
+                        saveChosen(pendingImport, replaceDays = false)
+                    }) {
+                        Text("Giữ lịch cũ và bổ sung")
+                    }
+                    TextButton(onClick = { showImportOptions = false }) {
+                        Text("Quay lại")
+                    }
+                }
+            }
+        )
     }
 
     if (showAddDialog) {

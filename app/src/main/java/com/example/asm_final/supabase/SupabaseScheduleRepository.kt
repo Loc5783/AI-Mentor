@@ -68,6 +68,21 @@ class SupabaseScheduleRepository(private val context: Context): ScheduleReposito
         val rows=JSONArray(); entries.forEach {rows.put(entryData(it))}
         return call(accountId,"import",JSONObject().put("entries",rows)).getInt("inserted")
     }
+    override fun replaceEntriesForImportedDays(accountId:String,entries:List<ScheduleEntry>):ScheduleReplaceResult {
+        require(entries.isNotEmpty() && entries.size<=70 && entries.all {
+            it.accountId==accountId && it.dayOfWeek in 1..7 && it.period in 1..10 &&
+                it.title.isNotBlank() && it.title.length<=120
+        })
+        require(entries.distinctBy { it.dayOfWeek to it.period }.size==entries.size)
+        val owner=accountId.toInt()
+        check(owner>0 && ActiveUser.get(context)==owner)
+        val rows=JSONArray(); entries.forEach { rows.put(entryData(it)) }
+        val body=JSONObject().put("data",JSONObject().put("entries",rows))
+        val result=JSONObject(SupabaseAccounts(context).requestFor(
+            owner,"POST","/rest/v1/rpc/mentor_replace_schedule_import",body
+        ))
+        return ScheduleReplaceResult(result.getInt("removed"),result.getInt("inserted"))
+    }
     override fun importTodos(accountId:String,tasks:List<TodoTask>):Int {
         val owner=accountId.toInt()
         check(owner>0 && ActiveUser.get(context)==owner)

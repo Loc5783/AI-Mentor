@@ -154,6 +154,46 @@ class ScheduleRepositoryImpl(context: Context) : ScheduleRepository, com.example
         } finally { db.endTransaction() }
     }
 
+    /** Replaces entries only on the days represented by the reviewed photo. */
+    override fun replaceEntriesForImportedDays(
+        accountId: String,
+        entries: List<ScheduleEntry>
+    ): com.example.mentor.schedule.domain.ScheduleReplaceResult {
+        require(accountId.toIntOrNull()?.let { it > 0 } == true)
+        require(entries.isNotEmpty() && entries.size <= 70)
+        require(entries.all {
+            it.accountId == accountId && it.dayOfWeek in 1..7 && it.period in 1..10 &&
+                it.title.isNotBlank() && it.title.length <= 120
+        })
+        require(entries.distinctBy { it.dayOfWeek to it.period }.size == entries.size)
+        val db = dbHelper.writableDatabase
+        db.beginTransaction()
+        try {
+            ensureUniqueScheduleIndexIfSafe(db)
+            val days = entries.map { it.dayOfWeek }.distinct()
+            val removed = days.sumOf { day ->
+                db.delete(
+                    "schedule_entries",
+                    "account_id = ? AND day_of_week = ?",
+                    arrayOf(accountId, day.toString())
+                )
+            }
+            entries.forEach { entry ->
+                val values = ContentValues().apply {
+                    put("account_id", accountId)
+                    put("title", entry.title.trim())
+                    put("day_of_week", entry.dayOfWeek)
+                    put("period", entry.period)
+                }
+                db.insertOrThrow("schedule_entries", null, values)
+            }
+            db.setTransactionSuccessful()
+            return com.example.mentor.schedule.domain.ScheduleReplaceResult(removed, entries.size)
+        } finally {
+            db.endTransaction()
+        }
+    }
+
     override fun importTodos(accountId: String, tasks: List<TodoTask>): Int {
         require(accountId.toIntOrNull()?.let { it > 0 } == true)
         require(tasks.size in 1..21 && tasks.all {
