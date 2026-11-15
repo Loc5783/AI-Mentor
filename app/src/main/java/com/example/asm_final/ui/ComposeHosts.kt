@@ -15,7 +15,7 @@ import com.example.mentor.ui.design.MentorTokens
 import com.example.mentor.ui.design.MentorTheme
 import com.example.mentor.ui.design.TechGraffitiBackground
 
-internal fun composeHost(context: Context, scenicBackground: Boolean = false, content: @Composable () -> Unit): ComposeView =
+fun composeHost(context: Context, scenicBackground: Boolean = false, content: @Composable () -> Unit): ComposeView =
     ComposeView(context).apply {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         setContent {
