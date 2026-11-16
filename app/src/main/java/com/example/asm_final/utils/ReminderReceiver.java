@@ -11,8 +11,8 @@ import androidx.core.app.NotificationCompat;
 import com.example.asm_final.R;
 import com.example.asm_final.activities.MainActivity;
 import com.example.mentor.data.ActiveUser;
-import com.example.mentor.schedule.data.ScheduleRepositoryImpl;
 import com.example.mentor.schedule.domain.ScheduleEntry;
+import com.example.mentor.schedule.domain.ScheduleRepository;
 
 import java.util.Calendar;
 import java.util.List;
@@ -36,20 +36,46 @@ public class ReminderReceiver extends BroadcastReceiver {
     if (owner <= 0) return; // Không có tài khoản đăng nhập thì không có thông báo
 
     String action = intent.getAction();
-    if (ReminderHelper.ACTION_EVENING_REMINDER.equals(action)) {
-        handleEveningReminder(context, owner);
-    } else if (ReminderHelper.ACTION_MORNING_REMINDER.equals(action)) {
-        handleMorningReminder(context, owner);
-    }
+    if (!ReminderHelper.ACTION_EVENING_REMINDER.equals(action)
+        && !ReminderHelper.ACTION_MORNING_REMINDER.equals(action)) return;
+
+    // Schedule data may live in Supabase. Keep network/database work off the receiver's
+    // main thread and read it from the same repository the schedule screen uses.
+    final PendingResult pending = goAsync();
+    com.example.asm_final.AiMentorApplication app =
+        (com.example.asm_final.AiMentorApplication) context.getApplicationContext();
+    app.services().io().execute(() -> {
+      ScheduleRepository repository = null;
+      try {
+        if (!ReminderHelper.isReminderEnabled(context) || ActiveUser.get(context) != owner) return;
+        repository = app.scheduleRepository();
+        if (ReminderHelper.ACTION_EVENING_REMINDER.equals(action)) {
+          handleEveningReminder(context, owner, repository);
+        } else {
+          handleMorningReminder(context, owner, repository);
+        }
+      } catch (Exception failure) {
+        android.util.Log.w("ReminderReceiver", "Could not load schedule for reminder", failure);
+      } finally {
+        try {
+          if (repository instanceof com.example.mentor.schedule.domain.ScheduleImportRepository) {
+            ((com.example.mentor.schedule.domain.ScheduleImportRepository) repository).close();
+          }
+        } catch (RuntimeException closeFailure) {
+          android.util.Log.w("ReminderReceiver", "Could not close schedule repository", closeFailure);
+        } finally {
+          pending.finish();
+        }
+      }
+    });
   }
 
-  private void handleEveningReminder(Context context, int owner) {
+  private void handleEveningReminder(Context context, int owner, ScheduleRepository repo) {
       Calendar cal = Calendar.getInstance();
       cal.add(Calendar.DAY_OF_YEAR, 1);
       int tomorrowDay = cal.get(Calendar.DAY_OF_WEEK) - 1;
       if (tomorrowDay == 0) tomorrowDay = 7;
 
-      ScheduleRepositoryImpl repo = new ScheduleRepositoryImpl(context);
       List<ScheduleEntry> entries = repo.getEntries(String.valueOf(owner), tomorrowDay);
 
       String title, content;
@@ -76,12 +102,11 @@ public class ReminderReceiver extends BroadcastReceiver {
       showNotification(context, title, content);
   }
 
-  private void handleMorningReminder(Context context, int owner) {
+  private void handleMorningReminder(Context context, int owner, ScheduleRepository repo) {
       Calendar cal = Calendar.getInstance();
       int todayDay = cal.get(Calendar.DAY_OF_WEEK) - 1;
       if (todayDay == 0) todayDay = 7;
 
-      ScheduleRepositoryImpl repo = new ScheduleRepositoryImpl(context);
       List<ScheduleEntry> entries = repo.getEntries(String.valueOf(owner), todayDay);
       
       // Filter morning classes (period 1 to 5)
@@ -109,7 +134,7 @@ public class ReminderReceiver extends BroadcastReceiver {
       showNotification(context, title, content);
   }
 
-  private boolean checkAnyScheduleExists(ScheduleRepositoryImpl repo, String accountId) {
+  private boolean checkAnyScheduleExists(ScheduleRepository repo, String accountId) {
       for (int i = 1; i <= 7; i++) {
           if (!repo.getEntries(accountId, i).isEmpty()) return true;
       }

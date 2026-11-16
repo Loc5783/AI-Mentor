@@ -21,8 +21,7 @@ object SupabaseAuthRedirect {
 class SupabaseHttp : SupabaseTransport {
     companion object {
         @JvmStatic fun enabled(context: Context): Boolean = BuildConfig.SUPABASE_ENABLED &&
-            !BuildConfig.DEBUG_GUEST_MODE &&
-            !context.getSharedPreferences("backend_test", 0).contains("endpoint")
+            !BuildConfig.DEBUG_GUEST_MODE
     }
     override fun request(method: String, path: String, body: JSONObject?, token: String?): String {
         check(Looper.myLooper() != Looper.getMainLooper()) { "Network on main thread" }

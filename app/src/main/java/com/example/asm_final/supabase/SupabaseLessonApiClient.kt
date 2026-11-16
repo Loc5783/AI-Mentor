@@ -23,6 +23,17 @@ class SupabaseLessonApiClient(
         revision: Int?
     ): JSONObject {
         require(path.startsWith("/") && !path.startsWith("//") && !path.contains(".."))
+        val startFromBeginning = Regex("^/enrollments/([0-9a-fA-F-]{36})/start-from-beginning$").matchEntire(path)
+        if (method == "POST" && startFromBeginning != null) {
+            return JSONObject(
+                SupabaseAccounts(context).requestFor(
+                    owner,
+                    "POST",
+                    "/rest/v1/rpc/mentor_choose_learning_start",
+                    JSONObject().put("p_enrollment_id", startFromBeginning.groupValues[1])
+                )
+            )
+        }
         val payload = JSONObject()
             .put("method", method)
             .put("path", path)

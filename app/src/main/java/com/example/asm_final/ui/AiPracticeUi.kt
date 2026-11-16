@@ -101,6 +101,7 @@ private fun AiPracticeSetupContent(
     val config = viewModel.config
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
     val heroBg = if (dark) MentorTokens.DarkPrimaryContainer else MentorTokens.PrimaryContainer
+    val heroText = MaterialTheme.colorScheme.onPrimaryContainer
 
     Column(
         modifier = Modifier
@@ -119,7 +120,7 @@ private fun AiPracticeSetupContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBack, modifier = Modifier.testTag("AiPracticeBackBtn")) {
-                    Text("←", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = MentorTokens.OnBrand)
+                    Text("←", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = heroText)
                 }
                 Spacer(Modifier.width(8.dp))
                 Column {
@@ -127,12 +128,12 @@ private fun AiPracticeSetupContent(
                         text = "Luyện cùng Gia sư AI",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color = MentorTokens.OnBrand
+                        color = heroText
                     )
                     Text(
                         text = "Soạn câu hỏi trắc nghiệm theo chủ đề và độ khó tùy chọn",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MentorTokens.OnBrand.copy(alpha = 0.8f)
+                        color = heroText.copy(alpha = 0.9f)
                     )
                 }
             }
@@ -562,11 +563,7 @@ private fun AiPracticeActiveContent(
             }
 
             if (viewModel.errorMessage != null) {
-                Text(
-                    text = viewModel.errorMessage ?: "",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall
-                )
+                MentorErrorNotice(viewModel.errorMessage ?: "")
             }
         }
 
@@ -617,9 +614,12 @@ private fun AiPracticeFeedbackContent(
 ) {
     val result = viewModel.lastResult ?: return
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
+    val currentQuestion = viewModel.currentQuestion
     var showReportDialog by remember { mutableStateOf(false) }
     var showAskAiDialog by remember { mutableStateOf(false) }
-    var askAiQuery by remember { mutableStateOf("") }
+    var askAiQuery by remember(currentQuestion?.id) {
+        mutableStateOf("Giải thích câu hỏi này từng bước, nhất là cách chọn đáp án đúng.")
+    }
 
     val bannerBg = when {
         result.isCorrect -> if (dark) MentorTokens.SuccessDarkBg else MentorTokens.SuccessLightBg
@@ -677,13 +677,12 @@ private fun AiPracticeFeedbackContent(
                         text = "💡 Lời giải chi tiết từ Gia sư AI:",
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
-                        color = MentorTokens.Blue600
+                        color = if (dark) Color.White else MentorTokens.Blue600
                     )
                     Spacer(Modifier.height(8.dp))
-                    Text(
-                        text = result.explanation,
-                        style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 22.sp),
-                        color = MaterialTheme.colorScheme.onSurface
+                    ChatAnswerView(
+                        result.explanation,
+                        if (dark) Color.White else MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -702,13 +701,12 @@ private fun AiPracticeFeedbackContent(
                             text = "🤖 Gia sư giải thích thêm:",
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
-                            color = MentorTokens.Blue600
+                            color = if (dark) Color.White else MentorTokens.Blue600
                         )
                         Spacer(Modifier.height(6.dp))
-                        Text(
-                            text = viewModel.explainMoreText ?: "",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface
+                        ChatAnswerView(
+                            viewModel.explainMoreText ?: "",
+                            if (dark) Color.White else MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -858,7 +856,22 @@ private fun AiPracticeFeedbackContent(
             title = { Text("Hỏi thêm Gia sư AI") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text("Đặt câu hỏi hoặc chọn yêu cầu nhanh:", style = MaterialTheme.typography.bodySmall)
+                    Text("Câu hỏi đang làm sẽ được gửi kèm cho Gia sư AI:",
+                        style = MaterialTheme.typography.bodySmall)
+                    currentQuestion?.let { question ->
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = MaterialTheme.colorScheme.surfaceVariant
+                        ) {
+                            Text(
+                                text = question.prompt,
+                                modifier = Modifier.padding(12.dp),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                    Text("Có thể sửa yêu cầu trước khi gửi:", style = MaterialTheme.typography.bodySmall)
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         SuggestionChip(
                             onClick = { askAiQuery = "Giải thích chi tiết hơn tại sao đáp án lại như vậy?" },

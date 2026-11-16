@@ -181,8 +181,10 @@ private val LightColors = lightColorScheme(
     onSurfaceVariant = Color(0xFF4A5A74),
     outline = MentorTokens.LightOutline,
     outlineVariant = MentorTokens.LightOutline.copy(alpha = 0.7f),
-    error = MentorTokens.ErrorLightBg,
-    onError = MentorTokens.ErrorLightText
+    error = MentorTokens.ErrorLightText,
+    onError = Color.White,
+    errorContainer = MentorTokens.ErrorLightBg,
+    onErrorContainer = Color(0xFF842121)
 )
 
 private val DarkColors = darkColorScheme(
@@ -206,8 +208,10 @@ private val DarkColors = darkColorScheme(
     onSurfaceVariant = MentorTokens.NavyOnSurfaceVariant,
     outline = MentorTokens.NavyOutline, 
     outlineVariant = MentorTokens.NavyOutline.copy(alpha = 0.5f),
-    error = MentorTokens.ErrorDarkBg,
-    onError = MentorTokens.ErrorDarkText
+    error = MentorTokens.ErrorDarkText,
+    onError = Color(0xFF40171D),
+    errorContainer = MentorTokens.ErrorDarkBg,
+    onErrorContainer = Color.White
 )
 
 @Composable

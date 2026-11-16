@@ -190,11 +190,6 @@ public final class CompetitionViewModel extends AndroidViewModel {
     network.execute(() -> {
       try {
         mutation.run();
-        List<FriendshipRepository.Item> loaded = friendships.list(owner);
-        main.post(() -> {
-          if (!closed && ActiveUser.get(getApplication()) == owner)
-            friendsState.setValue(new FriendsState(loaded, false, false, successCode));
-        });
       } catch (Exception failure) {
         main.post(() -> {
           if (!closed && ActiveUser.get(getApplication()) == owner) {
@@ -202,7 +197,19 @@ public final class CompetitionViewModel extends AndroidViewModel {
             friendsState.setValue(new FriendsState(previous == null ? Collections.emptyList() : previous.items, false, true, "ACTION_FAILED"));
           }
         });
+        return;
       }
+
+      // A mutation can succeed even if the follow-up list refresh fails.
+      // Keep the confirmed outcome instead of showing a false failure and inviting a duplicate retry.
+      FriendsState before = friendsState.getValue();
+      List<FriendshipRepository.Item> loaded = before == null ? Collections.emptyList() : before.items;
+      try { loaded = friendships.list(owner); } catch (Exception ignored) { }
+      List<FriendshipRepository.Item> result = loaded;
+      main.post(() -> {
+        if (!closed && ActiveUser.get(getApplication()) == owner)
+          friendsState.setValue(new FriendsState(result, false, false, successCode));
+      });
     });
   }
 

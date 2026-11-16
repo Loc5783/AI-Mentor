@@ -172,17 +172,16 @@ public final class AppServices {
   }
 
   public com.example.asm_final.learning.AiPracticeRepository aiPractice(int owner) {
-    if (BuildConfig.SUPABASE_ENABLED && !BuildConfig.DEBUG_GUEST_MODE) {
-      try (RemoteAccountLinks links = new RemoteAccountLinks(context)) {
-        if (links.bound(owner, BuildConfig.SUPABASE_URL)) {
-          return new com.example.asm_final.learning.SupabaseAiPracticeRepository(context, owner);
-        }
-      }
-    }
+    // A Supabase-authenticated account must never silently fall back to the retired API.
+    // Missing identity linkage is an explicit setup/auth error, not a reason to split data.
+    if (com.example.asm_final.supabase.SupabaseHttp.enabled(context))
+      return new com.example.asm_final.learning.SupabaseAiPracticeRepository(context, owner);
     return new com.example.asm_final.learning.BackendAiPracticeRepository(context, owner);
   }
 
   public com.example.asm_final.learning.ExamRepository exam(int owner) {
+    if (com.example.asm_final.supabase.SupabaseHttp.enabled(context))
+      return new com.example.asm_final.learning.SupabaseExamRepository(context, owner);
     return new com.example.asm_final.learning.BackendExamRepository(context, owner);
   }
 

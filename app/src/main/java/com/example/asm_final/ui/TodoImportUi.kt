@@ -38,7 +38,7 @@ internal fun TodoImportAction(text: String, owner: Int, onDone: () -> Unit) {
     val suggested = remember(text) { TodoProposal.parse(text) }
     if (suggested == null) {
         if (text.contains("```ai_todo", ignoreCase = true))
-            Text(stringResource(R.string.todo_import_invalid), color = MaterialTheme.colorScheme.error)
+            MentorErrorNotice(stringResource(R.string.todo_import_invalid))
         return
     }
 
@@ -133,7 +133,7 @@ internal fun TodoImportAction(text: String, owner: Int, onDone: () -> Unit) {
                         }
                     }
                 }
-                if (failed) Text(stringResource(R.string.todo_import_error), color = MaterialTheme.colorScheme.error)
+                if (failed) MentorErrorNotice(stringResource(R.string.todo_import_error))
             }
         },
         confirmButton = {

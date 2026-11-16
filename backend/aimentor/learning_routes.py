@@ -25,6 +25,10 @@ def learning_router(service, current):
     def path(item: str, user=Depends(current)):
         return service.path(user["id"], item)
 
+    @router.post("/enrollments/{item}/start-from-beginning")
+    def start_from_beginning(item: str, user=Depends(current)):
+        return service.start_from_beginning(user["id"], item)
+
     @router.post("/placements", status_code=201)
     def placement(body: models.PlacementCreate, user=Depends(current), key: str | None=Header(None, alias="Idempotency-Key")):
         return service.start(user["id"], body.model_dump(), key, placement=True)

@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,7 +33,7 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
     val slots = remember(text) { ScheduleProposal.parse(text) }
     if (slots == null) {
         if (text.contains("```ai_schedule", ignoreCase = true)) {
-            Text(stringResource(R.string.schedule_import_invalid), color = MaterialTheme.colorScheme.error)
+            MentorErrorNotice(stringResource(R.string.schedule_import_invalid))
         }
         return
     }
@@ -315,16 +316,14 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
                 }
 
                 if (invalid) {
-                    Text(stringResource(R.string.schedule_import_check_entries), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                    MentorErrorNotice(stringResource(R.string.schedule_import_check_entries))
                 }
                 if (failed) {
-                    Text(stringResource(R.string.schedule_import_error), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                    MentorErrorNotice(stringResource(R.string.schedule_import_error))
                 }
                 if (existingCountsFailed) {
-                    Text(
-                        "Chưa kiểm tra được thời khóa biểu hiện tại. Đóng bản xem trước rồi mở lại để tải lại lịch trước khi xác nhận.",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
+                    MentorErrorNotice(
+                        "Chưa kiểm tra được thời khóa biểu hiện tại. Đóng bản xem trước rồi mở lại để tải lại lịch trước khi xác nhận."
                     )
                 }
 
@@ -360,40 +359,62 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
 
     if (showImportOptions) {
         val priorCount = importDays.sumOf { existingCounts[it] ?: 0 }
-        AlertDialog(
-            onDismissRequest = { if (!saving) showImportOptions = false },
-            title = { Text("Lịch các ngày này đã có tiết") },
-            text = {
-                Text(
-                    "Đã có $priorCount tiết trong ${importDays.size} ngày của ảnh. Thay thế sẽ xóa các tiết cũ trong đúng những ngày này rồi lưu ${pendingImport.size} tiết đã chọn. Các ngày khác được giữ nguyên.",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        showImportOptions = false
-                        saveChosen(pendingImport, replaceDays = true)
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+        androidx.compose.ui.window.Dialog(
+            onDismissRequest = { if (!saving) showImportOptions = false }
+        ) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 6.dp
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    Text("Thay lịch các ngày trong ảnh")
-                }
-            },
-            dismissButton = {
-                Column(horizontalAlignment = Alignment.End) {
-                    TextButton(onClick = {
-                        showImportOptions = false
-                        saveChosen(pendingImport, replaceDays = false)
-                    }) {
+                    Text("Lịch các ngày này đã có tiết", style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                    Text(
+                        "Đã có $priorCount tiết trong ${importDays.size} ngày của ảnh. Thay thế sẽ xóa các tiết cũ trong đúng những ngày này rồi lưu ${pendingImport.size} tiết đã chọn. Các ngày khác được giữ nguyên.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Button(
+                        onClick = {
+                            showImportOptions = false
+                            saveChosen(pendingImport, replaceDays = true)
+                        },
+                        enabled = !saving,
+                        modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                        shape = RoundedCornerShape(18.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Thay lịch các ngày trong ảnh", fontWeight = FontWeight.Bold)
+                    }
+                    OutlinedButton(
+                        onClick = {
+                            showImportOptions = false
+                            saveChosen(pendingImport, replaceDays = false)
+                        },
+                        enabled = !saving,
+                        modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                        shape = RoundedCornerShape(18.dp)
+                    ) {
                         Text("Giữ lịch cũ và bổ sung")
                     }
-                    TextButton(onClick = { showImportOptions = false }) {
+                    TextButton(
+                        onClick = { showImportOptions = false },
+                        enabled = !saving,
+                        modifier = Modifier.align(Alignment.End).heightIn(min = 48.dp)
+                    ) {
                         Text("Quay lại")
                     }
                 }
             }
-        )
+        }
     }
 
     if (showAddDialog) {

@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color as ComposeColor
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.viewinterop.AndroidView
@@ -21,8 +22,8 @@ import com.example.asm_final.chat.ChatAnswerMarkup
 
 /** Render Markdown and TeX inside one self-sizing WebView, with local KaTeX assets only. */
 @Composable
-internal fun ChatAnswerView(source: String) {
-    val color = MaterialTheme.colorScheme.onSurface.toArgb()
+internal fun ChatAnswerView(source: String, textColor: ComposeColor = MaterialTheme.colorScheme.onSurface) {
+    val color = textColor.toArgb()
     val density = LocalDensity.current
     var height by remember(source) { mutableStateOf(80.dp) }
     val html = remember(source, color) { chatPage(ChatAnswerMarkup.toHtml(source), color) }

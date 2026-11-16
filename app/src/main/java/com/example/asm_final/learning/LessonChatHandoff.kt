@@ -6,12 +6,14 @@ import android.content.Intent
 data class LessonHandoffContract(
     val username: String?,
     val chatThreadId: String,
-    val lessonReturn: Boolean = true
+    val lessonReturn: Boolean = true,
+    val autoSendDraft: Boolean = true
 ) {
     companion object {
         const val EXTRA_USERNAME = "USERNAME"
         const val EXTRA_CHAT_THREAD_ID = "CHAT_THREAD_ID"
         const val EXTRA_LESSON_RETURN = "LESSON_RETURN"
+        const val EXTRA_AUTO_SEND_DRAFT = "LESSON_AUTO_SEND_DRAFT"
     }
 
     /**
@@ -21,7 +23,8 @@ data class LessonHandoffContract(
     fun toExtraMap(): Map<String, Any> {
         val map = mutableMapOf<String, Any>(
             EXTRA_CHAT_THREAD_ID to chatThreadId,
-            EXTRA_LESSON_RETURN to lessonReturn
+            EXTRA_LESSON_RETURN to lessonReturn,
+            EXTRA_AUTO_SEND_DRAFT to autoSendDraft
         )
         if (username != null) {
             map[EXTRA_USERNAME] = username
@@ -47,6 +50,7 @@ object LessonChatHandoff {
     const val EXTRA_USERNAME = LessonHandoffContract.EXTRA_USERNAME
     const val EXTRA_CHAT_THREAD_ID = LessonHandoffContract.EXTRA_CHAT_THREAD_ID
     const val EXTRA_LESSON_RETURN = LessonHandoffContract.EXTRA_LESSON_RETURN
+    const val EXTRA_AUTO_SEND_DRAFT = LessonHandoffContract.EXTRA_AUTO_SEND_DRAFT
 
     @JvmStatic
     fun createContract(username: String?, threadId: String): LessonHandoffContract {

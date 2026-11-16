@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import com.example.asm_final.utils.ThemeHelper
 import com.example.asm_final.R
 import com.example.asm_final.learning.LessonPathData
-import com.example.asm_final.learning.PathChoiceStore
 import com.example.asm_final.learning.LessonViewModel
 import com.example.asm_final.utils.LocaleHelper
 import com.example.mentor.learning.SubjectId
@@ -345,13 +344,11 @@ private fun LessonScreen(
                     var showSourceNote by remember(path) { mutableStateOf(false) }
                     var showPlacementInfo by remember(path) { mutableStateOf(false) }
                     val ownerId = ActiveUser.get(context)
-                    val choiceStore = remember(context) { PathChoiceStore(context) }
-                    var startedFromBeginning by remember(ownerId, state.grade, subjectId) {
-                        mutableStateOf(choiceStore.startedFromBeginning(ownerId, state.grade, subjectId))
-                    }
                     var placementRequested by remember(ownerId, state.grade, subjectId) { mutableStateOf(false) }
                     val enrollment = path.optJSONObject("enrollment")
-                    val placementComplete = enrollment?.has("placement") == true && !enrollment.isNull("placement")
+                    val placement = enrollment?.optJSONObject("placement")
+                    val startedFromBeginning = placement?.optString("mode") == "FROM_BEGINNING"
+                    val placementComplete = placement != null && !startedFromBeginning
                     val units = path.optJSONArray("units")
                     val hasPriorProgress = units != null && (0 until units.length()).any {
                         units.optJSONObject(it)?.optString("state") in listOf("COMPLETED", "SKIPPED")
@@ -377,7 +374,7 @@ private fun LessonScreen(
                     if (pending != null && pending.length() > 0)
                         MentorButton(stringResource(R.string.course_continue), { model.resume(pending.getJSONObject(0).getString("id")) })
                     if (!placementComplete && !hasPriorProgress && !startedFromBeginning &&
-                        !placementRequested && !showPlacementInfo && (pending == null || pending.length() == 0)) {
+                        !state.busy && !placementRequested && !showPlacementInfo && (pending == null || pending.length() == 0)) {
                         AlertDialog(
                             onDismissRequest = leave,
                             title = { Text(stringResource(R.string.course_start_choice_title, subjectLabel)) },
@@ -388,10 +385,9 @@ private fun LessonScreen(
                                 }
                             },
                             dismissButton = {
-                                TextButton(onClick = {
-                                    if (choiceStore.markStartedFromBeginning(ownerId, state.grade, subjectId))
-                                        startedFromBeginning = true
-                                }) { Text(stringResource(R.string.course_start_from_beginning)) }
+                                TextButton(onClick = { model.startFromBeginning() }) {
+                                    Text(stringResource(R.string.course_start_from_beginning))
+                                }
                             }
                         )
                     }

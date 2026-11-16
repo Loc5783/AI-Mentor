@@ -27,6 +27,8 @@ public final class GeneralChatFragment extends Fragment {
   private com.example.asm_final.dashboard.OverviewUpdates.Subscription chatUpdates;
   private View root;
   private boolean initialChatApplied;
+  private boolean autoSendLessonDraft;
+  private boolean lessonDraftSendHandled;
   private String cameraName, cameraThread;
   private ArrayList<Uri> pendingUris = new ArrayList<>();
   private boolean pendingCamera;
@@ -64,6 +66,7 @@ public final class GeneralChatFragment extends Fragment {
     super.onCreate(state);
     if (state != null) {
       initialChatApplied = state.getBoolean("initial_chat_applied");
+      lessonDraftSendHandled = state.getBoolean("lesson_draft_send_handled");
       cameraName = state.getString("camera_name");
       cameraThread = state.getString("camera_thread");
       pendingCamera = state.getBoolean("pending_camera");
@@ -139,9 +142,23 @@ public final class GeneralChatFragment extends Fragment {
                   return;
                 }
               }
+              sendLessonDraftIfReady();
               drainImports();
             });
+    autoSendLessonDraft = requireActivity().getIntent().getBooleanExtra(
+        com.example.asm_final.learning.LessonChatHandoff.EXTRA_AUTO_SEND_DRAFT, false);
     model.bind(ActiveUser.get(requireContext()));
+  }
+
+  private void sendLessonDraftIfReady() {
+    if (!autoSendLessonDraft || lessonDraftSendHandled || model == null || model.loading
+        || model.requesting || model.snapshot == null || model.draft == null
+        || model.draft.trim().isEmpty()) return;
+    String target = com.example.asm_final.learning.LessonChatHandoff.extractThreadId(
+        requireActivity().getIntent());
+    if (target == null || !target.equals(model.threadId())) return;
+    lessonDraftSendHandled = true;
+    model.send();
   }
 
   private void showFormula(String text) {
@@ -319,6 +336,7 @@ public final class GeneralChatFragment extends Fragment {
   public void onSaveInstanceState(Bundle out) {
     super.onSaveInstanceState(out);
     out.putBoolean("initial_chat_applied", initialChatApplied);
+    out.putBoolean("lesson_draft_send_handled", lessonDraftSendHandled);
     out.putString("camera_name", cameraName);
     out.putString("camera_thread", cameraThread);
     out.putBoolean("pending_camera", pendingCamera);

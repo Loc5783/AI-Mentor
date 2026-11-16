@@ -97,4 +97,5 @@
   <string name="public_profile_xp_value">%1$d XP</string>
   <string name="public_profile_xp_label">Daily XP</string>
   <string name="public_profile_privacy_notice">Public profile complies with privacy rules (Personal &amp; sensitive data hidden).</string>
+  <string name="profile_friends_manage">Find friends · manage requests</string>
 </resources>

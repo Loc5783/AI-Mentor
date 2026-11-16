@@ -29,8 +29,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -49,7 +47,9 @@ import com.example.asm_final.R
 import com.example.asm_final.competition.PublicLearner
 import com.example.asm_final.dashboard.LearningOverviewData
 import com.example.asm_final.dashboard.LearningOverviewRepository
-import com.example.asm_final.competition.FriendshipRepository
+import com.example.asm_final.competition.CompetitionViewModel
+import androidx.compose.runtime.livedata.observeAsState
+import java.util.function.Consumer
 import com.example.asm_final.utils.LocaleHelper
 import com.example.mentor.learning.SubjectId
 import com.example.mentor.ui.design.MentorButton
@@ -73,7 +73,8 @@ class ProfileUi(
     private val edit: Runnable,
     private val settings: Runnable,
     private val learn: Runnable,
-    private val friendsAction: Runnable,
+    private val friendsModel: CompetitionViewModel,
+    private val openFriendProfile: Consumer<String>,
 ) {
     private var displayName by mutableStateOf("")
     private var avatar by mutableStateOf<String?>(null)
@@ -85,15 +86,15 @@ class ProfileUi(
     private var studySeconds by mutableStateOf<Long?>(null)
     private var badges by mutableStateOf<List<ProfileBadge>>(emptyList())
     private var badgesLoaded by mutableStateOf(false)
-    private var friends by mutableStateOf<List<FriendshipRepository.Item>>(emptyList())
     private var loading by mutableStateOf(true)
     private var failed by mutableStateOf(false)
 
     fun view(): View = composeHost(context, scenicBackground = true) {
         ProfileScreen(
             displayName, avatar, bio, grade, goal, subjects, snapshot, loading, failed,
-            studySeconds, badges, badgesLoaded, friends,
-            { refresh.run() }, { edit.run() }, { settings.run() }, { learn.run() }, { friendsAction.run() }
+            studySeconds, badges, badgesLoaded, friendsModel,
+            { refresh.run() }, { edit.run() }, { settings.run() }, { learn.run() },
+            { openFriendProfile.accept(it) }
         )
     }
 
@@ -133,10 +134,6 @@ class ProfileUi(
         badgesLoaded = badgeResponse != null
     }
 
-    fun social(acceptedFriends: List<FriendshipRepository.Item>) {
-        friends = acceptedFriends.toList()
-    }
-
     fun failure() {
         loading = false
         failed = true
@@ -157,17 +154,21 @@ private fun ProfileScreen(
     studySeconds: Long?,
     badges: List<ProfileBadge>,
     badgesLoaded: Boolean,
-    friends: List<FriendshipRepository.Item>,
+    friendsModel: CompetitionViewModel,
     refresh: () -> Unit,
     edit: () -> Unit,
     settings: () -> Unit,
     learn: () -> Unit,
-    friendsAction: () -> Unit,
+    openFriendProfile: (String) -> Unit,
 ) {
     val data = snapshot?.data
     val motion = motionEnabled()
     var entered by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { entered = true }
+    val friendsState by friendsModel.friendsState().observeAsState()
+    val searchState by friendsModel.searchState().observeAsState()
+    val friendsPalette = premiumDashboardPalette(
+        com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current))
 
     Box(Modifier.fillMaxSize()) {
         Column(
@@ -212,8 +213,8 @@ private fun ProfileScreen(
                     ProfileNotice(snapshot, failed, refresh, learn)
                 }
 
-                // Section STREAK BẠN BÈ (Dashed circular slots)
-                ProfileFriendsStreak(friends, friendsAction)
+                // Manage friendships from the learner's profile.
+                FriendsPanel(friendsState, searchState, friendsPalette, friendsModel, openFriendProfile)
 
                 // Section HUY HIỆU THỬ THÁCH THÁNG
                 ProfileBadgeCollection(badges, badgesLoaded)
@@ -626,83 +627,6 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
     }
 }
 
-/**
- * Section STREAK BẠN BÈ:
- * Features 5 circular dashed slots with (+) symbol matching Image A.
- */
-@Composable
-private fun ProfileFriendsStreak(friends: List<FriendshipRepository.Item>, onAddFriend: () -> Unit) {
-    val outlineColor = MaterialTheme.colorScheme.outlineVariant
-
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        ProfileSectionTitle(stringResource(R.string.profile_friends_streak_title))
-
-        Surface(
-            Modifier
-                .fillMaxWidth()
-                .testTag("profile-friends-empty"),
-            shape = RoundedCornerShape(20.dp),
-            color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, outlineColor)
-        ) {
-            Column(
-                Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    repeat(5) { index ->
-                        val friend = friends.getOrNull(index)
-                        Box(
-                            Modifier
-                                .size(52.dp)
-                                .drawBehind {
-                                    drawCircle(
-                                        color = outlineColor,
-                                        style = Stroke(
-                                            width = 2.dp.toPx(),
-                                            pathEffect = PathEffect.dashPathEffect(
-                                                floatArrayOf(12f, 10f),
-                                                0f
-                                            )
-                                        )
-                                    )
-                                }
-                                .clickable(enabled = friend == null, onClick = onAddFriend),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (friend == null) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_add),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            } else {
-                                Text(
-                                    text = friend.nickname.trim().firstOrNull()?.uppercase() ?: "•",
-                                    color = MaterialTheme.colorScheme.primary,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
-                    }
-                }
-
-                Text(
-                    text = if (friends.isEmpty()) stringResource(R.string.profile_friends_empty)
-                        else friends.take(5).joinToString("   •   ") { "${it.nickname.ifBlank { "Bạn học" }} · ${it.streakDays} ngày" },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-    }
-}
-
 /** Renders only badge facts returned by the account-scoped backend. */
 @Composable
 private fun ProfileBadgeCollection(badges: List<ProfileBadge>, loaded: Boolean) {
@@ -985,19 +909,14 @@ fun PublicProfileContent(
             } else if (failed && learner == null) {
                 Surface(
                     shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.errorContainer
+                    color = MaterialTheme.colorScheme.surface
                 ) {
                     Column(
                         Modifier.padding(16.dp).fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        Text(
-                            text = stringResource(R.string.ranking_profile_error),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onErrorContainer,
-                            textAlign = TextAlign.Center
-                        )
+                        MentorErrorNotice(stringResource(R.string.ranking_profile_error))
                         OutlinedButton(
                             onClick = onRetry,
                             modifier = Modifier.heightIn(min = 48.dp)

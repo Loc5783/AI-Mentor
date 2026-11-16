@@ -578,8 +578,8 @@ private fun LibraryQuizSelectionView(
                 item {
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = MaterialTheme.colorScheme.errorContainer,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
+                        color = Color(0xFFFFE6E6),
+                        border = BorderStroke(1.dp, Color(0xFFB91C1C)),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Row(
@@ -592,16 +592,16 @@ private fun LibraryQuizSelectionView(
                                     "⚠️ Không thể bắt đầu/mở lại bài luyện",
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onErrorContainer
+                                    color = Color(0xFF842121)
                                 )
                                 Text(
                                     presentation.startError,
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onErrorContainer
+                                    color = Color(0xFF842121)
                                 )
                             }
                             TextButton(onClick = { controller.clearStartError() }) {
-                                Text("Đóng", color = MaterialTheme.colorScheme.onErrorContainer)
+                                Text("Đóng", color = Color(0xFF842121))
                             }
                         }
                     }
@@ -613,8 +613,8 @@ private fun LibraryQuizSelectionView(
                 item {
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = MaterialTheme.colorScheme.tertiaryContainer,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
+                        color = Color(0xFFFFF1CC),
+                        border = BorderStroke(1.dp, Color(0xFFB36B00)),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Row(
@@ -627,12 +627,12 @@ private fun LibraryQuizSelectionView(
                                     "⚠️ Tiến độ bài làm dở chưa đồng bộ",
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                                    color = Color(0xFF6B3E00)
                                 )
                                 Text(
                                     presentation.activeSessionsSyncWarning.message,
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                                    color = Color(0xFF6B3E00)
                                 )
                             }
                             if (presentation.activeSessionsSyncWarning.canRetry) {
@@ -737,8 +737,7 @@ private fun LibraryQuizSelectionView(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                Text("⚠️ Lỗi tải dữ liệu", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
-                                Text(catalog.message, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
+                                MentorErrorNotice("⚠️ Lỗi tải dữ liệu\n${catalog.message}")
                                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                                     Button(onClick = { controller.loadQuizzes(subjectId.wireId, grade) }) {
                                         Text("Thử lại")
@@ -1129,11 +1128,11 @@ private fun LibrarySessionPracticeView(
 
                             val btnBg = when {
 
-                                isAnswered && optKey == q.correctOption -> Color(0xFFD1FAE5)
+                                isAnswered && optKey == q.correctOption -> Color(0xFF15803D)
 
                                 isAnswered && isChosen && q.isCorrect == false -> Color(0xFFFEE2E2)
 
-                                isChosen -> MaterialTheme.colorScheme.primaryContainer
+                                isChosen -> MaterialTheme.colorScheme.primary
 
                                 else -> MaterialTheme.colorScheme.surface
 
@@ -1164,9 +1163,15 @@ private fun LibrarySessionPracticeView(
 
                                 Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
 
-                                    Text("$optKey. ", fontWeight = FontWeight.Bold)
+                                    val optionForeground = when {
+                                        isAnswered && optKey == q.correctOption -> Color.White
+                                        isAnswered && isChosen && q.isCorrect == false -> Color(0xFF7F1D1D)
+                                        isChosen -> MaterialTheme.colorScheme.onPrimary
+                                        else -> MaterialTheme.colorScheme.onSurface
+                                    }
+                                    Text("$optKey. ", fontWeight = FontWeight.Bold, color = optionForeground)
 
-                                    Text(optText)
+                                    Text(optText, color = optionForeground)
 
                                 }
 
@@ -1210,7 +1215,8 @@ private fun LibrarySessionPracticeView(
 
                             if (!q.explanation.isNullOrBlank()) {
 
-                                Text("💡 Lời giải: ${q.explanation}", style = MaterialTheme.typography.bodyMedium)
+                                Text("💡 Lời giải: ${q.explanation}", style = MaterialTheme.typography.bodyMedium,
+                                    color = if (correct) Color(0xFF064E3B) else Color(0xFF7F1D1D))
 
                             }
 
@@ -1475,7 +1481,7 @@ fun WrongQuestionsNotebookScreen(
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
 
-                    Text(state.errorMessage ?: "Lỗi tải dữ liệu", color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
+                    MentorErrorNotice(state.errorMessage ?: "Lỗi tải dữ liệu")
 
                     Button(onClick = { controller.loadNotebook(subjectId?.wireId, grade, state.filterState) }) {
 

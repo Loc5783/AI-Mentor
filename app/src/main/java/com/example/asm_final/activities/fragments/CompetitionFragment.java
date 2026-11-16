@@ -23,7 +23,6 @@ public final class CompetitionFragment extends Fragment {
     @Override public void run() {
       if (!isResumed() || model == null) return;
       model.refresh();
-      model.refreshFriends();
       main.postDelayed(this, 60_000L);
     }
   };
@@ -53,7 +52,6 @@ public final class CompetitionFragment extends Fragment {
   public void onResume() {
     super.onResume();
     model.refresh();
-    model.refreshFriends();
     main.removeCallbacks(refreshWhileVisible);
     main.postDelayed(refreshWhileVisible, 60_000L);
     liveUpdates =
@@ -64,7 +62,6 @@ public final class CompetitionFragment extends Fragment {
                 ActiveUser.get(requireContext()),
                 () -> {
                   model.refresh();
-                  model.refreshFriends();
                 });
   }
 

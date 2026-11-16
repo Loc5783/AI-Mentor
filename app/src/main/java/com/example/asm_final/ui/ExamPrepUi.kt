@@ -264,12 +264,7 @@ private fun ExamListContent(
         } else if (state.examListError != null) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(
-                        state.examListError,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center
-                    )
+                    MentorErrorNotice(state.examListError)
                     Button(onClick = onReload) {
                         Text("Thử lại")
                     }
@@ -491,7 +486,8 @@ private fun ExamDetailContent(
 
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("Môn học:", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(exam.subjectId.uppercase(Locale.ROOT), fontWeight = FontWeight.Bold)
+                    Text(SubjectId.values().firstOrNull { it.wireId == exam.subjectId }
+                        ?.label("vi") ?: exam.subjectId, fontWeight = FontWeight.Bold)
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("Khối lớp:", color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -552,11 +548,7 @@ private fun ExamDetailContent(
         }
 
         if (state.startSessionError != null) {
-            Text(
-                state.startSessionError,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium
-            )
+            MentorErrorNotice(state.startSessionError)
         }
 
         Spacer(Modifier.height(8.dp))
@@ -665,20 +657,8 @@ private fun ExamInProgressContent(
         }
 
         if (state.submitError != null) {
-            Surface(
-                color = MaterialTheme.colorScheme.errorContainer,
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 6.dp)
-            ) {
-                Text(
-                    text = state.submitError,
-                    color = MaterialTheme.colorScheme.onErrorContainer,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(10.dp)
-                )
-            }
+            MentorErrorNotice(state.submitError,
+                Modifier.padding(horizontal = 16.dp, vertical = 6.dp))
         }
 
         // Question Palette (Horizontal Strip)
@@ -850,12 +830,7 @@ private fun ExamInProgressContent(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Text(
-                                "⚠️ Chưa lưu được đáp án",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.error,
-                                fontWeight = FontWeight.Bold
-                            )
+                            MentorErrorNotice("⚠️ Chưa lưu được đáp án", Modifier.weight(1f))
                             TextButton(
                                 onClick = { onRetryAnswer(currentQuestion.id) },
                                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
@@ -915,10 +890,8 @@ private fun ExamInProgressContent(
                 val unsaved = state.unsavedAnswersCount
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (unsaved > 0) {
-                        Text(
-                            "⚠️ Có $unsaved câu trả lời chưa được lưu thành công trên máy chủ. Bạn nên kiểm tra lại các câu này trước khi nộp.",
-                            color = MaterialTheme.colorScheme.error,
-                            fontWeight = FontWeight.Bold
+                        MentorErrorNotice(
+                            "⚠️ Có $unsaved câu trả lời chưa được lưu thành công trên máy chủ. Bạn nên kiểm tra lại các câu này trước khi nộp."
                         )
                     }
                     if (unanswered > 0) {

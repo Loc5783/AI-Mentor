@@ -176,7 +176,7 @@ class BackendExamRepository(
         parseExamSession(resp)
     }
 
-    private fun parseExamSummary(obj: JSONObject): ExamSummary {
+    internal fun parseExamSummary(obj: JSONObject): ExamSummary {
         return ExamSummary(
             id = obj.getString("id"),
             title = obj.getString("title"),
@@ -192,7 +192,7 @@ class BackendExamRepository(
         )
     }
 
-    private fun parseExamSession(obj: JSONObject): ExamSession {
+    internal fun parseExamSession(obj: JSONObject): ExamSession {
         val rawQuestions = obj.optJSONArray("questions") ?: JSONArray()
         val questions = mutableListOf<ExamQuestionSnapshot>()
         for (i in 0 until rawQuestions.length()) {

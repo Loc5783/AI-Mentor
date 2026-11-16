@@ -97,4 +97,5 @@
   <string name="public_profile_xp_value">%1$d KN</string>
   <string name="public_profile_xp_label">KN hôm nay</string>
   <string name="public_profile_privacy_notice">Hồ sơ công khai tuân thủ quyền riêng tư (Ẩn thông tin cá nhân &amp; dữ liệu nhạy cảm).</string>
+  <string name="profile_friends_manage">Tìm bạn · lời mời kết bạn</string>
 </resources>

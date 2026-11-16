@@ -630,6 +630,22 @@ public final class LessonViewModel extends AndroidViewModel {
     }
   }
 
+  public void startFromBeginning() {
+    if (path == null || busy || closed || api == null || currentActiveUser() != owner) return;
+    try {
+      String enrollmentId = path.getJSONObject("enrollment").getString("id");
+      TaskContext ctx = snapshotContext();
+      String key = stableKey(currentScopeKey() + ":start_from_beginning:" + enrollmentId);
+      task(ctx,
+          () -> ctx.client.request("POST", "/enrollments/" + enrollmentId + "/start-from-beginning",
+              new JSONObject(), key, null),
+          result -> path = result);
+    } catch (JSONException invalid) {
+      error = "INVALID_SERVER_RESPONSE";
+      emit();
+    }
+  }
+
   public void resume(String id) {
     if (busy || closed || api == null) return;
     if (currentActiveUser() != owner) return;

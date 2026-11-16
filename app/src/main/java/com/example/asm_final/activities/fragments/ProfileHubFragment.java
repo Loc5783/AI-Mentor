@@ -3,7 +3,10 @@ package com.example.asm_final.activities.fragments;
 import android.os.*;
 import android.view.*;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import com.example.asm_final.*;
+import com.example.asm_final.competition.CompetitionViewModel;
+import com.example.asm_final.competition.PublicLearnerDialog;
 import com.example.asm_final.activities.HomeActivity;
 import com.example.asm_final.dashboard.*;
 import com.example.asm_final.learning.LearningSetupStore;
@@ -17,11 +20,13 @@ import java.util.Set;
 public final class ProfileHubFragment extends Fragment {
   private OverviewUpdates.Subscription updates;
   private ProfileUi presenter;
+  private CompetitionViewModel friendsModel;
   private int generation;
   private boolean needsLogin;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle state) {
+    friendsModel = new ViewModelProvider(this).get(CompetitionViewModel.class);
     presenter =
         new ProfileUi(
             requireContext(),
@@ -32,7 +37,11 @@ public final class ProfileHubFragment extends Fragment {
             () -> shell().navigateTo(R.id.nav_edit_profile, true),
             () -> shell().navigateTo(R.id.nav_settings, true),
             () -> shell().navigateTo(R.id.nav_category, false),
-            () -> shell().navigateTo(R.id.nav_competition, false));
+            friendsModel,
+            id -> {
+              if (getChildFragmentManager().findFragmentByTag("public_learner") == null)
+                PublicLearnerDialog.create(id).show(getChildFragmentManager(), "public_learner");
+            });
     String username = getArguments() == null ? "" : getArguments().getString("USERNAME", "");
     return presenter.view();
   }
@@ -45,6 +54,7 @@ public final class ProfileHubFragment extends Fragment {
   public void onResume() {
     super.onResume();
     load();
+    friendsModel.refreshFriends();
     updates = OverviewLiveBinding.start(this, this::load);
   }
 
@@ -82,15 +92,6 @@ public final class ProfileHubFragment extends Fragment {
                 var result = services.overview().load(owner, grade);
                 org.json.JSONObject studySummary = null;
                 org.json.JSONObject badgeSummary = null;
-                java.util.List<com.example.asm_final.competition.FriendshipRepository.Item>
-                    acceptedFriends = new java.util.ArrayList<>();
-                try {
-                  for (var friend : services.friendships().list(owner)) {
-                    if ("ACCEPTED".equalsIgnoreCase(friend.state)) acceptedFriends.add(friend);
-                  }
-                } catch (Exception ignored) {
-                  // Keep profile available if social data cannot be reached.
-                }
                 if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) {
                   try {
                     studySummary = services.study().summary(owner);
@@ -105,7 +106,6 @@ public final class ProfileHubFragment extends Fragment {
                 }
                 org.json.JSONObject finalStudySummary = studySummary;
                 org.json.JSONObject finalBadgeSummary = badgeSummary;
-                var finalAcceptedFriends = acceptedFriends;
                 new Handler(Looper.getMainLooper())
                     .post(
                         () -> {
@@ -120,7 +120,6 @@ public final class ProfileHubFragment extends Fragment {
                           presenter.learning(grade, learning == null ? -1 : learning.goal, chosen);
                           presenter.render(result);
                           presenter.activity(finalStudySummary, finalBadgeSummary);
-                          presenter.social(finalAcceptedFriends);
                         });
               } catch (RuntimeException unavailable) {
                 new Handler(Looper.getMainLooper())
