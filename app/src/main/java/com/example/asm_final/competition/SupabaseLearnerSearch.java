@@ -3,7 +3,6 @@ package com.example.asm_final.competition;
 import android.content.Context;
 import com.example.asm_final.supabase.SupabaseAccounts;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +21,7 @@ public final class SupabaseLearnerSearch {
     String query = input.replaceAll("[^\\p{L}\\p{N} ]", " ").trim().replaceAll(" +", " ");
     if (query.length() < 2) return Collections.emptyList();
     if (query.length() > 40) query = query.substring(0, 40).trim();
-    String filter = URLEncoder.encode("*" + query + "*", StandardCharsets.UTF_8);
+    String filter = URLEncoder.encode("*" + query + "*", "UTF-8");
     String response = new SupabaseAccounts(context).requestFor(owner, "GET",
         "/rest/v1/mentor_profiles?select=id,nickname&nickname=ilike." + filter
             + "&order=nickname.asc&limit=30", null);
