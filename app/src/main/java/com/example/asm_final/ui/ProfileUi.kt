@@ -203,8 +203,8 @@ private fun ProfileScreen(
                     edit = edit
                 )
                 ProfileNote(bio, edit)
-                // Section TỔNG QUAN (2x2 Grid)
-                ProfileOverviewGrid(data)
+                // Section TỔNG QUAN
+                ProfileOverviewGrid(data, learn)
 
                 ProfileStudySummary(studySeconds)
 
@@ -453,17 +453,9 @@ private fun ProfileNote(note: String, edit: () -> Unit) {
 }
 
 @Composable
-private fun ProfileOverviewGrid(data: LearningOverviewData?) {
+private fun ProfileOverviewGrid(data: LearningOverviewData?, onCompletedLessonsClick: () -> Unit) {
     val streakDays = data?.streakDays
     val totalXp = data?.totalXp
-    val rankRes = when (data?.rankTier?.uppercase()) {
-        "DIAMOND" -> R.string.profile_rank_diamond
-        "PLATINUM" -> R.string.profile_rank_platinum
-        "GOLD" -> R.string.profile_rank_gold
-        "SILVER" -> R.string.profile_rank_silver
-        "BRONZE" -> R.string.profile_rank_bronze
-        else -> R.string.profile_rank_pending
-    }
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         ProfileSectionTitle(stringResource(R.string.profile_overview_title))
@@ -558,66 +550,62 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
 
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
-                // Row 2: Rank + Lead / Pending stat
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Cell 3: Rank
-                    Row(
-                        Modifier
-                            .weight(1f)
-                            .testTag("profile-rank"),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_diamond),
-                            contentDescription = null,
-                            tint = MentorTokens.Blue600,
-                            modifier = Modifier.size(28.dp)
-                        )
-                        Column {
-                            Text(
-                                text = stringResource(rankRes),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Text(
-                                text = stringResource(R.string.competition_title),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
+                // Row 2: Completed lessons (Clickable Roadmap Navigation Card)
+                val lessonsText = if (data == null) "—"
+                    else if (data.totalLessons > 0) stringResource(R.string.profile_lessons_ratio, data.completedLessons, data.totalLessons)
+                    else stringResource(R.string.profile_lessons_unit, data.completedLessons)
 
-                    // Cell 4: Completed lessons, sourced from the learner's progress.
+                Surface(
+                    onClick = onCompletedLessonsClick,
+                    modifier = Modifier.fillMaxWidth().testTag("profile-lessons"),
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (dark) Color(0xFF334155).copy(alpha = 0.5f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                ) {
                     Row(
-                        Modifier
-                            .weight(1f)
-                            .testTag("profile-lessons"),
+                        Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_book_course),
-                            contentDescription = null,
-                            tint = MentorTokens.Orange500,
-                            modifier = Modifier.size(28.dp)
-                        )
-                        Column {
-                            Text(
-                                text = if (data == null) "—" else stringResource(R.string.profile_lessons_unit, data.completedLessons),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_book_course),
+                                contentDescription = null,
+                                tint = MentorTokens.Orange500,
+                                modifier = Modifier.size(28.dp)
                             )
+                            Column {
+                                Text(
+                                    text = lessonsText,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = stringResource(R.string.profile_lessons_label),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
                             Text(
-                                text = stringResource(R.string.profile_lessons_label),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                text = stringResource(R.string.profile_view_roadmap),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Icon(
+                                painter = painterResource(R.drawable.ic_chevron_right),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(18.dp)
                             )
                         }
                     }

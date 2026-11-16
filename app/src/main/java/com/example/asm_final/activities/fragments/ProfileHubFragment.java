@@ -89,6 +89,7 @@ public final class ProfileHubFragment extends Fragment {
                   }
                 }
                 Set<SubjectId> chosen = subjects;
+                com.example.asm_final.utils.LocalStudyTimeStore.recordActiveSession(context, owner);
                 var result = services.overview().load(owner, grade);
                 org.json.JSONObject studySummary = null;
                 org.json.JSONObject badgeSummary = null;
@@ -104,6 +105,7 @@ public final class ProfileHubFragment extends Fragment {
                     // The UI presents an explicit unavailable state instead of inventing badge data.
                   }
                 }
+                studySummary = com.example.asm_final.utils.LocalStudyTimeStore.getSummaryJsonObject(context, owner, studySummary);
                 org.json.JSONObject finalStudySummary = studySummary;
                 org.json.JSONObject finalBadgeSummary = badgeSummary;
                 new Handler(Looper.getMainLooper())

@@ -71,6 +71,15 @@ public class HomeActivity extends AppCompatActivity
     super.onResume();
     if (authenticatedOwner > 0
         && com.example.mentor.data.ActiveUser.get(this) != authenticatedOwner) finish();
+    com.example.asm_final.utils.LocalStudyTimeStore.startSession();
+  }
+
+  @Override
+  protected void onPause() {
+    if (authenticatedOwner > 0) {
+      com.example.asm_final.utils.LocalStudyTimeStore.recordActiveSession(this, authenticatedOwner);
+    }
+    super.onPause();
   }
 
   public void logout() {

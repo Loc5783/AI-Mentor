@@ -10,7 +10,9 @@
     <string name="profile_streak_label">Chuỗi học</string>
     <string name="profile_xp_label">Tổng kinh nghiệm</string>
     <string name="profile_lessons_label">Bài hoàn thành</string>
-    <string name="profile_lessons_unit">bài</string>
+    <string name="profile_lessons_unit">%1$d bài</string>
+    <string name="profile_lessons_ratio">%1$d/%2$d bài</string>
+    <string name="profile_view_roadmap">Xem lộ trình</string>
     <string name="profile_friends_title">Bạn bè học cùng</string>
     <string name="profile_friends_empty">Chưa có dữ liệu bạn bè để hiển thị chuỗi học cùng nhau.</string>
     <string name="profile_editor_details">Thông tin tài khoản</string>
