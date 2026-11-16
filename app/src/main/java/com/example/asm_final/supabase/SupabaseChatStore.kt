@@ -66,28 +66,12 @@ class SupabaseChatStore(private val context:Context):ChatStore {
  override fun request(owner:Int,threadId:String,messageId:String,context:LearningContext):TutorRequest {
   require(context.userId==owner)
   val snap=snapshot(owner,threadId)
-  val recent=mutableListOf<ChatRecords.Message>()
-  snap.messages.forEachIndexed { index,m ->
-   if(m.role=="USER") {
-    if(m.id==messageId) {
-     recent.add(m)
-     // Only materialize attachment bytes for turns that will actually be sent.
-     val selected=recent.takeLast(21)
-     val turns=selected.map { turn ->
-      if(turn.role=="USER") TutorTurn(owner,TutorTurn.Role.USER,turn.text,
-       turn.files.map { storage.ensureCached(owner,it);localFiles.payload(owner,it) })
-      else TutorTurn(owner,TutorTurn.Role.ASSISTANT,turn.text,emptyList())
-     }
-     return TutorRequest(context,turns,null)
-    }
-    val next=snap.messages.getOrNull(index+1)
-    if(m.status=="SENT" && next?.role=="ASSISTANT") {
-     recent.add(m)
-     recent.add(next)
-     while(recent.size>20) {recent.removeAt(0);recent.removeAt(0)}
-    }
-   }
+  val selected=TutorRequestHistory.select(snap.messages,messageId)
+  val turns=selected.map { turn ->
+   if(turn.role=="USER") TutorTurn(owner,TutorTurn.Role.USER,turn.text,
+    turn.files.map { storage.ensureCached(owner,it);localFiles.payload(owner,it) })
+   else TutorTurn(owner,TutorTurn.Role.ASSISTANT,turn.text,emptyList())
   }
-  throw IllegalArgumentException("Missing owned question")
+  return TutorRequest(context,turns,null)
  }
 }

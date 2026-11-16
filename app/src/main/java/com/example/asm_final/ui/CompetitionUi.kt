@@ -41,6 +41,7 @@ object CompetitionUi {
         val board = snapshot?.board
         val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(context)
         val palette = premiumDashboardPalette(dark)
+        var showRulesDialog by remember { mutableStateOf(false) }
 
         Column(Modifier.fillMaxSize()) {
             PremiumDashboardHeader(artwork = com.example.mentor.ui.design.MentorArtwork.GOALS) {
@@ -319,14 +320,36 @@ object CompetitionUi {
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(
-                            text = stringResource(R.string.ranking_rules),
+                            text = stringResource(R.string.ranking_rules) + " ℹ️",
                             style = MaterialTheme.typography.bodySmall,
-                            color = palette.muted,
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            color = palette.accent,
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            modifier = Modifier.clickable { showRulesDialog = true }
                         )
                         PremiumDashboardAction(stringResource(R.string.competition_learn), palette, { learn.run() })
                     }
                 }
+            }
+
+            if (showRulesDialog) {
+                AlertDialog(
+                    onDismissRequest = { showRulesDialog = false },
+                    title = { Text("🏆 Quy tắc thi đua & Tính điểm", fontWeight = FontWeight.Bold) },
+                    text = {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("• Hoàn thành 1 Bài học: +200 EXP (chỉ nhận thưởng 1 lần/bài).", style = MaterialTheme.typography.bodyMedium)
+                            Text("• Hoàn thành 1 Bài Quiz: +400 EXP.", style = MaterialTheme.typography.bodyMedium)
+                            Text("• Chuỗi học (Streak): Tăng 1 ngày mỗi khi hoàn thành ít nhất 1 bài học trong ngày (theo múi giờ UTC+7).", style = MaterialTheme.typography.bodyMedium)
+                            Text("• Bảng xếp hạng: Người có điểm mới được xếp hạng. Người chưa có điểm hiển thị dấu gạch ngang (—).", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { showRulesDialog = false }) {
+                            Text("Đã hiểu")
+                        }
+                    }
+                )
             }
         }
     }

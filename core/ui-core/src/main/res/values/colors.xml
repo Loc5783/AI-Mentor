@@ -36,6 +36,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="errorColor">#C62828</color>
+    <color name="onErrorColor">#FFFFFFFF</color>
+    <color name="errorContainerColor">#FDE7E7</color>
+    <color name="onErrorContainerColor">#7F1D1D</color>
 
     <color name="auth_background">#EDF2FC</color>
     <color name="auth_background_end">#EDE7FF</color>
@@ -49,6 +52,7 @@
     <color name="auth_muted">#4A5A74</color>
     <color name="auth_success">#1E7F5C</color>
     <color name="auth_error">#C62828</color>
+    <color name="auth_on_error">#FFFFFFFF</color>
     <color name="auth_pressed">#3A5A94</color>
 
     <color name="mentor_quiz_surface">#FFFFFF</color>

@@ -100,7 +100,7 @@ private fun AiPracticeSetupContent(
 
     val config = viewModel.config
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
-    val heroBg = if (dark) MentorTokens.DarkPrimaryContainer else MentorTokens.PrimaryContainer
+    val heroBg = MaterialTheme.colorScheme.primaryContainer
     val heroText = MaterialTheme.colorScheme.onPrimaryContainer
 
     Column(
@@ -133,7 +133,7 @@ private fun AiPracticeSetupContent(
                     Text(
                         text = "Soạn câu hỏi trắc nghiệm theo chủ đề và độ khó tùy chọn",
                         style = MaterialTheme.typography.bodySmall,
-                        color = heroText.copy(alpha = 0.9f)
+                        color = heroText
                     )
                 }
             }

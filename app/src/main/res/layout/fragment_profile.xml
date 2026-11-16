@@ -99,6 +99,18 @@
             android:hint="@string/prof_hint_email"
             android:inputType="textEmailAddress" />
 
+        <EditText
+            android:id="@+id/edtProfilePhone"
+            style="@style/ProfileEditorField"
+            android:hint="@string/prof_hint_phone"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/edtProfileAddress"
+            style="@style/ProfileEditorField"
+            android:hint="@string/prof_hint_address"
+            android:inputType="textPostalAddress" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -19,4 +19,5 @@ dependencies {
 
     implementation(project(":data-core"))
     implementation("androidx.recyclerview:recyclerview:1.4.0")
+    testImplementation(libs.junit)
 }

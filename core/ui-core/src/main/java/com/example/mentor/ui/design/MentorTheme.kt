@@ -160,7 +160,7 @@ object SubjectPalette {
     }
 }
 
-private val LightColors = lightColorScheme(
+internal val LightColors = lightColorScheme(
     primary = MentorTokens.Blue600,
     onPrimary = Color.White,
     primaryContainer = MentorTokens.Blue200, 
@@ -169,8 +169,8 @@ private val LightColors = lightColorScheme(
     onSecondary = MentorTokens.Orange900,
     secondaryContainer = MentorTokens.Orange100, 
     onSecondaryContainer = MentorTokens.Orange800,
-    tertiary = MentorTokens.Purple,
-    onTertiary = Color(0xFF170E2D),
+    tertiary = Color(0xFF7040D0),
+    onTertiary = Color.White,
     tertiaryContainer = Color(0xFFEDE7FF),
     onTertiaryContainer = Color(0xFF36205E),
     background = MentorTokens.LightCanvas,
@@ -184,10 +184,10 @@ private val LightColors = lightColorScheme(
     error = MentorTokens.ErrorLightText,
     onError = Color.White,
     errorContainer = MentorTokens.ErrorLightBg,
-    onErrorContainer = Color(0xFF842121)
+    onErrorContainer = Color(0xFF7F1D1D)
 )
 
-private val DarkColors = darkColorScheme(
+internal val DarkColors = darkColorScheme(
     primary = MentorTokens.Blue300, 
     onPrimary = MentorTokens.OnBrand,
     primaryContainer = MentorTokens.Blue700, 
@@ -209,9 +209,9 @@ private val DarkColors = darkColorScheme(
     outline = MentorTokens.NavyOutline, 
     outlineVariant = MentorTokens.NavyOutline.copy(alpha = 0.5f),
     error = MentorTokens.ErrorDarkText,
-    onError = Color(0xFF40171D),
+    onError = MentorTokens.ErrorDarkBg,
     errorContainer = MentorTokens.ErrorDarkBg,
-    onErrorContainer = Color.White
+    onErrorContainer = Color(0xFFFFDAD6)
 )
 
 @Composable

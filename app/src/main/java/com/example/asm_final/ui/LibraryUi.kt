@@ -1186,44 +1186,28 @@ private fun LibrarySessionPracticeView(
 
 
                 if (isAnswered) {
-
                     val correct = q.isCorrect == true
+                    val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
+                    val cardBg = if (dark) (if (correct) Color(0xFF064E3B) else Color(0xFF7F1D1D)) else (if (correct) Color(0xFFECFDF5) else Color(0xFFFEF2F2))
+                    val textColor = if (dark) (if (correct) Color(0xFFA7F3D0) else Color(0xFFFCA5A5)) else (if (correct) Color(0xFF065F46) else Color(0xFF991B1B))
 
                     Surface(
-
                         shape = RoundedCornerShape(12.dp),
-
-                        color = if (correct) Color(0xFFECFDF5) else Color(0xFFFEF2F2),
-
+                        color = cardBg,
                         border = BorderStroke(1.dp, if (correct) Color(0xFF10B981) else Color(0xFFEF4444)),
-
                         modifier = Modifier.fillMaxWidth()
-
                     ) {
-
                         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-
                             Text(
-
                                 if (correct) "✅ Chính xác!" else "❌ Chưa đúng (Đáp án đúng: ${q.correctOption ?: ""})",
-
                                 fontWeight = FontWeight.Bold,
-
-                                color = if (correct) Color(0xFF065F46) else Color(0xFF991B1B)
-
+                                color = textColor
                             )
-
                             if (!q.explanation.isNullOrBlank()) {
-
-                                Text("💡 Lời giải: ${q.explanation}", style = MaterialTheme.typography.bodyMedium,
-                                    color = if (correct) Color(0xFF064E3B) else Color(0xFF7F1D1D))
-
+                                Text("💡 Lời giải: ${q.explanation}", style = MaterialTheme.typography.bodyMedium, color = textColor)
                             }
-
                         }
-
                     }
-
                 }
 
 
@@ -1409,7 +1393,12 @@ fun WrongQuestionsNotebookScreen(
 
                 }
 
-                Spacer(Modifier.width(64.dp))
+                TextButton(
+                    onClick = { controller.clearResolved() },
+                    enabled = !state.isLoading && state.items?.any { it.state == "RESOLVED" } == true
+                ) {
+                    Text("Xóa câu đã sửa", style = MaterialTheme.typography.labelSmall)
+                }
 
             }
 
