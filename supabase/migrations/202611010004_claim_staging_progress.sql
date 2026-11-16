@@ -1350,6 +1350,7 @@ end;
 $$;
 
 -- Strict access control: staging schema and reconciliation function are completely private to DB admin
+revoke all on function staging.normalize_legacy_question_ids(jsonb) from public, anon, authenticated;
 revoke all on function staging.reconcile_staging_cutover(int) from public, anon, authenticated;
 
 commit;
