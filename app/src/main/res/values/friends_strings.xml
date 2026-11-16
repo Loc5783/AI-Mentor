@@ -5,6 +5,8 @@
     <string name="friends_load_error">Chưa tải được danh sách bạn bè. Thử tải lại.</string>
     <string name="friends_action_error">Thao tác chưa thành công. Có thể lời mời đã thay đổi; hãy tải lại danh sách.</string>
     <string name="friends_learner">Học viên</string>
+    <string name="friends_personal_streak">🔥 Streak cá nhân: %1$d ngày</string>
+    <string name="friends_shared_streak">🤝 Học cùng nhau: %1$d ngày liên tiếp</string>
     <string name="friends_incoming">Lời mời kết bạn đang chờ</string>
     <string name="friends_outgoing">Đã gửi lời mời</string>
     <string name="friends_add">Kết bạn</string>

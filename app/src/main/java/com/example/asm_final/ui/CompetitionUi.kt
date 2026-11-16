@@ -446,11 +446,18 @@ private fun FriendsPanel(
                                 maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Text(
                                 when {
-                                    friend.state.equals("ACCEPTED", true) -> stringResource(R.string.competition_streak_value, friend.streakDays.toLong())
+                                    friend.state.equals("ACCEPTED", true) -> stringResource(R.string.friends_personal_streak, friend.streakDays)
                                     friend.direction.equals("INCOMING", true) -> stringResource(R.string.friends_incoming)
                                     else -> stringResource(R.string.friends_outgoing)
                                 },
                                 style = MaterialTheme.typography.bodySmall, color = palette.secondary)
+                            if (friend.state.equals("ACCEPTED", true)) {
+                                Text(
+                                    stringResource(R.string.friends_shared_streak, friend.sharedStreakDays),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = palette.accent
+                                )
+                            }
                         }
                         when {
                             friend.state.equals("PENDING", true) && friend.direction.equals("INCOMING", true) -> {
