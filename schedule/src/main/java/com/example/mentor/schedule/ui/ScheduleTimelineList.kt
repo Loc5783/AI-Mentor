@@ -50,13 +50,12 @@ fun ScheduleTimelineList(
 
 @Composable
 internal fun ScheduleTimelineItemV2(entry: ScheduleEntry, onClick: (ScheduleEntry) -> Unit) {
-    val isDark = false
     val accentColor = MaterialTheme.colorScheme.primary
     val containerColor = MaterialTheme.colorScheme.primaryContainer
     val onContainerColor = MaterialTheme.colorScheme.onPrimaryContainer
     
     // Status Logic
-    val status = getScheduleStatus(entry.period)
+    val status = getScheduleStatus(entry.dayOfWeek, entry.period)
     val alphaFactor = if (status == "DONE") 0.5f else 1f
 
     Row(
@@ -164,8 +163,10 @@ internal fun ScheduleTimelineItemV2(entry: ScheduleEntry, onClick: (ScheduleEntr
     }
 }
 
-private fun getScheduleStatus(period: Int): String {
+private fun getScheduleStatus(dayOfWeek: Int, period: Int): String {
     val cal = Calendar.getInstance()
+    val today = (cal.get(Calendar.DAY_OF_WEEK) + 5) % 7 + 1
+    if (dayOfWeek != today) return "UPCOMING"
     val currentHour = cal.get(Calendar.HOUR_OF_DAY)
     val currentMin = cal.get(Calendar.MINUTE)
     val totalMin = currentHour * 60 + currentMin

@@ -9,6 +9,7 @@ import com.example.mentor.schedule.domain.ScheduleActivityLog
 import com.example.mentor.schedule.domain.ScheduleEntry
 import com.example.mentor.schedule.domain.ScheduleRepository
 import com.example.mentor.schedule.domain.TodoTask
+import com.example.mentor.schedule.domain.TodoDates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -201,12 +202,15 @@ class ScheduleViewModel(
     
     fun saveTodo(title: String, priority: Int, linkedSubject: String?) {
         viewModelScope.launch(Dispatchers.IO + failures) {
+            val planStartDate = TodoDates.today()
             val task = TodoTask(
                 accountId = accountId,
                 title = title,
                 dayOfWeek = selectedDay.value,
                 priority = priority,
-                linkedSubject = linkedSubject
+                linkedSubject = linkedSubject,
+                dueDate = TodoDates.nextOccurrence(selectedDay.value, planStartDate),
+                planStartDate = planStartDate
             )
             repository.insertTodo(task)
             logAction("CREATE", "TODO", "Đã thêm nhiệm vụ: $title")

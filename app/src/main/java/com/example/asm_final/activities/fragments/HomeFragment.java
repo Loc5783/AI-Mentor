@@ -143,7 +143,6 @@ public final class HomeFragment extends Fragment {
                           && request == generation
                           && ActiveUser.get(context) == owner) subjectsView.tasks(finalTodayTasks);
                     });
-                com.example.asm_final.utils.LocalStudyTimeStore.recordActiveSession(context, owner);
                 org.json.JSONObject studySummary = null;
                 if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) {
                   try {
@@ -152,7 +151,6 @@ public final class HomeFragment extends Fragment {
                     // Keep the rest of Home usable when this optional summary is unavailable.
                   }
                 }
-                studySummary = com.example.asm_final.utils.LocalStudyTimeStore.getSummaryJsonObject(context, owner, studySummary);
                 org.json.JSONObject finalStudySummary = studySummary;
                 main.post(
                     () -> {

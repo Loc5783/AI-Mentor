@@ -9,7 +9,7 @@ Migration `202611100001_grade10_lesson_question_drafts.sql` sao chép các câu 
 chỉ là nhãn nhắc biên tập; tuyệt đối không xuất bản nguyên trạng. Migration không
 đụng đến câu Lý lớp 10 đã có, các đề đang xuất bản, phiên làm bài hay tiến độ.
 
-Mục tiêu nội dung lớp 10 là khoảng 200 câu hỏi và 10 đề cho mỗi môn. Dữ liệu
+Mục tiêu hiện tại theo yêu cầu là ít nhất 50 câu hỏi độc lập và 10 đề cho mỗi môn. Dữ liệu
 bài học hiện mới phủ 15–20 bài nhập môn/môn, chưa phải toàn bộ năm học. Không
 được gọi các đề luyện tổng hợp từ số bài này là đề bao quát chương trình lớp 10.
 Bộ sách đối chiếu để mở rộng tiếp là **Kết nối tri thức với cuộc sống** và
@@ -37,9 +37,9 @@ chạy lại an toàn nhờ ID ổn định và `ON CONFLICT DO NOTHING`.
   từ các bài lớp 10 hiện có; mỗi đề có 15 câu khác nhau, nhưng một câu có thể
   xuất hiện trong nhiều đề. Không tính 885 lượt câu trong 59 đề thành 885 câu
   hỏi độc lập của kho câu hỏi.
-- Mốc 200 câu/môn của kho câu hỏi **chưa đạt**. Cần biên soạn thêm nội dung lớp
-  10 theo từng chủ đề, kiểm tra học thuật rồi mới xuất bản; không sao chép câu
-  lớp 12 xuống hoặc nhân bản câu cũ để đủ số lượng.
+- Trên Supabase production, mốc 50 câu/môn **chưa đạt** với hầu hết môn. Các
+  migration ở phần dưới đang chờ được áp dụng; không tính số câu trong đề ôn
+  tập thành câu hỏi độc lập.
 
 ## Cập nhật bộ Toán 10
 
@@ -50,4 +50,16 @@ ID và đề bài không trùng nhau. Đã áp dụng trên project Supabase
 `hnxphwuaccztzanjcuca`: Toán hiện có **200 câu PUBLISHED** (5 cũ + 195 mới).
 Mười bốn chủ đề của bộ này thuộc các bài Toán 10 đang có trong app; nhiều câu
 chỉ khác dữ kiện số, vì vậy chưa thể coi là bao phủ toàn bộ SGK hoặc có độ đa
-dạng tương đương 200 dạng bài. Tám môn còn lại chưa đạt 200 câu/môn.
+dạng tương đương 200 dạng bài.
+
+## Bổ sung theo mốc 50 câu
+
+Migration `202611160015_grade10_physics_bank_to_50.sql` bổ sung 15 câu Vật lí
+10 tự biên soạn, có bốn lựa chọn và lời giải. Migration
+`202611160017_grade10_banks_to_50.sql` hoàn thiện thêm 45 câu cho mỗi môn Sinh,
+Hóa, Kinh tế & Pháp luật, Anh, Địa lý, Lịch sử và Ngữ văn từ câu hỏi bài học
+đã có; lựa chọn D lấy từ phương án sai của bài khác cùng môn. Toán đã có 200 câu.
+Hai kiểm tra `supabase/tests/grade10_banks_smoke.sql` và
+`supabase/tests/grade10_physics_bank_smoke.sql` xác nhận từng môn đạt ít nhất
+50 câu, đủ lựa chọn, đáp án và lời giải. Đây là migration trong mã nguồn, chưa
+áp dụng lên Supabase production.

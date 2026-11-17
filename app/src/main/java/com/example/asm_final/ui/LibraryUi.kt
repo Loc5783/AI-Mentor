@@ -1394,10 +1394,10 @@ fun WrongQuestionsNotebookScreen(
                 }
 
                 TextButton(
-                    onClick = { controller.clearResolved() },
+                    onClick = { controller.loadNotebook(subjectId?.wireId, grade, "NEEDS_REVIEW") },
                     enabled = !state.isLoading && state.items?.any { it.state == "RESOLVED" } == true
                 ) {
-                    Text("Xóa câu đã sửa", style = MaterialTheme.typography.labelSmall)
+                    Text("Chỉ xem câu cần ôn", style = MaterialTheme.typography.labelSmall)
                 }
 
             }

@@ -9,5 +9,8 @@ data class TodoTask(
     val priority: Int = 1, // 0 = Low, 1 = Normal, 2 = High
     val linkedSubject: String? = null,
     val createdAt: Long = System.currentTimeMillis(),
-    val completedAt: Long? = null
+    val completedAt: Long? = null,
+    /** Null only for preserved weekly tasks created before dated to-dos existed. */
+    val dueDate: String? = null,
+    val planStartDate: String? = null
 )

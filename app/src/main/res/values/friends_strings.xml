@@ -1,5 +1,9 @@
 <resources>
     <string name="friends_manage_title">Bạn bè học tập</string>
+    <string name="friends_open_list">Xem bạn bè</string>
+    <string name="friends_open_search">+ Thêm bạn</string>
+    <string name="friends_search_title">Tìm bạn học</string>
+    <string name="friends_back">← Quay lại</string>
     <string name="friends_manage_subtitle">Tìm bạn học, xem hồ sơ và quản lý lời mời.</string>
     <string name="friends_empty">Chưa có bạn bè hoặc lời mời nào.</string>
     <string name="friends_load_error">Chưa tải được danh sách bạn bè. Thử tải lại.</string>

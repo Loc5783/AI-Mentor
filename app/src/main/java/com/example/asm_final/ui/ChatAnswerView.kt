@@ -33,7 +33,8 @@ internal fun ChatAnswerView(source: String, textColor: ComposeColor = MaterialTh
             WebView(context).apply {
                 setBackgroundColor(Color.TRANSPARENT)
                 settings.javaScriptEnabled = true
-                settings.allowFileAccess = false
+                // KaTeX is bundled in the APK and loaded from the local asset base URL.
+                settings.allowFileAccess = true
                 settings.allowContentAccess = false
                 settings.blockNetworkLoads = true
                 settings.domStorageEnabled = false

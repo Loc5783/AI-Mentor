@@ -362,6 +362,7 @@ internal fun FriendsPanel(
     palette: PremiumDashboardPalette,
     model: CompetitionViewModel,
     openProfile: (String) -> Unit,
+    searchMode: Boolean = false,
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     PremiumDashboardCard(palette) {
@@ -376,6 +377,7 @@ internal fun FriendsPanel(
                 Text(stringResource(R.string.ranking_retry), color = palette.accent)
             }
         }
+        if (searchMode) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(query, { query = it.take(40) },
@@ -428,6 +430,7 @@ internal fun FriendsPanel(
                 }
             }
         }
+        } else {
         HorizontalDivider(color = palette.border)
         when {
             state == null || state.loading && state.items.isEmpty() -> MentorSkeleton(stringResource(R.string.ranking_loading))
@@ -478,6 +481,7 @@ internal fun FriendsPanel(
                     }
                 }
             }
+        }
         }
         if (!state?.message.isNullOrBlank()) {
             val res = when (state?.message) {

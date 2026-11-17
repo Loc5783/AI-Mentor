@@ -1,5 +1,9 @@
 <resources>
     <string name="friends_manage_title">Study friends</string>
+    <string name="friends_open_list">View friends</string>
+    <string name="friends_open_search">+ Add friend</string>
+    <string name="friends_search_title">Find study friends</string>
+    <string name="friends_back">← Back</string>
     <string name="friends_manage_subtitle">Find learners, view profiles and manage requests.</string>
     <string name="friends_empty">No friends or requests yet.</string>
     <string name="friends_load_error">Friends could not be loaded. Try again.</string>

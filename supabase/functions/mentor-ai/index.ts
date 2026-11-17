@@ -24,7 +24,11 @@ Deno.serve(async (request: Request) => {
   const identity=await fetch(base+'/auth/v1/user',{headers,signal:AbortSignal.timeout(12000)});
   if(!identity.ok)return failure(401,'UNAUTHORIZED');
   const user=await identity.json();
-  const config=await loadConfig();
+  // Independent configuration and learner reads can run together after auth.
+  const [config,pref]=await Promise.all([
+   loadConfig(),
+   fetch(base+'/rest/v1/mentor_preferences?user_id=eq.'+encodeURIComponent(user.id)+'&select=grade,language',{headers,signal:AbortSignal.timeout(12000)})
+  ]);
   const nextSignature=JSON.stringify([config.keys,config.model]);
   if(!pool || signature!==nextSignature){pool=new GeminiKeyPool(config.keys);signature=nextSignature;}
   const reader=request.body?.getReader(); if(!reader)return failure(400,'INVALID_REQUEST');
@@ -34,7 +38,6 @@ Deno.serve(async (request: Request) => {
   const input=JSON.parse(new TextDecoder().decode(bytes));
   const mode=input.mode==='schedule'?'general':input.mode??'general';
   if(!['general','timetable_scan','todo_plan','practice_generate','practice_explain'].includes(mode))return failure(400,'INVALID_REQUEST');
-  const pref=await fetch(base+'/rest/v1/mentor_preferences?user_id=eq.'+encodeURIComponent(user.id)+'&select=grade,language',{headers,signal:AbortSignal.timeout(12000)});
   if(!pref.ok)return failure(503,'PROVIDER');const rows=await pref.json();const learner=rows[0];
   if(!learner||![10,11,12].includes(learner.grade))return failure(400,'INVALID_REQUEST');
   if(mode==='practice_generate'){

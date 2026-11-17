@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.animation.core.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -169,6 +171,36 @@ private fun ProfileScreen(
     val searchState by friendsModel.searchState().observeAsState()
     val friendsPalette = premiumDashboardPalette(
         com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current))
+    var friendsPage by rememberSaveable { mutableStateOf("profile") }
+    BackHandler(enabled = friendsPage != "profile") {
+        friendsPage = if (friendsPage == "search") "list" else "profile"
+    }
+
+    if (friendsPage != "profile") {
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+            .padding(horizontal = MentorTokens.PagePadding, vertical = MentorTokens.SpaceLarge),
+            verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceLarge)) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = {
+                    friendsPage = if (friendsPage == "search") "list" else "profile"
+                }) { Text(stringResource(R.string.friends_back)) }
+                Spacer(Modifier.weight(1f))
+                if (friendsPage == "list") {
+                    Button(onClick = { friendsPage = "search" }) {
+                        Text(stringResource(R.string.friends_open_search))
+                    }
+                }
+            }
+            Text(stringResource(if (friendsPage == "search") R.string.friends_search_title
+                else R.string.friends_manage_title),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = friendsPalette.title)
+            FriendsPanel(friendsState, searchState, friendsPalette, friendsModel,
+                openFriendProfile, searchMode = friendsPage == "search")
+        }
+        return
+    }
 
     Box(Modifier.fillMaxSize()) {
         Column(
@@ -213,8 +245,22 @@ private fun ProfileScreen(
                     ProfileNotice(snapshot, failed, refresh, learn)
                 }
 
-                // Manage friendships from the learner's profile.
-                FriendsPanel(friendsState, searchState, friendsPalette, friendsModel, openFriendProfile)
+                PremiumDashboardCard(friendsPalette) {
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f)) {
+                            Text(stringResource(R.string.friends_manage_title),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold, color = friendsPalette.title)
+                            Text(stringResource(R.string.friends_manage_subtitle),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = friendsPalette.secondary)
+                        }
+                        TextButton(onClick = {
+                            friendsModel.refreshFriends()
+                            friendsPage = "list"
+                        }) { Text(stringResource(R.string.friends_open_list)) }
+                    }
+                }
 
                 // Section HUY HIỆU THỬ THÁCH THÁNG
                 ProfileBadgeCollection(badges, badgesLoaded)

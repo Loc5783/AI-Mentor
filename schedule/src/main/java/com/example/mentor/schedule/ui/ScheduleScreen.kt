@@ -93,7 +93,9 @@ private val NullableTodoTaskSaver: Saver<TodoTask?, Any> = listSaver(
                 task.priority,
                 task.linkedSubject ?: "",
                 task.createdAt,
-                task.completedAt ?: -1L
+                task.completedAt ?: -1L,
+                task.dueDate ?: "",
+                task.planStartDate ?: ""
             )
         }
     },
@@ -112,7 +114,9 @@ private val NullableTodoTaskSaver: Saver<TodoTask?, Any> = listSaver(
                 priority = (list[5] as? Number)?.toInt() ?: 1,
                 linkedSubject = if (subjectStr.isNullOrEmpty()) null else subjectStr,
                 createdAt = (list[7] as? Number)?.toLong() ?: 0L,
-                completedAt = if (completedAtVal == null || completedAtVal < 0) null else completedAtVal
+                completedAt = if (completedAtVal == null || completedAtVal < 0) null else completedAtVal,
+                dueDate = (list.getOrNull(9) as? String)?.ifEmpty { null },
+                planStartDate = (list.getOrNull(10) as? String)?.ifEmpty { null }
             )
         }
     }
@@ -149,6 +153,7 @@ fun ScheduleScreen(
     var showHistory by rememberSaveable { mutableStateOf(false) }
     var entryToEdit by rememberSaveable(stateSaver = NullableScheduleEntrySaver) { mutableStateOf<ScheduleEntry?>(null) }
     var taskToEdit by rememberSaveable(stateSaver = NullableTodoTaskSaver) { mutableStateOf<TodoTask?>(null) }
+    var suggestedTodoTitle by rememberSaveable { mutableStateOf("") }
     var scheduleDialogSession by rememberSaveable { mutableStateOf(0) }
     var todoDialogSession by rememberSaveable { mutableStateOf(0) }
     
@@ -354,11 +359,30 @@ fun ScheduleScreen(
                                 .padding(horizontal = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            viewModel.entries.sortedBy { it.period }.forEach { entry ->
-                                ScheduleTimelineItemV2(entry) { clicked ->
-                                    entryToEdit = clicked
-                                    scheduleDialogSession++
-                                    showScheduleForm = true
+                            val morning = viewModel.entries.filter { it.period in 1..5 }.sortedBy { it.period }
+                            val afternoon = viewModel.entries.filter { it.period in 6..10 }.sortedBy { it.period }
+                            if (morning.isNotEmpty()) {
+                                Text(stringResource(R.string.schedule_morning_title),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.onSurface)
+                                morning.forEach { entry ->
+                                    ScheduleTimelineItemV2(entry) { clicked ->
+                                        entryToEdit = clicked
+                                        scheduleDialogSession++
+                                        showScheduleForm = true
+                                    }
+                                }
+                            }
+                            if (afternoon.isNotEmpty()) {
+                                Text(stringResource(R.string.schedule_afternoon_title),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.onSurface)
+                                afternoon.forEach { entry ->
+                                    ScheduleTimelineItemV2(entry) { clicked ->
+                                        entryToEdit = clicked
+                                        scheduleDialogSession++
+                                        showScheduleForm = true
+                                    }
                                 }
                             }
                         }
@@ -392,6 +416,7 @@ fun ScheduleScreen(
                         FilledTonalButton(
                             onClick = {
                                 taskToEdit = null
+                                suggestedTodoTitle = ""
                                 todoDialogSession++
                                 showTodoForm = true
                             },
@@ -423,6 +448,18 @@ fun ScheduleScreen(
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
+                                viewModel.entries.map { it.title.trim() }.filter { it.isNotEmpty() }
+                                    .distinct().take(3).forEach { subject ->
+                                        SuggestionChip(
+                                            onClick = {
+                                                taskToEdit = null
+                                                suggestedTodoTitle = context.getString(R.string.todo_review_subject, subject)
+                                                todoDialogSession++
+                                                showTodoForm = true
+                                            },
+                                            label = { Text(stringResource(R.string.todo_review_subject, subject)) }
+                                        )
+                                    }
                             }
                         }
                     } else {
@@ -463,19 +500,30 @@ fun ScheduleScreen(
 
                         Spacer(Modifier.height(8.dp))
 
-                        // Danh sách việc (Chưa xong trước, Đã xong sau)
+                        // The next actionable task stays visible above the rest of the day.
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            val incomplete = viewModel.todos.filter { !it.isCompleted }.sortedByDescending { it.priority }
+                            val incomplete = viewModel.todos.filter { !it.isCompleted }
+                                .sortedWith(compareByDescending<TodoTask> { it.priority }.thenBy { it.createdAt })
                             val complete = viewModel.todos.filter { it.isCompleted }.sortedByDescending { it.completedAt }
 
-                            incomplete.forEach { task ->
+                            if (incomplete.isNotEmpty()) {
+                                Text(
+                                    stringResource(R.string.todo_next_up),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+
+                            incomplete.forEachIndexed { index, task ->
                                 TodoCard(
                                     task = task,
+                                    focused = index == 0,
                                     onToggle = { viewModel.toggleTodo(it) },
                                     onDelete = { taskToDelete ->
                                         viewModel.deleteTodo(taskToDelete)
@@ -490,6 +538,7 @@ fun ScheduleScreen(
                                     },
                                     onClick = { clicked ->
                                         taskToEdit = clicked
+                                        suggestedTodoTitle = ""
                                         todoDialogSession++
                                         showTodoForm = true
                                     }
@@ -520,6 +569,7 @@ fun ScheduleScreen(
                                         },
                                         onClick = { clicked ->
                                             taskToEdit = clicked
+                                            suggestedTodoTitle = ""
                                             todoDialogSession++
                                             showTodoForm = true
                                         }
@@ -583,6 +633,7 @@ fun ScheduleScreen(
     if (showTodoForm) {
         TodoQuickAddDialog(
             initialTask = taskToEdit,
+            suggestedTitle = suggestedTodoTitle,
             dialogSession = todoDialogSession,
             onDismiss = {
                 showTodoForm = false
@@ -646,12 +697,13 @@ private fun ScheduleUnavailable() {
 @Composable
 fun TodoQuickAddDialog(
     initialTask: TodoTask? = null,
+    suggestedTitle: String = "",
     dialogSession: Int = 0,
     onDismiss: () -> Unit,
     onSave: (String, Int) -> Unit
 ) {
     val isEdit = initialTask != null
-    var title by rememberSaveable(dialogSession) { mutableStateOf(initialTask?.title ?: "") }
+    var title by rememberSaveable(dialogSession) { mutableStateOf(initialTask?.title ?: suggestedTitle) }
     var priority by rememberSaveable(dialogSession) { mutableStateOf(initialTask?.priority ?: 1) } // 0=Low, 1=Normal, 2=High
     
     AlertDialog(

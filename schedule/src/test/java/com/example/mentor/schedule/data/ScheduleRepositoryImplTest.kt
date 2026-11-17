@@ -5,6 +5,8 @@ import android.content.ContextWrapper
 import android.database.sqlite.SQLiteDatabase
 import com.example.mentor.schedule.domain.DuplicateScheduleEntryException
 import com.example.mentor.schedule.domain.ScheduleEntry
+import com.example.mentor.schedule.domain.TodoDates
+import com.example.mentor.schedule.domain.TodoTask
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -46,6 +48,35 @@ class ScheduleRepositoryImplTest {
         File(databaseFile.path + "-wal").delete()
         File(databaseFile.path + "-shm").delete()
         databaseFile.delete()
+    }
+
+    @Test
+    fun datedTodoDoesNotRecurAndLegacyWeekdayIsPreserved() {
+        val today = TodoDates.today()
+        val day = java.util.Calendar.getInstance().let {
+            (it.get(java.util.Calendar.DAY_OF_WEEK) + 5) % 7 + 1
+        }
+        repository.insertTodo(TodoTask(accountId = "account", title = "One time",
+            dayOfWeek = day, dueDate = today, planStartDate = today))
+        repository.insertTodo(TodoTask(accountId = "account", title = "Legacy weekly",
+            dayOfWeek = day))
+
+        assertEquals(setOf("One time", "Legacy weekly"),
+            repository.getTodos("account", day).map { it.title }.toSet())
+        val nextWeek = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.ROOT).let { format ->
+            val calendar = java.util.Calendar.getInstance()
+            calendar.add(java.util.Calendar.DAY_OF_YEAR, 7)
+            format.format(calendar.time)
+        }
+        val database = SQLiteDatabase.openDatabase(databaseFile.path, null, SQLiteDatabase.OPEN_READONLY)
+        database.use {
+            it.rawQuery("SELECT title FROM todo_tasks WHERE account_id=? AND (due_date=? OR (due_date IS NULL AND day_of_week=?))",
+                arrayOf("account", nextWeek, day.toString())).use { cursor ->
+                val titles = mutableListOf<String>()
+                while (cursor.moveToNext()) titles.add(cursor.getString(0))
+                assertEquals(listOf("Legacy weekly"), titles)
+            }
+        }
     }
 
     @Test
