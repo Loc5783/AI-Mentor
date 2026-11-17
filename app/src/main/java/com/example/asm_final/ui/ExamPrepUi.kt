@@ -61,6 +61,9 @@ fun ExamPrepScreen(
 
     val state by viewModel.uiState.collectAsState()
 
+    ActiveStudyTime(state.screenState == ExamScreenState.IN_PROGRESS,
+        state.currentSession?.subjectId, state.currentSession?.grade ?: initialGrade)
+
     when (state.screenState) {
         ExamScreenState.LIST -> ExamListContent(
             state = state,

@@ -215,7 +215,7 @@ object CompetitionUi {
                         }
                     }
                 } else {
-                    items(board.entries, key = { it.learner.id }) { entry ->
+                    items(if (xp) board.entries else board.entries.take(15), key = { it.learner.id }) { entry ->
                         val rankTint = when (entry.rank) {
                             1 -> palette.experience
                             2 -> palette.secondary

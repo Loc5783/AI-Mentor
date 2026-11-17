@@ -430,6 +430,10 @@ fun LibraryPracticeScreen(
 
     val sessionState by controller.sessionState.collectAsState()
 
+    val activeSession = sessionState?.session
+    ActiveStudyTime(activeSession?.state == "IN_PROGRESS",
+        activeSession?.subjectId, activeSession?.grade ?: grade)
+
     BackHandler(enabled = sessionState != null) {
         controller.backToList()
     }

@@ -95,12 +95,12 @@ public final class ProfileHubFragment extends Fragment {
                 if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) {
                   try {
                     studySummary = services.study().summary(owner);
-                  } catch (RuntimeException ignored) {
+                  } catch (Exception ignored) {
                     // Keep the rest of the profile usable when the optional cloud summary is down.
                   }
                   try {
                     badgeSummary = services.study().badges(owner);
-                  } catch (RuntimeException ignored) {
+                  } catch (Exception ignored) {
                     // The UI presents an explicit unavailable state instead of inventing badge data.
                   }
                 }
@@ -121,7 +121,7 @@ public final class ProfileHubFragment extends Fragment {
                           presenter.render(result);
                           presenter.activity(finalStudySummary, finalBadgeSummary);
                         });
-              } catch (RuntimeException unavailable) {
+              } catch (Exception unavailable) {
                 new Handler(Looper.getMainLooper())
                     .post(
                         () -> {

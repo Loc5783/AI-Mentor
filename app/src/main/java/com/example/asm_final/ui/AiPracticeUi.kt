@@ -50,6 +50,12 @@ fun AiPracticeScreen(
         AiPracticeViewModel(repository, scope)
     }
 
+    ActiveStudyTime(
+        viewModel.screenState == AiPracticeScreenState.PRACTICING ||
+            viewModel.screenState == AiPracticeScreenState.FEEDBACK,
+        viewModel.session?.subjectId, viewModel.session?.grade ?: initialGrade
+    )
+
     DisposableEffect(viewModel) {
         onDispose {
             viewModel.onCleared()

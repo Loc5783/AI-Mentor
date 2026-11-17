@@ -225,6 +225,10 @@ private fun LessonScreen(
 ) {
     val configuration = LocalConfiguration.current
     val attemptId = state.attempt?.optString("id").orEmpty()
+    val isAnswering = state.attempt?.let {
+        it.optString("kind") != "LESSON" || it.optInt("step") >= 2
+    } == true
+    ActiveStudyTime(isAnswering, subjectId.wireId, grade)
     SideEffect {
         android.util.Log.d("PlacementTrace", "LESSON_SCREEN_COMPOSED: revision=${state.revision}, attemptId=$attemptId, vm=${System.identityHashCode(model)}")
     }

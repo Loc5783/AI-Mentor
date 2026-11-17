@@ -99,7 +99,7 @@ public final class LessonHubFragment extends Fragment {
                             render();
                           }
                         });
-              } catch (RuntimeException error) {
+              } catch (Exception error) {
                 new android.os.Handler(android.os.Looper.getMainLooper())
                     .post(
                         () -> {
@@ -139,7 +139,7 @@ public final class LessonHubFragment extends Fragment {
                                   () -> {
                                     if (content != null) load();
                                   });
-                        } catch (RuntimeException error) {
+                        } catch (Exception error) {
                           new android.os.Handler(android.os.Looper.getMainLooper())
                               .post(
                                   () -> {
