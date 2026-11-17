@@ -26,6 +26,7 @@ class ExamPrepViewModelTest {
         var getSessionCallCount = 0
 
         var failStartWith: Exception? = null
+        var failListSessionsWith: Exception? = null
         var failSubmitWith: Exception? = null
         var failSaveWith: Exception? = null
         var submitCommittedOnServerBeforeNetworkError = false
@@ -128,6 +129,7 @@ class ExamPrepViewModelTest {
         }
 
         override suspend fun listUserSessions(subjectId: String?, grade: Int?): List<ExamSession> {
+            failListSessionsWith?.let { throw it }
             return listOf(activeSession)
         }
 
@@ -549,6 +551,101 @@ class ExamPrepViewModelTest {
         assertEquals("B", vm.uiState.value.confirmedAnswers["Q1"])
         assertEquals(AnswerSaveStatus.CONFIRMED, vm.uiState.value.answerSaveStatuses["Q1"])
         vm.clear()
+    }
+
+    @Test
+    fun testEssayTextIsSavedBeforeSubmittingEvenWhenDebounced() = runTest {
+        fakeRepo.activeSession = fakeRepo.activeSession.copy(
+            questions = listOf(fakeRepo.questions.first().copy(questionType = "ESSAY"))
+        )
+        val vm = ExamPrepViewModel(fakeRepo, this,
+            clockProvider = { baseEpochSeconds + (testScheduler.currentTime / 1000L) })
+        currentVm = vm
+        vm.resumeSession(fakeRepo.activeSession)
+        vm.setTextAnswer("Q1", "Lời giải đang viết")
+        runCurrent()
+        assertEquals(0, fakeRepo.saveAnswerCallCount)
+
+        vm.submitSession()
+        advanceTimeBy(500)
+        runCurrent()
+
+        assertEquals("Lời giải đang viết", fakeRepo.lastSavedOption)
+        assertEquals(1, fakeRepo.submitSessionCallCount)
+        assertEquals(ExamScreenState.RESULT, vm.uiState.value.screenState)
+    }
+
+    @Test
+    fun testFailedSaveBlocksManualSubmitButNotExpiredExam() = runTest {
+        val vm = ExamPrepViewModel(fakeRepo, this,
+            clockProvider = { baseEpochSeconds + (testScheduler.currentTime / 1000L) })
+        currentVm = vm
+        vm.resumeSession(fakeRepo.activeSession)
+        fakeRepo.failSaveWith = IOException("Offline")
+        vm.selectAnswer("Q1", "A")
+        runCurrent()
+        vm.submitSession()
+        runCurrent()
+        assertEquals(0, fakeRepo.submitSessionCallCount)
+        assertEquals(ExamScreenState.IN_PROGRESS, vm.uiState.value.screenState)
+
+        advanceTimeBy(45 * 60 * 1000L)
+        runCurrent()
+        assertEquals(1, fakeRepo.submitSessionCallCount)
+        assertEquals(ExamScreenState.RESULT, vm.uiState.value.screenState)
+    }
+
+    @Test
+    fun testOpeningBriefCompletedSessionLoadsQuestionsBeforeReview() = runTest {
+        fakeRepo.activeSession = fakeRepo.activeSession.copy(state = "SUBMITTED", score10 = 8.0)
+        val vm = ExamPrepViewModel(fakeRepo, this,
+            clockProvider = { baseEpochSeconds + (testScheduler.currentTime / 1000L) })
+        currentVm = vm
+        vm.init(initialSubjectId = "physics", initialGrade = 10)
+        runCurrent()
+
+        vm.reviewSession(fakeRepo.activeSession.copy(questions = emptyList()))
+        runCurrent()
+
+        assertEquals(1, fakeRepo.getSessionCallCount)
+        assertEquals(ExamScreenState.RESULT, vm.uiState.value.screenState)
+        assertEquals(2, vm.uiState.value.completedSession?.questions?.size)
+    }
+
+    @Test
+    fun testSubmissionShowsResultWhileEssayGradingIsStillRunning() = runTest {
+        fakeRepo.activeSession = fakeRepo.activeSession.copy(gradingStatus = "PENDING")
+        val gradeResponse = CompletableDeferred<ExamSession>()
+        fakeRepo.getSessionDeferred = gradeResponse
+        val vm = ExamPrepViewModel(fakeRepo, this,
+            clockProvider = { baseEpochSeconds + (testScheduler.currentTime / 1000L) })
+        currentVm = vm
+        vm.resumeSession(fakeRepo.activeSession)
+
+        vm.submitSession()
+        runCurrent()
+        assertEquals(ExamScreenState.RESULT, vm.uiState.value.screenState)
+        assertTrue(vm.uiState.value.isGradingEssay)
+        assertEquals("PENDING", vm.uiState.value.completedSession?.gradingStatus)
+
+        gradeResponse.complete(fakeRepo.activeSession.copy(gradingStatus = "COMPLETE", score10 = 8.0))
+        runCurrent()
+        assertFalse(vm.uiState.value.isGradingEssay)
+        assertEquals(8.0, vm.uiState.value.completedSession?.score10 ?: 0.0, 0.01)
+    }
+
+    @Test
+    fun testSessionHistoryConnectionFailureIsVisibleWithoutHidingExamCatalog() = runTest {
+        fakeRepo.failListSessionsWith = IOException("Network lost")
+        val vm = ExamPrepViewModel(fakeRepo, this,
+            clockProvider = { baseEpochSeconds + (testScheduler.currentTime / 1000L) })
+        currentVm = vm
+        vm.init(initialSubjectId = "physics", initialGrade = 10)
+        runCurrent()
+
+        assertEquals(2, vm.uiState.value.exams.size)
+        assertNotNull(vm.uiState.value.sessionListError)
+        assertTrue(vm.uiState.value.activeSessionsByExamId.isEmpty())
     }
 
     @Test

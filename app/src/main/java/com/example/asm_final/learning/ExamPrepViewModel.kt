@@ -37,6 +37,8 @@ data class ExamUiState(
     val selectedSemester: Int? = null, // null = all, 1, 2
     val exams: List<ExamSummary> = emptyList(),
     val activeSessionsByExamId: Map<String, ExamSession> = emptyMap(),
+    val completedSessions: List<ExamSession> = emptyList(),
+    val sessionListError: String? = null,
     val isLoadingExams: Boolean = false,
     val examListError: String? = null,
 
@@ -62,7 +64,8 @@ data class ExamUiState(
 
     // Result & Review state
     val completedSession: ExamSession? = null,
-    val reviewQuestionIndex: Int = 0
+    val reviewQuestionIndex: Int = 0,
+    val isGradingEssay: Boolean = false
 ) {
     val unansweredCount: Int
         get() {
@@ -111,6 +114,7 @@ class ExamPrepViewModel(
     private var loadExamsJob: Job? = null
     private var startExamJob: Job? = null
     private var submitJob: Job? = null
+    private var openSessionJob: Job? = null
     private val saveAnswerJobs = mutableMapOf<String, Job>()
 
     // Monotonic server-sync anchors
@@ -163,7 +167,7 @@ class ExamPrepViewModel(
         val gen = ++requestGeneration
         val callGen = controllerGeneration
         val state = _uiState.value
-        _uiState.update { it.copy(isLoadingExams = true, examListError = null) }
+        _uiState.update { it.copy(isLoadingExams = true, examListError = null, sessionListError = null) }
 
         val job = scope.launch {
             try {
@@ -173,6 +177,7 @@ class ExamPrepViewModel(
                     examType = state.selectedExamType,
                     semester = state.selectedSemester
                 )
+                var sessionListFailed = false
                 val userSessions = try {
                     repository.listUserSessions(
                         subjectId = state.selectedSubjectId,
@@ -180,12 +185,13 @@ class ExamPrepViewModel(
                     )
                 } catch (e: Exception) {
                     if (e is CancellationException) throw e
+                    sessionListFailed = true
                     emptyList()
                 }
 
                 val activeMap = mutableMapOf<String, ExamSession>()
                 for (s in userSessions) {
-                    if (s.state == "IN_PROGRESS") {
+                    if (s.state == "IN_PROGRESS" && s.examId !in activeMap) {
                         activeMap[s.examId] = s
                     }
                 }
@@ -195,6 +201,8 @@ class ExamPrepViewModel(
                         it.copy(
                             exams = exams,
                             activeSessionsByExamId = activeMap,
+                            completedSessions = userSessions.filter { it.state == "SUBMITTED" || it.state == "TIMED_OUT" },
+                            sessionListError = if (sessionListFailed) "Chưa tải được bài thi đã lưu. Kiểm tra kết nối rồi tải lại." else null,
                             isLoadingExams = false,
                             examListError = null
                         )
@@ -236,6 +244,8 @@ class ExamPrepViewModel(
         startExamJob = null
         submitJob?.cancel()
         submitJob = null
+        openSessionJob?.cancel()
+        openSessionJob = null
         saveAnswerJobs.values.forEach { it.cancel() }
         saveAnswerJobs.clear()
 
@@ -297,7 +307,44 @@ class ExamPrepViewModel(
     }
 
     fun resumeSession(session: ExamSession) {
-        enterSession(session)
+        if (session.questions.isNotEmpty()) enterSession(session)
+        else openBriefSession(session)
+    }
+
+    fun reviewSession(session: ExamSession) {
+        if (session.state != "SUBMITTED" && session.state != "TIMED_OUT") return
+        if (session.questions.isEmpty()) {
+            openBriefSession(session)
+            return
+        }
+        stopTimer()
+        _uiState.update { it.copy(screenState = ExamScreenState.RESULT,
+            completedSession = session, reviewQuestionIndex = 0) }
+    }
+
+    private fun openBriefSession(brief: ExamSession) {
+        openSessionJob?.cancel()
+        val generation = requestGeneration
+        val controller = controllerGeneration
+        _uiState.update { it.copy(isLoadingExams = true, examListError = null) }
+        openSessionJob = scope.launch {
+            try {
+                val full = repository.getSession(brief.id)
+                if (generation != requestGeneration || controller != controllerGeneration || isCleared ||
+                    _uiState.value.screenState != ExamScreenState.LIST) return@launch
+                if (full.state == "IN_PROGRESS") enterSession(full) else reviewSession(full)
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                if (generation == requestGeneration && controller == controllerGeneration && !isCleared) {
+                    _uiState.update { it.copy(examListError = "Chưa tải được bài thi. Kiểm tra mạng rồi thử lại.") }
+                }
+            } finally {
+                if (generation == requestGeneration && controller == controllerGeneration && !isCleared) {
+                    _uiState.update { it.copy(isLoadingExams = false) }
+                }
+                if (openSessionJob === coroutineContext[Job]) openSessionJob = null
+            }
+        }
     }
 
     private fun enterSession(session: ExamSession) {
@@ -410,6 +457,8 @@ class ExamPrepViewModel(
         startExamJob = null
         submitJob?.cancel()
         submitJob = null
+        openSessionJob?.cancel()
+        openSessionJob = null
         saveAnswerJobs.values.forEach { it.cancel() }
         saveAnswerJobs.clear()
         _uiState.update {
@@ -449,9 +498,19 @@ class ExamPrepViewModel(
 
         val currentSelected = _uiState.value.localAnswers[questionId]
         // Toggle: if clicking already selected option, unselect (clear) it
-        val targetSelection: String? = if (currentSelected == option) null else option
+        val type = session.questions.firstOrNull { it.id == questionId }?.questionType
+        val targetSelection: String? = if (type == "SINGLE_CHOICE" && currentSelected == option) null else option
 
         return performSaveAnswer(session, questionId, targetSelection)
+    }
+
+    fun setTextAnswer(questionId: String, text: String): Job? {
+        val session = _uiState.value.currentSession ?: return null
+        if (_uiState.value.isSubmitting || session.state != "IN_PROGRESS") return null
+        val type = session.questions.firstOrNull { it.id == questionId }?.questionType ?: return null
+        val limit = if (type == "ESSAY") 4000 else if (type == "SHORT_ANSWER") 200 else return null
+        if (text.length > limit) return null
+        return performSaveAnswer(session, questionId, text.ifBlank { null }, 500L)
     }
 
     fun retrySaveAnswer(questionId: String): Job? {
@@ -463,7 +522,7 @@ class ExamPrepViewModel(
         return performSaveAnswer(session, questionId, currentSelected)
     }
 
-    private fun performSaveAnswer(session: ExamSession, questionId: String, targetSelection: String?): Job {
+    private fun performSaveAnswer(session: ExamSession, questionId: String, targetSelection: String?, debounceMs: Long = 0L): Job {
         val sessionId = session.id
         val callGen = controllerGeneration
         val currentRev = _uiState.value.questionRevisions[questionId] ?: 0
@@ -504,6 +563,7 @@ class ExamPrepViewModel(
         // Save asynchronously with revision guard
         val job = scope.launch {
             try {
+                if (debounceMs > 0) delay(debounceMs)
                 val updatedSession = repository.saveAnswer(sessionId, questionId, targetSelection, nextRev)
                 if (callGen != controllerGeneration || isCleared) return@launch
 
@@ -610,6 +670,11 @@ class ExamPrepViewModel(
 
         val job = scope.launch {
             try {
+                saveAnswerJobs.values.toList().forEach { it.join() }
+                if (calculateRemainingSeconds() > 0L &&
+                    _uiState.value.answerSaveStatuses.values.any { it == AnswerSaveStatus.FAILED_UNSAVED }) {
+                    throw IllegalStateException("Có câu trả lời chưa được lưu. Hãy thử lưu lại trước khi nộp bài.")
+                }
                 val resultSession = repository.submitSession(targetSessionId)
                 if (callGen == controllerGeneration && !isCleared && _uiState.value.currentSession?.id == targetSessionId) {
                     _uiState.update {
@@ -621,6 +686,7 @@ class ExamPrepViewModel(
                             reviewQuestionIndex = 0
                         )
                     }
+                    if (resultSession.gradingStatus == "PENDING") retryEssayGrading()
                 }
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
@@ -680,6 +746,31 @@ class ExamPrepViewModel(
         }
         submitJob = job
         return job
+    }
+
+    fun retryEssayGrading(): Job? {
+        val session = _uiState.value.completedSession ?: return null
+        if (session.gradingStatus != "PENDING" || _uiState.value.isGradingEssay) return null
+        _uiState.update { it.copy(isGradingEssay = true) }
+        return scope.launch {
+            try {
+                val updated = repository.getSession(session.id)
+                _uiState.update { current ->
+                    if (current.completedSession?.id == session.id) current.copy(completedSession = updated) else current
+                }
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                _uiState.update { current ->
+                    if (current.completedSession?.id == session.id) current.copy(
+                        completedSession = current.completedSession.copy(
+                            gradingError = "Chưa kết nối được máy chủ. Bài làm đã lưu; hãy thử lại khi có mạng."
+                        )
+                    ) else current
+                }
+            } finally {
+                _uiState.update { it.copy(isGradingEssay = false) }
+            }
+        }
     }
 
     fun setReviewQuestionIndex(index: Int) {

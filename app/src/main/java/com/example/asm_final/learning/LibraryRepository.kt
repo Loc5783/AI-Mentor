@@ -327,7 +327,7 @@ class BackendLibraryRepository(
                 difficulty = obj.optString("difficulty", "MEDIUM"),
                 state = obj.optString("state", "NEEDS_REVIEW"),
                 hasSnapshot = obj.optBoolean("hasSnapshot", true),
-                canRetry = obj.optBoolean("canRetry", true),
+                canRetry = options.isNotEmpty() && obj.optBoolean("canRetry", true),
                 createdAt = obj.optString("createdAt", ""),
                 updatedAt = if (obj.has("updatedAt") && !obj.isNull("updatedAt")) obj.getString("updatedAt") else null
             )

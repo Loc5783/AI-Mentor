@@ -31,6 +31,11 @@ import com.example.mentor.learning.SubjectId
 import com.example.mentor.ui.design.*
 import kotlinx.coroutines.CoroutineScope
 import java.util.Locale
+import org.json.JSONObject
+
+private fun examPointsLabel(points: Int, scale: Int): String =
+    if (scale > 1) String.format(Locale.ROOT, "%.2f", points.toDouble() / scale).trimEnd('0').trimEnd('.')
+    else points.toString()
 
 @Composable
 fun ExamPrepScreen(
@@ -73,6 +78,7 @@ fun ExamPrepScreen(
             onSelectSemester = { viewModel.setSemesterFilter(it) },
             onSelectExam = { viewModel.selectExam(it) },
             onResumeSession = { viewModel.resumeSession(it) },
+            onReviewSession = { viewModel.reviewSession(it) },
             onReload = { viewModel.loadExams() },
             onBack = onBack,
             onOpenNotebook = { onOpenNotebook?.invoke(null) }
@@ -86,6 +92,7 @@ fun ExamPrepScreen(
             state = state,
             onSelectQuestion = { viewModel.selectQuestionIndex(it) },
             onSelectAnswer = { qId, opt -> viewModel.selectAnswer(qId, opt) },
+            onTextAnswer = { qId, value -> viewModel.setTextAnswer(qId, value) },
             onRetryAnswer = { qId -> viewModel.retrySaveAnswer(qId) },
             onNext = { viewModel.nextQuestion() },
             onPrev = { viewModel.previousQuestion() },
@@ -96,6 +103,7 @@ fun ExamPrepScreen(
         ExamScreenState.RESULT -> ExamResultContent(
             state = state,
             onSelectReviewQuestion = { viewModel.setReviewQuestionIndex(it) },
+            onRetryGrading = { viewModel.retryEssayGrading() },
             onFinishReview = { viewModel.finishReview() },
             onOpenNotebook = {
                 val subWire = state.completedSession?.subjectId
@@ -119,6 +127,7 @@ private fun ExamListContent(
     onSelectSemester: (Int?) -> Unit,
     onSelectExam: (ExamSummary) -> Unit,
     onResumeSession: (ExamSession) -> Unit,
+    onReviewSession: (ExamSession) -> Unit,
     onReload: () -> Unit,
     onBack: () -> Unit,
     onOpenNotebook: () -> Unit
@@ -287,6 +296,9 @@ private fun ExamListContent(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
+                state.sessionListError?.let { message ->
+                    item { MentorErrorNotice(message) }
+                }
                 items(state.exams) { exam ->
                     val activeSession = state.activeSessionsByExamId[exam.id]
                     ExamCard(
@@ -300,6 +312,24 @@ private fun ExamListContent(
                             }
                         }
                     )
+                }
+                val visibleExamIds = state.exams.map { it.id }.toSet()
+                val recent = state.completedSessions.filter { it.examId in visibleExamIds }.take(10)
+                if (recent.isNotEmpty()) {
+                    item {
+                        Text("Bài đã nộp", style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 12.dp))
+                    }
+                    items(recent) { session ->
+                        Card(modifier = Modifier.fillMaxWidth().clickable { onReviewSession(session) }) {
+                            Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                Text(session.examTitle, fontWeight = FontWeight.SemiBold)
+                                Text(if (session.gradingStatus == "PENDING") "Đang chấm tự luận · Chạm để xem"
+                                    else String.format(Locale.ROOT, "%.2f/10 điểm · Chạm để xem", session.score10),
+                                    style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -584,6 +614,7 @@ private fun ExamInProgressContent(
     state: ExamUiState,
     onSelectQuestion: (Int) -> Unit,
     onSelectAnswer: (String, String) -> Unit,
+    onTextAnswer: (String, String) -> Unit,
     onRetryAnswer: (String) -> Unit,
     onNext: () -> Unit,
     onPrev: () -> Unit,
@@ -727,7 +758,7 @@ private fun ExamInProgressContent(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        "${currentQuestion.points} điểm",
+                        "${examPointsLabel(currentQuestion.points, currentQuestion.pointScale)} điểm",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -740,7 +771,10 @@ private fun ExamInProgressContent(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        currentQuestion.prompt,
+                        if (currentQuestion.questionType == "ESSAY") currentQuestion.prompt.replace(
+                            "Học sinh làm bài ra giấy, phần tự luận chưa chấm tự động",
+                            "Viết câu trả lời bên dưới; AI sẽ chấm sau khi nộp"
+                        ) else currentQuestion.prompt,
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.padding(16.dp)
                     )
@@ -757,7 +791,39 @@ private fun ExamInProgressContent(
                     "D" to currentQuestion.optionD
                 )
 
-                options.forEach { (key, text) ->
+                if (currentQuestion.questionType == "SHORT_ANSWER" || currentQuestion.questionType == "ESSAY") {
+                    OutlinedTextField(
+                        value = selectedOpt.orEmpty(),
+                        onValueChange = { onTextAnswer(currentQuestion.id, it) },
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text(if (currentQuestion.questionType == "ESSAY") "Bài làm của bạn" else "Đáp án ngắn") },
+                        minLines = if (currentQuestion.questionType == "ESSAY") 5 else 1,
+                        maxLines = if (currentQuestion.questionType == "ESSAY") 12 else 3,
+                        supportingText = { Text("${selectedOpt.orEmpty().length}/${if (currentQuestion.questionType == "ESSAY") 4000 else 200}") }
+                    )
+                } else if (currentQuestion.questionType == "TRUE_FALSE_4") {
+                    val statements = currentQuestion.contentData.optJSONArray("subItems")
+                    val current = runCatching { JSONObject(selectedOpt.orEmpty()) }.getOrDefault(JSONObject())
+                    for (i in 0 until (statements?.length() ?: 0)) {
+                        val item = statements!!.optJSONObject(i) ?: continue
+                        val key = item.optString("key")
+                        if (key.isBlank()) continue
+                        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Text("${key.uppercase()}. ${item.optString("statement")}")
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                listOf(true to "Đúng", false to "Sai").forEach { (value, label) ->
+                                    val chosen = current.has(key) && current.optBoolean(key) == value
+                                    OutlinedButton(onClick = {
+                                        val updated = JSONObject(current.toString()).put(key, value)
+                                        onSelectAnswer(currentQuestion.id, updated.toString())
+                                    }, colors = if (chosen) ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.primaryContainer) else ButtonDefaults.outlinedButtonColors()) {
+                                        Text(label)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else options.forEach { (key, text) ->
                     val isChosen = selectedOpt == key
                     Card(
                         modifier = Modifier
@@ -936,6 +1002,7 @@ private fun ExamInProgressContent(
 private fun ExamResultContent(
     state: ExamUiState,
     onSelectReviewQuestion: (Int) -> Unit,
+    onRetryGrading: () -> Unit,
     onFinishReview: () -> Unit,
     onOpenNotebook: () -> Unit
 ) {
@@ -966,15 +1033,24 @@ private fun ExamResultContent(
                 )
 
                 Text(
-                    String.format(Locale.ROOT, "%.2f / 10.0", completed.score10),
+                    if (completed.gradingStatus == "PENDING") "Đang chấm tự luận" else String.format(Locale.ROOT, "%.2f / 10.0", completed.score10),
                     style = MaterialTheme.typography.displayMedium,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Text("Điểm thô: ${completed.rawScore} / ${completed.totalPoints} đ", style = MaterialTheme.typography.bodyMedium)
-                    Text("Số câu đúng: ${completed.correctCount} / ${completed.totalCount}", style = MaterialTheme.typography.bodyMedium)
+                if (completed.gradingStatus == "PENDING") {
+                    Text("Bài làm đã lưu. Điểm cuối sẽ hiện khi AI chấm xong.")
+                    completed.gradingError?.let { MentorErrorNotice(it) }
+                    OutlinedButton(onClick = onRetryGrading, enabled = !state.isGradingEssay) {
+                        Text(if (state.isGradingEssay) "Đang chấm..." else "Thử chấm lại")
+                    }
+                }
+                if (completed.gradingStatus != "PENDING") {
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Text("Điểm thô: ${examPointsLabel(completed.rawScore, completed.questions.firstOrNull()?.pointScale ?: 1)} / ${examPointsLabel(completed.totalPoints, completed.questions.firstOrNull()?.pointScale ?: 1)} đ", style = MaterialTheme.typography.bodyMedium)
+                        Text("Số câu đúng: ${completed.correctCount} / ${completed.totalCount}", style = MaterialTheme.typography.bodyMedium)
+                    }
                 }
 
                 Row(
@@ -1010,6 +1086,7 @@ private fun ExamResultContent(
                     val isCurrent = index == currentRevIndex
                     val isCorrect = q.isCorrect == true
                     val isAnswered = !q.selectedOption.isNullOrBlank()
+                    val isEssayPending = q.questionType == "ESSAY" && isAnswered && q.essayPoints == null
 
                     Box(
                         modifier = Modifier
@@ -1019,6 +1096,7 @@ private fun ExamResultContent(
                                 when {
                                     isCurrent -> MaterialTheme.colorScheme.primary
                                     isCorrect -> Color(0xFF2E7D32) // Forest Green
+                                    isEssayPending -> Color(0xFF53627B)
                                     isAnswered -> MaterialTheme.colorScheme.error // Red
                                     else -> Color(0xFF53627B)
                                 }
@@ -1058,13 +1136,17 @@ private fun ExamResultContent(
                     )
                     Text(
                         when {
-                            currentRevQuestion.isCorrect == true -> "✓ Đúng (+${currentRevQuestion.points} đ)"
+                            currentRevQuestion.questionType == "ESSAY" && currentRevQuestion.essayPoints == null -> "Đang chấm bằng AI"
+                            currentRevQuestion.questionType == "ESSAY" -> "${examPointsLabel(currentRevQuestion.essayPoints ?: 0, currentRevQuestion.pointScale)}/${examPointsLabel(currentRevQuestion.points, currentRevQuestion.pointScale)} điểm"
+                            currentRevQuestion.isCorrect == true -> "✓ Đúng (+${examPointsLabel(currentRevQuestion.points, currentRevQuestion.pointScale)} đ)"
                             !currentRevQuestion.selectedOption.isNullOrBlank() -> "✗ Sai (0 đ)"
                             else -> "○ Chưa trả lời (0 đ)"
                         },
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         color = when {
+                            currentRevQuestion.questionType == "ESSAY" && currentRevQuestion.essayPoints == null -> MaterialTheme.colorScheme.onSurfaceVariant
+                            currentRevQuestion.questionType == "ESSAY" -> MaterialTheme.colorScheme.tertiary
                             currentRevQuestion.isCorrect == true -> Color(0xFF2E7D32)
                             !currentRevQuestion.selectedOption.isNullOrBlank() -> MaterialTheme.colorScheme.error
                             else -> Color.Gray
@@ -1096,7 +1178,21 @@ private fun ExamResultContent(
                     "D" to currentRevQuestion.optionD
                 )
 
-                options.forEach { (key, text) ->
+                if (currentRevQuestion.questionType == "ESSAY" || currentRevQuestion.questionType == "SHORT_ANSWER") {
+                    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+                        Column(Modifier.padding(16.dp)) {
+                            Text("Bài làm của bạn", fontWeight = FontWeight.Bold)
+                            Text(userOpt.orEmpty().ifBlank { "Chưa trả lời" })
+                            if (!currentRevQuestion.essayFeedback.isNullOrBlank()) {
+                                Spacer(Modifier.height(8.dp))
+                                Text("Nhận xét của AI: ${currentRevQuestion.essayFeedback}")
+                            }
+                        }
+                    }
+                } else if (currentRevQuestion.questionType == "TRUE_FALSE_4") {
+                    Text("Bạn chọn: ${userOpt.orEmpty().ifBlank { "Chưa trả lời" }}")
+                    Text("Đáp án: ${correctOpt.orEmpty()}")
+                } else options.forEach { (key, text) ->
                     val isCorrectChoice = key == correctOpt
                     val isUserChoice = key == userOpt
 

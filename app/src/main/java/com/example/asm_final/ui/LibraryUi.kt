@@ -1808,7 +1808,12 @@ fun WrongQuestionsNotebookScreen(
 
                                     Text(
 
-                                        "Lịch sử làm bài: Bạn đã chọn đáp án ${item.selectedOption} (Đáp án chuẩn: ${item.correctOption})",
+                                        if (item.options.isEmpty()) {
+                                            "Bài làm của bạn: ${item.selectedOption.ifBlank { "Chưa trả lời" }}" +
+                                                item.correctOption.takeIf { it.isNotBlank() }?.let { "\nĐáp án tham khảo: $it" }.orEmpty()
+                                        } else {
+                                            "Lịch sử làm bài: Bạn đã chọn đáp án ${item.selectedOption} (Đáp án chuẩn: ${item.correctOption})"
+                                        },
 
                                         style = MaterialTheme.typography.bodySmall,
 

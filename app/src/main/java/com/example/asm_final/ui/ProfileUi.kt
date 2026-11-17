@@ -214,7 +214,7 @@ private fun ProfileScreen(
             visible = entered || !motion,
             enter = fadeIn() + slideInVertically { -it / 12 }
         ) {
-            ProfileHero(name, avatar, settings, loading)
+            ProfileHero(name, avatar, bio, edit, settings, loading)
         }
 
         // Main Profile Body
@@ -234,7 +234,6 @@ private fun ProfileScreen(
                     subjectsCount = subjects.size,
                     edit = edit
                 )
-                ProfileNote(bio, edit)
                 // Section TỔNG QUAN
                 ProfileOverviewGrid(data, learn)
 
@@ -283,6 +282,8 @@ private fun ProfileScreen(
 private fun ProfileHero(
     name: String,
     avatar: String?,
+    bio: String,
+    edit: () -> Unit,
     settings: () -> Unit,
     loading: Boolean,
 ) {
@@ -296,7 +297,7 @@ private fun ProfileHero(
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = MentorTokens.PagePadding)
-                .padding(top = 12.dp, bottom = 16.dp),
+                .padding(top = 18.dp, bottom = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Top Bar: Display Name / Eyebrow on left, Settings on right
@@ -339,10 +340,34 @@ private fun ProfileHero(
                 }
             }
 
-            Spacer(Modifier.height(14.dp))
+            if (!loading) {
+                Column(
+                    Modifier.fillMaxWidth().padding(top = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        stringResource(R.string.profile_note_title),
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        bio.ifBlank { stringResource(R.string.profile_note_empty) },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    TextButton(onClick = edit, modifier = Modifier.testTag("profile-add-note")) {
+                        Text(stringResource(if (bio.isBlank()) R.string.profile_add_note else R.string.profile_edit_note))
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(18.dp))
 
             // Prominent Centered Avatar (96dp)
-            ProfileAvatar(name, avatar, 72.dp, loading)
+            ProfileAvatar(name, avatar, 88.dp, loading)
         }
     }
 }
@@ -466,33 +491,6 @@ private fun ProfileIdentitySection(
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.labelLarge
                 )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ProfileNote(note: String, edit: () -> Unit) {
-    MentorCard(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            Modifier.fillMaxWidth().padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            Text(
-                stringResource(R.string.profile_note_title),
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = note.ifBlank { stringResource(R.string.profile_note_empty) },
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (note.isBlank()) MaterialTheme.colorScheme.onSurfaceVariant
-                    else MaterialTheme.colorScheme.onSurface
-            )
-            if (note.isBlank()) {
-                TextButton(onClick = edit, modifier = Modifier.testTag("profile-add-note")) {
-                    Text(stringResource(R.string.profile_add_note))
-                }
             }
         }
     }
