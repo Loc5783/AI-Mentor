@@ -63,7 +63,7 @@ Deno.serve(async (request: Request) => {
    const graded=await Promise.allSettled(pending.map(async q=>{
     const answer=session.answers[q.id].selectedOption;
     const maxPoints=Number(q.points);
-    if(!Number.isInteger(maxPoints)||maxPoints<1||maxPoints>1000||answer.length>4000||!q.explanation)throw new ProviderFailure(422,'INVALID_ESSAY');
+    if(!Number.isInteger(maxPoints)||maxPoints<1||maxPoints>100000||answer.length>4000||!q.explanation)throw new ProviderFailure(422,'INVALID_ESSAY');
     const quota=await fetch(base+'/rest/v1/rpc/mentor_reserve_ai_request',{method:'POST',headers,body:'{}',signal:AbortSignal.timeout(12000)});
     if(!quota.ok)throw new ProviderFailure(quota.status===429?429:503,quota.status===429?'RATE_LIMITED':'PROVIDER');
     const prompt=essayPrompt({grade:session.grade,subject:subjectNames[session.subject_id]??session.subject_id,

@@ -81,6 +81,8 @@ declare
   v_points int;
   v_type text;
   v_expected boolean;
+  v_matches int;
+  v_partial int;
   v_now timestamptz := clock_timestamp();
 begin
   if p_final_state not in ('SUBMITTED','TIMED_OUT') then raise exception using errcode='PT400',message='INVALID_EXAM_STATE'; end if;
@@ -95,10 +97,20 @@ begin
     if v_type='SHORT_ANSWER' then
       select exists(select 1 from jsonb_array_elements_text(coalesce(q->'contentData'->'acceptedAnswers',jsonb_build_array(q->>'correctOption'))) as a(value) where lower(trim(a.value))=lower(trim(coalesce(v_choice,'')))) into v_expected;
     end if;
+    if v_type='TRUE_FALSE_4' and v_choice is not null then
+      select count(*) into v_matches
+      from jsonb_each_text((q->>'correctOption')::jsonb) expected(key,value)
+      where (v_choice::jsonb->>expected.key)=expected.value;
+      v_partial:=round(coalesce((q->'contentData'->'scoringScale'->>(v_matches::text))::numeric,
+        case v_matches when 1 then 0.1 when 2 then 0.25 when 3 then 0.5 when 4 then 1 else 0 end)
+        *coalesce((q->>'pointScale')::int,1))::int;
+      v_raw:=v_raw+least(v_points,greatest(0,v_partial));
+    end if;
     if (v_type='SINGLE_CHOICE' and v_choice is not null and upper(v_choice)=upper(coalesce(q->>'correctOption','')))
       or (v_type='SHORT_ANSWER' and coalesce(v_expected,false))
       or (v_type='TRUE_FALSE_4' and v_choice is not null and v_choice::jsonb=(q->>'correctOption')::jsonb) then
-      v_raw:=v_raw+v_points; v_correct:=v_correct+1;
+      if v_type<>'TRUE_FALSE_4' then v_raw:=v_raw+v_points; end if;
+      v_correct:=v_correct+1;
     else
       insert into public.mentor_wrong_questions(
         user_id,question_id,subject_id,grade,selected_option,correct_option,explanation,question_snapshot,state,created_at
@@ -228,7 +240,7 @@ begin
         if v_payload->>'subject_id'<>e.subject_id or (v_payload->>'grade')::int<>e.grade then raise exception using errcode='PT400',message='EXAM_QUESTION_SCOPE_MISMATCH'; end if;
         v_type:=coalesce(v_payload->>'question_type','SINGLE_CHOICE');
         if v_type not in ('SINGLE_CHOICE','TRUE_FALSE_4','SHORT_ANSWER','ESSAY') then raise exception using errcode='PT400',message='INVALID_QUESTION_TYPE'; end if;
-        v_total:=v_total+round(coalesce((v_payload->>'points')::numeric,0)*100)::int;
+        v_total:=v_total+round(coalesce((v_payload->>'points')::numeric,0)*10000)::int;
         v_snapshots:=v_snapshots||jsonb_build_array(jsonb_build_object(
           'id',v_id,'code',v_payload->>'code','prompt',v_payload->>'prompt',
           'optionA',v_payload->>'option_a','optionB',v_payload->>'option_b',
@@ -236,7 +248,7 @@ begin
           'correctOption',v_payload->>'correct_option','explanation',v_payload->>'explanation',
           'difficulty',v_payload->>'difficulty','chapter',v_payload->>'chapter','topic',v_payload->>'topic',
           'questionType',v_type,'contentData',coalesce(v_payload->'content_data','{}'::jsonb),
-          'points',round(coalesce((v_payload->>'points')::numeric,0)*100)::int,'pointScale',100));
+          'points',round(coalesce((v_payload->>'points')::numeric,0)*10000)::int,'pointScale',10000));
         continue;
       end if;
       if qrow.subject_id<>e.subject_id or qrow.grade<>e.grade then raise exception using errcode='PT400',message='EXAM_QUESTION_SCOPE_MISMATCH'; end if;

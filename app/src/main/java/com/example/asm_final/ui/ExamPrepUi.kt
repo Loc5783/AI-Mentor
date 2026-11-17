@@ -34,7 +34,7 @@ import java.util.Locale
 import org.json.JSONObject
 
 private fun examPointsLabel(points: Int, scale: Int): String =
-    if (scale > 1) String.format(Locale.ROOT, "%.2f", points.toDouble() / scale).trimEnd('0').trimEnd('.')
+    if (scale > 1) String.format(Locale.ROOT, "%.4f", points.toDouble() / scale).trimEnd('0').trimEnd('.')
     else points.toString()
 
 @Composable
