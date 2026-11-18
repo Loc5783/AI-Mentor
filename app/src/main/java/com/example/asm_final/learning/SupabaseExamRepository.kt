@@ -74,6 +74,30 @@ class SupabaseExamRepository(
         call("POST", "/exams/sessions/$id/submit").let(parser::parseExamSession)
     }
 
+    override suspend fun explainReviewQuestion(session: ExamSession, question: ExamQuestionSnapshot): String =
+        withContext(Dispatchers.IO) {
+            require(session.state == "SUBMITTED" || session.state == "TIMED_OUT")
+            require(session.questions.any { it.id == question.id })
+            val prompt = buildString {
+                append("Giải thích thêm câu hỏi trong bài thi lớp ${session.grade}, môn ${session.subjectId}. ")
+                append("Câu hỏi: ${question.prompt}. ")
+                append("Các lựa chọn: A. ${question.optionA}; B. ${question.optionB}; C. ${question.optionC}; D. ${question.optionD}. ")
+                append("Học sinh trả lời: ${question.selectedOption ?: "chưa trả lời"}. ")
+                append("Đáp án đúng: ${question.correctOption ?: "xem lời giải"}. ")
+                append("Lời giải gốc: ${question.explanation.orEmpty()}. ")
+                append("Hãy giải thích ngắn gọn từng bước và chỉ rõ vì sao đáp án của học sinh đúng hoặc sai. ")
+                append("Nếu đáp án hoặc lời giải gốc có vấn đề, hãy nêu rõ.")
+            }.take(7000)
+            val turn = JSONObject().put("role", "user").put("text", prompt).put("files", JSONArray())
+            val payload = JSONObject().put("mode", "general")
+                .put("turns", JSONArray().put(turn))
+            val answer = JSONObject(SupabaseAccounts(app).requestFor(
+                ownerId, "POST", "/functions/v1/mentor-ai", payload
+            )).optString("text", "")
+            if (answer.isBlank()) throw BackendClient.Failure("EMPTY_RESPONSE", 502)
+            answer
+        }
+
     private fun gradeIfPending(session: ExamSession): ExamSession {
         if (session.gradingStatus != "PENDING") return session
         // Submission is already durable. A temporary AI failure leaves it pending for a later retry.

@@ -95,9 +95,19 @@ class SupabaseAccounts @JvmOverloads constructor(context: Context, private val h
                 }
             } else session
             val user=JSONObject(http.request("GET","/auth/v1/user",token=current.getString("access_token")))
-            if(user.getString("id")!=expected) { sessions(owner).clear(); return@synchronized null }
+            if(user.getString("id")!=expected) {
+                sessions(owner).clear()
+                AuthSession.clear(context)
+                return@synchronized null
+            }
         } catch(failure: BackendClient.Failure) {
-            if(failure.status in listOf(400,401,403)) { sessions(owner).clear(); return@synchronized null }
+            if(failure.status in listOf(400,401,403)) {
+                sessions(owner).clear()
+                AuthSession.clear(context)
+                return@synchronized null
+            }
+            if (recoverableAuthOutage(failure.status))
+                return@synchronized AuthTicket(username, owner, LocalLearnerProfiles(context).load(owner))
             throw failure
         } catch(offline: java.io.IOException) {
             // A previously verified session may access its own encrypted local cache offline.

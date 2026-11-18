@@ -79,6 +79,8 @@ interface ExamRepository {
     suspend fun getSession(sessionId: String): ExamSession
     suspend fun saveAnswer(sessionId: String, questionId: String, selectedOption: String?, revision: Int): ExamSession
     suspend fun submitSession(sessionId: String): ExamSession
+    suspend fun explainReviewQuestion(session: ExamSession, question: ExamQuestionSnapshot): String =
+        throw UnsupportedOperationException("AI_EXPLANATION_UNAVAILABLE")
 }
 
 class BackendExamRepository(

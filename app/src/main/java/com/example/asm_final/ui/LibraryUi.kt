@@ -292,7 +292,7 @@ fun LibrarySubjectList(
 
                 verticalAlignment = Alignment.CenterVertically,
 
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
 
             ) {
 
@@ -1373,7 +1373,7 @@ fun WrongQuestionsNotebookScreen(
 
                 }
 
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(Modifier.weight(1f), horizontalAlignment = Alignment.Start) {
 
                     Text(
 
@@ -1395,13 +1395,6 @@ fun WrongQuestionsNotebookScreen(
 
                     )
 
-                }
-
-                TextButton(
-                    onClick = { controller.loadNotebook(subjectId?.wireId, grade, "NEEDS_REVIEW") },
-                    enabled = !state.isLoading && state.items?.any { it.state == "RESOLVED" } == true
-                ) {
-                    Text("Chỉ xem câu cần ôn", style = MaterialTheme.typography.labelSmall)
                 }
 
             }
@@ -1494,7 +1487,11 @@ fun WrongQuestionsNotebookScreen(
 
                     Text(
 
-                        "🎉 Tuyệt vời! Bạn không có câu sai nào trong mục này.",
+                        when (state.filterState) {
+                            "RESOLVED" -> "Chưa có câu nào được làm đúng lại."
+                            "NEEDS_REVIEW" -> "Hiện không có câu nào cần ôn tập."
+                            else -> "Sổ lỗi sai của bạn đang trống."
+                        },
 
                         style = MaterialTheme.typography.titleMedium,
 

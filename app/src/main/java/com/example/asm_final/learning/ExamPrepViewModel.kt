@@ -65,7 +65,10 @@ data class ExamUiState(
     // Result & Review state
     val completedSession: ExamSession? = null,
     val reviewQuestionIndex: Int = 0,
-    val isGradingEssay: Boolean = false
+    val isGradingEssay: Boolean = false,
+    val isExplainingReview: Boolean = false,
+    val reviewExplanation: String? = null,
+    val reviewExplanationError: String? = null
 ) {
     val unansweredCount: Int
         get() {
@@ -776,7 +779,32 @@ class ExamPrepViewModel(
     fun setReviewQuestionIndex(index: Int) {
         val completed = _uiState.value.completedSession ?: return
         if (index in 0 until completed.questions.size) {
-            _uiState.update { it.copy(reviewQuestionIndex = index) }
+            _uiState.update { it.copy(reviewQuestionIndex = index,
+                reviewExplanation = null, reviewExplanationError = null) }
+        }
+    }
+
+    fun explainReviewQuestion(): Job? {
+        val current = _uiState.value
+        val session = current.completedSession ?: return null
+        val question = session.questions.getOrNull(current.reviewQuestionIndex) ?: return null
+        if (current.isExplainingReview) return null
+        _uiState.update { it.copy(isExplainingReview = true,
+            reviewExplanation = null, reviewExplanationError = null) }
+        return scope.launch {
+            try {
+                val answer = repository.explainReviewQuestion(session, question)
+                _uiState.update { state -> if (state.completedSession?.id == session.id &&
+                    state.completedSession.questions.getOrNull(state.reviewQuestionIndex)?.id == question.id)
+                    state.copy(reviewExplanation = answer) else state }
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                _uiState.update { state -> if (state.completedSession?.id == session.id &&
+                    state.completedSession.questions.getOrNull(state.reviewQuestionIndex)?.id == question.id)
+                    state.copy(reviewExplanationError = "Chưa tải được lời giải AI. Hãy thử lại khi có mạng.") else state }
+            } finally {
+                _uiState.update { it.copy(isExplainingReview = false) }
+            }
         }
     }
 

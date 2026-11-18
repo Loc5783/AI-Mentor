@@ -24,6 +24,8 @@ class ExamPrepViewModelTest {
         var saveAnswerCallCount = 0
         var submitSessionCallCount = 0
         var getSessionCallCount = 0
+        var explainQuestionId: String? = null
+        var failExplanationWith: Exception? = null
 
         var failStartWith: Exception? = null
         var failListSessionsWith: Exception? = null
@@ -144,6 +146,14 @@ class ExamPrepViewModelTest {
             getSessionCallCount++
             getSessionDeferred?.let { return it.await() }
             return activeSession
+        }
+
+        override suspend fun explainReviewQuestion(
+            session: ExamSession, question: ExamQuestionSnapshot
+        ): String {
+            explainQuestionId = question.id
+            failExplanationWith?.let { throw it }
+            return "AI giải thích câu ${question.id}"
         }
 
         override suspend fun saveAnswer(
@@ -398,6 +408,17 @@ class ExamPrepViewModelTest {
         // Review navigation
         vm.setReviewQuestionIndex(1)
         assertEquals(1, vm.uiState.value.reviewQuestionIndex)
+        vm.explainReviewQuestion()
+        runCurrent()
+        assertEquals("Q2", fakeRepo.explainQuestionId)
+        assertEquals("AI giải thích câu Q2", vm.uiState.value.reviewExplanation)
+        vm.setReviewQuestionIndex(0)
+        assertNull(vm.uiState.value.reviewExplanation)
+        fakeRepo.failExplanationWith = IOException("offline")
+        vm.explainReviewQuestion()
+        runCurrent()
+        assertNull(vm.uiState.value.reviewExplanation)
+        assertNotNull(vm.uiState.value.reviewExplanationError)
 
         // Finish review returns to list
         vm.finishReview()

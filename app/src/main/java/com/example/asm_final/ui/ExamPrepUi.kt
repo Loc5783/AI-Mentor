@@ -103,6 +103,7 @@ fun ExamPrepScreen(
         ExamScreenState.RESULT -> ExamResultContent(
             state = state,
             onSelectReviewQuestion = { viewModel.setReviewQuestionIndex(it) },
+            onExplainQuestion = { viewModel.explainReviewQuestion() },
             onRetryGrading = { viewModel.retryEssayGrading() },
             onFinishReview = { viewModel.finishReview() },
             onOpenNotebook = {
@@ -143,31 +144,18 @@ private fun ExamListContent(
             color = MaterialTheme.colorScheme.surface,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Row(
+            Column(
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                TextButton(onClick = onBack) {
-                    Text("← Về Hub", fontWeight = FontWeight.Bold)
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    TextButton(onClick = onBack) { Text("← Quay lại", fontWeight = FontWeight.Bold) }
+                    TextButton(onClick = onOpenNotebook) { Text("📖 Sổ lỗi sai", style = MaterialTheme.typography.bodySmall) }
                 }
-                Spacer(Modifier.width(8.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        "Ôn thi Giữa kỳ & Cuối kỳ",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        "Đề thi chuẩn hóa THPT 9 môn",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                TextButton(onClick = onOpenNotebook) {
-                    Text("📖 Sổ lỗi sai", style = MaterialTheme.typography.bodySmall)
-                }
+                Text("Ôn thi Giữa kỳ & Cuối kỳ", style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 12.dp))
             }
         }
 
@@ -770,14 +758,15 @@ private fun ExamInProgressContent(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        if (currentQuestion.questionType == "ESSAY") currentQuestion.prompt.replace(
-                            "Học sinh làm bài ra giấy, phần tự luận chưa chấm tự động",
-                            "Viết câu trả lời bên dưới; AI sẽ chấm sau khi nộp"
-                        ) else currentQuestion.prompt,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Box(Modifier.padding(16.dp)) {
+                        ChatAnswerView(
+                            if (currentQuestion.questionType == "ESSAY") currentQuestion.prompt.replace(
+                                "Học sinh làm bài ra giấy, phần tự luận chưa chấm tự động",
+                                "Viết câu trả lời bên dưới; AI sẽ chấm sau khi nộp"
+                            ) else currentQuestion.prompt,
+                            MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
 
                 // Options A, B, C, D
@@ -809,7 +798,7 @@ private fun ExamInProgressContent(
                         val key = item.optString("key")
                         if (key.isBlank()) continue
                         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Text("${key.uppercase()}. ${item.optString("statement")}")
+                            ChatAnswerView("${key.uppercase()}. ${item.optString("statement")}")
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 listOf(true to "Đúng", false to "Sai").forEach { (value, label) ->
                                     val chosen = current.has(key) && current.optBoolean(key) == value
@@ -858,11 +847,12 @@ private fun ExamInProgressContent(
                                     color = if (isChosen) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                            Text(
-                                text,
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.weight(1f)
-                            )
+                            Box(Modifier.weight(1f)) {
+                                ChatAnswerView(text, MaterialTheme.colorScheme.onSurface)
+                                Spacer(Modifier.matchParentSize().clickable {
+                                    onSelectAnswer(currentQuestion.id, key)
+                                })
+                            }
                         }
                     }
                 }
@@ -1002,6 +992,7 @@ private fun ExamInProgressContent(
 private fun ExamResultContent(
     state: ExamUiState,
     onSelectReviewQuestion: (Int) -> Unit,
+    onExplainQuestion: () -> Unit,
     onRetryGrading: () -> Unit,
     onFinishReview: () -> Unit,
     onOpenNotebook: () -> Unit
@@ -1160,11 +1151,9 @@ private fun ExamResultContent(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        currentRevQuestion.prompt,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Box(Modifier.padding(16.dp)) {
+                        ChatAnswerView(currentRevQuestion.prompt, MaterialTheme.colorScheme.onSurface)
+                    }
                 }
 
                 // Options review
@@ -1237,11 +1226,9 @@ private fun ExamResultContent(
                                     color = if (isCorrectChoice || isUserChoice) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                            Text(
-                                text,
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.weight(1f)
-                            )
+                            Box(Modifier.weight(1f)) {
+                                ChatAnswerView(text, MaterialTheme.colorScheme.onSurface)
+                            }
                             if (isCorrectChoice) {
                                 Text("✓ Đáp án đúng", fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32), style = MaterialTheme.typography.labelSmall)
                             } else if (isUserChoice) {
@@ -1260,7 +1247,20 @@ private fun ExamResultContent(
                     ) {
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             Text("💡 Lời giải chi tiết:", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
-                            Text(currentRevQuestion.explanation, style = MaterialTheme.typography.bodyMedium)
+                            ChatAnswerView(currentRevQuestion.explanation,
+                                MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+                }
+                OutlinedButton(onClick = onExplainQuestion, enabled = !state.isExplainingReview) {
+                    Text(if (state.isExplainingReview) "AI đang giải thích..." else "Hỏi AI giải thích thêm")
+                }
+                state.reviewExplanationError?.let { MentorErrorNotice(it) }
+                state.reviewExplanation?.let { answer ->
+                    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+                        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("Gia sư AI giải thích", fontWeight = FontWeight.Bold)
+                            ChatAnswerView(answer, MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
