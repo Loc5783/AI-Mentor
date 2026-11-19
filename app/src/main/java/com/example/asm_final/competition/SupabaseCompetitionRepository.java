@@ -50,7 +50,11 @@ public final class SupabaseCompetitionRepository implements CompetitionRepositor
     } catch (Exception failure) {
       boolean needsLogin = failure instanceof BackendClient.Failure
           && ((BackendClient.Failure) failure).status == 401;
-      return new Snapshot(Source.UNAVAILABLE, null, dailyXp, streak, false, needsLogin);
+      String reason = failure instanceof java.io.IOException ? "NETWORK"
+          : needsLogin ? "LOGIN"
+          : failure instanceof BackendClient.Failure
+              && ((BackendClient.Failure) failure).status >= 500 ? "SERVER" : "UNKNOWN";
+      return new Snapshot(Source.UNAVAILABLE, null, dailyXp, streak, false, needsLogin, reason);
     }
   }
 }

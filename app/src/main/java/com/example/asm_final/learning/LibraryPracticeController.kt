@@ -861,7 +861,8 @@ class LibraryPracticeController(
 
                 val q = cur.session.questions.getOrNull(cur.currentStep)
 
-                if (q?.userAnswer == null && !cur.isSubmittingAnswer) {
+                if (q != null && q.userAnswer == null && !cur.isSubmittingAnswer &&
+                    visiblePracticeOptions(q).any { it.first == option }) {
 
                     cur.copy(selectedOption = option)
 
@@ -882,6 +883,8 @@ class LibraryPracticeController(
         val q = cur.session.questions.getOrNull(cur.currentStep) ?: return null
 
         val opt = cur.selectedOption ?: return null
+
+        if (visiblePracticeOptions(q).none { it.first == opt }) return null
 
         if (q.userAnswer != null || cur.isSubmittingAnswer) return null
 

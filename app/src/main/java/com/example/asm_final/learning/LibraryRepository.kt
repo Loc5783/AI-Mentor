@@ -305,20 +305,20 @@ class BackendLibraryRepository(
             val options = mutableListOf<WrongQuestionOption>()
             for (i in 0 until optArr.length()) {
                 val o = optArr.getJSONObject(i)
-                options.add(
-                    WrongQuestionOption(
-                        id = o.optString("id", ""),
-                        text = o.optString("text", "")
-                    )
-                )
+                val text = o.optString("text", "")
+                if (text.isNotBlank()) {
+                    options.add(WrongQuestionOption(id = o.optString("id", ""), text = text))
+                }
             }
             return WrongQuestionEntry(
                 id = obj.getString("id"),
                 questionId = obj.getString("questionId"),
                 subjectId = obj.getString("subjectId"),
                 grade = obj.getInt("grade"),
-                chapter = obj.optString("chapter", "Chưa phân loại"),
-                topic = obj.optString("topic", "Chủ đề chung"),
+                chapter = obj.optString("chapter").takeIf { it.isNotBlank() }
+                    ?: obj.optString("topic").takeIf { it.isNotBlank() }
+                    ?: "Ôn tập tổng hợp",
+                topic = obj.optString("topic").takeIf { it.isNotBlank() } ?: "Ôn tập tổng hợp",
                 prompt = obj.optString("prompt", ""),
                 options = options,
                 selectedOption = obj.optString("selectedOption", ""),

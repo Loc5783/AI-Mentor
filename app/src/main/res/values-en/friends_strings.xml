@@ -8,6 +8,8 @@
     <string name="friends_empty">No friends or requests yet.</string>
     <string name="friends_load_error">Friends could not be loaded. Try again.</string>
     <string name="friends_action_error">That action did not complete. The request may have changed; refresh the list.</string>
+    <string name="friends_offline_error">You are offline. Friend requests need a connection; try again when online.</string>
+    <string name="friends_login_error">Your session has expired. Sign in again to use Friends.</string>
     <string name="friends_learner">Learner</string>
     <string name="friends_personal_streak">🔥 Personal streak: %1$d days</string>
     <string name="friends_shared_streak">🤝 Studied together: %1$d consecutive days</string>

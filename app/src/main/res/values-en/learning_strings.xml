@@ -20,6 +20,12 @@
   <string name="course_no_server">The learning server has not been configured. The new learning path needs a server to save progress and award rewards reliably. Existing practice tools are still available.</string>
   <string name="course_not_published">No course has been published for this grade yet. Your progress in other grades is kept.</string>
   <string name="course_network_error">Cannot reach the server. Previously saved progress is kept; try again when connected.</string>
+  <string name="course_offline_notice">Offline lessons are available to read. Progress and XP update only after studying online.</string>
+  <string name="course_offline_title">Lessons on this device</string>
+  <string name="course_offline_examples">Examples</string>
+  <string name="course_offline_back">All lessons</string>
+  <string name="course_offline_unavailable">Offline content is unavailable for this subject.</string>
+  <string name="offline_mode_banner">Offline · Read lessons on this device; changes need a connection to sync.</string>
   <string name="course_sync_error">This change has not been confirmed as saved. Retry before continuing to protect your progress.</string>
   <string name="course_retry">Retry</string>
   <string name="course_loading">Loading progress…</string>

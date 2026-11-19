@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 public final class ReminderHelper {
   private static final String PREFS_NAME = "settings";
@@ -13,9 +14,11 @@ public final class ReminderHelper {
   
   public static final int REQUEST_CODE_EVENING = 1001;
   public static final int REQUEST_CODE_MORNING = 1002;
+  public static final int REQUEST_CODE_STREAK = 1003;
   
   public static final String ACTION_EVENING_REMINDER = "com.example.asm_final.ACTION_EVENING_REMINDER";
   public static final String ACTION_MORNING_REMINDER = "com.example.asm_final.ACTION_MORNING_REMINDER";
+  public static final String ACTION_STREAK_REMINDER = "com.example.asm_final.ACTION_STREAK_REMINDER";
 
   private ReminderHelper() {}
 
@@ -125,6 +128,21 @@ public final class ReminderHelper {
         morningCal.getTimeInMillis(),
         AlarmManager.INTERVAL_DAY,
         morningPending);
+
+    // Streak days are counted by Supabase in Vietnam time, independent of device timezone.
+    Intent streakIntent = new Intent(context, ReminderReceiver.class);
+    streakIntent.setAction(ACTION_STREAK_REMINDER);
+    PendingIntent streakPending = PendingIntent.getBroadcast(context, REQUEST_CODE_STREAK,
+        streakIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    Calendar streakCal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+    streakCal.set(Calendar.HOUR_OF_DAY, 22);
+    streakCal.set(Calendar.MINUTE, 0);
+    streakCal.set(Calendar.SECOND, 0);
+    streakCal.set(Calendar.MILLISECOND, 0);
+    if (streakCal.getTimeInMillis() <= System.currentTimeMillis())
+      streakCal.add(Calendar.DAY_OF_YEAR, 1);
+    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+        streakCal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, streakPending);
   }
 
   private static void cancelReminders(Context context) {
@@ -144,5 +162,11 @@ public final class ReminderHelper {
             context, REQUEST_CODE_MORNING, morningIntent,
             PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     alarmManager.cancel(morningPending);
+
+    Intent streakIntent = new Intent(context, ReminderReceiver.class);
+    streakIntent.setAction(ACTION_STREAK_REMINDER);
+    PendingIntent streakPending = PendingIntent.getBroadcast(context, REQUEST_CODE_STREAK,
+        streakIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    alarmManager.cancel(streakPending);
   }
 }

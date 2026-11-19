@@ -1,6 +1,8 @@
 <resources>
     <string name="reminder_permission_needed">Cần cho phép thông báo trong cài đặt của máy để đồng bộ lịch học.</string>
-    <string name="reminder_enabled_time">Đã bật thông báo thông minh (20:00 và 06:45 hằng ngày).</string>
+    <string name="reminder_enabled_time">Đã bật nhắc lịch học và cảnh báo streak lúc 22:00 nếu chưa học.</string>
+    <string name="reminder_streak_title">Còn 2 giờ để giữ streak 🔥</string>
+    <string name="reminder_streak_body">Hãy hoàn thành một hoạt động học hôm nay trước 0:00 để nối tiếp chuỗi ngày học.</string>
     <string name="reminder_disabled">Đã tắt thông báo lịch học.</string>
 
     <string name="notification_prompt_title">Đồng bộ nhắc nhở với Thời khóa biểu</string>

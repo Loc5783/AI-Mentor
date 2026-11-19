@@ -53,6 +53,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 
 import androidx.compose.ui.unit.dp
 
@@ -67,6 +68,7 @@ import com.example.asm_final.learning.BackendLibraryRepository
 import com.example.asm_final.learning.LibraryRepository
 
 import com.example.asm_final.learning.PracticeQuestion
+import com.example.asm_final.learning.visiblePracticeOptions
 
 import com.example.asm_final.learning.PracticeSession
 
@@ -1124,7 +1126,7 @@ private fun LibrarySessionPracticeView(
 
 
 
-                        val options = listOf("A" to q.optionA, "B" to q.optionB, "C" to q.optionC, "D" to q.optionD)
+                        val options = visiblePracticeOptions(q)
 
                         options.forEach { (optKey, optText) ->
 
@@ -1423,7 +1425,7 @@ fun WrongQuestionsNotebookScreen(
 
                 "NEEDS_REVIEW" to "⚠️ Cần ôn tập",
 
-                "RESOLVED" to "✓ Đã làm đúng"
+                "RESOLVED" to "✓ Đã ôn lại"
 
             )
 
@@ -1488,7 +1490,7 @@ fun WrongQuestionsNotebookScreen(
                     Text(
 
                         when (state.filterState) {
-                            "RESOLVED" -> "Chưa có câu nào được làm đúng lại."
+                            "RESOLVED" -> "Chưa có câu nào được ôn lại."
                             "NEEDS_REVIEW" -> "Hiện không có câu nào cần ôn tập."
                             else -> "Sổ lỗi sai của bạn đang trống."
                         },
@@ -1607,37 +1609,33 @@ fun WrongQuestionsNotebookScreen(
 
                             ) {
 
-                                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
 
-                                    Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
+                                    val subjectLabel = runCatching {
+                                        SubjectId.fromWireId(item.subjectId).label(LocaleHelper.getLanguage(context))
+                                    }.getOrDefault(item.subjectId)
+                                    Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.primaryContainer) {
+                                        Text(subjectLabel, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer)
+                                    }
+
+                                    Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.surfaceVariant,
+                                        modifier = Modifier.weight(1f)) {
 
                                         Text(
 
-                                            item.chapter.ifBlank { "Chương chung" },
+                                            item.chapter.takeUnless { it.isBlank() || it == "Chưa phân loại" }
+                                                ?: item.topic.takeUnless { it.isBlank() || it == "Chủ đề chung" }
+                                                ?: "Ôn tập tổng hợp",
 
                                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
 
-                                            style = MaterialTheme.typography.labelSmall
+                                            style = MaterialTheme.typography.labelSmall,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
 
                                         )
-
-                                    }
-
-                                    if (item.difficulty.isNotBlank()) {
-
-                                        Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
-
-                                            Text(
-
-                                                item.difficulty,
-
-                                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-
-                                                style = MaterialTheme.typography.labelSmall
-
-                                            )
-
-                                        }
 
                                     }
 
@@ -1655,7 +1653,7 @@ fun WrongQuestionsNotebookScreen(
 
                                     Text(
 
-                                        if (isResolved) "✓ Đã làm đúng lại" else "⚠️ Cần ôn tập",
+                                        if (isResolved) "✓ Đã ôn lại" else "⚠️ Cần ôn tập",
 
                                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
 

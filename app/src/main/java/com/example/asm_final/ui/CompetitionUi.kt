@@ -200,6 +200,8 @@ object CompetitionUi {
                                 Text(
                                     text = when {
                                         snapshot?.needsLogin == true -> stringResource(R.string.ranking_login)
+                                        snapshot?.failureReason == "NETWORK" -> stringResource(R.string.ranking_offline)
+                                        snapshot?.failureReason == "SERVER" -> stringResource(R.string.ranking_server_error)
                                         unavailable -> stringResource(R.string.competition_error_subtitle)
                                         snapshot.source == CompetitionRepository.Source.LOCAL -> stringResource(R.string.competition_disconnected)
                                         query.scope == CompetitionQuery.Scope.FRIENDS && board?.entries?.size == 1 -> stringResource(R.string.ranking_friends_empty)
@@ -434,8 +436,12 @@ internal fun FriendsPanel(
         HorizontalDivider(color = palette.border)
         when {
             state == null || state.loading && state.items.isEmpty() -> MentorSkeleton(stringResource(R.string.ranking_loading))
-            state.failed && state.message == "LOAD_FAILED" && state.items.isEmpty() ->
-                MentorErrorNotice(stringResource(R.string.friends_load_error))
+            state.failed && state.items.isEmpty() -> MentorErrorNotice(stringResource(when (state.message) {
+                "LOAD_OFFLINE", "ACTION_OFFLINE" -> R.string.friends_offline_error
+                "LOAD_LOGIN_REQUIRED", "ACTION_LOGIN_REQUIRED" -> R.string.friends_login_error
+                "ACTION_FAILED" -> R.string.friends_action_error
+                else -> R.string.friends_load_error
+            }))
             else -> {
                 val visible = state.items.filter { it.state.equals("PENDING", true) || it.state.equals("ACCEPTED", true) }
                 if (visible.isEmpty()) Text(stringResource(R.string.friends_empty),
@@ -494,7 +500,12 @@ internal fun FriendsPanel(
             if (res != null) Text(stringResource(res), color = palette.accent,
                 style = MaterialTheme.typography.bodySmall)
         }
-        if (state?.failed == true && state.message == "ACTION_FAILED")
-            MentorErrorNotice(stringResource(R.string.friends_action_error))
+        if (state?.failed == true && state.items.isNotEmpty())
+            MentorErrorNotice(stringResource(when (state.message) {
+                "LOAD_OFFLINE", "ACTION_OFFLINE" -> R.string.friends_offline_error
+                "LOAD_LOGIN_REQUIRED", "ACTION_LOGIN_REQUIRED" -> R.string.friends_login_error
+                "LOAD_FAILED" -> R.string.friends_load_error
+                else -> R.string.friends_action_error
+            }))
     }
 }

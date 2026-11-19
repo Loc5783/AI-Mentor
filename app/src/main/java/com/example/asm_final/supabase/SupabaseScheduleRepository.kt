@@ -5,13 +5,28 @@ import com.example.mentor.schedule.domain.*
 import com.example.mentor.data.ActiveUser
 import org.json.JSONArray
 import org.json.JSONObject
+import com.example.asm_final.backend.BackendClient
 
 /** Online schedule repository. User identity always comes from the signed session, never request JSON. */
-class SupabaseScheduleRepository(private val context: Context): ScheduleRepository, ScheduleImportRepository {
+class SupabaseScheduleRepository(private val context: Context): ScheduleRepository, ScheduleImportRepository, WeekScheduleCache {
+    override fun cacheWeek(accountId: String) {
+        for (day in 1..7) getEntries(accountId, day)
+    }
     private fun call(account:String,op:String,data:JSONObject=JSONObject()):JSONObject {
         val owner=account.toInt()
         check(owner>0 && ActiveUser.get(context)==owner)
-        return JSONObject(SupabaseAccounts(context).requestFor(owner,"POST","/rest/v1/rpc/mentor_schedule_action",JSONObject().put("op",op).put("data",data)))
+        val cacheable = op == "entries" || op == "todos"
+        val cache = if (cacheable) ScheduleReadCache(context) else null
+        return try {
+            JSONObject(SupabaseAccounts(context).requestFor(owner,"POST",
+                "/rest/v1/rpc/mentor_schedule_action",JSONObject().put("op",op).put("data",data)))
+                .also { result -> if (cacheable) runCatching { cache?.save(owner, op, data, result) } }
+        } catch (failure: Exception) {
+            val transient = failure is java.io.IOException ||
+                failure is BackendClient.Failure && failure.status in listOf(408, 429, 500, 502, 503, 504)
+            if (!cacheable || !transient) throw failure
+            cache?.load(owner, op, data) ?: throw failure
+        }
     }
     private fun nullable(row:JSONObject,key:String)=if(row.isNull(key)) null else row.getString(key)
     private fun millis(row:JSONObject,key:String):Long? = nullable(row,key)?.let {
@@ -46,7 +61,21 @@ class SupabaseScheduleRepository(private val context: Context): ScheduleReposito
                 conflicts.filter { it.dayOfWeek==duplicate.dayOfWeek && it.period==duplicate.period }
             )
         }
-        entries.forEach { if (isEdit) updateEntry(it) else insertEntry(it) }
+        if (isEdit) {
+            updateEntry(entries.single())
+        } else {
+            val accountId = entries.first().accountId
+            require(entries.size <= 70 && entries.all { it.accountId == accountId &&
+                it.dayOfWeek in 1..7 && it.period in 1..10 &&
+                it.title.isNotBlank() && it.title.length <= 120 })
+            val owner = accountId.toInt()
+            check(owner > 0 && ActiveUser.get(context) == owner)
+            val rows = JSONArray()
+            entries.forEach { rows.put(entryData(it)) }
+            SupabaseAccounts(context).requestFor(owner, "POST",
+                "/rest/v1/rpc/mentor_save_schedule_entries",
+                JSONObject().put("data", JSONObject().put("entries", rows)))
+        }
     }
     override fun deleteEntry(id:Long,accountId:String) {call(accountId,"delete_entry",JSONObject().put("id",id))}
     override fun getTodos(accountId:String,dayOfWeek:Int):List<TodoTask> {

@@ -9,6 +9,7 @@ import com.example.asm_final.activities.fragments.ProfileFragment;
 public class HomeActivity extends AppCompatActivity
     implements ProfileFragment.OnProfileUpdatedListener,
         com.example.mentor.schedule.ui.ScheduleAiHost {
+  public static final String EXTRA_START_DESTINATION = "START_DESTINATION";
   private int authenticatedOwner;
 
   @Override
@@ -47,7 +48,8 @@ public class HomeActivity extends AppCompatActivity
     }
     composeShell =
         new com.example.asm_final.ui.ShellUi(
-            this, username, getIntent().hasExtra("CHAT_THREAD_ID") ? R.id.nav_chat : R.id.nav_home);
+            this, username, getIntent().hasExtra("CHAT_THREAD_ID") ? R.id.nav_chat
+                : getIntent().getIntExtra(EXTRA_START_DESTINATION, R.id.nav_home));
     setContentView(composeShell.view());
   }
 
