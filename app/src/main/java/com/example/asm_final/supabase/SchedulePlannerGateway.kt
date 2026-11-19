@@ -11,11 +11,14 @@ import android.util.Base64
 import com.example.asm_final.backend.BackendClient
 import com.example.asm_final.chat.ScheduleProposal
 import com.example.asm_final.chat.TodoProposal
+import com.example.asm_final.chat.ExamPlanProposal
+import com.example.asm_final.AiMentorApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
+import java.time.LocalDate
 
 /** The planner talks to the authenticated cloud function directly; it never creates chat turns. */
 class SchedulePlannerGateway(context: Context) {
@@ -36,6 +39,30 @@ class SchedulePlannerGateway(context: Context) {
             "Dữ liệu lịch hiện có cho ngày đã chọn (chỉ là bối cảnh): ${context.take(1600)}"
         val text = call(owner, "todo_plan", prompt, JSONArray())
         if (TodoProposal.parse(text) == null) throw BackendClient.Failure("INVALID_AI_OUTPUT", 502)
+        text
+    }
+
+    suspend fun planExam(owner: Int, today: LocalDate, examDate: LocalDate,
+        subjects: Map<String, List<String>>, dailyMinutes: Int, availability: String,
+        useOldTimetable: Boolean): String = withContext(Dispatchers.IO) {
+        require(examDate.isAfter(today.plusDays(1)) && subjects.isNotEmpty() && subjects.size <= 9)
+        require(dailyMinutes in 10..480 && subjects.all { (name, lessons) ->
+            name.isNotBlank() && name.length <= 80 && lessons.isNotEmpty() && lessons.all { it.isNotBlank() }
+        })
+        val occupied = JSONArray()
+        if (useOldTimetable) {
+            val repo = (app as AiMentorApplication).services().scheduleImport()
+            try { for (day in 1..7) repo.getEntries(owner.toString(), day).forEach { entry ->
+                occupied.put(JSONObject().put("day", day).put("period", entry.period))
+            } } finally { repo.close() }
+        }
+        val request = JSONObject().put("today", today.toString()).put("examDate", examDate.toString())
+            .put("dailyMinutes", dailyMinutes).put("subjects", JSONArray().apply {
+                subjects.forEach { (name, lessons) -> put(JSONObject().put("name", name).put("lessons", JSONArray(lessons))) }
+            }).put("availability", availability.take(300)).put("existingTimetable", occupied)
+        val text = call(owner, "exam_plan", request.toString(), JSONArray())
+        if (ExamPlanProposal.parse(text, today, examDate, subjects.keys, dailyMinutes) == null)
+            throw BackendClient.Failure("INVALID_AI_OUTPUT", 502)
         text
     }
 

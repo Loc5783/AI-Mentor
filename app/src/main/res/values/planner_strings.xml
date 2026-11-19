@@ -1,4 +1,26 @@
 <resources>
+    <string name="exam_plan_title">Lộ trình ôn thi cùng AI</string>
+    <string name="exam_plan_hint">Nhập ngày thi, thời gian học mỗi ngày và mỗi môn cùng các bài cần ôn. Xem lại kế hoạch trước khi lưu.</string>
+    <string name="exam_plan_date">Ngày thi (năm-tháng-ngày)</string>
+    <string name="exam_plan_pick_date">Chọn ngày thi</string>
+    <string name="exam_plan_days">Còn %1$d ngày đến kỳ thi</string>
+    <string name="exam_plan_minutes">Số phút có thể học mỗi ngày</string>
+    <string name="exam_plan_reminder">Giờ nhắc học (0–23)</string>
+    <string name="exam_plan_availability">Khoảng thời gian rảnh</string>
+    <string name="exam_plan_availability_example">Ví dụ: Tối 19:00–21:00; thứ Bảy chiều rảnh</string>
+    <string name="exam_plan_use_old_timetable">Dùng thời khóa biểu cũ để tránh giờ bận</string>
+    <string name="exam_plan_subjects">Mỗi dòng: Môn học: Bài 1, Bài 2</string>
+    <string name="exam_plan_subjects_example">Toán: Hàm số, Vectơ\nVật lý: Chuyển động thẳng</string>
+    <string name="exam_plan_busy">AI đang sắp xếp các buổi ôn...</string>
+    <string name="exam_plan_review">Xem lộ trình đề xuất</string>
+    <string name="exam_plan_review_hint">Chỉ những buổi được chọn mới được thêm vào việc cần làm. Thông báo cần được bật trong cài đặt.</string>
+    <string name="exam_plan_minutes_value">%1$d phút</string>
+    <string name="exam_plan_saved">Đã thêm lộ trình vào việc cần làm.</string>
+    <string name="exam_plan_reminder_title">Đến giờ ôn thi</string>
+    <string name="exam_plan_task_prefix">Ôn thi</string>
+    <string name="exam_plan_reminder_body">Hôm nay: %1$s</string>
+    <string name="planner_photo_busy">AI đang đọc thời khóa biểu...</string>
+    <string name="planner_todo_busy">AI đang gợi ý việc cần làm...</string>
     <string name="planner_back">← Quay lại Lịch học</string>
     <string name="planner_photo_title">Điền thời khóa biểu từ ảnh</string>
     <string name="planner_photo_hint">Chọn ảnh hoặc chụp thời khóa biểu. AI chỉ đọc nội dung trong ảnh; bạn kiểm tra bản nháp trước khi lưu.</string>

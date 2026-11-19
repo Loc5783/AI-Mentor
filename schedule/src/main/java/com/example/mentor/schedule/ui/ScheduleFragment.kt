@@ -34,7 +34,8 @@ class ScheduleFragment : Fragment() {
                         ScheduleScreen(accountId, repository, onBack = {
                             requireActivity().onBackPressedDispatcher.onBackPressed()
                         }, onAiPhoto = { aiHost?.openScheduleAi(ScheduleAiAction.TIMETABLE_PHOTO, null) },
-                            onAiPlan = { details -> aiHost?.openScheduleAi(ScheduleAiAction.TODO_PLAN, details) })
+                            onAiPlan = { details -> aiHost?.openScheduleAi(ScheduleAiAction.TODO_PLAN, details) },
+                            onAiExam = { aiHost?.openScheduleAi(ScheduleAiAction.EXAM_PLAN, null) })
                     }
                 }
             }

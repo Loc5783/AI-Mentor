@@ -18,6 +18,7 @@ import com.example.asm_final.onboarding.LearnerProfile;
 import com.example.mentor.data.ActiveUser;
 import com.example.mentor.schedule.domain.ScheduleEntry;
 import com.example.mentor.schedule.domain.ScheduleRepository;
+import com.example.mentor.schedule.domain.TodoTask;
 
 import java.util.Calendar;
 import java.util.List;
@@ -47,7 +48,8 @@ public class ReminderReceiver extends BroadcastReceiver {
     String action = intent.getAction();
     if (!ReminderHelper.ACTION_EVENING_REMINDER.equals(action)
         && !ReminderHelper.ACTION_MORNING_REMINDER.equals(action)
-        && !ReminderHelper.ACTION_STREAK_REMINDER.equals(action)) return;
+        && !ReminderHelper.ACTION_STREAK_REMINDER.equals(action)
+        && !ReminderHelper.ACTION_EXAM_REMINDER.equals(action)) return;
 
     // Schedule data may live in Supabase. Keep network/database work off the receiver's
     // main thread and read it from the same repository the schedule screen uses.
@@ -63,6 +65,9 @@ public class ReminderReceiver extends BroadcastReceiver {
         } else if (ReminderHelper.ACTION_EVENING_REMINDER.equals(action)) {
           repository = app.scheduleRepository();
           handleEveningReminder(context, owner, repository);
+        } else if (ReminderHelper.ACTION_EXAM_REMINDER.equals(action)) {
+          repository = app.scheduleRepository();
+          handleExamReminder(context, owner, repository);
         } else {
           repository = app.scheduleRepository();
           handleMorningReminder(context, owner, repository);
@@ -81,6 +86,25 @@ public class ReminderReceiver extends BroadcastReceiver {
         }
       }
     });
+  }
+
+  private void handleExamReminder(Context context, int owner, ScheduleRepository repo) {
+    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+    int day = cal.get(Calendar.DAY_OF_WEEK) - 1;
+    if (day == 0) day = 7;
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+    format.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+    String today = format.format(cal.getTime());
+    java.util.ArrayList<String> titles = new java.util.ArrayList<>();
+    for (TodoTask task : repo.getTodos(String.valueOf(owner), day)) {
+      if (!task.isCompleted() && today.equals(task.getDueDate()) &&
+          (task.getTitle().contains(" · Ôn thi · ") ||
+              task.getTitle().contains(" · Exam revision · "))) titles.add(task.getTitle());
+    }
+    if (!titles.isEmpty() && ActiveUser.get(context) == owner) {
+      showNotification(context, context.getString(R.string.exam_plan_reminder_title),
+          context.getString(R.string.exam_plan_reminder_body, android.text.TextUtils.join(", ", titles)), 103);
+    }
   }
 
   private void handleStreakReminder(Context context, int owner,

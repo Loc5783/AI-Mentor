@@ -1,4 +1,26 @@
 <resources>
+    <string name="exam_plan_title">AI exam study plan</string>
+    <string name="exam_plan_hint">Enter the exam date, daily study time, subjects and lessons. Review the plan before saving.</string>
+    <string name="exam_plan_date">Exam date (year-month-day)</string>
+    <string name="exam_plan_pick_date">Choose exam date</string>
+    <string name="exam_plan_days">%1$d days until the exam</string>
+    <string name="exam_plan_minutes">Available study minutes each day</string>
+    <string name="exam_plan_reminder">Reminder hour (0–23)</string>
+    <string name="exam_plan_availability">Free time</string>
+    <string name="exam_plan_availability_example">For example: Evenings 19:00–21:00; Saturday afternoon</string>
+    <string name="exam_plan_use_old_timetable">Use old timetable to avoid busy hours</string>
+    <string name="exam_plan_subjects">Each line: Subject: Lesson 1, Lesson 2</string>
+    <string name="exam_plan_subjects_example">Math: Functions, Vectors\nPhysics: Linear motion</string>
+    <string name="exam_plan_busy">AI is arranging revision sessions...</string>
+    <string name="exam_plan_review">Review suggested plan</string>
+    <string name="exam_plan_review_hint">Only selected sessions are added to to-dos. Enable notifications in settings for reminders.</string>
+    <string name="exam_plan_minutes_value">%1$d minutes</string>
+    <string name="exam_plan_saved">Study plan added to to-dos.</string>
+    <string name="exam_plan_reminder_title">Time to revise</string>
+    <string name="exam_plan_task_prefix">Exam revision</string>
+    <string name="exam_plan_reminder_body">Today: %1$s</string>
+    <string name="planner_photo_busy">AI is reading the timetable...</string>
+    <string name="planner_todo_busy">AI is suggesting tasks...</string>
     <string name="planner_back">← Back to Schedule</string>
     <string name="planner_photo_title">Import timetable from a photo</string>
     <string name="planner_photo_hint">Choose or take a timetable photo. AI reads only the image, then you review the draft before saving.</string>

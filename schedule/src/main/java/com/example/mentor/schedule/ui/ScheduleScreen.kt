@@ -129,7 +129,8 @@ fun ScheduleScreen(
     repository: ScheduleRepository,
     onBack: () -> Unit = {},
     onAiPhoto: () -> Unit = {},
-    onAiPlan: (String) -> Unit = {}
+    onAiPlan: (String) -> Unit = {},
+    onAiExam: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val factory = remember(accountId, repository) {
@@ -156,6 +157,7 @@ fun ScheduleScreen(
     var suggestedTodoTitle by rememberSaveable { mutableStateOf("") }
     var scheduleDialogSession by rememberSaveable { mutableStateOf(0) }
     var todoDialogSession by rememberSaveable { mutableStateOf(0) }
+    var showOldTimetable by rememberSaveable { mutableStateOf(false) }
     
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -248,18 +250,18 @@ fun ScheduleScreen(
                 Text(stringResource(R.string.schedule_ai_title),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold)
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    ScheduleAiActionCard(Modifier.weight(1f), R.string.schedule_ai_photo,
-                        R.string.schedule_ai_photo_hint, onAiPhoto)
-                    ScheduleAiActionCard(Modifier.weight(1f), R.string.schedule_ai_plan,
-                        R.string.schedule_ai_plan_hint,
-                        onClick = { onAiPlan(ScheduleAiContext.forDay(selectedDay,
-                            viewModel.entries.toList(), viewModel.todos.toList())) },
-                        enabled = !viewModel.loading.value && !viewModel.error.value)
-                }
+                ScheduleAiActionCard(Modifier.fillMaxWidth(), R.string.schedule_ai_plan,
+                    R.string.schedule_ai_plan_hint,
+                    onClick = { onAiPlan(ScheduleAiContext.forDay(selectedDay,
+                        viewModel.entries.toList(), viewModel.todos.toList())) },
+                    enabled = !viewModel.loading.value && !viewModel.error.value)
             }
 
             // === KHUNG 1: THỜI KHÓA BIỂU ===
+            TextButton(onClick = { showOldTimetable = !showOldTimetable }) {
+                Text(stringResource(if (showOldTimetable) R.string.schedule_old_hide else R.string.schedule_old_show))
+            }
+            if (showOldTimetable) {
             Surface(
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.surface,
@@ -282,18 +284,6 @@ fun ScheduleScreen(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
-                        FilledTonalButton(
-                            onClick = {
-                                entryToEdit = null
-                                scheduleDialogSession++
-                                showScheduleForm = true
-                            },
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
-                        ) {
-                            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_add), modifier = Modifier.size(18.dp))
-                            Spacer(Modifier.width(4.dp))
-                            Text(stringResource(R.string.schedule_btn_add_class))
-                        }
                     }
 
                     val duplicateSlots = viewModel.entries.groupBy { it.period }
@@ -366,11 +356,9 @@ fun ScheduleScreen(
                                     style = MaterialTheme.typography.titleSmall,
                                     color = MaterialTheme.colorScheme.onSurface)
                                 morning.forEach { entry ->
-                                    ScheduleTimelineItemV2(entry) { clicked ->
-                                        entryToEdit = clicked
-                                        scheduleDialogSession++
-                                        showScheduleForm = true
-                                    }
+                                    Text("${entry.period}. ${entry.title}",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurface)
                                 }
                             }
                             if (afternoon.isNotEmpty()) {
@@ -378,16 +366,15 @@ fun ScheduleScreen(
                                     style = MaterialTheme.typography.titleSmall,
                                     color = MaterialTheme.colorScheme.onSurface)
                                 afternoon.forEach { entry ->
-                                    ScheduleTimelineItemV2(entry) { clicked ->
-                                        entryToEdit = clicked
-                                        scheduleDialogSession++
-                                        showScheduleForm = true
-                                    }
+                                    Text("${entry.period}. ${entry.title}",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurface)
                                 }
                             }
                         }
                     }
                 }
+            }
             }
 
             // === KHUNG 2: VIỆC CẦN LÀM ===

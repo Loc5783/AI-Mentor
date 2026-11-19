@@ -64,7 +64,9 @@ public class HomeActivity extends AppCompatActivity
     startActivity(new Intent(this, ScheduleAiActivity.class)
         .putExtra(ScheduleAiActivity.EXTRA_ACTION,
             action == com.example.mentor.schedule.ui.ScheduleAiAction.TIMETABLE_PHOTO
-                ? ScheduleAiActivity.PHOTO : ScheduleAiActivity.TODO)
+                ? ScheduleAiActivity.PHOTO
+                : action == com.example.mentor.schedule.ui.ScheduleAiAction.EXAM_PLAN
+                    ? ScheduleAiActivity.EXAM : ScheduleAiActivity.TODO)
         .putExtra(ScheduleAiActivity.EXTRA_DETAILS, details));
   }
 

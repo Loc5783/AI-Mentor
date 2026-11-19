@@ -15,10 +15,19 @@ public final class ReminderHelper {
   public static final int REQUEST_CODE_EVENING = 1001;
   public static final int REQUEST_CODE_MORNING = 1002;
   public static final int REQUEST_CODE_STREAK = 1003;
+  public static final int REQUEST_CODE_EXAM = 1004;
   
   public static final String ACTION_EVENING_REMINDER = "com.example.asm_final.ACTION_EVENING_REMINDER";
   public static final String ACTION_MORNING_REMINDER = "com.example.asm_final.ACTION_MORNING_REMINDER";
   public static final String ACTION_STREAK_REMINDER = "com.example.asm_final.ACTION_STREAK_REMINDER";
+  public static final String ACTION_EXAM_REMINDER = "com.example.asm_final.ACTION_EXAM_REMINDER";
+
+  public static void setExamPlanHour(Context context, int hour) {
+    if (hour < 0 || hour > 23) throw new IllegalArgumentException("hour");
+    context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
+        .putInt("exam_plan_hour", hour).apply();
+    reschedule(context);
+  }
 
   private ReminderHelper() {}
 
@@ -143,11 +152,27 @@ public final class ReminderHelper {
       streakCal.add(Calendar.DAY_OF_YEAR, 1);
     alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
         streakCal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, streakPending);
+
+    if (context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).contains("exam_plan_hour")) {
+      Intent examIntent = new Intent(context, ReminderReceiver.class).setAction(ACTION_EXAM_REMINDER);
+      PendingIntent examPending = PendingIntent.getBroadcast(context, REQUEST_CODE_EXAM, examIntent,
+          PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+      Calendar examCal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+      examCal.set(Calendar.HOUR_OF_DAY, context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+          .getInt("exam_plan_hour", 19));
+      examCal.set(Calendar.MINUTE, 0); examCal.set(Calendar.SECOND, 0);
+      if (examCal.getTimeInMillis() <= System.currentTimeMillis()) examCal.add(Calendar.DAY_OF_YEAR, 1);
+      alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, examCal.getTimeInMillis(),
+          AlarmManager.INTERVAL_DAY, examPending);
+    }
   }
 
   private static void cancelReminders(Context context) {
     AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     if (alarmManager == null) return;
+    alarmManager.cancel(PendingIntent.getBroadcast(context, REQUEST_CODE_EXAM,
+        new Intent(context, ReminderReceiver.class).setAction(ACTION_EXAM_REMINDER),
+        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
 
     Intent eveningIntent = new Intent(context, ReminderReceiver.class);
     eveningIntent.setAction(ACTION_EVENING_REMINDER);

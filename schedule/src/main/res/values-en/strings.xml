@@ -60,6 +60,10 @@
     <string name="schedule_ai_photo_hint">Review before saving</string>
     <string name="schedule_ai_plan">Suggest to-dos</string>
     <string name="schedule_ai_plan_hint">Plan together with AI</string>
+    <string name="schedule_ai_exam">Exam study plan</string>
+    <string name="schedule_ai_exam_hint">Choose exam date, subjects and lessons</string>
+    <string name="schedule_old_show">View old timetable (busy hours)</string>
+    <string name="schedule_old_hide">Hide old timetable</string>
     <string name="todo_progress_short">Done</string>
     <string name="schedule_card_timetable">Timetable</string>
     <string name="schedule_btn_add_class">Add Class</string>

@@ -38,7 +38,7 @@ Deno.serve(async (request: Request) => {
   const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length;}
   const input=JSON.parse(new TextDecoder().decode(bytes));
   const mode=input.mode==='schedule'?'general':input.mode??'general';
-  if(!['general','timetable_scan','todo_plan','practice_generate','practice_explain','exam_grade_essay'].includes(mode))return failure(400,'INVALID_REQUEST');
+   if(!['general','timetable_scan','todo_plan','exam_plan','practice_generate','practice_explain','exam_grade_essay'].includes(mode))return failure(400,'INVALID_REQUEST');
   if(!pref.ok&&mode!=='exam_grade_essay')return failure(503,'PROVIDER');
   const rows=pref.ok?await pref.json():[];const learner=rows[0];
   if(mode!=='exam_grade_essay'&&(!learner||![10,11,12].includes(learner.grade)))return failure(400,'INVALID_REQUEST');
@@ -150,7 +150,7 @@ Deno.serve(async (request: Request) => {
    characters+=turn.text.length;const parts:unknown[]=[];if(turn.text)parts.push({text:turn.text});
    if(!Array.isArray(turn.files)||turn.files.length>4)return failure(400,'INVALID_REQUEST');
    if(mode==='timetable_scan' && (turn.files.length!==1 || turn.text.trim()))return failure(400,'INVALID_REQUEST');
-   if(mode==='todo_plan' && (turn.files.length!==0 || !turn.text.trim() || turn.text.length>3000))return failure(400,'INVALID_REQUEST');
+    if((mode==='todo_plan'||mode==='exam_plan') && (turn.files.length!==0 || !turn.text.trim() || turn.text.length>3000))return failure(400,'INVALID_REQUEST');
    for(const file of turn.files){
     if(!['image/jpeg','image/png','image/webp','application/pdf','text/plain'].includes(file.mime)||typeof file.data!=='string'||! /^[A-Za-z0-9+/]*={0,2}$/.test(file.data))return failure(400,'INVALID_REQUEST');
     if(mode==='timetable_scan'&&!file.mime.startsWith('image/'))return failure(400,'INVALID_REQUEST');
@@ -172,7 +172,7 @@ Deno.serve(async (request: Request) => {
    const text=(candidate?.content?.parts??[]).filter((p: {text?:unknown;thought?:boolean})=>typeof p.text==='string'&&!p.thought).map((p: {text:string})=>p.text).join('');
    if(!text.trim())return failure(502,'EMPTY_RESPONSE');
    if(mode!=='general') {
-    const result=plannerResult(mode,text,candidate.finishReason==='MAX_TOKENS');
+    const result=plannerResult(mode,text,candidate.finishReason==='MAX_TOKENS',input.turns[0]?.text??'');
     if(result.error_code)return failure(result.error_code==='INVALID_AI_OUTPUT'?502:422,result.error_code);
     return json(200,result);
    }

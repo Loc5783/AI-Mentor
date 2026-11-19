@@ -31,6 +31,7 @@ import com.example.asm_final.backend.BackendClient
 import com.example.asm_final.supabase.SchedulePlannerGateway
 import com.example.asm_final.ui.ScheduleImportAction
 import com.example.asm_final.ui.TodoImportAction
+import com.example.asm_final.ui.ExamPlanImportAction
 import com.example.asm_final.ui.composeHost
 import com.example.mentor.data.ActiveUser
 import com.example.mentor.ui.design.MentorArtwork
@@ -40,6 +41,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.UUID
+import java.time.LocalDate
+import java.time.ZoneId
 
 /** Dedicated planning tools. No study-chat thread or free-text timetable prompt is created. */
 class ScheduleAiActivity : AppCompatActivity() {
@@ -48,6 +51,7 @@ class ScheduleAiActivity : AppCompatActivity() {
         const val EXTRA_DETAILS = "schedule_ai_details"
         const val PHOTO = "timetable_photo"
         const val TODO = "todo_plan"
+        const val EXAM = "exam_plan"
     }
 
     private var selectedImage by mutableStateOf<Uri?>(null)
@@ -71,7 +75,7 @@ class ScheduleAiActivity : AppCompatActivity() {
         savedInstanceState?.getString("camera_path")?.let { cameraFile = File(it) }
         savedInstanceState?.getString("pending_camera")?.let { pendingCamera = Uri.parse(it) }
         val action = intent.getStringExtra(EXTRA_ACTION)
-        if (action != PHOTO && action != TODO) { finish(); return }
+        if (action != PHOTO && action != TODO && action != EXAM) { finish(); return }
         val owner = ActiveUser.get(this)
         if (owner <= 0) { finish(); return }
         val details = intent.getStringExtra(EXTRA_DETAILS).orEmpty()
@@ -137,6 +141,12 @@ private fun PlannerScreen(
     val scope = rememberCoroutineScope()
     val gateway = remember { SchedulePlannerGateway(context) }
     var goal by remember { mutableStateOf("") }
+    var examDate by remember { mutableStateOf("") }
+    var dailyMinutes by remember { mutableStateOf("60") }
+    var reminderHour by remember { mutableStateOf("19") }
+    var availability by remember { mutableStateOf("") }
+    var useOldTimetable by remember { mutableStateOf(true) }
+    var examMode by remember { mutableStateOf(action == ScheduleAiActivity.EXAM) }
     var result by remember { mutableStateOf<String?>(null) }
     var error by remember { mutableIntStateOf(0) }
     var busy by remember { mutableStateOf(false) }
@@ -151,6 +161,10 @@ private fun PlannerScreen(
         error = 0
     }
     val isPhoto = action == ScheduleAiActivity.PHOTO
+    val isExam = examMode
+    val today = remember { LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh")) }
+    val parsedExamDate = remember(examDate) { runCatching { LocalDate.parse(examDate) }.getOrNull() }
+    val parsedSubjects = remember(goal) { parseExamSubjects(goal) }
     Column(
         Modifier
             .fillMaxSize()
@@ -167,12 +181,12 @@ private fun PlannerScreen(
         ) {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
-                    stringResource(if (isPhoto) R.string.planner_photo_title else R.string.planner_todo_title),
+                    stringResource(if (isPhoto) R.string.planner_photo_title else if (isExam) R.string.exam_plan_title else R.string.planner_todo_title),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    stringResource(if (isPhoto) R.string.planner_photo_hint else R.string.planner_todo_hint),
+                    stringResource(if (isPhoto) R.string.planner_photo_hint else if (isExam) R.string.exam_plan_hint else R.string.planner_todo_hint),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -297,14 +311,48 @@ private fun PlannerScreen(
                 }
             }
         } else {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilterChip(selected = !isExam, enabled = !busy, onClick = { examMode = false; result = null },
+                    label = { Text(stringResource(R.string.planner_todo_title)) })
+                FilterChip(selected = isExam, enabled = !busy, onClick = { examMode = true; result = null },
+                    label = { Text(stringResource(R.string.exam_plan_title)) })
+            }
+            if (isExam) {
+                OutlinedButton(onClick = {
+                    val initial = parsedExamDate ?: today.plusDays(7)
+                    android.app.DatePickerDialog(context, { _, year, month, day ->
+                        examDate = LocalDate.of(year, month + 1, day).toString(); result = null
+                    }, initial.year, initial.monthValue - 1, initial.dayOfMonth).apply {
+                        datePicker.minDate = today.plusDays(2).atStartOfDay(ZoneId.of("Asia/Ho_Chi_Minh"))
+                            .toInstant().toEpochMilli()
+                    }.show()
+                }) { Text(stringResource(R.string.exam_plan_pick_date)) }
+                OutlinedTextField(examDate, onValueChange = { if (it.length <= 10) { examDate = it; result = null } },
+                    label = { Text(stringResource(R.string.exam_plan_date)) },
+                    placeholder = { Text("2026-12-15") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+                Text(stringResource(R.string.exam_plan_days,
+                    parsedExamDate?.let { java.time.temporal.ChronoUnit.DAYS.between(today, it).toInt().coerceAtLeast(0) } ?: 0))
+                OutlinedTextField(dailyMinutes, onValueChange = { if (it.length <= 3 && it.all(Char::isDigit)) { dailyMinutes = it; result = null } },
+                    label = { Text(stringResource(R.string.exam_plan_minutes)) }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+                OutlinedTextField(reminderHour, onValueChange = { if (it.length <= 2 && it.all(Char::isDigit)) { reminderHour = it; result = null } },
+                    label = { Text(stringResource(R.string.exam_plan_reminder)) }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+                OutlinedTextField(availability, onValueChange = { if (it.length <= 300) { availability = it; result = null } },
+                    label = { Text(stringResource(R.string.exam_plan_availability)) },
+                    placeholder = { Text(stringResource(R.string.exam_plan_availability_example)) },
+                    modifier = Modifier.fillMaxWidth(), minLines = 2)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(useOldTimetable, onCheckedChange = { useOldTimetable = it; result = null })
+                    Text(stringResource(R.string.exam_plan_use_old_timetable))
+                }
+            }
             OutlinedTextField(
                 value = goal,
                 onValueChange = { if (it.length <= 1000) { goal = it; result = null; error = 0 } },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3,
                 maxLines = 6,
-                label = { Text(stringResource(R.string.planner_goal_label)) },
-                placeholder = { Text(stringResource(R.string.planner_goal_example)) },
+                label = { Text(stringResource(if (isExam) R.string.exam_plan_subjects else R.string.planner_goal_label)) },
+                placeholder = { Text(stringResource(if (isExam) R.string.exam_plan_subjects_example else R.string.planner_goal_example)) },
                 enabled = !busy,
                 shape = RoundedCornerShape(14.dp)
             )
@@ -322,7 +370,7 @@ private fun PlannerScreen(
                 ) {
                     LinearProgressIndicator(Modifier.fillMaxWidth())
                     Text(
-                        "AI đang phân tích thời khóa biểu...",
+                        stringResource(if (isPhoto) R.string.planner_photo_busy else if (isExam) R.string.exam_plan_busy else R.string.planner_todo_busy),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -340,6 +388,8 @@ private fun PlannerScreen(
                     job = scope.launch {
                         try {
                             val proposal = if (isPhoto) gateway.scanTimetable(owner, image!!)
+                                else if (isExam) gateway.planExam(owner, today, parsedExamDate!!,
+                                    parsedSubjects!!, dailyMinutes.toInt(), availability, useOldTimetable)
                                 else gateway.planTodos(owner, details, goal)
                             if (token == generation) result = proposal
                         } catch (cancelled: CancellationException) { throw cancelled }
@@ -347,7 +397,11 @@ private fun PlannerScreen(
                         finally { if (token == generation) { busy = false; job = null } }
                     }
                 },
-                enabled = if (isPhoto) image != null else goal.isNotBlank(),
+                enabled = if (isPhoto) image != null else if (isExam)
+                    parsedExamDate?.isAfter(today.plusDays(1)) == true && parsedSubjects != null &&
+                        availability.isNotBlank() &&
+                        dailyMinutes.toIntOrNull() in 10..480 && reminderHour.toIntOrNull() in 0..23
+                    else goal.isNotBlank(),
                 modifier = Modifier.fillMaxWidth().height(52.dp),
                 shape = RoundedCornerShape(26.dp)
             ) {
@@ -387,12 +441,28 @@ private fun PlannerScreen(
                         color = MaterialTheme.colorScheme.primary
                     )
                     if (isPhoto) ScheduleImportAction(text, owner, onBack)
+                    else if (isExam) ExamPlanImportAction(text, owner, today, parsedExamDate!!,
+                        parsedSubjects!!.keys, dailyMinutes.toInt(), reminderHour.toInt(), onBack)
                     else TodoImportAction(text, owner, onBack)
                 }
             }
         }
     }
 }
+
+private fun parseExamSubjects(input: String): Map<String, List<String>>? = runCatching {
+    val lines = input.lines().map(String::trim).filter(String::isNotBlank)
+    require(lines.size in 1..9)
+    val parsed = lines.associate { line ->
+        val parts = line.split(':', limit = 2)
+        require(parts.size == 2 && parts[0].trim().length in 1..80)
+        val lessons = parts[1].split(',').map(String::trim).filter(String::isNotBlank)
+        require(lessons.isNotEmpty() && lessons.size <= 30)
+        parts[0].trim() to lessons
+    }
+    require(parsed.size == lines.size)
+    parsed
+}.getOrNull()
 
 private fun plannerMessage(error: Exception, photo: Boolean): Int {
     val code = (error as? BackendClient.Failure)?.code
