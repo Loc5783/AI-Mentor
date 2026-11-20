@@ -760,7 +760,7 @@ private fun ExamInProgressContent(
                 ) {
                     Box(Modifier.padding(16.dp)) {
                         ChatAnswerView(
-                            if (currentQuestion.questionType == "ESSAY") currentQuestion.prompt.replace(
+                            if (currentQuestion.kind == ExamQuestionKind.ESSAY) currentQuestion.prompt.replace(
                                 "Học sinh làm bài ra giấy, phần tự luận chưa chấm tự động",
                                 "Viết câu trả lời bên dưới; AI sẽ chấm sau khi nộp"
                             ) else currentQuestion.prompt,
@@ -780,17 +780,19 @@ private fun ExamInProgressContent(
                     "D" to currentQuestion.optionD
                 )
 
-                if (currentQuestion.questionType == "SHORT_ANSWER" || currentQuestion.questionType == "ESSAY") {
+                if (currentQuestion.kind == ExamQuestionKind.SHORT_ANSWER || currentQuestion.kind == ExamQuestionKind.ESSAY) {
                     OutlinedTextField(
                         value = selectedOpt.orEmpty(),
                         onValueChange = { onTextAnswer(currentQuestion.id, it) },
                         modifier = Modifier.fillMaxWidth(),
-                        label = { Text(if (currentQuestion.questionType == "ESSAY") "Bài làm của bạn" else "Đáp án ngắn") },
-                        minLines = if (currentQuestion.questionType == "ESSAY") 5 else 1,
-                        maxLines = if (currentQuestion.questionType == "ESSAY") 12 else 3,
-                        supportingText = { Text("${selectedOpt.orEmpty().length}/${if (currentQuestion.questionType == "ESSAY") 4000 else 200}") }
+                        label = { Text(if (currentQuestion.kind == ExamQuestionKind.ESSAY) "Bài làm của bạn" else "Đáp án ngắn") },
+                        minLines = if (currentQuestion.kind == ExamQuestionKind.ESSAY) 5 else 1,
+                        maxLines = if (currentQuestion.kind == ExamQuestionKind.ESSAY) 12 else 3,
+                        supportingText = { Text("${selectedOpt.orEmpty().length}/${if (currentQuestion.kind == ExamQuestionKind.ESSAY) 4000 else 200}") }
                     )
-                } else if (currentQuestion.questionType == "TRUE_FALSE_4") {
+                } else if (currentQuestion.kind == ExamQuestionKind.TRUE_FALSE_4 && !currentQuestion.hasValidTrueFalseItems) {
+                    Text("Câu Đúng/Sai này thiếu dữ liệu. Vui lòng thử lại sau.")
+                } else if (currentQuestion.kind == ExamQuestionKind.TRUE_FALSE_4) {
                     val statements = currentQuestion.contentData.optJSONArray("subItems")
                     val current = runCatching { JSONObject(selectedOpt.orEmpty()) }.getOrDefault(JSONObject())
                     for (i in 0 until (statements?.length() ?: 0)) {
@@ -812,6 +814,8 @@ private fun ExamInProgressContent(
                             }
                         }
                     }
+                } else if (currentQuestion.kind == ExamQuestionKind.UNKNOWN) {
+                    Text("Dạng câu hỏi này chưa được hỗ trợ. Vui lòng quay lại sau.")
                 } else options.forEach { (key, text) ->
                     val isChosen = selectedOpt == key
                     Card(
@@ -1077,7 +1081,7 @@ private fun ExamResultContent(
                     val isCurrent = index == currentRevIndex
                     val isCorrect = q.isCorrect == true
                     val isAnswered = !q.selectedOption.isNullOrBlank()
-                    val isEssayPending = q.questionType == "ESSAY" && isAnswered && q.essayPoints == null
+                    val isEssayPending = q.kind == ExamQuestionKind.ESSAY && isAnswered && q.essayPoints == null
 
                     Box(
                         modifier = Modifier
@@ -1127,8 +1131,8 @@ private fun ExamResultContent(
                     )
                     Text(
                         when {
-                            currentRevQuestion.questionType == "ESSAY" && currentRevQuestion.essayPoints == null -> "Đang chấm bằng AI"
-                            currentRevQuestion.questionType == "ESSAY" -> "${examPointsLabel(currentRevQuestion.essayPoints ?: 0, currentRevQuestion.pointScale)}/${examPointsLabel(currentRevQuestion.points, currentRevQuestion.pointScale)} điểm"
+                            currentRevQuestion.kind == ExamQuestionKind.ESSAY && currentRevQuestion.essayPoints == null -> "Đang chấm bằng AI"
+                            currentRevQuestion.kind == ExamQuestionKind.ESSAY -> "${examPointsLabel(currentRevQuestion.essayPoints ?: 0, currentRevQuestion.pointScale)}/${examPointsLabel(currentRevQuestion.points, currentRevQuestion.pointScale)} điểm"
                             currentRevQuestion.isCorrect == true -> "✓ Đúng (+${examPointsLabel(currentRevQuestion.points, currentRevQuestion.pointScale)} đ)"
                             !currentRevQuestion.selectedOption.isNullOrBlank() -> "✗ Sai (0 đ)"
                             else -> "○ Chưa trả lời (0 đ)"
@@ -1136,8 +1140,8 @@ private fun ExamResultContent(
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         color = when {
-                            currentRevQuestion.questionType == "ESSAY" && currentRevQuestion.essayPoints == null -> MaterialTheme.colorScheme.onSurfaceVariant
-                            currentRevQuestion.questionType == "ESSAY" -> MaterialTheme.colorScheme.tertiary
+                            currentRevQuestion.kind == ExamQuestionKind.ESSAY && currentRevQuestion.essayPoints == null -> MaterialTheme.colorScheme.onSurfaceVariant
+                            currentRevQuestion.kind == ExamQuestionKind.ESSAY -> MaterialTheme.colorScheme.tertiary
                             currentRevQuestion.isCorrect == true -> Color(0xFF2E7D32)
                             !currentRevQuestion.selectedOption.isNullOrBlank() -> MaterialTheme.colorScheme.error
                             else -> Color.Gray
@@ -1167,7 +1171,7 @@ private fun ExamResultContent(
                     "D" to currentRevQuestion.optionD
                 )
 
-                if (currentRevQuestion.questionType == "ESSAY" || currentRevQuestion.questionType == "SHORT_ANSWER") {
+                if (currentRevQuestion.kind == ExamQuestionKind.ESSAY || currentRevQuestion.kind == ExamQuestionKind.SHORT_ANSWER) {
                     Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
                         Column(Modifier.padding(16.dp)) {
                             Text("Bài làm của bạn", fontWeight = FontWeight.Bold)
@@ -1178,9 +1182,11 @@ private fun ExamResultContent(
                             }
                         }
                     }
-                } else if (currentRevQuestion.questionType == "TRUE_FALSE_4") {
+                } else if (currentRevQuestion.kind == ExamQuestionKind.TRUE_FALSE_4) {
                     Text("Bạn chọn: ${userOpt.orEmpty().ifBlank { "Chưa trả lời" }}")
                     Text("Đáp án: ${correctOpt.orEmpty()}")
+                } else if (currentRevQuestion.kind == ExamQuestionKind.UNKNOWN) {
+                    Text("Dạng câu hỏi này chưa được hỗ trợ để xem lại.")
                 } else options.forEach { (key, text) ->
                     val isCorrectChoice = key == correctOpt
                     val isUserChoice = key == userOpt
