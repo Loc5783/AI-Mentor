@@ -16,9 +16,12 @@ class AiPracticeViewModelTest {
         override val supportsAnswerConfidence = true
         val confidenceByQuestion = mutableMapOf<String, AnswerConfidence>()
         var confidenceWrite: Triple<String, Int, AnswerConfidence>? = null
+        var failConfidenceGet: Exception? = null
         var failConfidenceWrite: Exception? = null
-        override suspend fun getAnswerConfidence(sessionId: String, questionId: String) =
-            confidenceByQuestion[questionId]
+        override suspend fun getAnswerConfidence(sessionId: String, questionId: String): AnswerConfidence? {
+            failConfidenceGet?.let { throw it }
+            return confidenceByQuestion[questionId]
+        }
         override suspend fun setAnswerConfidence(sessionId: String, questionId: String,
                                                  attemptCount: Int, confidence: AnswerConfidence): AnswerConfidence {
             failConfidenceWrite?.let { throw it }
@@ -731,6 +734,26 @@ class AiPracticeViewModelTest {
         runCurrent()
         assertNotEquals(repo.creationKeys[0], repo.creationKeys[1])
         assertEquals(AiPracticeScreenState.PRACTICING, vm.screenState)
+        vm.onCleared()
+    }
+
+    @Test
+    fun missingConfidenceRpcKeepsCardVisibleButDisablesChoice() = runTest {
+        val repo = FakeAiPracticeRepository()
+        repo.failConfidenceGet = com.example.asm_final.backend.BackendClient.Failure(
+            "Could not find the function public.mentor_ai_answer_confidence_api", 404)
+        val vm = AiPracticeViewModel(repo, backgroundScope)
+        vm.startPractice("math", 10, "Topic", "EASY", 2)
+        runCurrent()
+        vm.selectOption("A")
+        vm.submitAnswer()
+        runCurrent()
+        assertTrue(vm.confidenceSupported)
+        assertFalse(vm.confidenceAvailable)
+        assertFalse(vm.confidenceLoading)
+        vm.chooseAnswerConfidence(AnswerConfidence.HIGH)
+        runCurrent()
+        assertNull(repo.confidenceWrite)
         vm.onCleared()
     }
 

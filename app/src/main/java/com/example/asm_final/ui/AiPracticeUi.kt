@@ -733,7 +733,7 @@ private fun AiPracticeFeedbackContent(
                 }
             }
 
-            if (viewModel.confidenceAvailable && !result.isSkipped) {
+            if (viewModel.confidenceSupported && !result.isSkipped) {
                 Card(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     shape = RoundedCornerShape(20.dp),
@@ -749,31 +749,51 @@ private fun AiPracticeFeedbackContent(
                         Text("Chọn theo cảm nhận của bạn. Mức này không ảnh hưởng điểm số.",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Column(verticalArrangement = Arrangement.spacedBy(4.dp),
-                            modifier = Modifier.fillMaxWidth()) {
-                            listOf(
-                                AnswerConfidence.LOW to "Chưa chắc",
-                                AnswerConfidence.MEDIUM to "Khá chắc",
-                                AnswerConfidence.HIGH to "Rất chắc"
-                            ).forEach { (value, label) ->
-                                FilterChip(
-                                    selected = viewModel.answerConfidence == value,
-                                    onClick = { viewModel.chooseAnswerConfidence(value) },
-                                    label = { Text(label, style = MaterialTheme.typography.bodyMedium) },
-                                    enabled = !viewModel.confidenceBusy,
-                                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
-                                        .testTag("AiConfidence_${value.name}")
-                                )
+                        when {
+                            !viewModel.confidenceAvailable -> Text(
+                                "Tính năng này đang chờ cập nhật trên máy chủ. Bạn vẫn có thể tiếp tục làm bài.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.testTag("AiConfidenceUnavailable")
+                            )
+                            viewModel.confidenceLoading -> {
+                                Text("Đang kiểm tra mức đã lưu…",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                            }
+                            else -> {
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp),
+                                    modifier = Modifier.fillMaxWidth()) {
+                                    listOf(
+                                        AnswerConfidence.LOW to "Chưa chắc",
+                                        AnswerConfidence.MEDIUM to "Khá chắc",
+                                        AnswerConfidence.HIGH to "Rất chắc"
+                                    ).forEach { (value, label) ->
+                                        FilterChip(
+                                            selected = viewModel.answerConfidence == value,
+                                            onClick = { viewModel.chooseAnswerConfidence(value) },
+                                            label = { Text(label, style = MaterialTheme.typography.bodyMedium) },
+                                            enabled = !viewModel.confidenceBusy,
+                                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                                                .testTag("AiConfidence_${value.name}")
+                                        )
+                                    }
+                                }
+                                if (viewModel.confidenceBusy) {
+                                    Text("Đang lưu lựa chọn…",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                                }
+                                if (viewModel.answerConfidence != null) {
+                                    Text("Đã lưu cho câu trả lời này",
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.primary)
+                                }
+                                viewModel.confidenceError?.let { MentorErrorNotice(it) }
                             }
                         }
-                        if (viewModel.confidenceBusy) {
-                            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                        } else if (viewModel.answerConfidence != null) {
-                            Text("Đã lưu cho câu trả lời này",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.primary)
-                        }
-                        viewModel.confidenceError?.let { MentorErrorNotice(it) }
                     }
                 }
             }

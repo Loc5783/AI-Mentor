@@ -41,6 +41,7 @@ class AiPracticeViewModel(
         isReporting = false
         isExplainingMore = false
         confidenceBusy = false
+        confidenceLoading = false
     }
 
     private var activeJob: Job? = null
@@ -91,10 +92,13 @@ class AiPracticeViewModel(
         private set
     var confidenceBusy by mutableStateOf(false)
         private set
+    var confidenceLoading by mutableStateOf(false)
+        private set
     var confidenceError by mutableStateOf<String?>(null)
         private set
     var confidenceAvailable by mutableStateOf(repository.supportsAnswerConfidence)
         private set
+    val confidenceSupported: Boolean get() = repository.supportsAnswerConfidence
 
     var explainMoreText by mutableStateOf<String?>(null)
         private set
@@ -394,19 +398,19 @@ class AiPracticeViewModel(
         val generation = requestGenerationToken
         answerConfidence = null
         confidenceError = null
-        confidenceBusy = true
+        confidenceLoading = true
         vmScope.launch {
             try {
                 val saved = repository.getAnswerConfidence(sess.id, q.id)
                 if (isCurrent(generation) && currentQuestion?.id == q.id) {
                     answerConfidence = saved
-                    confidenceBusy = false
+                    confidenceLoading = false
                 }
             } catch (ce: CancellationException) {
                 throw ce
             } catch (e: Exception) {
                 if (!isCurrent(generation) || currentQuestion?.id != q.id) return@launch
-                confidenceBusy = false
+                confidenceLoading = false
                 val cloudError = e as? BackendClient.Failure
                 if (cloudError?.code?.contains("mentor_ai_answer_confidence_api") == true &&
                     cloudError.status == 404) confidenceAvailable = false
@@ -416,7 +420,7 @@ class AiPracticeViewModel(
     }
 
     fun chooseAnswerConfidence(value: AnswerConfidence) {
-        if (!confidenceAvailable || confidenceBusy || closed) return
+        if (!confidenceAvailable || confidenceLoading || confidenceBusy || closed) return
         val sess = session ?: return
         val q = currentQuestion ?: return
         val result = lastResult ?: return
