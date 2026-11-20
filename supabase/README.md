@@ -1,56 +1,40 @@
-# Supabase — AI Mentor
+# Supabase trong AI Mentor
 
-Supabase is the cloud path when `SUPABASE_ENABLED=true`. The app keeps the old FastAPI path available as a fallback when Supabase is disabled. The Grade 10 curriculum now includes six introductory subject packs in addition to the existing Physics, Chemistry and Biology packs; migration `202610300001_remaining_grade10_curricula.sql` seeds the new packs and their review quizzes.
+Tài liệu này mô tả **mã nguồn trong repo**, không xác nhận trạng thái của project cloud. Android chọn các adapter Supabase qua `AppServices.java` khi `SUPABASE_ENABLED=true`; nhánh FastAPI local chỉ dùng khi tắt cấu hình đó.
 
-## Connected app areas
+## Thành phần đã có trong code
 
-- **Accounts:** email sign-up/sign-in, email confirmation, refresh/restore session, sign-out, password recovery and password change. Android session tokens are stored using Android Keystore and remain separate from legacy backend sessions.
-- **Profile and setup:** cloud profile nickname, selected grade/subjects, and profile lookup/avatar retrieval through the social API.
-- **Learning overview:** selected-subject progress, XP, streak, weekly activity and rank tier are read from `mentor_overview`; lesson/quiz actions use `mentor_learning_api`.
-- **Competition:** ranking data is read through `mentor_social_api`.
-- **Friends:** global-rank entries can send requests; the competition screen lists accepted friends and incoming/outgoing requests, accepts/declines, and removes friends with revision checks. Profile displays accepted friends' current streaks.
-- **Study ledger and badges:** `mentor_study_action` records short, bounded, idempotent active-study intervals; `mentor_study_summary` aggregates recorded seconds; `mentor_badges` unlocks badges only from completed lesson/XP/streak facts. Profile reads the actual study total and badge states, with explicit empty/unavailable states.
-- **Practice library:** published quiz metadata, private answer-key snapshots, resumable sessions and wrong-answer retry are served by `mentor_library_api`; practice awards no XP or streak. Migration `202610290018_seed_practice_from_lessons.sql` builds 10–15 question review quizzes for complete five-lesson groups from the existing Lý–Hóa–Sinh lesson bank.
-- **Schedule:** uses the Supabase schedule repository when cloud mode is enabled. The Schedule assistant can propose a weekly study to-do draft; the learner edits, deselects and confirms tasks before one atomic import. The `mentor_import_todos` RPC skips existing day/title/subject matches.
-- **Chat:** folders, conversations, drafts, messages and attachments use the Supabase chat store; realtime chat changes trigger a refresh.
-- **Realtime refresh:** profile, enrollment, learning, friendship, chat and schedule table changes are translated into app refresh events.
-- **AI:** the `mentor-ai` Edge Function authenticates the bearer session, applies account quota, adapts to grade/language, and calls Gemini with server-side keys. `config.toml` keeps `verify_jwt = true`; it must be deployed and its Gemini secrets configured before cloud AI chat works.
+| Phần | Vị trí | Giới hạn của bằng chứng |
+| --- | --- | --- |
+| Auth, hồ sơ, bạn bè, tiến độ, lịch, chat, thư viện, đề thi | `app/src/main/java/com/example/asm_final/supabase/`, `app/src/main/java/com/example/asm_final/learning/` | Adapter/RPC caller có trong app; chưa chứng minh project cloud đã có đủ bảng, policy hoặc dữ liệu. |
+| Schema, RPC và nội dung seed | `supabase/migrations/` | Migration lớp 10–12 có trong Git. Phải so sánh lịch sử remote trước khi áp dụng; file SQL không chứng minh đã deploy. |
+| Chat, lập kế hoạch to-do, đọc ảnh thời khóa biểu, luyện AI | `supabase/functions/mentor-ai/` | Source có các mode `general`, `todo_plan`, `timetable_scan`, `practice_generate`, `practice_explain`. `config.toml` đặt `verify_jwt = true`. Cần Edge Function đã triển khai và Gemini secrets hợp lệ để chạy online. |
+| SQL smoke | `supabase/tests/*_smoke.sql` | Test được viết để chạy trong transaction và rollback; chỉ có kết quả khi thực sự chạy trong môi trường phù hợp. |
 
-## Still incomplete
+Các file dữ liệu và migration có thể bổ sung nội dung lớp 11, 12; cần kiểm tra số lượng/độ đúng của từng môn trong cơ sở dữ liệu đang dùng. Không suy ra cloud đã cập nhật chỉ từ branch hoặc commit.
 
-- The seed creates review quizzes only for complete five-lesson groups that contain 10–15 valid questions. If a subject/grade has no such group, the practice library correctly remains empty for that selection.
-- Friend discovery is currently through the global ranking list; QR invitations and nickname search are not supported yet.
-- Chat data is cloud-backed when Supabase is enabled; verify the storage bucket and migration `202610290007_chat_storage.sql` are deployed for attachments.
-- Foreground lesson/review attempts send bounded study intervals; the profile reads `mentor_study_summary` and `mentor_badges`. These sections show an explicit empty/unavailable message if the cloud contract is unavailable.
-- Live Supabase auth/recovery, ranking and realtime behavior have not all been exercised against the user's project from this checkout.
-- The `mentor-ai` function was updated on 2026-11-15 with separate study-chat, image-only timetable scan, and to-do planning modes. The timetable scan rejects blurry and unrelated images before presenting a draft. A complete AI reply still requires a signed-in app session and working Gemini secrets; that end-to-end path has not been verified on a signed-in device in this checkout.
+## Cấu hình an toàn
 
-## Configuration and secrets
+- `supabase.local.properties.example` chỉ chứa Project URL và publishable key công khai. `supabase.properties` và `supabase.local.properties` là cấu hình máy cá nhân bị bỏ qua bởi Git.
+- Không đặt Gemini key, database password, access token, `service_role` hoặc secret vào Android, migration, test hay GitHub Actions log.
+- Callback Android cho email cần được đối chiếu giữa app và Supabase Auth URL Configuration. Việc có deep link trong app không chứng minh dashboard đã cho phép callback.
+- Test CI không nhận secret production, không `link`, `db push` hoặc deploy Edge Function.
 
-- `supabase.local.properties.example` contains the project's public URL and publishable key so a fresh clone can connect. A publishable key is intended for client apps; never put a secret or `service_role` key in the app or Git.
-- Gradle reads that tracked default first, then lets ignored `supabase.properties` or `supabase.local.properties` override it for local development.
-- In Supabase Authentication → URL Configuration, add `aimentor://auth/callback` to the allowed redirect URLs so signup confirmation returns to Android instead of the default Site URL.
-- Keep `SUPABASE_ENABLED=false` to use the legacy backend path.
-- Configure Gemini keys only as Supabase Edge Function secrets, never in Android resources, source code, or Git.
+## Kiểm tra local và cloud
 
-## Deploying Supabase changes
+1. **Local migration:** CI dùng Supabase CLI và Docker để chạy stack local mới; nếu migration lỗi, job SQL thất bại.
+2. **Local SQL smoke:** sau migration, CI chạy `supabase/tests/*_smoke.sql` qua `psql -X --set ON_ERROR_STOP=1`. Test tự rollback dữ liệu tạo trong transaction.
+3. **Local Edge test:** `node --test supabase/functions/mentor-ai/*.test.mjs backend/tests/test_gemini_key_pool.mjs backend/tests/test_mentor_ai_handler.mjs` kiểm tra logic bằng mock; không gọi Gemini thật.
+4. **Cloud verification:** kiểm tra `migration list --linked`, phiên bản function, Auth callback, RLS và test tài khoản riêng trên project đích. Cần ghi ngày, project ref, kết quả thực tế và người thực hiện; tài liệu này không cung cấp kết quả cloud hiện tại.
+5. **Deploy:** chỉ thực hiện sau khi xem diff và lịch sử migration, có kế hoạch rollback và được người phụ trách cho phép. Không dùng `db reset --remote` với dữ liệu người dùng.
 
-Check remote migration history before any bulk database push. On 2026-11-14, `202611140001_ai_todo_import.sql` was applied individually to project `hnxphwuaccztzanjcuca` and recorded as applied; `tests/ai_todo_import_smoke.sql` passed on that project and rolled back its test rows. Several older migrations are still pending on the remote, so a future bulk push needs its own review. The `mentor-ai` Edge Function was deployed with JWT verification enabled. Gemini secrets belong only in Edge Function Secrets, never in Android resources, source code or Git.
+## Trạng thái cần báo cáo trong PR
 
-## Database migrations
+| Trạng thái | Cách ghi |
+| --- | --- |
+| Code có trong repo | Dẫn file hoặc commit. |
+| Test local đã chạy | Ghi lệnh, kết quả và môi trường. |
+| Test cloud đã chạy | Ghi project đích, luồng thử và kết quả; không ghi secret. |
+| Đã deploy | Ghi migration/function version hoặc link run triển khai; nếu chưa có bằng chứng thì ghi “chưa xác minh”. |
 
-Apply migrations in `migrations/` in ascending order after comparing remote history. Migration `202610300001_remaining_grade10_curricula.sql` adds 15 introductory lessons to Math, Literature, English, History, Geography and Economics-Law, plus three 10-question review quizzes per course. Migration `202610300002_adaptive_placement.sql` asks two questions per published lesson, marks only demonstrated lessons as mastered, and skips a review checkpoint only when all five lessons are mastered. This does not complete the full Grade 10 curriculum or add Grade 11–12 content. Migration `202611140001_ai_todo_import.sql` adds the reviewed to-do import RPC.
-
-The latest overview RPC counts progress only for selected subjects and uses the existing rank thresholds: Silver 500 XP, Gold 2,000, Platinum 5,000 and Diamond 10,000. No XP or activity is fabricated for empty accounts.
-
-After applying migrations, the SQL smoke scripts in `tests/` can be run from the Supabase SQL editor. `cloud_learning_smoke.sql` creates temporary test rows inside a transaction and rolls them back; it checks answer privacy, grading, wrong-answer retry, no practice XP, study interval bounds/idempotency and the badge catalog.
-
-## Local verification
-
-From the repository root:
-
-```powershell
-.\\gradlew.bat :app:assembleDebug :app:testDebugUnitTest
-```
-
-The build verifies Android compilation and local unit tests. It does not prove that migrations are applied remotely, that Supabase email delivery is configured, or that the Edge Function and Gemini secrets are deployed.
+Chi tiết backend local: [backend/README.md](../backend/README.md). Hướng dẫn chung và CI: [README.md](../README.md).
