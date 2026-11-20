@@ -1,6 +1,8 @@
 # Learning AI foundations: scope and evidence
 
-This note describes source code in the current working tree, including uncommitted changes. It does not claim that a new AI feature is available to learners, tested against the cloud project, or deployed.
+This note describes source code in this branch. It does not claim that a new AI feature is available to learners, tested against the cloud project, or deployed.
+
+`ExamPackFoundry` on the integration base processes questions extracted from user-supplied files and keeps them pending approval. `AdaptiveQuestionSelection` in this branch only filters already published, reviewed library questions for a proposed practice blueprint. Neither component calls the other; their question metadata and approval rules must be reconciled before any shared learner flow is built.
 
 | Phase | Implemented in source | Remaining before learner use |
 | --- | --- | --- |
