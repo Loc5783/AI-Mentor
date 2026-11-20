@@ -144,7 +144,9 @@ begin
       and id like 'g11-lesson-%' and option_d not like '[Cần biên tập%'
       and option_d not in (option_a,option_b,option_c)
       and correct_option in ('A','B','C');
-    if completed_count<15 then raise exception 'Grade 11 % has only % completed lesson questions',subject_row.subject_id,completed_count; end if;
+    -- Each subject has four LESSON units with three questions. The fifth unit is
+    -- FIVE_LESSON_REVIEW and is intentionally not seeded as a lesson draft.
+    if completed_count<12 then raise exception 'Grade 11 % has only % completed lesson questions',subject_row.subject_id,completed_count; end if;
   end loop;
 end $$;
 commit;
