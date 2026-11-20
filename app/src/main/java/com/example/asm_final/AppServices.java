@@ -21,6 +21,7 @@ public final class AppServices {
   private final com.example.asm_final.chat.ChatStore chats;
   private final com.example.asm_final.onboarding.LearnerProfileRepository learners;
   private final RecoveryService recovery;
+  private final com.example.asm_final.learning.TeamOsRepository teamOs = new com.example.asm_final.learning.TeamOsRepository();
   private final com.example.asm_final.supabase.SupabaseStudyRepository study;
   private final Context context;
   private final UserProfileRepository profiles;
@@ -163,6 +164,10 @@ public final class AppServices {
 
   public com.example.asm_final.chat.ChatStore chats() {
     return chats;
+  }
+
+  public com.example.asm_final.learning.TeamOsRepository teamOs() {
+    return teamOs;
   }
 
   public com.example.asm_final.learning.LibraryRepository library(int owner) {

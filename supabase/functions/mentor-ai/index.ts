@@ -38,7 +38,7 @@ Deno.serve(async (request: Request) => {
   const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length;}
   const input=JSON.parse(new TextDecoder().decode(bytes));
   const mode=input.mode==='schedule'?'general':input.mode??'general';
-   if(!['general','timetable_scan','todo_plan','exam_plan','practice_generate','practice_explain','exam_grade_essay'].includes(mode))return failure(400,'INVALID_REQUEST');
+   if(!['general','timetable_scan','todo_plan','exam_plan','practice_generate','practice_explain','exam_grade_essay','misconception_analyze','exampack_extract','teamos_analyze'].includes(mode))return failure(400,'INVALID_REQUEST');
   if(!pref.ok&&mode!=='exam_grade_essay')return failure(503,'PROVIDER');
   const rows=pref.ok?await pref.json():[];const learner=rows[0];
   if(mode!=='exam_grade_essay'&&(!learner||![10,11,12].includes(learner.grade)))return failure(400,'INVALID_REQUEST');
