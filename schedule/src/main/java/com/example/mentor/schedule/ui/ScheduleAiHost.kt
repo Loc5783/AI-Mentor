@@ -8,4 +8,5 @@ interface ScheduleAiHost {
 enum class ScheduleAiAction {
     TIMETABLE_PHOTO,
     TODO_PLAN,
+    EXAM_PLAN,
 }

@@ -64,8 +64,8 @@ android {
         applicationId = "com.example.asm_final"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "MENTOR_BACKEND_URL", "\"$backendUrl\"")
@@ -89,6 +89,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
@@ -102,6 +103,7 @@ configurations.all {
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
     implementation(libs.okhttp)
     implementation(libs.activity.compose)
     implementation(libs.compose.livedata)

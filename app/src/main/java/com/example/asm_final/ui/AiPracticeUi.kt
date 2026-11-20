@@ -50,6 +50,12 @@ fun AiPracticeScreen(
         AiPracticeViewModel(repository, scope)
     }
 
+    ActiveStudyTime(
+        viewModel.screenState == AiPracticeScreenState.PRACTICING ||
+            viewModel.screenState == AiPracticeScreenState.FEEDBACK,
+        viewModel.session?.subjectId, viewModel.session?.grade ?: initialGrade
+    )
+
     DisposableEffect(viewModel) {
         onDispose {
             viewModel.onCleared()
@@ -71,10 +77,7 @@ fun AiPracticeScreen(
             viewModel = viewModel,
             onBack = { viewModel.resetToSetup() }
         )
-        AiPracticeScreenState.FEEDBACK -> AiPracticeFeedbackContent(
-            viewModel = viewModel,
-            onOpenAiChat = onOpenAiChat
-        )
+        AiPracticeScreenState.FEEDBACK -> AiPracticeFeedbackContent(viewModel = viewModel)
         AiPracticeScreenState.SUMMARY -> AiPracticeSummaryContent(
             viewModel = viewModel,
             onBack = onBack,
@@ -609,16 +612,49 @@ private fun AiPracticeActiveContent(
 
 @Composable
 private fun AiPracticeFeedbackContent(
-    viewModel: AiPracticeViewModel,
-    onOpenAiChat: (() -> Unit)?
+    viewModel: AiPracticeViewModel
 ) {
     val result = viewModel.lastResult ?: return
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
     val currentQuestion = viewModel.currentQuestion
     var showReportDialog by remember { mutableStateOf(false) }
     var showAskAiDialog by remember { mutableStateOf(false) }
+    var showExplanationPage by remember(currentQuestion?.id) { mutableStateOf(false) }
+    var askedQuery by remember(currentQuestion?.id) { mutableStateOf("") }
     var askAiQuery by remember(currentQuestion?.id) {
         mutableStateOf("Giải thích câu hỏi này từng bước, nhất là cách chọn đáp án đúng.")
+    }
+
+    if (showExplanationPage) {
+        Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+            TextButton(onClick = { showExplanationPage = false }, modifier = Modifier.padding(8.dp)) {
+                Text("← Quay lại kết quả")
+            }
+            Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Text("Gia sư AI giải thích thêm", style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold)
+                currentQuestion?.let { question ->
+                    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+                        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("Câu hỏi đang làm", fontWeight = FontWeight.Bold)
+                            ChatAnswerView(question.prompt, MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+                }
+                Text("Bạn hỏi: $askedQuery", style = MaterialTheme.typography.bodyMedium)
+                when {
+                    viewModel.isExplainingMore -> CircularProgressIndicator()
+                    viewModel.explainMoreError != null -> {
+                        MentorErrorNotice(viewModel.explainMoreError ?: "Không thể tải lời giải")
+                        Button(onClick = { viewModel.askAiMore(askedQuery) }) { Text("Thử lại") }
+                    }
+                    viewModel.explainMoreText != null ->
+                        ChatAnswerView(viewModel.explainMoreText ?: "", MaterialTheme.colorScheme.onBackground)
+                }
+            }
+        }
+        return
     }
 
     val bannerBg = when {
@@ -687,31 +723,6 @@ private fun AiPracticeFeedbackContent(
                 }
             }
 
-            // Follow-up AI explanation if available
-            if (viewModel.explainMoreText != null) {
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (dark) MentorTokens.NavyElevated else MentorTokens.Blue50
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(1.dp, MentorTokens.Blue300)
-                ) {
-                    Column(Modifier.padding(16.dp)) {
-                        Text(
-                            text = "🤖 Gia sư giải thích thêm:",
-                            style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = if (dark) Color.White else MentorTokens.Blue600
-                        )
-                        Spacer(Modifier.height(6.dp))
-                        ChatAnswerView(
-                            viewModel.explainMoreText ?: "",
-                            if (dark) Color.White else MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                }
-            }
-
             // Report Status Confirmation
             if (viewModel.reportStatus != null) {
                 Card(
@@ -724,10 +735,11 @@ private fun AiPracticeFeedbackContent(
                         text = "✓ ${viewModel.reportStatus}",
                         modifier = Modifier.padding(10.dp),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MentorTokens.Blue600
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
+            viewModel.reportError?.let { MentorErrorNotice(it) }
 
             // Inquiry row: Ask AI More & Report Question
             Row(
@@ -745,7 +757,7 @@ private fun AiPracticeFeedbackContent(
                     onClick = { showReportDialog = true },
                     modifier = Modifier.weight(1f).testTag("AiReportBtn")
                 ) {
-                    Text("Báo câu hỏi ⚠️", fontSize = 13.sp)
+                    Text("Báo lỗi câu hỏi ⚠️", fontSize = 13.sp)
                 }
             }
         }
@@ -807,6 +819,8 @@ private fun AiPracticeFeedbackContent(
             title = { Text("Báo câu hỏi có vấn đề") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text("Phản hồi được lưu trên hệ thống AI Mentor để nhóm phát triển kiểm tra.",
+                        style = MaterialTheme.typography.bodySmall)
                     Text("Chọn lý do báo cáo:", style = MaterialTheme.typography.bodySmall)
                     reasons.forEach { r ->
                         Row(
@@ -896,6 +910,8 @@ private fun AiPracticeFeedbackContent(
                     onClick = {
                         if (askAiQuery.isNotBlank()) {
                             viewModel.askAiMore(askAiQuery)
+                            askedQuery = askAiQuery.trim()
+                            showExplanationPage = true
                             showAskAiDialog = false
                         }
                     },

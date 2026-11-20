@@ -46,6 +46,8 @@
     <string name="schedule_period">Period %1$d</string>
     <string name="schedule_period_morning">(Morning)</string>
     <string name="schedule_period_afternoon">(Afternoon)</string>
+    <string name="schedule_morning_title">Morning</string>
+    <string name="schedule_afternoon_title">Afternoon</string>
     <string name="schedule_repeat_days">Repeat on days:</string>
 
     <string name="schedule_page_title">Schedule</string>
@@ -58,11 +60,18 @@
     <string name="schedule_ai_photo_hint">Review before saving</string>
     <string name="schedule_ai_plan">Suggest to-dos</string>
     <string name="schedule_ai_plan_hint">Plan together with AI</string>
+    <string name="schedule_ai_exam">Exam study plan</string>
+    <string name="schedule_ai_exam_hint">Choose exam date, subjects and lessons</string>
+    <string name="schedule_old_show">View old timetable (busy hours)</string>
+    <string name="schedule_old_hide">Hide old timetable</string>
     <string name="todo_progress_short">Done</string>
     <string name="schedule_card_timetable">Timetable</string>
     <string name="schedule_btn_add_class">Add Class</string>
     <string name="schedule_empty_day">No classes scheduled for this day</string>
     <string name="todo_card_title">To-Do List</string>
+    <string name="todo_next_up">Up next</string>
+    <string name="todo_focus_label">Priority today</string>
+    <string name="todo_review_subject">Review %1$s</string>
     <string name="todo_btn_add_task">Add Task</string>
     <string name="todo_empty_day">No tasks yet</string>
     <string name="schedule_duplicate_slot_warning">This period is already used: %1$s</string>

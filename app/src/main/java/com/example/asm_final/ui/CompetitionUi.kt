@@ -200,6 +200,8 @@ object CompetitionUi {
                                 Text(
                                     text = when {
                                         snapshot?.needsLogin == true -> stringResource(R.string.ranking_login)
+                                        snapshot?.failureReason == "NETWORK" -> stringResource(R.string.ranking_offline)
+                                        snapshot?.failureReason == "SERVER" -> stringResource(R.string.ranking_server_error)
                                         unavailable -> stringResource(R.string.competition_error_subtitle)
                                         snapshot.source == CompetitionRepository.Source.LOCAL -> stringResource(R.string.competition_disconnected)
                                         query.scope == CompetitionQuery.Scope.FRIENDS && board?.entries?.size == 1 -> stringResource(R.string.ranking_friends_empty)
@@ -215,7 +217,7 @@ object CompetitionUi {
                         }
                     }
                 } else {
-                    items(board.entries, key = { it.learner.id }) { entry ->
+                    items(if (xp) board.entries else board.entries.take(15), key = { it.learner.id }) { entry ->
                         val rankTint = when (entry.rank) {
                             1 -> palette.experience
                             2 -> palette.secondary
@@ -362,6 +364,7 @@ internal fun FriendsPanel(
     palette: PremiumDashboardPalette,
     model: CompetitionViewModel,
     openProfile: (String) -> Unit,
+    searchMode: Boolean = false,
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     PremiumDashboardCard(palette) {
@@ -376,6 +379,7 @@ internal fun FriendsPanel(
                 Text(stringResource(R.string.ranking_retry), color = palette.accent)
             }
         }
+        if (searchMode) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(query, { query = it.take(40) },
@@ -428,11 +432,16 @@ internal fun FriendsPanel(
                 }
             }
         }
+        } else {
         HorizontalDivider(color = palette.border)
         when {
             state == null || state.loading && state.items.isEmpty() -> MentorSkeleton(stringResource(R.string.ranking_loading))
-            state.failed && state.message == "LOAD_FAILED" && state.items.isEmpty() ->
-                MentorErrorNotice(stringResource(R.string.friends_load_error))
+            state.failed && state.items.isEmpty() -> MentorErrorNotice(stringResource(when (state.message) {
+                "LOAD_OFFLINE", "ACTION_OFFLINE" -> R.string.friends_offline_error
+                "LOAD_LOGIN_REQUIRED", "ACTION_LOGIN_REQUIRED" -> R.string.friends_login_error
+                "ACTION_FAILED" -> R.string.friends_action_error
+                else -> R.string.friends_load_error
+            }))
             else -> {
                 val visible = state.items.filter { it.state.equals("PENDING", true) || it.state.equals("ACCEPTED", true) }
                 if (visible.isEmpty()) Text(stringResource(R.string.friends_empty),
@@ -479,6 +488,7 @@ internal fun FriendsPanel(
                 }
             }
         }
+        }
         if (!state?.message.isNullOrBlank()) {
             val res = when (state?.message) {
                 "REQUEST_SENT" -> R.string.friends_request_sent
@@ -490,7 +500,12 @@ internal fun FriendsPanel(
             if (res != null) Text(stringResource(res), color = palette.accent,
                 style = MaterialTheme.typography.bodySmall)
         }
-        if (state?.failed == true && state.message == "ACTION_FAILED")
-            MentorErrorNotice(stringResource(R.string.friends_action_error))
+        if (state?.failed == true && state.items.isNotEmpty())
+            MentorErrorNotice(stringResource(when (state.message) {
+                "LOAD_OFFLINE", "ACTION_OFFLINE" -> R.string.friends_offline_error
+                "LOAD_LOGIN_REQUIRED", "ACTION_LOGIN_REQUIRED" -> R.string.friends_login_error
+                "LOAD_FAILED" -> R.string.friends_load_error
+                else -> R.string.friends_action_error
+            }))
     }
 }

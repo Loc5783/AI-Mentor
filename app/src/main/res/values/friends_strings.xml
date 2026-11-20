@@ -1,9 +1,15 @@
 <resources>
     <string name="friends_manage_title">Bạn bè học tập</string>
+    <string name="friends_open_list">Xem bạn bè</string>
+    <string name="friends_open_search">+ Thêm bạn</string>
+    <string name="friends_search_title">Tìm bạn học</string>
+    <string name="friends_back">← Quay lại</string>
     <string name="friends_manage_subtitle">Tìm bạn học, xem hồ sơ và quản lý lời mời.</string>
     <string name="friends_empty">Chưa có bạn bè hoặc lời mời nào.</string>
     <string name="friends_load_error">Chưa tải được danh sách bạn bè. Thử tải lại.</string>
     <string name="friends_action_error">Thao tác chưa thành công. Có thể lời mời đã thay đổi; hãy tải lại danh sách.</string>
+    <string name="friends_offline_error">Bạn đang ngoại tuyến. Lời mời kết bạn cần mạng; hãy thử lại khi có kết nối.</string>
+    <string name="friends_login_error">Phiên đăng nhập đã hết hạn. Đăng nhập lại để dùng mục Bạn bè.</string>
     <string name="friends_learner">Học viên</string>
     <string name="friends_personal_streak">🔥 Streak cá nhân: %1$d ngày</string>
     <string name="friends_shared_streak">🤝 Học cùng nhau: %1$d ngày liên tiếp</string>

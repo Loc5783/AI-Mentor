@@ -79,7 +79,8 @@
   <string name="design_tab_lessons">Learn</string>
   <string name="design_tab_schedule">Schedule</string>
   <string name="design_tab_competition">Ranks</string>
-  <string name="design_chart_legend">Blue: XP · Amber: streak day</string>
+  <string name="design_chart_legend">Blue bars: XP · Flame: streak day</string>
+  <string name="design_streak_day">, streak kept</string>
   <string name="home_status_title">Learning progress</string>
   <string name="home_schedule_title">Your 7-day plan</string>
   <string name="home_schedule_subtitle">Timetable · To-do list</string>

@@ -99,6 +99,15 @@ public class MainActivity extends AppCompatActivity {
             }
             AuthSession.open(this, ticket.username, ticket.userId, model.remember);
             model.consumed();
+            if (ticket.profile.complete() && getIntent().hasExtra(HomeActivity.EXTRA_START_DESTINATION)) {
+              startActivity(new Intent(this, HomeActivity.class)
+                  .putExtra("USERNAME", ticket.username)
+                  .putExtra(HomeActivity.EXTRA_START_DESTINATION,
+                      getIntent().getIntExtra(HomeActivity.EXTRA_START_DESTINATION, R.id.nav_home))
+                  .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+              finish();
+              return;
+            }
             AuthRoutes.open(this, ticket.username, ticket.profile, true);
           }
         });

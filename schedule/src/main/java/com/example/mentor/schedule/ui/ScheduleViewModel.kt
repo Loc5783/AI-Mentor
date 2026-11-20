@@ -9,6 +9,8 @@ import com.example.mentor.schedule.domain.ScheduleActivityLog
 import com.example.mentor.schedule.domain.ScheduleEntry
 import com.example.mentor.schedule.domain.ScheduleRepository
 import com.example.mentor.schedule.domain.TodoTask
+import com.example.mentor.schedule.domain.TodoDates
+import com.example.mentor.schedule.domain.WeekScheduleCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -17,6 +19,9 @@ import java.util.Calendar
 import java.util.concurrent.atomic.AtomicInteger
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import androidx.lifecycle.AndroidViewModel
 import android.app.Application
 
@@ -47,6 +52,7 @@ class ScheduleViewModel(
     }
     val entries = mutableStateListOf<ScheduleEntry>()
     val todos = mutableStateListOf<TodoTask>()
+    val allExamPlanTodos = mutableStateListOf<TodoTask>()
     val logs = mutableStateListOf<ScheduleActivityLog>()
     val selectedDay = mutableStateOf(getCurrentDayOfWeek())
     
@@ -56,9 +62,35 @@ class ScheduleViewModel(
     private var lastDeletedTodo: TodoTask? = null
     private var firstResumePending = true
     private val loadGeneration = AtomicInteger()
+    private var weekCachePrimed = false
+    private val connectivity = app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    @Volatile private var wasOnline = isOnline()
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) = checkReconnect()
+        override fun onLost(network: Network) = checkReconnect()
+        override fun onCapabilitiesChanged(network: Network, capabilities: NetworkCapabilities) = checkReconnect()
+    }
+
+    private fun isOnline(): Boolean = connectivity.getNetworkCapabilities(connectivity.activeNetwork)
+        ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true
+
+    private fun checkReconnect() {
+        val online = isOnline()
+        if (online && !wasOnline) {
+            weekCachePrimed = false
+            loadData()
+        }
+        wasOnline = online
+    }
 
     init {
+        connectivity.registerDefaultNetworkCallback(networkCallback)
         loadData()
+    }
+
+    override fun onCleared() {
+        connectivity.unregisterNetworkCallback(networkCallback)
+        super.onCleared()
     }
 
     /** Refresh after returning from the schedule assistant; initial data loads in init. */
@@ -83,7 +115,9 @@ class ScheduleViewModel(
             try {
                 val entryList = repository.getEntries(accountId, day)
                 val todoList = repository.getTodos(accountId, day)
-                val logList = repository.getLogs(accountId, 20)
+                val allTodoList = runCatching { repository.getAllTodos(accountId) }.getOrDefault(emptyList())
+                val examPlanList = allTodoList.filter { !it.dueDate.isNullOrBlank() || !it.planStartDate.isNullOrBlank() }
+                val logList = runCatching { repository.getLogs(accountId, 20) }.getOrDefault(emptyList())
                 withContext(Dispatchers.Main) {
                     if (generation != loadGeneration.get() || selectedDay.value != day) return@withContext
                     error.value = false
@@ -92,9 +126,14 @@ class ScheduleViewModel(
                     entries.addAll(entryList)
                     todos.clear()
                     todos.addAll(todoList)
+                    allExamPlanTodos.clear()
+                    allExamPlanTodos.addAll(examPlanList)
                     logs.clear()
                     logs.addAll(logList)
                     calculateTodoProgress()
+                }
+                if (!weekCachePrimed && repository is WeekScheduleCache) {
+                    weekCachePrimed = runCatching { repository.cacheWeek(accountId) }.isSuccess
                 }
             } catch (cancelled: CancellationException) {
                 throw cancelled
@@ -201,12 +240,15 @@ class ScheduleViewModel(
     
     fun saveTodo(title: String, priority: Int, linkedSubject: String?) {
         viewModelScope.launch(Dispatchers.IO + failures) {
+            val planStartDate = TodoDates.today()
             val task = TodoTask(
                 accountId = accountId,
                 title = title,
                 dayOfWeek = selectedDay.value,
                 priority = priority,
-                linkedSubject = linkedSubject
+                linkedSubject = linkedSubject,
+                dueDate = TodoDates.nextOccurrence(selectedDay.value, planStartDate),
+                planStartDate = planStartDate
             )
             repository.insertTodo(task)
             logAction("CREATE", "TODO", "Đã thêm nhiệm vụ: $title")

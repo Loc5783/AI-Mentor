@@ -133,7 +133,7 @@ public final class HomeFragment extends Fragment {
                   } finally {
                     ((com.example.mentor.schedule.domain.ScheduleImportRepository) repository).close();
                   }
-                } catch (RuntimeException ignored) {
+                } catch (Exception ignored) {
                   // An unavailable schedule should not hide the rest of Home.
                 }
                 List<com.example.mentor.schedule.domain.TodoTask> finalTodayTasks = todayTasks;
@@ -143,16 +143,14 @@ public final class HomeFragment extends Fragment {
                           && request == generation
                           && ActiveUser.get(context) == owner) subjectsView.tasks(finalTodayTasks);
                     });
-                com.example.asm_final.utils.LocalStudyTimeStore.recordActiveSession(context, owner);
                 org.json.JSONObject studySummary = null;
                 if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) {
                   try {
                     studySummary = services.study().summary(owner);
-                  } catch (RuntimeException ignored) {
+                  } catch (Exception ignored) {
                     // Keep the rest of Home usable when this optional summary is unavailable.
                   }
                 }
-                studySummary = com.example.asm_final.utils.LocalStudyTimeStore.getSummaryJsonObject(context, owner, studySummary);
                 org.json.JSONObject finalStudySummary = studySummary;
                 main.post(
                     () -> {
@@ -160,7 +158,7 @@ public final class HomeFragment extends Fragment {
                           && request == generation
                           && ActiveUser.get(context) == owner) subjectsView.activity(finalStudySummary);
                     });
-              } catch (RuntimeException failure) {
+              } catch (Exception failure) {
                 main.post(
                     () -> {
                       if (root == viewOwner

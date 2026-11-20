@@ -225,6 +225,10 @@ private fun LessonScreen(
 ) {
     val configuration = LocalConfiguration.current
     val attemptId = state.attempt?.optString("id").orEmpty()
+    val isAnswering = state.attempt?.let {
+        it.optString("kind") != "LESSON" || it.optInt("step") >= 2
+    } == true
+    ActiveStudyTime(isAnswering, subjectId.wireId, grade)
     SideEffect {
         android.util.Log.d("PlacementTrace", "LESSON_SCREEN_COMPOSED: revision=${state.revision}, attemptId=$attemptId, vm=${System.identityHashCode(model)}")
     }
@@ -321,6 +325,8 @@ private fun LessonScreen(
                 }
                 state.error != null -> {
                     val code = state.error
+                    val offline = !state.needsLogin && !state.pending &&
+                        code in listOf("NETWORK_ERROR", "CONNECT_ERROR", "TIMEOUT")
                     val label = when {
                         code == "BACKEND_NOT_CONFIGURED" -> R.string.course_no_server
                         code == "CURRICULUM_NOT_PUBLISHED" -> R.string.course_not_published
@@ -328,10 +334,11 @@ private fun LessonScreen(
                         state.pending -> R.string.course_sync_error
                         else -> R.string.course_network_error
                     }
-                    MentorCard { Text(stringResource(label)) }
+                    MentorCard { Text(stringResource(if (offline) R.string.course_offline_notice else label)) }
                     if (state.needsLogin) LoginContent(model)
                     else if (code != "BACKEND_NOT_CONFIGURED" && code != "CURRICULUM_NOT_PUBLISHED")
                         MentorButton(stringResource(R.string.course_retry), model::retry)
+                    if (offline) OfflineLessonContent(subjectId.wireId, grade)
                 }
                 state.pending -> {
                     Text(stringResource(R.string.course_sync_error))

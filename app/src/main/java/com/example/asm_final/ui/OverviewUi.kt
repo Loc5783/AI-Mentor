@@ -528,7 +528,8 @@ private fun HomeWeekChart(data: LearningOverviewData, palette: PremiumDashboardP
             Row(Modifier.fillMaxWidth().heightIn(min = 126.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
                 data.week.forEach { day ->
-                    val label = stringResource(R.string.design_day_xp, day.day, day.xp)
+                    val label = stringResource(R.string.design_day_xp, day.day, day.xp) +
+                        if (day.streakLit) stringResource(R.string.design_streak_day) else ""
                     Column(Modifier.weight(1f).semantics(mergeDescendants = true) { contentDescription = label },
                         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
                         if (day.streakLit) {
@@ -551,7 +552,7 @@ private fun HomeWeekChart(data: LearningOverviewData, palette: PremiumDashboardP
                         Spacer(Modifier.height(2.dp))
                         Box(Modifier.fillMaxWidth().height((day.xp.toFloat() / max * 72).coerceAtLeast(4f).dp)
                             .clip(RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp))
-                            .background(if (day.streakLit) Color(0xFFFFAD42) else palette.accent))
+                            .background(palette.accent))
                         Spacer(Modifier.height(6.dp))
                         Text(day.day.takeLast(2), style = MaterialTheme.typography.labelSmall,
                             color = palette.title, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Clip)
@@ -626,12 +627,15 @@ internal fun WeekChart(data: LearningOverviewData) {
                 val max = data.week.maxOf { it.xp }.coerceAtLeast(1)
                 Row(Modifier.fillMaxWidth().heightIn(min = MentorTokens.ChartHeight), horizontalArrangement = Arrangement.spacedBy(MentorTokens.SpaceSmall), verticalAlignment = Alignment.Bottom) {
                     data.week.forEach { day ->
-                        val label = stringResource(R.string.design_day_xp, day.day, day.xp)
+                        val label = stringResource(R.string.design_day_xp, day.day, day.xp) +
+                            if (day.streakLit) stringResource(R.string.design_streak_day) else ""
                         Column(Modifier.weight(1f).semantics(mergeDescendants = true) { contentDescription = label },
                             horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
+                            if (day.streakLit) Icon(painter = painterResource(R.drawable.ic_flame),
+                                contentDescription = null, tint = Color(0xFFEA580C), modifier = Modifier.size(14.dp))
                             Text(day.xp.toString(), style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Box(Modifier.fillMaxWidth().height((day.xp.toFloat() / max * 100).coerceAtLeast(3f).dp)
-                                .clip(MaterialTheme.shapes.small).background(if (day.streakLit) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary))
+                                .clip(MaterialTheme.shapes.small).background(MaterialTheme.colorScheme.primary))
                             Text(day.day.takeLast(2), style = MaterialTheme.typography.labelSmall)
                         }
                     }

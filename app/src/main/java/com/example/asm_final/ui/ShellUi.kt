@@ -112,6 +112,7 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
                 }
             ) { padding ->
                 Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
+                    OfflineBanner()
                     if (top != null && top !in tabs && route != "schedule") Row(Modifier.fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background)) {
                         TextButton({

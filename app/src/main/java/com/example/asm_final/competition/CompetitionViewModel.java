@@ -72,6 +72,14 @@ public final class CompetitionViewModel extends AndroidViewModel {
       new SearchState(Collections.emptyList(), false, false, false));
   private int searchGeneration;
   private boolean running, pending;
+
+  private static String friendFailureCode(Exception failure, String fallback) {
+    if (failure instanceof java.io.IOException) return fallback.replace("_FAILED", "_OFFLINE");
+    if (failure instanceof BackendClient.Failure
+        && ((BackendClient.Failure) failure).status == 401)
+      return fallback.replace("_FAILED", "_LOGIN_REQUIRED");
+    return fallback;
+  }
   private volatile boolean closed;
   private CompetitionQuery query;
 
@@ -161,7 +169,8 @@ public final class CompetitionViewModel extends AndroidViewModel {
         main.post(() -> {
           if (!closed && ActiveUser.get(getApplication()) == owner) {
             FriendsState previous = friendsState.getValue();
-            friendsState.setValue(new FriendsState(previous == null ? Collections.emptyList() : previous.items, false, true, "LOAD_FAILED"));
+            friendsState.setValue(new FriendsState(previous == null ? Collections.emptyList() : previous.items,
+                false, true, friendFailureCode(failure, "LOAD_FAILED")));
           }
         });
       }
@@ -194,7 +203,8 @@ public final class CompetitionViewModel extends AndroidViewModel {
         main.post(() -> {
           if (!closed && ActiveUser.get(getApplication()) == owner) {
             FriendsState previous = friendsState.getValue();
-            friendsState.setValue(new FriendsState(previous == null ? Collections.emptyList() : previous.items, false, true, "ACTION_FAILED"));
+            friendsState.setValue(new FriendsState(previous == null ? Collections.emptyList() : previous.items,
+                false, true, friendFailureCode(failure, "ACTION_FAILED")));
           }
         });
         return;

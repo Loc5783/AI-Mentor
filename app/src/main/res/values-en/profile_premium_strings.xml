@@ -21,6 +21,7 @@
     <string name="profile_note_hint">Share a learning goal or something you enjoy…</string>
     <string name="profile_note_empty">No note yet. Share a learning goal or something you enjoy.</string>
     <string name="profile_add_note">Add a note</string>
+    <string name="profile_edit_note">Edit note</string>
     <string name="profile_bio_too_long">Notes can be up to 500 characters.</string>
     <string name="profile_overview_title">OVERVIEW</string>
     <string name="profile_streak_stat">%1$d days</string>

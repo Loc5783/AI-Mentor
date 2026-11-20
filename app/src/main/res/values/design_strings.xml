@@ -79,7 +79,8 @@
   <string name="design_tab_lessons">Bài học</string>
   <string name="design_tab_schedule">Lịch học</string>
   <string name="design_tab_competition">Thi đua</string>
-  <string name="design_chart_legend">Xanh: EXP · Cam: ngày đã thắp streak</string>
+  <string name="design_chart_legend">Cột xanh: EXP · Biểu tượng lửa: ngày giữ streak</string>
+  <string name="design_streak_day">, đã giữ streak</string>
   <string name="home_status_title">Tiến độ học tập</string>
   <string name="home_schedule_title">Lịch học 7 ngày</string>
   <string name="home_schedule_subtitle">Thời khóa biểu · Việc cần làm</string>

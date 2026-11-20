@@ -6,6 +6,7 @@ import com.example.mentor.ui.design.MentorSkeleton
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,7 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import java.text.SimpleDateFormat
+import java.util.Locale
+import com.example.mentor.schedule.domain.TodoDates
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -93,7 +98,9 @@ private val NullableTodoTaskSaver: Saver<TodoTask?, Any> = listSaver(
                 task.priority,
                 task.linkedSubject ?: "",
                 task.createdAt,
-                task.completedAt ?: -1L
+                task.completedAt ?: -1L,
+                task.dueDate ?: "",
+                task.planStartDate ?: ""
             )
         }
     },
@@ -112,7 +119,9 @@ private val NullableTodoTaskSaver: Saver<TodoTask?, Any> = listSaver(
                 priority = (list[5] as? Number)?.toInt() ?: 1,
                 linkedSubject = if (subjectStr.isNullOrEmpty()) null else subjectStr,
                 createdAt = (list[7] as? Number)?.toLong() ?: 0L,
-                completedAt = if (completedAtVal == null || completedAtVal < 0) null else completedAtVal
+                completedAt = if (completedAtVal == null || completedAtVal < 0) null else completedAtVal,
+                dueDate = (list.getOrNull(9) as? String)?.ifEmpty { null },
+                planStartDate = (list.getOrNull(10) as? String)?.ifEmpty { null }
             )
         }
     }
@@ -125,7 +134,8 @@ fun ScheduleScreen(
     repository: ScheduleRepository,
     onBack: () -> Unit = {},
     onAiPhoto: () -> Unit = {},
-    onAiPlan: (String) -> Unit = {}
+    onAiPlan: (String) -> Unit = {},
+    onAiExam: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val factory = remember(accountId, repository) {
@@ -149,8 +159,10 @@ fun ScheduleScreen(
     var showHistory by rememberSaveable { mutableStateOf(false) }
     var entryToEdit by rememberSaveable(stateSaver = NullableScheduleEntrySaver) { mutableStateOf<ScheduleEntry?>(null) }
     var taskToEdit by rememberSaveable(stateSaver = NullableTodoTaskSaver) { mutableStateOf<TodoTask?>(null) }
+    var suggestedTodoTitle by rememberSaveable { mutableStateOf("") }
     var scheduleDialogSession by rememberSaveable { mutableStateOf(0) }
     var todoDialogSession by rememberSaveable { mutableStateOf(0) }
+    var showOldTimetable by rememberSaveable { mutableStateOf(false) }
     
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -239,22 +251,30 @@ fun ScheduleScreen(
                 }
             }
 
+            if (viewModel.allExamPlanTodos.isNotEmpty()) {
+                ExamPlanRoadmapCard(
+                    allTasks = viewModel.allExamPlanTodos,
+                    selectedDay = selectedDay,
+                    onSelectDay = { viewModel.selectDay(it) }
+                )
+            }
+
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.schedule_ai_title),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold)
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    ScheduleAiActionCard(Modifier.weight(1f), R.string.schedule_ai_photo,
-                        R.string.schedule_ai_photo_hint, onAiPhoto)
-                    ScheduleAiActionCard(Modifier.weight(1f), R.string.schedule_ai_plan,
-                        R.string.schedule_ai_plan_hint,
-                        onClick = { onAiPlan(ScheduleAiContext.forDay(selectedDay,
-                            viewModel.entries.toList(), viewModel.todos.toList())) },
-                        enabled = !viewModel.loading.value && !viewModel.error.value)
-                }
+                ScheduleAiActionCard(Modifier.fillMaxWidth(), R.string.schedule_ai_plan,
+                    R.string.schedule_ai_plan_hint,
+                    onClick = { onAiPlan(ScheduleAiContext.forDay(selectedDay,
+                        viewModel.entries.toList(), viewModel.todos.toList())) },
+                    enabled = !viewModel.loading.value && !viewModel.error.value)
             }
 
             // === KHUNG 1: THỜI KHÓA BIỂU ===
+            TextButton(onClick = { showOldTimetable = !showOldTimetable }) {
+                Text(stringResource(if (showOldTimetable) R.string.schedule_old_hide else R.string.schedule_old_show))
+            }
+            if (showOldTimetable) {
             Surface(
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.surface,
@@ -277,18 +297,6 @@ fun ScheduleScreen(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
-                        FilledTonalButton(
-                            onClick = {
-                                entryToEdit = null
-                                scheduleDialogSession++
-                                showScheduleForm = true
-                            },
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
-                        ) {
-                            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.schedule_add), modifier = Modifier.size(18.dp))
-                            Spacer(Modifier.width(4.dp))
-                            Text(stringResource(R.string.schedule_btn_add_class))
-                        }
                     }
 
                     val duplicateSlots = viewModel.entries.groupBy { it.period }
@@ -354,16 +362,32 @@ fun ScheduleScreen(
                                 .padding(horizontal = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            viewModel.entries.sortedBy { it.period }.forEach { entry ->
-                                ScheduleTimelineItemV2(entry) { clicked ->
-                                    entryToEdit = clicked
-                                    scheduleDialogSession++
-                                    showScheduleForm = true
+                            val morning = viewModel.entries.filter { it.period in 1..5 }.sortedBy { it.period }
+                            val afternoon = viewModel.entries.filter { it.period in 6..10 }.sortedBy { it.period }
+                            if (morning.isNotEmpty()) {
+                                Text(stringResource(R.string.schedule_morning_title),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.onSurface)
+                                morning.forEach { entry ->
+                                    Text("${entry.period}. ${entry.title}",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurface)
+                                }
+                            }
+                            if (afternoon.isNotEmpty()) {
+                                Text(stringResource(R.string.schedule_afternoon_title),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.onSurface)
+                                afternoon.forEach { entry ->
+                                    Text("${entry.period}. ${entry.title}",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurface)
                                 }
                             }
                         }
                     }
                 }
+            }
             }
 
             // === KHUNG 2: VIỆC CẦN LÀM ===
@@ -392,6 +416,7 @@ fun ScheduleScreen(
                         FilledTonalButton(
                             onClick = {
                                 taskToEdit = null
+                                suggestedTodoTitle = ""
                                 todoDialogSession++
                                 showTodoForm = true
                             },
@@ -423,6 +448,18 @@ fun ScheduleScreen(
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
+                                viewModel.entries.map { it.title.trim() }.filter { it.isNotEmpty() }
+                                    .distinct().take(3).forEach { subject ->
+                                        SuggestionChip(
+                                            onClick = {
+                                                taskToEdit = null
+                                                suggestedTodoTitle = context.getString(R.string.todo_review_subject, subject)
+                                                todoDialogSession++
+                                                showTodoForm = true
+                                            },
+                                            label = { Text(stringResource(R.string.todo_review_subject, subject)) }
+                                        )
+                                    }
                             }
                         }
                     } else {
@@ -463,19 +500,30 @@ fun ScheduleScreen(
 
                         Spacer(Modifier.height(8.dp))
 
-                        // Danh sách việc (Chưa xong trước, Đã xong sau)
+                        // The next actionable task stays visible above the rest of the day.
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            val incomplete = viewModel.todos.filter { !it.isCompleted }.sortedByDescending { it.priority }
+                            val incomplete = viewModel.todos.filter { !it.isCompleted }
+                                .sortedWith(compareByDescending<TodoTask> { it.priority }.thenBy { it.createdAt })
                             val complete = viewModel.todos.filter { it.isCompleted }.sortedByDescending { it.completedAt }
 
-                            incomplete.forEach { task ->
+                            if (incomplete.isNotEmpty()) {
+                                Text(
+                                    stringResource(R.string.todo_next_up),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+
+                            incomplete.forEachIndexed { index, task ->
                                 TodoCard(
                                     task = task,
+                                    focused = index == 0,
                                     onToggle = { viewModel.toggleTodo(it) },
                                     onDelete = { taskToDelete ->
                                         viewModel.deleteTodo(taskToDelete)
@@ -490,6 +538,7 @@ fun ScheduleScreen(
                                     },
                                     onClick = { clicked ->
                                         taskToEdit = clicked
+                                        suggestedTodoTitle = ""
                                         todoDialogSession++
                                         showTodoForm = true
                                     }
@@ -520,6 +569,7 @@ fun ScheduleScreen(
                                         },
                                         onClick = { clicked ->
                                             taskToEdit = clicked
+                                            suggestedTodoTitle = ""
                                             todoDialogSession++
                                             showTodoForm = true
                                         }
@@ -583,6 +633,7 @@ fun ScheduleScreen(
     if (showTodoForm) {
         TodoQuickAddDialog(
             initialTask = taskToEdit,
+            suggestedTitle = suggestedTodoTitle,
             dialogSession = todoDialogSession,
             onDismiss = {
                 showTodoForm = false
@@ -646,12 +697,13 @@ private fun ScheduleUnavailable() {
 @Composable
 fun TodoQuickAddDialog(
     initialTask: TodoTask? = null,
+    suggestedTitle: String = "",
     dialogSession: Int = 0,
     onDismiss: () -> Unit,
     onSave: (String, Int) -> Unit
 ) {
     val isEdit = initialTask != null
-    var title by rememberSaveable(dialogSession) { mutableStateOf(initialTask?.title ?: "") }
+    var title by rememberSaveable(dialogSession) { mutableStateOf(initialTask?.title ?: suggestedTitle) }
     var priority by rememberSaveable(dialogSession) { mutableStateOf(initialTask?.priority ?: 1) } // 0=Low, 1=Normal, 2=High
     
     AlertDialog(
@@ -893,5 +945,157 @@ fun ScheduleFormDialog(
                 }
             }
         )
+    }
+}
+
+@Composable
+private fun ExamPlanRoadmapCard(
+    allTasks: List<TodoTask>,
+    selectedDay: Int,
+    onSelectDay: (Int) -> Unit
+) {
+    if (allTasks.isEmpty()) return
+
+    val total = allTasks.size
+    val completed = allTasks.count { it.isCompleted }
+    val progress = completed.toFloat() / total.coerceAtLeast(1)
+
+    // Group tasks by dueDate
+    val tasksByDate = remember(allTasks) {
+        allTasks.groupBy { it.dueDate.orEmpty() }
+            .filterKeys { it.isNotBlank() }
+            .toSortedMap()
+    }
+
+    val latestDate = tasksByDate.keys.lastOrNull()
+    val daysRemaining = remember(latestDate) {
+        latestDate?.let { dateStr ->
+            runCatching {
+                val format = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT)
+                val target = format.parse(dateStr)
+                val todayDate = format.parse(TodoDates.today())
+                if (target != null && todayDate != null) {
+                    val diffMs = target.time - todayDate.time
+                    (diffMs / (1000 * 60 * 60 * 24)).toInt().coerceAtLeast(0)
+                } else 0
+            }.getOrDefault(0)
+        } ?: 0
+    }
+
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)),
+        shadowElevation = 4.dp
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        Icons.Default.DateRange,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Text(
+                        "🎯 Lộ trình Ôn thi AI",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                if (latestDate != null) {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer
+                    ) {
+                        Text(
+                            "Còn $daysRemaining ngày",
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                }
+            }
+
+            // Overall Progress
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        "Tiến độ tổng thể lộ trình",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        "$completed / $total bài ôn (${(progress * 100).toInt()}%)",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                LinearProgressIndicator(
+                    progress = { progress },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .clip(RoundedCornerShape(4.dp)),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            }
+
+            // Daily Roadmap Timeline Strip
+            if (tasksByDate.isNotEmpty()) {
+                Text(
+                    "Theo dõi tiến độ các ngày:",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    tasksByDate.forEach { (dateStr, dayTasks) ->
+                        val dayCompleted = dayTasks.count { it.isCompleted }
+                        val dayTotal = dayTasks.size
+                        val dayOfWeek = dayTasks.firstOrNull()?.dayOfWeek ?: 1
+                        val isCurrentSelectedDay = (dayOfWeek == selectedDay)
+
+                        FilterChip(
+                            selected = isCurrentSelectedDay,
+                            onClick = { onSelectDay(dayOfWeek) },
+                            label = {
+                                Text("$dateStr: $dayCompleted/$dayTotal")
+                            },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 }

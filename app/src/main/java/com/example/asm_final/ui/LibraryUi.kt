@@ -53,6 +53,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 
 import androidx.compose.ui.unit.dp
 
@@ -67,6 +68,7 @@ import com.example.asm_final.learning.BackendLibraryRepository
 import com.example.asm_final.learning.LibraryRepository
 
 import com.example.asm_final.learning.PracticeQuestion
+import com.example.asm_final.learning.visiblePracticeOptions
 
 import com.example.asm_final.learning.PracticeSession
 
@@ -292,7 +294,7 @@ fun LibrarySubjectList(
 
                 verticalAlignment = Alignment.CenterVertically,
 
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
 
             ) {
 
@@ -429,6 +431,10 @@ fun LibraryPracticeScreen(
     val selectionState by controller.selectionState.collectAsState()
 
     val sessionState by controller.sessionState.collectAsState()
+
+    val activeSession = sessionState?.session
+    ActiveStudyTime(activeSession?.state == "IN_PROGRESS",
+        activeSession?.subjectId, activeSession?.grade ?: grade)
 
     BackHandler(enabled = sessionState != null) {
         controller.backToList()
@@ -1120,7 +1126,7 @@ private fun LibrarySessionPracticeView(
 
 
 
-                        val options = listOf("A" to q.optionA, "B" to q.optionB, "C" to q.optionC, "D" to q.optionD)
+                        val options = visiblePracticeOptions(q)
 
                         options.forEach { (optKey, optText) ->
 
@@ -1369,7 +1375,7 @@ fun WrongQuestionsNotebookScreen(
 
                 }
 
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(Modifier.weight(1f), horizontalAlignment = Alignment.Start) {
 
                     Text(
 
@@ -1391,13 +1397,6 @@ fun WrongQuestionsNotebookScreen(
 
                     )
 
-                }
-
-                TextButton(
-                    onClick = { controller.clearResolved() },
-                    enabled = !state.isLoading && state.items?.any { it.state == "RESOLVED" } == true
-                ) {
-                    Text("Xóa câu đã sửa", style = MaterialTheme.typography.labelSmall)
                 }
 
             }
@@ -1426,7 +1425,7 @@ fun WrongQuestionsNotebookScreen(
 
                 "NEEDS_REVIEW" to "⚠️ Cần ôn tập",
 
-                "RESOLVED" to "✓ Đã làm đúng"
+                "RESOLVED" to "✓ Đã ôn lại"
 
             )
 
@@ -1490,7 +1489,11 @@ fun WrongQuestionsNotebookScreen(
 
                     Text(
 
-                        "🎉 Tuyệt vời! Bạn không có câu sai nào trong mục này.",
+                        when (state.filterState) {
+                            "RESOLVED" -> "Chưa có câu nào được ôn lại."
+                            "NEEDS_REVIEW" -> "Hiện không có câu nào cần ôn tập."
+                            else -> "Sổ lỗi sai của bạn đang trống."
+                        },
 
                         style = MaterialTheme.typography.titleMedium,
 
@@ -1606,37 +1609,33 @@ fun WrongQuestionsNotebookScreen(
 
                             ) {
 
-                                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
 
-                                    Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
+                                    val subjectLabel = runCatching {
+                                        SubjectId.fromWireId(item.subjectId).label(LocaleHelper.getLanguage(context))
+                                    }.getOrDefault(item.subjectId)
+                                    Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.primaryContainer) {
+                                        Text(subjectLabel, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer)
+                                    }
+
+                                    Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.surfaceVariant,
+                                        modifier = Modifier.weight(1f)) {
 
                                         Text(
 
-                                            item.chapter.ifBlank { "Chương chung" },
+                                            item.chapter.takeUnless { it.isBlank() || it == "Chưa phân loại" }
+                                                ?: item.topic.takeUnless { it.isBlank() || it == "Chủ đề chung" }
+                                                ?: "Ôn tập tổng hợp",
 
                                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
 
-                                            style = MaterialTheme.typography.labelSmall
+                                            style = MaterialTheme.typography.labelSmall,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
 
                                         )
-
-                                    }
-
-                                    if (item.difficulty.isNotBlank()) {
-
-                                        Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
-
-                                            Text(
-
-                                                item.difficulty,
-
-                                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-
-                                                style = MaterialTheme.typography.labelSmall
-
-                                            )
-
-                                        }
 
                                     }
 
@@ -1654,7 +1653,7 @@ fun WrongQuestionsNotebookScreen(
 
                                     Text(
 
-                                        if (isResolved) "✓ Đã làm đúng lại" else "⚠️ Cần ôn tập",
+                                        if (isResolved) "✓ Đã ôn lại" else "⚠️ Cần ôn tập",
 
                                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
 
@@ -1804,7 +1803,12 @@ fun WrongQuestionsNotebookScreen(
 
                                     Text(
 
-                                        "Lịch sử làm bài: Bạn đã chọn đáp án ${item.selectedOption} (Đáp án chuẩn: ${item.correctOption})",
+                                        if (item.options.isEmpty()) {
+                                            "Bài làm của bạn: ${item.selectedOption.ifBlank { "Chưa trả lời" }}" +
+                                                item.correctOption.takeIf { it.isNotBlank() }?.let { "\nĐáp án tham khảo: $it" }.orEmpty()
+                                        } else {
+                                            "Lịch sử làm bài: Bạn đã chọn đáp án ${item.selectedOption} (Đáp án chuẩn: ${item.correctOption})"
+                                        },
 
                                         style = MaterialTheme.typography.bodySmall,
 

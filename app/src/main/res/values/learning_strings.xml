@@ -20,6 +20,12 @@
   <string name="course_no_server">Máy chủ học tập chưa được cấu hình. Lộ trình mới cần kết nối máy chủ để lưu tiến độ và tính thưởng chính xác. Bạn vẫn có thể dùng các công cụ ôn tập hiện có.</string>
   <string name="course_not_published">Lớp này chưa có gói bài học được công bố. Tiến độ các lớp khác vẫn được giữ.</string>
   <string name="course_network_error">Chưa kết nối được máy chủ. Tiến độ đã lưu vẫn được giữ; thử lại khi có mạng.</string>
+  <string name="course_offline_notice">Đang dùng bài học ngoại tuyến. Bạn có thể đọc và ôn kiến thức; tiến độ và EXP chỉ cập nhật sau khi học trực tuyến.</string>
+  <string name="course_offline_title">Bài học có sẵn trên máy</string>
+  <string name="course_offline_examples">Ví dụ</string>
+  <string name="course_offline_back">Danh sách bài học</string>
+  <string name="course_offline_unavailable">Chưa có nội dung ngoại tuyến cho môn này.</string>
+  <string name="offline_mode_banner">Đang ngoại tuyến · Bài học đọc được trên máy; thay đổi cần mạng để đồng bộ.</string>
   <string name="course_sync_error">Chưa lưu được thay đổi. Hãy thử lại trước khi tiếp tục để tránh mất tiến độ.</string>
   <string name="course_retry">Thử lại</string>
   <string name="course_loading">Đang tải tiến độ…</string>

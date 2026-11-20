@@ -89,10 +89,16 @@ class AiPracticeViewModel(
     var explainMoreText by mutableStateOf<String?>(null)
         private set
 
+    var explainMoreError by mutableStateOf<String?>(null)
+        private set
+
     var isExplainingMore by mutableStateOf(false)
         private set
 
     var reportStatus by mutableStateOf<String?>(null)
+        private set
+
+    var reportError by mutableStateOf<String?>(null)
         private set
 
     var isReporting by mutableStateOf(false)
@@ -371,6 +377,7 @@ class AiPracticeViewModel(
 
         isReporting = true
         reportStatus = null
+        reportError = null
 
         val generation = requestGenerationToken
         vmScope.launch {
@@ -384,7 +391,7 @@ class AiPracticeViewModel(
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isReporting = false
-                reportStatus = friendlyError(e)
+                reportError = friendlyError(e)
             }
         }
     }
@@ -397,6 +404,7 @@ class AiPracticeViewModel(
 
         isExplainingMore = true
         explainMoreText = null
+        explainMoreError = null
 
         val generation = requestGenerationToken
         vmScope.launch {
@@ -410,7 +418,7 @@ class AiPracticeViewModel(
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isExplainingMore = false
-                explainMoreText = friendlyError(e)
+                explainMoreError = friendlyError(e)
             }
         }
     }

@@ -89,23 +89,21 @@ public final class ProfileHubFragment extends Fragment {
                   }
                 }
                 Set<SubjectId> chosen = subjects;
-                com.example.asm_final.utils.LocalStudyTimeStore.recordActiveSession(context, owner);
                 var result = services.overview().load(owner, grade);
                 org.json.JSONObject studySummary = null;
                 org.json.JSONObject badgeSummary = null;
                 if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) {
                   try {
                     studySummary = services.study().summary(owner);
-                  } catch (RuntimeException ignored) {
+                  } catch (Exception ignored) {
                     // Keep the rest of the profile usable when the optional cloud summary is down.
                   }
                   try {
                     badgeSummary = services.study().badges(owner);
-                  } catch (RuntimeException ignored) {
+                  } catch (Exception ignored) {
                     // The UI presents an explicit unavailable state instead of inventing badge data.
                   }
                 }
-                studySummary = com.example.asm_final.utils.LocalStudyTimeStore.getSummaryJsonObject(context, owner, studySummary);
                 org.json.JSONObject finalStudySummary = studySummary;
                 org.json.JSONObject finalBadgeSummary = badgeSummary;
                 new Handler(Looper.getMainLooper())
@@ -123,7 +121,7 @@ public final class ProfileHubFragment extends Fragment {
                           presenter.render(result);
                           presenter.activity(finalStudySummary, finalBadgeSummary);
                         });
-              } catch (RuntimeException unavailable) {
+              } catch (Exception unavailable) {
                 new Handler(Looper.getMainLooper())
                     .post(
                         () -> {

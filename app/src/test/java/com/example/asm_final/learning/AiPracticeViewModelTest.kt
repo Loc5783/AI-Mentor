@@ -28,6 +28,8 @@ class AiPracticeViewModelTest {
         var completeSessionCalls = 0
         var reportQuestionCalls = 0
         var explainMoreCalls = 0
+        var failReportWith: Exception? = null
+        var failExplanationWith: Exception? = null
 
         var failCreateWith: Exception? = null
         var createDeferred: CompletableDeferred<AiPracticeSession>? = null
@@ -233,6 +235,7 @@ class AiPracticeViewModelTest {
             details: String
         ): String {
             reportQuestionCalls++
+            failReportWith?.let { throw it }
             return "Đã ghi nhận báo cáo câu hỏi $questionId: $reason"
         }
 
@@ -242,6 +245,7 @@ class AiPracticeViewModelTest {
             query: String
         ): String {
             explainMoreCalls++
+            failExplanationWith?.let { throw it }
             explanationDeferred?.let { return kotlinx.coroutines.withContext(kotlinx.coroutines.NonCancellable) { it.await() } }
             return "Lời giải thích mở rộng cho câu hỏi $questionId theo yêu cầu: $query"
         }
@@ -538,6 +542,30 @@ class AiPracticeViewModelTest {
         assertEquals(1, fakeRepo.explainMoreCalls)
         assertNotNull(vm.explainMoreText)
         assertTrue(vm.explainMoreText?.contains("Giải thích sâu hơn") == true)
+    }
+
+    @Test
+    fun failedReportAndExplanationAreNotShownAsSuccessfulResults() = runTest {
+        val vm = AiPracticeViewModel(fakeRepo, backgroundScope)
+        currentVm = vm
+        runCurrent()
+        vm.startPractice("math", 10, "Đạo hàm lượng giác", "MEDIUM")
+        runCurrent()
+        vm.selectOption("A")
+        vm.submitAnswer()
+        runCurrent()
+
+        fakeRepo.failReportWith = IllegalStateException("Report unavailable")
+        vm.reportQuestion("Sai kiến thức")
+        runCurrent()
+        assertNull(vm.reportStatus)
+        assertNotNull(vm.reportError)
+
+        fakeRepo.failExplanationWith = IllegalStateException("AI unavailable")
+        vm.askAiMore("Giải thích thêm")
+        runCurrent()
+        assertNull(vm.explainMoreText)
+        assertNotNull(vm.explainMoreError)
     }
 
     @Test

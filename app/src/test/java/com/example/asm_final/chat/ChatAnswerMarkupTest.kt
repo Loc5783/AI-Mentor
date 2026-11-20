@@ -29,4 +29,14 @@ class ChatAnswerMarkupTest {
         assertTrue(html.contains("<pre><code>&lt;unsafe&gt;"))
         assertTrue(html.contains("<code>x &lt; 2</code>"))
     }
+
+    @Test fun preservesTimedExamFormulasForKatex() {
+        val html = ChatAnswerMarkup.toHtml(
+            "Một lực \$F = 10\\text{ N}\$ tác dụng vào vật khối lượng \$m = 2\\text{ kg}\$. " +
+                "A. \$5\\text{ m/s}^2\$"
+        )
+        assertTrue(html.contains("\$F = 10\\text{ N}\$"))
+        assertTrue(html.contains("\$m = 2\\text{ kg}\$"))
+        assertTrue(html.contains("\$5\\text{ m/s}^2\$"))
+    }
 }

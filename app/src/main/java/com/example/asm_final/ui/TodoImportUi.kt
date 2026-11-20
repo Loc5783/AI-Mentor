@@ -16,6 +16,7 @@ import com.example.asm_final.R
 import com.example.asm_final.chat.TodoProposal
 import com.example.mentor.data.ActiveUser
 import com.example.mentor.schedule.domain.TodoTask
+import com.example.mentor.schedule.domain.TodoDates
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,6 +48,7 @@ internal fun TodoImportAction(text: String, owner: Int, onDone: () -> Unit) {
     val rows = remember(text) { suggested.map {
         DraftTodo(it.day, it.title, it.subject.orEmpty(), it.priority)
     }.toMutableStateList() }
+    val planStartDate = remember(text) { TodoDates.today() }
     var preview by remember { mutableStateOf(false) }
     var saving by remember { mutableStateOf(false) }
     var saved by remember { mutableStateOf<Int?>(null) }
@@ -149,10 +151,13 @@ internal fun TodoImportAction(text: String, owner: Int, onDone: () -> Unit) {
                                 check(owner > 0 && ActiveUser.get(context) == owner)
                                 val repository = (context.applicationContext as AiMentorApplication).services().scheduleImport()
                                 try {
+                                    val savingDate = TodoDates.today()
                                     repository.importTodos(owner.toString(), selected.map { row ->
                                         TodoTask(accountId = owner.toString(), title = row.title.trim(),
                                             dayOfWeek = row.day, priority = row.priority,
-                                            linkedSubject = row.subject.trim().ifEmpty { null })
+                                            linkedSubject = row.subject.trim().ifEmpty { null },
+                                            dueDate = TodoDates.nextOccurrence(row.day, savingDate),
+                                            planStartDate = planStartDate)
                                     })
                                 } finally { repository.close() }
                             }

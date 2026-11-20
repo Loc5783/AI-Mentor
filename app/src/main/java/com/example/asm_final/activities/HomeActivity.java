@@ -9,6 +9,7 @@ import com.example.asm_final.activities.fragments.ProfileFragment;
 public class HomeActivity extends AppCompatActivity
     implements ProfileFragment.OnProfileUpdatedListener,
         com.example.mentor.schedule.ui.ScheduleAiHost {
+  public static final String EXTRA_START_DESTINATION = "START_DESTINATION";
   private int authenticatedOwner;
 
   @Override
@@ -47,7 +48,8 @@ public class HomeActivity extends AppCompatActivity
     }
     composeShell =
         new com.example.asm_final.ui.ShellUi(
-            this, username, getIntent().hasExtra("CHAT_THREAD_ID") ? R.id.nav_chat : R.id.nav_home);
+            this, username, getIntent().hasExtra("CHAT_THREAD_ID") ? R.id.nav_chat
+                : getIntent().getIntExtra(EXTRA_START_DESTINATION, R.id.nav_home));
     setContentView(composeShell.view());
   }
 
@@ -62,7 +64,9 @@ public class HomeActivity extends AppCompatActivity
     startActivity(new Intent(this, ScheduleAiActivity.class)
         .putExtra(ScheduleAiActivity.EXTRA_ACTION,
             action == com.example.mentor.schedule.ui.ScheduleAiAction.TIMETABLE_PHOTO
-                ? ScheduleAiActivity.PHOTO : ScheduleAiActivity.TODO)
+                ? ScheduleAiActivity.PHOTO
+                : action == com.example.mentor.schedule.ui.ScheduleAiAction.EXAM_PLAN
+                    ? ScheduleAiActivity.EXAM : ScheduleAiActivity.TODO)
         .putExtra(ScheduleAiActivity.EXTRA_DETAILS, details));
   }
 
@@ -71,14 +75,10 @@ public class HomeActivity extends AppCompatActivity
     super.onResume();
     if (authenticatedOwner > 0
         && com.example.mentor.data.ActiveUser.get(this) != authenticatedOwner) finish();
-    com.example.asm_final.utils.LocalStudyTimeStore.startSession();
   }
 
   @Override
   protected void onPause() {
-    if (authenticatedOwner > 0) {
-      com.example.asm_final.utils.LocalStudyTimeStore.recordActiveSession(this, authenticatedOwner);
-    }
     super.onPause();
   }
 
