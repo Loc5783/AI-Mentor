@@ -8,6 +8,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 interface AiPracticeRepository {
+    val supportsAnswerConfidence: Boolean get() = false
     suspend fun getConfig(): AiPracticeConfig
     suspend fun createSession(
         subjectId: String,
@@ -26,6 +27,10 @@ interface AiPracticeRepository {
     suspend fun completeSession(sessionId: String): AiPracticeSession
     suspend fun reportQuestion(sessionId: String, questionId: String, reason: String, details: String): String
     suspend fun explainMore(sessionId: String, questionId: String, query: String): String
+    suspend fun getAnswerConfidence(sessionId: String, questionId: String): AnswerConfidence? = null
+    suspend fun setAnswerConfidence(sessionId: String, questionId: String,
+                                    attemptCount: Int, confidence: AnswerConfidence): AnswerConfidence =
+        throw UnsupportedOperationException("Answer confidence is not supported by this repository")
 }
 
 class BackendAiPracticeRepository(

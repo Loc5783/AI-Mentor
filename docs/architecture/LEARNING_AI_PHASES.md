@@ -1,6 +1,6 @@
 # Learning AI foundations: scope and evidence
 
-This note describes source code in this branch. It does not claim that a new AI feature is available to learners, tested against the cloud project, or deployed.
+This note describes source code in this branch. It does not claim that a new AI feature is available to learners, tested against the cloud project, or deployed. The answer-confidence migration and Android UI were added after the foundation PR; the cloud migration has not been deployed or verified here.
 
 `ExamPackFoundry` on the integration base processes questions extracted from user-supplied files and keeps them pending approval. `AdaptiveQuestionSelection` in this branch only filters already published, reviewed library questions for a proposed practice blueprint. Neither component calls the other; their question metadata and approval rules must be reconciled before any shared learner flow is built.
 
@@ -8,7 +8,7 @@ This note describes source code in this branch. It does not claim that a new AI 
 | --- | --- | --- |
 | 1 — Architecture foundation | `ExamQuestionKind` prevents unknown exam formats from silently becoming multiple choice. Exam UI validates four True/False statements before rendering them. | Review the remaining question-type branches and device UI behavior; the current change does not replace exam scoring. |
 | 2 — Shared learning evidence | `LearningEvidenceReader` reads already loaded lesson, placement, AI practice, library and exam snapshots. It keeps owner, subject, grade, source and observation type, and does not infer a score from a completed lesson. | No durable evidence store, skill mapping or cloud migration was added. Reconcile snapshot versions and server identity before persistence. |
-| 3 — Reasoning Arena foundation | `ReasoningReviewPolicy` accepts a versioned, reviewed skill binding, an observed answer and a learner's explicit confidence. It returns a next check, such as asking confidence, investigating a possible misconception or trying an unseen question. | No current screen collects confidence, and existing question banks do not provide a verified skill map. Its result must not be displayed as mastery, used for rewards or saved as a diagnosis. |
+| 3 — Reasoning Arena foundation | `ReasoningReviewPolicy` accepts a versioned, reviewed skill binding, an observed answer and a learner's explicit confidence. The AI practice feedback screen now asks for confidence, with a separate owner-checked persistence RPC in a pending migration. | Cloud persistence remains unverified and requires the migration. Existing question banks do not provide a verified skill map. Confidence is not yet fed into the reasoning policy or displayed as mastery, used for rewards or saved as a diagnosis. |
 | 4 — Adaptive Exam Foundry foundation | `AdaptiveQuestionSelection` selects only published, reviewed, unseen practice question IDs matching subject, grade, skill-map version, format and difficulty. Missing slots remain explicit. | The selection is not wired to the app or Supabase. A curated, versioned skill map and a trusted blueprint source are needed. Timed exams continue using their existing fixed server blueprint. |
 | 5 — Quality | Pure policy tests cover account isolation, missing metadata, guessing, high-confidence errors, assisted answers, duplicate observations and question reuse. | Run device and cloud integration tests before exposing these policies. Measure latency and AI cost only when an actual request path exists. |
 
@@ -21,14 +21,14 @@ This note describes source code in this branch. It does not claim that a new AI 
 - Question selection returns IDs only. It never sees answer keys, grades an exam, changes XP, or writes progress. Missing vetted questions produce unfilled slots instead of substituting a different grade, subject, skill or difficulty.
 - `AdaptivePracticePlanner` connects loaded library history, reasoning signals and selection. Reasoning inputs must exactly match nonconflicting supplied evidence and the blueprint's skill-map version. Library IDs are excluded only using library history for the same subject and grade: an AI-practice or exam ID with the same text is a different identifier. This is a plan from loaded history, not a guarantee that a question has never been seen in any historical session.
 - The planner reports the review for each requested skill and any unfilled slots. It does not silently alter a caller's blueprint based on a reasoning signal. Choosing a diagnostic blueprint remains a future server integration using reviewed metadata.
-- No new table, policy, Edge Function, Android permission or network call is required for these foundations. Rolling back this work means removing the isolated policy code and its tests; existing user records and exam attempts are untouched.
+- The later confidence step adds `mentor_ai_answer_confidence` and a restricted RPC, without changing scoring or existing answer records. The app hides the selector when that RPC is absent. The migration must be deployed before a cloud verification can claim that confidence survives a restart.
 
 ## Quality and operational limits
 
 - The new policies are synchronous, in-memory calculations; they make no AI request and incur no AI-provider cost today. Runtime latency in a complete learner flow has not been measured.
 - `ReasoningReviewPolicy` rejects observations from a different local account ID, but future callers must also verify the active authenticated session and server ownership. This policy is not an authorization boundary.
 - Selection currently scans candidates for each blueprint slot. Before using a large question bank, benchmark this path and consider an indexed candidate lookup. Do not optimize against an invented workload.
-- The inspected app source does not expose a reviewed skill map or confidence capture to these policies. No cloud inventory was performed, so this note does not establish what metadata exists in the production database. The new policies are not connected to learner UI, scoring or persistence.
+- The inspected app source does not expose a reviewed skill map to these policies. The new confidence selector is only connected to its own server record; adaptive selection still has no learner-facing request path. No cloud inventory was performed, so this note does not establish what metadata exists in the production database.
 
 ## Next integration acceptance criteria
 
@@ -43,3 +43,5 @@ This note describes source code in this branch. It does not claim that a new AI 
 Record separately for each future integration: source present, local unit tests passed, device workflow passed, cloud workflow passed and deployed version. The presence of these files proves only the first level until the corresponding test or deployment evidence is attached.
 
 Local checks on 20 November 2026 for this working tree: `:app:testDebugUnitTest` passed 251/251 tests after adding the loaded-history planner and skill-map version checks; `:app:assembleDebug` and `:app:lintDebug` passed with 0 lint errors, 200 warnings and 2 hints. The preceding foundation check passed 18 Node tests covering the unchanged Edge AI code; they were not repeated for this Android-only follow-up. Backend pytest, device workflows, cloud verification and deployment were not performed for these changes. The lint warnings require separate triage; a successful lint task does not mean the UI is defect-free.
+
+The later confidence step passed 266 Android unit tests and assembled a debug APK on the integration-based branch. The new SQL migration has not been executed in an isolated database or in production; its ownership and attempt guards are code-reviewed only. The UI must be checked on a device after the migration is applied, including resume, account switching and network interruption.

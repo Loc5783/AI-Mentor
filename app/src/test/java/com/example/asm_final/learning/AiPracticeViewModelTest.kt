@@ -13,6 +13,19 @@ import org.junit.Test
 class AiPracticeViewModelTest {
 
     private class FakeAiPracticeRepository : AiPracticeRepository {
+        override val supportsAnswerConfidence = true
+        val confidenceByQuestion = mutableMapOf<String, AnswerConfidence>()
+        var confidenceWrite: Triple<String, Int, AnswerConfidence>? = null
+        var failConfidenceWrite: Exception? = null
+        override suspend fun getAnswerConfidence(sessionId: String, questionId: String) =
+            confidenceByQuestion[questionId]
+        override suspend fun setAnswerConfidence(sessionId: String, questionId: String,
+                                                 attemptCount: Int, confidence: AnswerConfidence): AnswerConfidence {
+            failConfidenceWrite?.let { throw it }
+            confidenceWrite = Triple(questionId, attemptCount, confidence)
+            confidenceByQuestion[questionId] = confidence
+            return confidence
+        }
         var answerDeferred: CompletableDeferred<AiAnswerResult>? = null
         var explanationDeferred: CompletableDeferred<String>? = null
         var resumable: AiPracticeSession? = null
@@ -718,6 +731,46 @@ class AiPracticeViewModelTest {
         runCurrent()
         assertNotEquals(repo.creationKeys[0], repo.creationKeys[1])
         assertEquals(AiPracticeScreenState.PRACTICING, vm.screenState)
+        vm.onCleared()
+    }
+
+    @Test
+    fun confidenceIsStoredForCurrentGradedAnswerAndClearedOnNextQuestion() = runTest {
+        val repo = FakeAiPracticeRepository()
+        val vm = AiPracticeViewModel(repo, backgroundScope)
+        vm.startPractice("math", 10, "Topic", "EASY", 2)
+        runCurrent()
+        vm.selectOption("A")
+        vm.submitAnswer()
+        runCurrent()
+        vm.chooseAnswerConfidence(AnswerConfidence.LOW)
+        runCurrent()
+        assertEquals(Triple("ai_q_1", 1, AnswerConfidence.LOW), repo.confidenceWrite)
+        assertEquals(AnswerConfidence.LOW, vm.answerConfidence)
+        vm.nextQuestion()
+        assertNull(vm.answerConfidence)
+        vm.onCleared()
+    }
+
+    @Test
+    fun confidenceFailureDoesNotPretendToBeSavedAndCanBeRetried() = runTest {
+        val repo = FakeAiPracticeRepository()
+        val vm = AiPracticeViewModel(repo, backgroundScope)
+        vm.startPractice("math", 10, "Topic", "EASY", 2)
+        runCurrent()
+        vm.selectOption("B")
+        vm.submitAnswer()
+        runCurrent()
+        repo.failConfidenceWrite = IllegalStateException("offline")
+        vm.chooseAnswerConfidence(AnswerConfidence.HIGH)
+        runCurrent()
+        assertNull(vm.answerConfidence)
+        assertNotNull(vm.confidenceError)
+        repo.failConfidenceWrite = null
+        vm.chooseAnswerConfidence(AnswerConfidence.MEDIUM)
+        runCurrent()
+        assertEquals(AnswerConfidence.MEDIUM, vm.answerConfidence)
+        assertNull(vm.confidenceError)
         vm.onCleared()
     }
 

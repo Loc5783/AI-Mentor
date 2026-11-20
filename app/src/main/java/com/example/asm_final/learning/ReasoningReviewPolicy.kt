@@ -1,7 +1,7 @@
 package com.example.asm_final.learning
 
 /** A learner's own confidence report. It must never be inferred from a score. */
-internal enum class AnswerConfidence { LOW, MEDIUM, HIGH }
+enum class AnswerConfidence { LOW, MEDIUM, HIGH }
 
 /** Skill mapping and independence must be supplied by reviewed question metadata. */
 internal data class ReasoningObservation(
