@@ -452,64 +452,71 @@ private fun AiPracticeActiveContent(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Top Bar
+        // Keep the current question and exit action visible without crowding the prompt.
         Surface(
-            tonalElevation = 2.dp,
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 2.dp,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                IconButton(onClick = onBack) {
-                    Text("←", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Column(Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = onBack, modifier = Modifier.testTag("AiPracticeExitBtn")) {
+                        Text("←  Thoát", color = MaterialTheme.colorScheme.primary)
+                    }
+                    Spacer(Modifier.weight(1f))
+                    Text("LUYỆN TẬP", style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                Text(
-                    text = "Câu $index / $total",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = when (q.difficulty) {
-                        "EASY" -> "Dễ"
-                        "HARD" -> "Nâng cao"
-                        else -> "Trung bình"
-                    },
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MentorTokens.Blue600
-                )
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp)) {
+                    Text("Câu $index / $total", style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                    Spacer(Modifier.weight(1f))
+                    Surface(shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.secondaryContainer) {
+                        Text(
+                            when (q.difficulty) {
+                                "EASY" -> "Dễ"
+                                "HARD" -> "Nâng cao"
+                                else -> "Trung bình"
+                            },
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
+                }
             }
         }
 
         LinearProgressIndicator(
             progress = { index.toFloat() / total },
-            modifier = Modifier.fillMaxWidth(),
-            color = MentorTokens.Blue500
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            color = MaterialTheme.colorScheme.primary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant
         )
 
         Column(
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(horizontal = 16.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
-            // Question Prompt Card
+            Text("CHỌN MỘT ĐÁP ÁN", style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = if (dark) MentorTokens.NavyCard else MaterialTheme.colorScheme.surface
                 ),
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                shape = RoundedCornerShape(20.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
             ) {
-                Column(Modifier.padding(16.dp)) {
+                Column(Modifier.fillMaxWidth().padding(20.dp)) {
                     Text(
                         text = q.prompt,
-                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 17.sp, lineHeight = 24.sp),
-                        fontWeight = FontWeight.Medium
+                        style = MaterialTheme.typography.titleMedium.copy(lineHeight = 27.sp),
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -518,47 +525,48 @@ private fun AiPracticeActiveContent(
             listOf("A", "B", "C", "D").forEach { optKey ->
                 val optText = q.options[optKey] ?: return@forEach
                 val isSelected = viewModel.selectedOption == optKey
-                val cardBorder = if (isSelected) {
-                    BorderStroke(2.dp, MentorTokens.Blue500)
-                } else {
-                    BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
-                }
-                val cardBg = if (isSelected) {
-                    if (dark) MentorTokens.NavyElevated else MentorTokens.Blue50
-                } else {
-                    if (dark) MentorTokens.NavySurface else MaterialTheme.colorScheme.surface
-                }
+                val cardBorder = BorderStroke(
+                    if (isSelected) 2.dp else 1.dp,
+                    if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+                )
+                val cardBg = if (isSelected) MaterialTheme.colorScheme.primaryContainer
+                    else MaterialTheme.colorScheme.surface
 
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { viewModel.selectOption(optKey) }
                         .testTag("AiOption_${optKey}"),
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(containerColor = cardBg),
                     border = cardBorder
                 ) {
                     Row(
-                        modifier = Modifier.padding(14.dp),
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 60.dp)
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(32.dp)
+                                .size(36.dp)
                                 .clip(CircleShape)
-                                .background(if (isSelected) MentorTokens.Blue600 else MaterialTheme.colorScheme.surfaceVariant),
+                                .background(if (isSelected) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.surfaceVariant),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = optKey,
                                 fontWeight = FontWeight.Bold,
-                                color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                         Spacer(Modifier.width(12.dp))
                         Text(
                             text = optText,
-                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
+                                else MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -570,21 +578,22 @@ private fun AiPracticeActiveContent(
             }
         }
 
-        // Bottom Action Bar
+        // Fixed actions remain reachable when a long question scrolls.
         Surface(
-            tonalElevation = 4.dp,
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 8.dp,
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 OutlinedButton(
                     onClick = { viewModel.skipCurrentQuestion() },
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(1f).heightIn(min = 52.dp)
                         .testTag("AiPracticeSkipBtn"),
                     enabled = !viewModel.isSubmitting
                 ) {
@@ -594,15 +603,15 @@ private fun AiPracticeActiveContent(
                 Button(
                     onClick = { viewModel.submitAnswer() },
                     modifier = Modifier
-                        .weight(1.5f)
+                        .weight(1.5f).heightIn(min = 52.dp)
                         .testTag("AiPracticeSubmitBtn"),
                     enabled = viewModel.selectedOption != null && !viewModel.isSubmitting,
-                    colors = ButtonDefaults.buttonColors(containerColor = MentorTokens.Blue600)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
                         text = if (viewModel.isSubmitting) "Đang nộp..." else "Xác nhận",
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -682,21 +691,22 @@ private fun AiPracticeFeedbackContent(
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(horizontal = 16.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
-            // Result Banner
+            Text("KẾT QUẢ CÂU HỎI", style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Card(
                 colors = CardDefaults.cardColors(containerColor = bannerBg),
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(20.dp),
                 modifier = Modifier.fillMaxWidth().testTag("AiFeedbackBanner")
             ) {
                 Text(
                     text = bannerText,
                     color = bannerTextColor,
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(16.dp)
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(20.dp)
                 )
             }
 
@@ -705,10 +715,10 @@ private fun AiPracticeFeedbackContent(
                 colors = CardDefaults.cardColors(
                     containerColor = if (dark) MentorTokens.NavyCard else MaterialTheme.colorScheme.surface
                 ),
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                shape = RoundedCornerShape(20.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
             ) {
-                Column(Modifier.padding(16.dp)) {
+                Column(Modifier.fillMaxWidth().padding(20.dp)) {
                     Text(
                         text = "💡 Lời giải chi tiết từ Gia sư AI:",
                         style = MaterialTheme.typography.titleSmall,
@@ -764,13 +774,14 @@ private fun AiPracticeFeedbackContent(
 
         // Bottom Navigation Bar
         Surface(
-            tonalElevation = 4.dp,
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 8.dp,
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 // If wrong, allow Retry
@@ -778,7 +789,7 @@ private fun AiPracticeFeedbackContent(
                     OutlinedButton(
                         onClick = { viewModel.retryQuestion() },
                         modifier = Modifier
-                            .weight(1f)
+                            .weight(1f).heightIn(min = 52.dp)
                             .testTag("AiRetryBtn")
                     ) {
                         Text("Luyện lại câu này")
@@ -789,14 +800,14 @@ private fun AiPracticeFeedbackContent(
                 Button(
                     onClick = { viewModel.nextQuestion() },
                     modifier = Modifier
-                        .weight(1.2f)
+                        .weight(1.2f).heightIn(min = 52.dp)
                         .testTag("AiNextQuestionBtn"),
-                    colors = ButtonDefaults.buttonColors(containerColor = MentorTokens.Blue600)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
                         text = if (isLast) "Xem kết quả" else "Câu tiếp theo →",
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }

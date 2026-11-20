@@ -109,6 +109,14 @@ class ExamPrepViewModel(
     private val _uiState = MutableStateFlow(ExamUiState())
     val uiState: StateFlow<ExamUiState> = _uiState.asStateFlow()
 
+    /** Observations already loaded for this account; never starts a request or awards points. */
+    internal fun observedEvidence(activeOwnerId: Int): List<LearningEvidence> {
+        if (isCleared || activeOwnerId <= 0 || activeOwnerId != repository.ownerId) return emptyList()
+        val state = _uiState.value
+        return LearningEvidenceReader.fromExamSessions(repository.ownerId,
+            state.completedSessions + listOfNotNull(state.currentSession, state.completedSession))
+    }
+
     private var timerJob: Job? = null
     private var requestGeneration = 0
     private var controllerGeneration = 0
@@ -501,8 +509,8 @@ class ExamPrepViewModel(
 
         val currentSelected = _uiState.value.localAnswers[questionId]
         // Toggle: if clicking already selected option, unselect (clear) it
-        val type = session.questions.firstOrNull { it.id == questionId }?.questionType
-        val targetSelection: String? = if (type == "SINGLE_CHOICE" && currentSelected == option) null else option
+        val kind = session.questions.firstOrNull { it.id == questionId }?.kind
+        val targetSelection: String? = if (kind == ExamQuestionKind.SINGLE_CHOICE && currentSelected == option) null else option
 
         return performSaveAnswer(session, questionId, targetSelection)
     }
@@ -510,8 +518,12 @@ class ExamPrepViewModel(
     fun setTextAnswer(questionId: String, text: String): Job? {
         val session = _uiState.value.currentSession ?: return null
         if (_uiState.value.isSubmitting || session.state != "IN_PROGRESS") return null
-        val type = session.questions.firstOrNull { it.id == questionId }?.questionType ?: return null
-        val limit = if (type == "ESSAY") 4000 else if (type == "SHORT_ANSWER") 200 else return null
+        val kind = session.questions.firstOrNull { it.id == questionId }?.kind ?: return null
+        val limit = when (kind) {
+            ExamQuestionKind.ESSAY -> 4000
+            ExamQuestionKind.SHORT_ANSWER -> 200
+            else -> return null
+        }
         if (text.length > limit) return null
         return performSaveAnswer(session, questionId, text.ifBlank { null }, 500L)
     }
