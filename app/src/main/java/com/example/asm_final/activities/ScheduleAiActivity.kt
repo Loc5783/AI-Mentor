@@ -140,13 +140,21 @@ private fun PlannerScreen(
     val context = androidx.compose.ui.platform.LocalContext.current
     val scope = rememberCoroutineScope()
     val gateway = remember { SchedulePlannerGateway(context) }
-    var goal by remember { mutableStateOf("") }
-    var examDate by remember { mutableStateOf("") }
+    var examMode by remember { mutableStateOf(action == ScheduleAiActivity.EXAM) }
+    val isPhoto = action == ScheduleAiActivity.PHOTO
+    val isExam = examMode
+    val today = remember { LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh")) }
+    val defaultExamDate = remember { today.plusDays(30).toString() }
+    val defaultSampleGoal = remember {
+        "Toán: Hàm số lượng giác, Cấp số cộng, Giới hạn\nVật lý: Dao động điều hòa, Sóng cơ, Điện trường\nHóa học: Cân bằng hóa học, Hydrocarbon"
+    }
+
+    var goal by remember { mutableStateOf(if (action == ScheduleAiActivity.EXAM) defaultSampleGoal else "") }
+    var examDate by remember { mutableStateOf(if (action == ScheduleAiActivity.EXAM) defaultExamDate else "") }
     var dailyMinutes by remember { mutableStateOf("60") }
     var reminderHour by remember { mutableStateOf("19") }
-    var availability by remember { mutableStateOf("") }
+    var availability by remember { mutableStateOf(if (action == ScheduleAiActivity.EXAM) "Tối chủ nhật rảnh 5 tiếng, các tối khác từ 19h-21h" else "") }
     var useOldTimetable by remember { mutableStateOf(true) }
-    var examMode by remember { mutableStateOf(action == ScheduleAiActivity.EXAM) }
     var result by remember { mutableStateOf<String?>(null) }
     var error by remember { mutableIntStateOf(0) }
     var busy by remember { mutableStateOf(false) }
@@ -160,11 +168,8 @@ private fun PlannerScreen(
         result = null
         error = 0
     }
-    val isPhoto = action == ScheduleAiActivity.PHOTO
-    val isExam = examMode
-    val today = remember { LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh")) }
-    val parsedExamDate = remember(examDate) { runCatching { LocalDate.parse(examDate) }.getOrNull() }
-    val parsedSubjects = remember(goal) { parseExamSubjects(goal) }
+    val parsedExamDate = remember(examDate) { runCatching { LocalDate.parse(examDate) }.getOrNull() ?: runCatching { LocalDate.parse(defaultExamDate) }.getOrNull() }
+    val parsedSubjects = remember(goal) { parseExamSubjects(goal) ?: if (isExam) parseExamSubjects(defaultSampleGoal) else null }
     Column(
         Modifier
             .fillMaxSize()
@@ -314,8 +319,12 @@ private fun PlannerScreen(
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChip(selected = !isExam, enabled = !busy, onClick = { examMode = false; result = null },
                     label = { Text(stringResource(R.string.planner_todo_title)) })
-                FilterChip(selected = isExam, enabled = !busy, onClick = { examMode = true; result = null },
-                    label = { Text(stringResource(R.string.exam_plan_title)) })
+                FilterChip(selected = isExam, enabled = !busy, onClick = {
+                    examMode = true; result = null
+                    if (goal.isBlank()) goal = defaultSampleGoal
+                    if (examDate.isBlank()) examDate = defaultExamDate
+                    if (availability.isBlank()) availability = "Tối chủ nhật rảnh 5 tiếng, các tối khác từ 19h-21h"
+                }, label = { Text(stringResource(R.string.exam_plan_title)) })
             }
             if (isExam) {
                 OutlinedButton(onClick = {
@@ -344,6 +353,26 @@ private fun PlannerScreen(
                     Checkbox(useOldTimetable, onCheckedChange = { useOldTimetable = it; result = null })
                     Text(stringResource(R.string.exam_plan_use_old_timetable))
                 }
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        stringResource(R.string.exam_plan_subjects),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    TextButton(onClick = {
+                        goal = defaultSampleGoal
+                        if (examDate.isBlank()) examDate = defaultExamDate
+                        if (availability.isBlank()) availability = "Tối chủ nhật rảnh 5 tiếng, các tối khác từ 19h-21h"
+                        result = null
+                        error = 0
+                    }) {
+                        Text("✨ Nạp môn học mẫu", style = MaterialTheme.typography.labelMedium)
+                    }
+                }
             }
             OutlinedTextField(
                 value = goal,
@@ -356,6 +385,45 @@ private fun PlannerScreen(
                 enabled = !busy,
                 shape = RoundedCornerShape(14.dp)
             )
+            if (isExam && goal.isNotBlank()) {
+                if (parsedSubjects != null) {
+                    Surface(
+                        shape = RoundedCornerShape(10.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
+                    ) {
+                        Row(
+                            Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_lightning),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Text(
+                                "✓ Đã nhận diện ${parsedSubjects.size} môn học. Sẵn sàng để AI lập lộ trình!",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                    }
+                } else {
+                    Surface(
+                        shape = RoundedCornerShape(10.dp),
+                        color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)
+                    ) {
+                        Text(
+                            "⚠️ Cần nhập đúng định dạng mỗi dòng: Môn: Bài 1, Bài 2... (Hoặc bấm 'Nạp môn học mẫu' ở trên)",
+                            Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    }
+                }
+            }
         }
 
         if (busy) {
@@ -384,12 +452,15 @@ private fun PlannerScreen(
             Button(
                 onClick = {
                     error = 0; result = null; busy = true
+                    val effectiveAvail = availability.ifBlank { "Tối chủ nhật rảnh 5 tiếng, các tối khác từ 19h-21h" }
+                    val effectiveExamDate = parsedExamDate ?: today.plusDays(30)
+                    val effectiveSubjects = parsedSubjects ?: parseExamSubjects(defaultSampleGoal)!!
                     val token = ++generation
                     job = scope.launch {
                         try {
                             val proposal = if (isPhoto) gateway.scanTimetable(owner, image!!)
-                                else if (isExam) gateway.planExam(owner, today, parsedExamDate!!,
-                                    parsedSubjects!!, dailyMinutes.toInt(), availability, useOldTimetable)
+                                else if (isExam) gateway.planExam(owner, today, effectiveExamDate,
+                                    effectiveSubjects, dailyMinutes.toIntOrNull() ?: 60, effectiveAvail, useOldTimetable)
                                 else gateway.planTodos(owner, details, goal)
                             if (token == generation) result = proposal
                         } catch (cancelled: CancellationException) { throw cancelled }
@@ -398,15 +469,15 @@ private fun PlannerScreen(
                     }
                 },
                 enabled = if (isPhoto) image != null else if (isExam)
-                    parsedExamDate?.isAfter(today.plusDays(1)) == true && parsedSubjects != null &&
-                        availability.isNotBlank() &&
-                        dailyMinutes.toIntOrNull() in 10..480 && reminderHour.toIntOrNull() in 0..23
+                    (parsedExamDate != null || examDate.isBlank()) && (parsedSubjects != null || goal.isBlank())
                     else goal.isNotBlank(),
-                modifier = Modifier.fillMaxWidth().height(52.dp),
-                shape = RoundedCornerShape(26.dp)
+                modifier = Modifier.fillMaxWidth().height(54.dp),
+                shape = RoundedCornerShape(27.dp)
             ) {
                 Text(
-                    stringResource(if (isPhoto) R.string.planner_scan else R.string.planner_create),
+                    if (isPhoto) stringResource(R.string.planner_scan)
+                    else if (isExam) "🤖 AI Lập Lộ Trình Ôn Thi"
+                    else stringResource(R.string.planner_create),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
