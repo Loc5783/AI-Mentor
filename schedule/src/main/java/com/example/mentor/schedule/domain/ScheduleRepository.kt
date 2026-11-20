@@ -16,6 +16,7 @@ interface ScheduleRepository {
     fun deleteEntry(id: Long, accountId: String)
 
     fun getTodos(accountId: String, dayOfWeek: Int): List<TodoTask>
+    fun getAllTodos(accountId: String): List<TodoTask> = (1..7).flatMap { getTodos(accountId, it) }
     fun insertTodo(task: TodoTask): Long
     fun updateTodo(task: TodoTask)
     fun deleteTodo(id: Long, accountId: String)

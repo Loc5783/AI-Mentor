@@ -394,6 +394,40 @@ class ScheduleRepositoryImpl(context: Context) : ScheduleRepository, com.example
         return list
     }
 
+    override fun getAllTodos(accountId: String): List<TodoTask> {
+        val list = mutableListOf<TodoTask>()
+        val db = dbHelper.readableDatabase
+        db.rawQuery(
+            "SELECT * FROM todo_tasks WHERE account_id = ? ORDER BY CASE WHEN due_date IS NULL THEN 1 ELSE 0 END, due_date ASC, is_completed ASC, priority DESC",
+            arrayOf(accountId)
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                val completedAtIdx = cursor.getColumnIndexOrThrow("completed_at")
+                val completedAt = if (cursor.isNull(completedAtIdx)) null else cursor.getLong(completedAtIdx)
+                val linkedSubjectIdx = cursor.getColumnIndexOrThrow("linked_subject")
+                val linkedSubject = if (cursor.isNull(linkedSubjectIdx)) null else cursor.getString(linkedSubjectIdx)
+                list.add(
+                    TodoTask(
+                        id = cursor.getLong(cursor.getColumnIndexOrThrow("id")),
+                        accountId = cursor.getString(cursor.getColumnIndexOrThrow("account_id")),
+                        title = cursor.getString(cursor.getColumnIndexOrThrow("title")),
+                        isCompleted = cursor.getInt(cursor.getColumnIndexOrThrow("is_completed")) == 1,
+                        dayOfWeek = cursor.getInt(cursor.getColumnIndexOrThrow("day_of_week")),
+                        priority = cursor.getInt(cursor.getColumnIndexOrThrow("priority")),
+                        linkedSubject = linkedSubject,
+                        createdAt = cursor.getLong(cursor.getColumnIndexOrThrow("created_at")),
+                        completedAt = completedAt,
+                        dueDate = cursor.getColumnIndex("due_date").takeIf { it >= 0 && !cursor.isNull(it) }
+                            ?.let(cursor::getString),
+                        planStartDate = cursor.getColumnIndex("plan_start_date").takeIf { it >= 0 && !cursor.isNull(it) }
+                            ?.let(cursor::getString)
+                    )
+                )
+            }
+        }
+        return list
+    }
+
     override fun insertTodo(task: TodoTask): Long {
         val db = dbHelper.writableDatabase
         val cv = ContentValues().apply {

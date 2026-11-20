@@ -6,6 +6,7 @@ import com.example.mentor.ui.design.MentorSkeleton
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,7 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import java.text.SimpleDateFormat
+import java.util.Locale
+import com.example.mentor.schedule.domain.TodoDates
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -244,6 +249,14 @@ fun ScheduleScreen(
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = .82f))
                     DaySelectorStrip(daysArray, selectedDay) { viewModel.selectDay(it) }
                 }
+            }
+
+            if (viewModel.allExamPlanTodos.isNotEmpty()) {
+                ExamPlanRoadmapCard(
+                    allTasks = viewModel.allExamPlanTodos,
+                    selectedDay = selectedDay,
+                    onSelectDay = { viewModel.selectDay(it) }
+                )
             }
 
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -932,5 +945,157 @@ fun ScheduleFormDialog(
                 }
             }
         )
+    }
+}
+
+@Composable
+private fun ExamPlanRoadmapCard(
+    allTasks: List<TodoTask>,
+    selectedDay: Int,
+    onSelectDay: (Int) -> Unit
+) {
+    if (allTasks.isEmpty()) return
+
+    val total = allTasks.size
+    val completed = allTasks.count { it.isCompleted }
+    val progress = completed.toFloat() / total.coerceAtLeast(1)
+
+    // Group tasks by dueDate
+    val tasksByDate = remember(allTasks) {
+        allTasks.groupBy { it.dueDate.orEmpty() }
+            .filterKeys { it.isNotBlank() }
+            .toSortedMap()
+    }
+
+    val latestDate = tasksByDate.keys.lastOrNull()
+    val daysRemaining = remember(latestDate) {
+        latestDate?.let { dateStr ->
+            runCatching {
+                val format = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT)
+                val target = format.parse(dateStr)
+                val todayDate = format.parse(TodoDates.today())
+                if (target != null && todayDate != null) {
+                    val diffMs = target.time - todayDate.time
+                    (diffMs / (1000 * 60 * 60 * 24)).toInt().coerceAtLeast(0)
+                } else 0
+            }.getOrDefault(0)
+        } ?: 0
+    }
+
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)),
+        shadowElevation = 4.dp
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        Icons.Default.DateRange,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Text(
+                        "🎯 Lộ trình Ôn thi AI",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                if (latestDate != null) {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer
+                    ) {
+                        Text(
+                            "Còn $daysRemaining ngày",
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                }
+            }
+
+            // Overall Progress
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        "Tiến độ tổng thể lộ trình",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        "$completed / $total bài ôn (${(progress * 100).toInt()}%)",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                LinearProgressIndicator(
+                    progress = { progress },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .clip(RoundedCornerShape(4.dp)),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            }
+
+            // Daily Roadmap Timeline Strip
+            if (tasksByDate.isNotEmpty()) {
+                Text(
+                    "Theo dõi tiến độ các ngày:",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    tasksByDate.forEach { (dateStr, dayTasks) ->
+                        val dayCompleted = dayTasks.count { it.isCompleted }
+                        val dayTotal = dayTasks.size
+                        val dayOfWeek = dayTasks.firstOrNull()?.dayOfWeek ?: 1
+                        val isCurrentSelectedDay = (dayOfWeek == selectedDay)
+
+                        FilterChip(
+                            selected = isCurrentSelectedDay,
+                            onClick = { onSelectDay(dayOfWeek) },
+                            label = {
+                                Text("$dateStr: $dayCompleted/$dayTotal")
+                            },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 }

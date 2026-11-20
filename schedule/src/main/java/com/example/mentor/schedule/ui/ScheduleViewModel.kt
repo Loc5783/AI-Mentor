@@ -52,6 +52,7 @@ class ScheduleViewModel(
     }
     val entries = mutableStateListOf<ScheduleEntry>()
     val todos = mutableStateListOf<TodoTask>()
+    val allExamPlanTodos = mutableStateListOf<TodoTask>()
     val logs = mutableStateListOf<ScheduleActivityLog>()
     val selectedDay = mutableStateOf(getCurrentDayOfWeek())
     
@@ -114,6 +115,8 @@ class ScheduleViewModel(
             try {
                 val entryList = repository.getEntries(accountId, day)
                 val todoList = repository.getTodos(accountId, day)
+                val allTodoList = runCatching { repository.getAllTodos(accountId) }.getOrDefault(emptyList())
+                val examPlanList = allTodoList.filter { !it.dueDate.isNullOrBlank() || !it.planStartDate.isNullOrBlank() }
                 val logList = runCatching { repository.getLogs(accountId, 20) }.getOrDefault(emptyList())
                 withContext(Dispatchers.Main) {
                     if (generation != loadGeneration.get() || selectedDay.value != day) return@withContext
@@ -123,6 +126,8 @@ class ScheduleViewModel(
                     entries.addAll(entryList)
                     todos.clear()
                     todos.addAll(todoList)
+                    allExamPlanTodos.clear()
+                    allExamPlanTodos.addAll(examPlanList)
                     logs.clear()
                     logs.addAll(logList)
                     calculateTodoProgress()
