@@ -144,7 +144,7 @@ with published_counts as (
   group by subject_id
 ), candidates as (
   select q.id, row_number() over(partition by q.subject_id order by q.id) as position,
-    greatest(0, 15 - coalesce(p.completed, 0)) as needed
+    greatest(0, 12 - coalesce(p.completed, 0)) as needed
   from public.mentor_questions q
   left join published_counts p on p.subject_id=q.subject_id
   where q.grade=11 and q.status='DRAFT' and q.id like 'g11-lesson-%'
@@ -176,7 +176,7 @@ begin
       and correct_option in ('A','B','C');
     -- Each subject has four LESSON units with three questions. The fifth unit is
     -- FIVE_LESSON_REVIEW and is intentionally not seeded as a lesson draft.
-    if completed_count<15 then raise exception 'Grade 11 % has only % completed lesson questions',subject_row.subject_id,completed_count; end if;
+    if completed_count<12 then raise exception 'Grade 11 % has only % completed lesson questions',subject_row.subject_id,completed_count; end if;
   end loop;
 end $$;
 commit;
