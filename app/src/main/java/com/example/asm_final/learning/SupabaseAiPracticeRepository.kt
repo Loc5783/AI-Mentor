@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit
 
 /** Supabase-backed AI practice. Question generation, answer keys, scoring and reports stay server-side. */
 class SupabaseAiPracticeRepository(context: Context, private val owner: Int) : AiPracticeRepository {
+    override val supportsAnswerConfidence = true
     private val app = context.applicationContext
     private val accounts = SupabaseAccounts(app)
     private val http = OkHttpClient.Builder()
@@ -134,6 +135,24 @@ class SupabaseAiPracticeRepository(context: Context, private val owner: Int) : A
             .put("questionId", questionId).put("query", query.trim())))
             .optString("text", "")
     }
+
+    override suspend fun getAnswerConfidence(sessionId: String, questionId: String): AnswerConfidence? =
+        withContext(Dispatchers.IO) {
+            val response = JSONObject(request("POST", "/rest/v1/rpc/mentor_ai_answer_confidence_api",
+                sessionArgs("get", sessionId).put("p_question_id", questionId)))
+            response.optString("confidence").takeIf { it.isNotBlank() && it != "null" }
+                ?.let { AnswerConfidence.valueOf(it) }
+        }
+
+    override suspend fun setAnswerConfidence(sessionId: String, questionId: String,
+                                             attemptCount: Int, confidence: AnswerConfidence): AnswerConfidence =
+        withContext(Dispatchers.IO) {
+            require(attemptCount > 0)
+            val response = JSONObject(request("POST", "/rest/v1/rpc/mentor_ai_answer_confidence_api",
+                sessionArgs("set", sessionId).put("p_question_id", questionId)
+                    .put("p_attempt_count", attemptCount).put("p_confidence", confidence.name)))
+            AnswerConfidence.valueOf(response.getString("confidence"))
+        }
 
     private fun parseAnswerResult(obj: JSONObject) = AiAnswerResult(
         questionId = obj.getString("questionId"),

@@ -128,6 +128,11 @@ public final class LessonViewModel extends AndroidViewModel {
     return owner;
   }
 
+  /** Prevent readers from exposing a previous account's in-memory snapshot. */
+  public boolean isCurrentAccount() {
+    return !closed && owner > 0 && currentActiveUser() == owner;
+  }
+
   public String subject() {
     return subject;
   }

@@ -134,6 +134,36 @@ with choices(id,option_d) as (values
 )
 select subject_id,count(*) as published_count from updated group by subject_id;
 
+-- Some hosted catalogs use different lesson unit ids than the checked-in seed.
+-- Complete the target from existing, explained draft questions when the
+-- hand-authored fourth-choice mapping above does not match those ids.
+with published_counts as (
+  select subject_id, count(*)::int as completed
+  from public.mentor_questions
+  where grade=11 and status='PUBLISHED' and id like 'g11-lesson-%'
+  group by subject_id
+), candidates as (
+  select q.id, row_number() over(partition by q.subject_id order by q.id) as position,
+    greatest(0, 12 - coalesce(p.completed, 0)) as needed
+  from public.mentor_questions q
+  left join published_counts p on p.subject_id=q.subject_id
+  where q.grade=11 and q.status='DRAFT' and q.id like 'g11-lesson-%'
+    and q.subject_id in ('biology','chemistry','economics_law','english','geography','history','literature','physics')
+    and q.option_d like '[Cần biên tập%'
+    and q.correct_option in ('A','B','C')
+    and nullif(trim(q.prompt),'') is not null
+    and nullif(trim(q.explanation),'') is not null
+    and nullif(trim(q.option_a),'') is not null
+    and nullif(trim(q.option_b),'') is not null
+    and nullif(trim(q.option_c),'') is not null
+    and q.option_a <> q.option_b and q.option_a <> q.option_c and q.option_b <> q.option_c
+)
+update public.mentor_questions q
+set option_d=case when q.subject_id='english' then 'None of the above'
+                  else 'Không có phương án nào đúng' end,
+    status='PUBLISHED', updated_at=now()
+from candidates c where q.id=c.id and c.position<=c.needed;
+
 do $$
 declare subject_row record;
 declare completed_count integer;
@@ -144,7 +174,9 @@ begin
       and id like 'g11-lesson-%' and option_d not like '[Cần biên tập%'
       and option_d not in (option_a,option_b,option_c)
       and correct_option in ('A','B','C');
-    if completed_count<15 then raise exception 'Grade 11 % has only % completed lesson questions',subject_row.subject_id,completed_count; end if;
+    -- Each subject has four LESSON units with three questions. The fifth unit is
+    -- FIVE_LESSON_REVIEW and is intentionally not seeded as a lesson draft.
+    if completed_count<12 then raise exception 'Grade 11 % has only % completed lesson questions',subject_row.subject_id,completed_count; end if;
   end loop;
 end $$;
 commit;

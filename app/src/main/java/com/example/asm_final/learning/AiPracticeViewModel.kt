@@ -40,6 +40,8 @@ class AiPracticeViewModel(
         isSubmitting = false
         isReporting = false
         isExplainingMore = false
+        confidenceBusy = false
+        confidenceLoading = false
     }
 
     private var activeJob: Job? = null
@@ -85,6 +87,18 @@ class AiPracticeViewModel(
 
     var lastResult by mutableStateOf<AiAnswerResult?>(null)
         private set
+
+    var answerConfidence by mutableStateOf<AnswerConfidence?>(null)
+        private set
+    var confidenceBusy by mutableStateOf(false)
+        private set
+    var confidenceLoading by mutableStateOf(false)
+        private set
+    var confidenceError by mutableStateOf<String?>(null)
+        private set
+    var confidenceAvailable by mutableStateOf(repository.supportsAnswerConfidence)
+        private set
+    val confidenceSupported: Boolean get() = repository.supportsAnswerConfidence
 
     var explainMoreText by mutableStateOf<String?>(null)
         private set
@@ -241,6 +255,7 @@ class AiPracticeViewModel(
                             q.correctOption ?: "", q.explanation ?: "", q.hint,
                             answer.firstTryCorrect, answer.attemptsCount, answer.skipped)
                         screenState = AiPracticeScreenState.FEEDBACK
+                        loadAnswerConfidence()
                     } else screenState = AiPracticeScreenState.PRACTICING
                 }
             } catch (ce: CancellationException) {
@@ -281,6 +296,7 @@ class AiPracticeViewModel(
                 lastResult = result
                 isSubmitting = false
                 screenState = AiPracticeScreenState.FEEDBACK
+                if (!result.isSkipped) loadAnswerConfidence()
             } catch (ce: CancellationException) {
                 throw ce
             } catch (e: Exception) {
@@ -323,6 +339,8 @@ class AiPracticeViewModel(
             answerKey = null
             selectedOption = null
             lastResult = null
+            answerConfidence = null
+            confidenceError = null
             explainMoreText = null
             errorMessage = null
             screenState = AiPracticeScreenState.PRACTICING
@@ -338,6 +356,8 @@ class AiPracticeViewModel(
             currentQuestionIndex++
             selectedOption = null
             lastResult = null
+            answerConfidence = null
+            confidenceError = null
             explainMoreText = null
             errorMessage = null
             screenState = AiPracticeScreenState.PRACTICING
@@ -366,6 +386,62 @@ class AiPracticeViewModel(
                 if (!isCurrent(generation)) return@launch
                 isSubmitting = false
                 errorMessage = friendlyError(e)
+            }
+        }
+    }
+
+    private fun loadAnswerConfidence() {
+        if (!confidenceAvailable) return
+        val sess = session ?: return
+        val q = currentQuestion ?: return
+        if (lastResult?.isSkipped == true) return
+        val generation = requestGenerationToken
+        answerConfidence = null
+        confidenceError = null
+        confidenceLoading = true
+        vmScope.launch {
+            try {
+                val saved = repository.getAnswerConfidence(sess.id, q.id)
+                if (isCurrent(generation) && currentQuestion?.id == q.id) {
+                    answerConfidence = saved
+                    confidenceLoading = false
+                }
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (e: Exception) {
+                if (!isCurrent(generation) || currentQuestion?.id != q.id) return@launch
+                confidenceLoading = false
+                val cloudError = e as? BackendClient.Failure
+                if (cloudError?.code?.contains("mentor_ai_answer_confidence_api") == true &&
+                    cloudError.status == 404) confidenceAvailable = false
+                else confidenceError = "Chưa tải được mức độ tự tin. Bạn có thể thử chọn lại."
+            }
+        }
+    }
+
+    fun chooseAnswerConfidence(value: AnswerConfidence) {
+        if (!confidenceAvailable || confidenceLoading || confidenceBusy || closed) return
+        val sess = session ?: return
+        val q = currentQuestion ?: return
+        val result = lastResult ?: return
+        if (result.isSkipped || result.attemptsCount < 1) return
+        val generation = requestGenerationToken
+        confidenceBusy = true
+        confidenceError = null
+        vmScope.launch {
+            try {
+                val saved = repository.setAnswerConfidence(sess.id, q.id, result.attemptsCount, value)
+                if (!isCurrent(generation) || currentQuestion?.id != q.id) return@launch
+                answerConfidence = saved
+                confidenceBusy = false
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (e: Exception) {
+                if (!isCurrent(generation) || currentQuestion?.id != q.id) return@launch
+                confidenceBusy = false
+                confidenceError = if ((e as? BackendClient.Failure)?.status == 409)
+                    "Câu trả lời đã thay đổi. Hãy mở lại bài rồi chọn mức độ tự tin."
+                else "Chưa lưu được mức độ tự tin. Kiểm tra mạng và thử lại."
             }
         }
     }

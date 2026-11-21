@@ -39,7 +39,21 @@ data class ExamQuestionSnapshot(
     val contentData: JSONObject = JSONObject(),
     val essayPoints: Int? = null,
     val essayFeedback: String? = null
-)
+) {
+    val kind: ExamQuestionKind get() = ExamQuestionKind.fromWire(questionType)
+
+    val hasValidTrueFalseItems: Boolean get() {
+        if (kind != ExamQuestionKind.TRUE_FALSE_4) return false
+        val items = contentData.optJSONArray("subItems") ?: return false
+        if (items.length() != 4) return false
+        val keys = (0 until 4).map { index ->
+            val item = items.optJSONObject(index) ?: return false
+            if (item.optString("statement").isBlank()) return false
+            item.optString("key")
+        }
+        return keys.toSet() == setOf("a", "b", "c", "d")
+    }
+}
 
 data class ExamSession(
     val id: String,

@@ -247,6 +247,13 @@ class LibraryPracticeController(
 
     val sessionState: StateFlow<SessionPracticeState?> = _sessionState.asStateFlow()
 
+    /** Read only the currently loaded practice session; no offline score is invented. */
+    internal fun observedEvidence(activeOwnerId: Int): List<LearningEvidence> {
+        if (activeOwnerId <= 0 || activeOwnerId != repository.ownerId) return emptyList()
+        return _sessionState.value?.session?.let { LearningEvidenceReader.fromPractice(repository.ownerId, it) }
+            ?: emptyList()
+    }
+
 
 
     var requestGeneration: Int = 0
