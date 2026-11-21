@@ -628,10 +628,37 @@ private fun AiPracticeFeedbackContent(
     val currentQuestion = viewModel.currentQuestion
     var showReportDialog by remember { mutableStateOf(false) }
     var showAskAiDialog by remember { mutableStateOf(false) }
+    var showMisconceptionFlow by remember(currentQuestion?.id) { mutableStateOf(false) }
     var showExplanationPage by remember(currentQuestion?.id) { mutableStateOf(false) }
     var askedQuery by remember(currentQuestion?.id) { mutableStateOf("") }
     var askAiQuery by remember(currentQuestion?.id) {
         mutableStateOf("Giải thích câu hỏi này từng bước, nhất là cách chọn đáp án đúng.")
+    }
+
+    if (showMisconceptionFlow && currentQuestion != null && !result.isCorrect) {
+        val context = LocalContext.current
+        val ownerId = ActiveUser.get(context)
+        val misconceptionRepo = remember(context, ownerId) {
+            DefaultMisconceptionRepository(context, ownerId)
+        }
+        val misconceptionVm = remember(currentQuestion.id, viewModel.session?.id, ownerId) {
+            MisconceptionViewModel(
+                repository = misconceptionRepo,
+                questionId = currentQuestion.id,
+                sessionId = viewModel.session?.id,
+                subjectId = viewModel.session?.subjectId ?: "math",
+                grade = viewModel.session?.grade ?: 10,
+                questionPrompt = currentQuestion.prompt,
+                selectedOption = result.selectedOption,
+                correctOption = result.correctOption,
+                explanation = result.explanation
+            )
+        }
+        MisconceptionBusterScreen(
+            viewModel = misconceptionVm,
+            onClose = { showMisconceptionFlow = false }
+        )
+        return
     }
 
     if (showExplanationPage) {
@@ -816,7 +843,7 @@ private fun AiPracticeFeedbackContent(
             }
             viewModel.reportError?.let { MentorErrorNotice(it) }
 
-            // Inquiry row: Ask AI More & Report Question
+            // Inquiry row: Ask AI More, Misconception Buster (if wrong) & Report Question
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -828,11 +855,21 @@ private fun AiPracticeFeedbackContent(
                     Text("Hỏi thêm AI 💬", fontSize = 13.sp)
                 }
 
+                if (!result.isCorrect && !result.isSkipped) {
+                    Button(
+                        onClick = { showMisconceptionFlow = true },
+                        modifier = Modifier.weight(1.3f).testTag("AiMisconceptionBusterBtn"),
+                        colors = ButtonDefaults.buttonColors(containerColor = MentorTokens.Orange600)
+                    ) {
+                        Text("Phá mệnh đề ⚡", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    }
+                }
+
                 OutlinedButton(
                     onClick = { showReportDialog = true },
                     modifier = Modifier.weight(1f).testTag("AiReportBtn")
                 ) {
-                    Text("Báo lỗi câu hỏi ⚠️", fontSize = 13.sp)
+                    Text("Báo lỗi ⚠️", fontSize = 13.sp)
                 }
             }
         }
