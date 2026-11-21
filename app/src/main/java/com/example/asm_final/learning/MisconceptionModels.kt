@@ -13,7 +13,7 @@ enum class MisconceptionReasonType {
 data class MisconceptionBusterSession(
     val id: String,
     val ownerId: Int,
-    val sessionId: String?,
+    val sessionId: String,
     val questionId: String,
     val subjectId: String,
     val grade: Int,

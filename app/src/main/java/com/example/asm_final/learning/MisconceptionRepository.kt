@@ -2,7 +2,6 @@ package com.example.asm_final.learning
 
 import android.content.Context
 import com.example.asm_final.BuildConfig
-import com.example.asm_final.accounts.RemoteAccountLinks
 import com.example.asm_final.backend.BackendClient
 import com.example.asm_final.supabase.SupabaseAccounts
 import kotlinx.coroutines.Dispatchers
@@ -19,20 +18,9 @@ interface MisconceptionRepository {
     val ownerId: Int
     suspend fun startSession(
         id: String,
-        sessionId: String?,
+        sessionId: String,
         questionId: String,
-        subjectId: String,
-        grade: Int,
-        questionPrompt: String,
-        selectedOption: String?,
-        misconceptionReason: String,
-        reasonType: MisconceptionReasonType,
-        aiHint: String,
-        aiCounterexample: String,
-        prop1Prompt: String,
-        prop1Correct: Boolean,
-        prop2Prompt: String,
-        prop2Correct: Boolean
+        reasonId: String
     ): MisconceptionBusterSession
 
     suspend fun verifySession(
@@ -42,12 +30,12 @@ interface MisconceptionRepository {
     ): MisconceptionBusterSession
 
     suspend fun getSession(id: String): MisconceptionBusterSession?
-    suspend fun getActiveDraft(sessionId: String?, questionId: String): MisconceptionBusterSession?
+    suspend fun getActiveDraft(sessionId: String, questionId: String): MisconceptionBusterSession?
     suspend fun syncDraft(session: MisconceptionBusterSession): MisconceptionBusterSession
 }
 
 class DefaultMisconceptionRepository(
-    private val context: Context,
+    context: Context,
     override val ownerId: Int
 ) : MisconceptionRepository {
 
@@ -60,21 +48,15 @@ class DefaultMisconceptionRepository(
 
     private val prefs = app.getSharedPreferences("misconception_drafts", Context.MODE_PRIVATE)
 
-    private fun draftKey(sessionId: String?, questionId: String): String =
-        "draft_${ownerId}_${sessionId.orEmpty()}_$questionId"
+    private fun draftKey(sessionId: String, questionId: String): String =
+        "draft_${ownerId}_${sessionId}_$questionId"
 
     private fun sessionKey(id: String): String =
         "session_${ownerId}_$id"
 
-    private fun userId(): String? = runCatching {
-        RemoteAccountLinks(app).use {
-            it.remoteId(ownerId, BuildConfig.SUPABASE_URL)
-        }.takeIf { it.matches(Regex("[0-9a-fA-F-]{36}")) }
-    }.getOrNull()
-
-    private fun request(path: String, body: JSONObject): JSONObject =
+    private fun request(body: JSONObject): JSONObject =
         accounts.authorized(ownerId) { token ->
-            val builder = Request.Builder().url(BuildConfig.SUPABASE_URL + path)
+            val builder = Request.Builder().url(BuildConfig.SUPABASE_URL + "/rest/v1/rpc/mentor_misconception_api")
                 .header("apikey", BuildConfig.SUPABASE_PUBLISHABLE_KEY)
                 .header("Authorization", "Bearer $token")
                 .header("Accept", "application/json")
@@ -97,7 +79,7 @@ class DefaultMisconceptionRepository(
         val json = JSONObject()
             .put("id", s.id)
             .put("ownerId", s.ownerId)
-            .put("sessionId", s.sessionId ?: "")
+            .put("sessionId", s.sessionId)
             .put("questionId", s.questionId)
             .put("subjectId", s.subjectId)
             .put("grade", s.grade)
@@ -131,7 +113,7 @@ class DefaultMisconceptionRepository(
             MisconceptionBusterSession(
                 id = obj.getString("id"),
                 ownerId = obj.getInt("ownerId"),
-                sessionId = obj.optString("sessionId").takeIf { it.isNotBlank() },
+                sessionId = obj.getString("sessionId"),
                 questionId = obj.getString("questionId"),
                 subjectId = obj.getString("subjectId"),
                 grade = obj.getInt("grade"),
@@ -156,82 +138,56 @@ class DefaultMisconceptionRepository(
 
     override suspend fun startSession(
         id: String,
-        sessionId: String?,
+        sessionId: String,
         questionId: String,
-        subjectId: String,
-        grade: Int,
-        questionPrompt: String,
-        selectedOption: String?,
-        misconceptionReason: String,
-        reasonType: MisconceptionReasonType,
-        aiHint: String,
-        aiCounterexample: String,
-        prop1Prompt: String,
-        prop1Correct: Boolean,
-        prop2Prompt: String,
-        prop2Correct: Boolean
+        reasonId: String
     ): MisconceptionBusterSession = withContext(Dispatchers.IO) {
+        val catalogItem = MisconceptionBuster.MATH_CATALOG.find { it.id == reasonId }
+            ?: throw BackendClient.Failure("UNVERIFIED_REASON", 400)
+
         val draft = MisconceptionBusterSession(
             id = id,
             ownerId = ownerId,
             sessionId = sessionId,
             questionId = questionId,
-            subjectId = subjectId,
-            grade = grade,
-            questionPrompt = questionPrompt,
-            selectedOption = selectedOption,
-            misconceptionReason = misconceptionReason,
-            reasonType = reasonType,
-            aiHint = aiHint,
-            aiCounterexample = aiCounterexample,
-            prop1Prompt = prop1Prompt,
-            prop1Correct = prop1Correct,
-            prop2Prompt = prop2Prompt,
-            prop2Correct = prop2Correct,
+            subjectId = "math",
+            grade = 11,
+            questionPrompt = "",
+            selectedOption = null,
+            misconceptionReason = catalogItem.text,
+            reasonType = MisconceptionReasonType.PRE_AUTHORED,
+            aiHint = catalogItem.verifiedHint,
+            aiCounterexample = catalogItem.counterexample,
+            prop1Prompt = catalogItem.prop1Prompt,
+            prop1Correct = catalogItem.prop1Correct,
+            prop2Prompt = catalogItem.prop2Prompt,
+            prop2Correct = catalogItem.prop2Correct,
             verificationStatus = MisconceptionVerificationStatus.NEEDS_REVIEW,
             isDraft = true
         )
         saveLocalSession(draft)
 
-        // Try pushing to Supabase if online
         try {
             val body = JSONObject()
                 .put("p_action", "start")
                 .put("p_id", id)
+                .put("p_session_id", UUID.fromString(sessionId).toString())
                 .put("p_question_id", questionId)
-                .put("p_subject_id", subjectId)
-                .put("p_grade", grade)
-                .put("p_question_prompt", questionPrompt)
-                .put("p_misconception_reason", misconceptionReason)
-                .put("p_reason_type", reasonType.name)
-                .put("p_ai_hint", aiHint)
-                .put("p_ai_counterexample", aiCounterexample)
-                .put("p_prop1_prompt", prop1Prompt)
-                .put("p_prop1_correct", prop1Correct)
-                .put("p_prop2_prompt", prop2Prompt)
-                .put("p_prop2_correct", prop2Correct)
+                .put("p_reason_id", reasonId)
 
-            if (!sessionId.isNullOrBlank()) {
-                runCatching { UUID.fromString(sessionId) }.getOrNull()?.let {
-                    body.put("p_session_id", it.toString())
-                }
-            }
-            if (!selectedOption.isNullOrBlank()) {
-                body.put("p_selected_option", selectedOption)
-            }
-
-            val resp = request("/rest/v1/rpc/mentor_misconception_api", body)
+            val resp = request(body)
             val serverStatus = MisconceptionVerificationStatus.valueOf(
                 resp.optString("verificationStatus", MisconceptionVerificationStatus.NEEDS_REVIEW.name)
             )
             val synced = draft.copy(
+                questionPrompt = resp.optString("questionPrompt", draft.questionPrompt),
+                selectedOption = resp.optString("selectedOption").takeIf { it.isNotBlank() },
                 verificationStatus = serverStatus,
                 isDraft = false
             )
             saveLocalSession(synced)
             synced
-        } catch (e: Exception) {
-            // Keep local draft if offline or server not ready
+        } catch (_: Exception) {
             draft
         }
     }
@@ -245,7 +201,6 @@ class DefaultMisconceptionRepository(
         current.prop1UserAns = prop1Ans
         current.prop2UserAns = prop2Ans
 
-        // Try server-side verification
         try {
             val body = JSONObject()
                 .put("p_action", "verify")
@@ -253,7 +208,7 @@ class DefaultMisconceptionRepository(
                 .put("p_prop1_ans", prop1Ans)
                 .put("p_prop2_ans", prop2Ans)
 
-            val resp = request("/rest/v1/rpc/mentor_misconception_api", body)
+            val resp = request(body)
             val serverStatus = MisconceptionVerificationStatus.valueOf(
                 resp.optString("verificationStatus", MisconceptionVerificationStatus.NEEDS_REVIEW.name)
             )
@@ -265,8 +220,7 @@ class DefaultMisconceptionRepository(
             )
             saveLocalSession(synced)
             synced
-        } catch (e: Exception) {
-            // Offline: do NOT claim RESOLVED! Keep as draft with NEEDS_REVIEW
+        } catch (_: Exception) {
             val offlineDraft = current.copy(
                 prop1UserAns = prop1Ans,
                 prop2UserAns = prop2Ans,
@@ -281,17 +235,19 @@ class DefaultMisconceptionRepository(
     override suspend fun getSession(id: String): MisconceptionBusterSession? = withContext(Dispatchers.IO) {
         val local = parseLocalSession(prefs.getString(sessionKey(id), null))
 
-        // Try checking server for freshest status
         try {
             val body = JSONObject()
                 .put("p_action", "get")
                 .put("p_id", id)
-            val resp = request("/rest/v1/rpc/mentor_misconception_api", body)
+            val resp = request(body)
             if (resp.length() > 0 && resp.has("id")) {
+                val serverStatus = MisconceptionVerificationStatus.valueOf(
+                    resp.optString("verificationStatus", MisconceptionVerificationStatus.NEEDS_REVIEW.name)
+                )
                 val serverSession = MisconceptionBusterSession(
                     id = resp.getString("id"),
                     ownerId = ownerId,
-                    sessionId = resp.optString("sessionId").takeIf { it.isNotBlank() },
+                    sessionId = resp.getString("sessionId"),
                     questionId = resp.getString("questionId"),
                     subjectId = resp.getString("subjectId"),
                     grade = resp.getInt("grade"),
@@ -302,12 +258,12 @@ class DefaultMisconceptionRepository(
                     aiHint = resp.optString("aiHint"),
                     aiCounterexample = resp.optString("aiCounterexample"),
                     prop1Prompt = resp.getString("prop1Prompt"),
-                    prop1Correct = local?.prop1Correct ?: true,
+                    prop1Correct = local?.prop1Correct ?: false,
                     prop1UserAns = if (resp.has("prop1UserAns") && !resp.isNull("prop1UserAns")) resp.getBoolean("prop1UserAns") else local?.prop1UserAns,
                     prop2Prompt = resp.getString("prop2Prompt"),
-                    prop2Correct = local?.prop2Correct ?: true,
+                    prop2Correct = local?.prop2Correct ?: false,
                     prop2UserAns = if (resp.has("prop2UserAns") && !resp.isNull("prop2UserAns")) resp.getBoolean("prop2UserAns") else local?.prop2UserAns,
-                    verificationStatus = MisconceptionVerificationStatus.valueOf(resp.optString("verificationStatus", MisconceptionVerificationStatus.NEEDS_REVIEW.name)),
+                    verificationStatus = serverStatus,
                     isDraft = false
                 )
                 saveLocalSession(serverSession)
@@ -318,31 +274,30 @@ class DefaultMisconceptionRepository(
         local
     }
 
-    override suspend fun getActiveDraft(sessionId: String?, questionId: String): MisconceptionBusterSession? =
+    override suspend fun getActiveDraft(sessionId: String, questionId: String): MisconceptionBusterSession? =
         withContext(Dispatchers.IO) {
             parseLocalSession(prefs.getString(draftKey(sessionId, questionId), null))
         }
 
     override suspend fun syncDraft(session: MisconceptionBusterSession): MisconceptionBusterSession =
         withContext(Dispatchers.IO) {
+            // Priority 3: Check server state first. Do NOT overwrite already RESOLVED state!
+            val serverVersion = runCatching { getSession(session.id) }.getOrNull()
+            if (serverVersion != null && serverVersion.verificationStatus == MisconceptionVerificationStatus.RESOLVED) {
+                saveLocalSession(serverVersion)
+                return@withContext serverVersion
+            }
+
             if (!session.isDraft) return@withContext session
-            // Try start first
+
+            val catalogItem = MisconceptionBuster.MATH_CATALOG.find { it.text == session.misconceptionReason }
+            val reasonId = catalogItem?.id ?: "math_reason_01"
+
             val started = startSession(
                 id = session.id,
                 sessionId = session.sessionId,
                 questionId = session.questionId,
-                subjectId = session.subjectId,
-                grade = session.grade,
-                questionPrompt = session.questionPrompt,
-                selectedOption = session.selectedOption,
-                misconceptionReason = session.misconceptionReason,
-                reasonType = session.reasonType,
-                aiHint = session.aiHint,
-                aiCounterexample = session.aiCounterexample,
-                prop1Prompt = session.prop1Prompt,
-                prop1Correct = session.prop1Correct,
-                prop2Prompt = session.prop2Prompt,
-                prop2Correct = session.prop2Correct
+                reasonId = reasonId
             )
             if (session.prop1UserAns != null && session.prop2UserAns != null) {
                 verifySession(session.id, session.prop1UserAns!!, session.prop2UserAns!!)

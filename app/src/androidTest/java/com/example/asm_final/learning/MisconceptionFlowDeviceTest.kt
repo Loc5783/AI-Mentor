@@ -21,38 +21,30 @@ class MisconceptionFlowDeviceTest {
 
         override suspend fun startSession(
             id: String,
-            sessionId: String?,
+            sessionId: String,
             questionId: String,
-            subjectId: String,
-            grade: Int,
-            questionPrompt: String,
-            selectedOption: String?,
-            misconceptionReason: String,
-            reasonType: MisconceptionReasonType,
-            aiHint: String,
-            aiCounterexample: String,
-            prop1Prompt: String,
-            prop1Correct: Boolean,
-            prop2Prompt: String,
-            prop2Correct: Boolean
+            reasonId: String
         ): MisconceptionBusterSession {
+            val catalogItem = MisconceptionBuster.MATH_CATALOG.find { it.id == reasonId }
+                ?: MisconceptionBuster.MATH_CATALOG[0]
+
             val session = MisconceptionBusterSession(
                 id = id,
                 ownerId = ownerId,
                 sessionId = sessionId,
                 questionId = questionId,
-                subjectId = subjectId,
-                grade = grade,
-                questionPrompt = questionPrompt,
-                selectedOption = selectedOption,
-                misconceptionReason = misconceptionReason,
-                reasonType = reasonType,
-                aiHint = aiHint,
-                aiCounterexample = aiCounterexample,
-                prop1Prompt = prop1Prompt,
-                prop1Correct = prop1Correct,
-                prop2Prompt = prop2Prompt,
-                prop2Correct = prop2Correct,
+                subjectId = "math",
+                grade = 11,
+                questionPrompt = "Tìm nghiệm phương trình sin x = 2",
+                selectedOption = "A",
+                misconceptionReason = catalogItem.text,
+                reasonType = MisconceptionReasonType.PRE_AUTHORED,
+                aiHint = catalogItem.verifiedHint,
+                aiCounterexample = catalogItem.counterexample,
+                prop1Prompt = catalogItem.prop1Prompt,
+                prop1Correct = catalogItem.prop1Correct,
+                prop2Prompt = catalogItem.prop2Prompt,
+                prop2Correct = catalogItem.prop2Correct,
                 verificationStatus = MisconceptionVerificationStatus.NEEDS_REVIEW
             )
             storage[id] = session
@@ -78,7 +70,7 @@ class MisconceptionFlowDeviceTest {
         }
 
         override suspend fun getSession(id: String): MisconceptionBusterSession? = storage[id]
-        override suspend fun getActiveDraft(sessionId: String?, questionId: String): MisconceptionBusterSession? = null
+        override suspend fun getActiveDraft(sessionId: String, questionId: String): MisconceptionBusterSession? = null
         override suspend fun syncDraft(session: MisconceptionBusterSession): MisconceptionBusterSession = session
     }
 

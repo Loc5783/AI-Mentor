@@ -76,7 +76,7 @@ fun MisconceptionBusterScreen(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            MisconceptionStep.values().forEachIndexed { index, step ->
+            MisconceptionStep.entries.forEach { step ->
                 val isActive = step.ordinal <= viewModel.currentStep.ordinal
                 Box(
                     modifier = Modifier
@@ -96,7 +96,7 @@ fun MisconceptionBusterScreen(
             when (viewModel.currentStep) {
                 MisconceptionStep.SELECT_REASON -> MisconceptionSelectReasonStep(viewModel, dark)
                 MisconceptionStep.REVIEW_HINT -> MisconceptionReviewHintStep(viewModel, dark)
-                MisconceptionStep.TEST_PROPOSITIONS -> MisconceptionTestStep(viewModel, dark)
+                MisconceptionStep.TEST_PROPOSITIONS -> MisconceptionTestStep(viewModel)
                 MisconceptionStep.RESULT -> MisconceptionResultStep(viewModel, dark, onClose)
             }
         }
@@ -144,7 +144,7 @@ private fun MisconceptionSelectReasonStep(
         }
 
         Text(
-            text = "Lý do phổ biến:",
+            text = "Lý do đã được kiểm duyệt (Môn Toán):",
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold
         )
@@ -154,7 +154,6 @@ private fun MisconceptionSelectReasonStep(
             Card(
                 onClick = {
                     viewModel.selectedReasonId = item.id
-                    viewModel.customReasonText = ""
                 },
                 colors = CardDefaults.cardColors(
                     containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer
@@ -175,7 +174,6 @@ private fun MisconceptionSelectReasonStep(
                         selected = isSelected,
                         onClick = {
                             viewModel.selectedReasonId = item.id
-                            viewModel.customReasonText = ""
                         }
                     )
                     Spacer(Modifier.width(8.dp))
@@ -187,23 +185,6 @@ private fun MisconceptionSelectReasonStep(
                 }
             }
         }
-
-        Text(
-            text = "Hoặc nhập lý do khác của bạn:",
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold
-        )
-
-        OutlinedTextField(
-            value = viewModel.customReasonText,
-            onValueChange = {
-                viewModel.customReasonText = it
-                if (it.isNotBlank()) viewModel.selectedReasonId = null
-            },
-            placeholder = { Text("Ví dụ: Em nghĩ công thức áp dụng được cho mọi x...") },
-            modifier = Modifier.fillMaxWidth().testTag("MisconceptionCustomReasonInput"),
-            maxLines = 3
-        )
 
         viewModel.errorMessage?.let {
             MentorErrorNotice(it)
@@ -306,8 +287,7 @@ private fun MisconceptionReviewHintStep(
 
 @Composable
 private fun MisconceptionTestStep(
-    viewModel: MisconceptionViewModel,
-    dark: Boolean
+    viewModel: MisconceptionViewModel
 ) {
     val session = viewModel.activeSession ?: return
 

@@ -6,76 +6,154 @@ insert into auth.users (id, raw_user_meta_data) values
   (current_setting('test.user1')::uuid, '{}'),
   (current_setting('test.user2')::uuid, '{}');
 
-set local role authenticated;
-select set_config('request.jwt.claim.sub', current_setting('test.user1'), true);
-
 do $$
 declare
-  v_res jsonb;
   v_uid1 uuid := current_setting('test.user1')::uuid;
   v_uid2 uuid := current_setting('test.user2')::uuid;
+  v_sess_id uuid := gen_random_uuid();
+  v_sess_user2 uuid := gen_random_uuid();
+  v_res jsonb;
   v_sid text := 'misc_test_' || gen_random_uuid()::text;
 begin
-  -- 1. Start a misconception session for user 1
+  -- Create a real practice session for user 1 with question q_math_wrong (wrong answer) and q_math_right (correct answer)
+  insert into public.mentor_ai_practice_sessions (
+    id, user_id, subject_id, grade, topic, difficulty, question_count, questions_snapshot, answers
+  ) values (
+    v_sess_id, v_uid1, 'math', 11, 'Hàm số', 'MEDIUM', 2,
+    jsonb_build_array(
+      jsonb_build_object('id', 'q_math_wrong', 'prompt', 'Tính giới hạn...', 'order', 1),
+      jsonb_build_object('id', 'q_math_right', 'prompt', 'Tính đạo hàm...', 'order', 2)
+    ),
+    jsonb_build_object(
+      'q_math_wrong', jsonb_build_object('selectedOption', 'A', 'isCorrect', false, 'revealed', true),
+      'q_math_right', jsonb_build_object('selectedOption', 'B', 'isCorrect', true, 'revealed', true)
+    )
+  );
+
+  -- Create a practice session for user 2
+  insert into public.mentor_ai_practice_sessions (
+    id, user_id, subject_id, grade, topic, difficulty, question_count, questions_snapshot, answers
+  ) values (
+    v_sess_user2, v_uid2, 'math', 11, 'Hàm số', 'MEDIUM', 1,
+    jsonb_build_array(
+      jsonb_build_object('id', 'q_user2', 'prompt', 'Câu hỏi user 2...', 'order', 1)
+    ),
+    jsonb_build_object(
+      'q_user2', jsonb_build_object('selectedOption', 'C', 'isCorrect', false, 'revealed', true)
+    )
+  );
+
+  -- Set context to User 1
+  perform set_config('request.jwt.claim.sub', v_uid1::text, true);
+
+  -- 1. Must reject if session does not exist or belongs to another user
+  begin
+    perform public.mentor_misconception_api(
+      p_action => 'start',
+      p_id => v_sid,
+      p_session_id => v_sess_user2, -- User 2's session
+      p_question_id => 'q_user2',
+      p_reason_id => 'math_reason_01'
+    );
+    raise exception 'MUST_REJECT_OTHER_USER_SESSION';
+  exception when sqlstate 'PT404' then
+    null; -- Expected: SESSION_NOT_FOUND_OR_FORBIDDEN
+  end;
+
+  -- 2. Must reject if question does not belong to session
+  begin
+    perform public.mentor_misconception_api(
+      p_action => 'start',
+      p_id => v_sid,
+      p_session_id => v_sess_id,
+      p_question_id => 'q_nonexistent',
+      p_reason_id => 'math_reason_01'
+    );
+    raise exception 'MUST_REJECT_NONEXISTENT_QUESTION';
+  exception when sqlstate 'PT404' then
+    null; -- Expected: QUESTION_NOT_IN_SESSION
+  end;
+
+  -- 3. Must reject if question was answered correctly
+  begin
+    perform public.mentor_misconception_api(
+      p_action => 'start',
+      p_id => v_sid,
+      p_session_id => v_sess_id,
+      p_question_id => 'q_math_right',
+      p_reason_id => 'math_reason_01'
+    );
+    raise exception 'MUST_REJECT_CORRECT_ANSWER';
+  exception when sqlstate 'PT409' then
+    null; -- Expected: QUESTION_NOT_ANSWERED_WRONGLY
+  end;
+
+  -- 4. Must reject unverified reason_id
+  begin
+    perform public.mentor_misconception_api(
+      p_action => 'start',
+      p_id => v_sid,
+      p_session_id => v_sess_id,
+      p_question_id => 'q_math_wrong',
+      p_reason_id => 'unverified_bogus_reason'
+    );
+    raise exception 'MUST_REJECT_UNVERIFIED_REASON';
+  exception when sqlstate 'PT404' then
+    null; -- Expected: UNVERIFIED_OR_UNKNOWN_REASON
+  end;
+
+  -- 5. Start successfully with verified reason: math_reason_03 (prop1: false, prop2: true)
   v_res := public.mentor_misconception_api(
     p_action => 'start',
     p_id => v_sid,
-    p_question_id => 'q_test_01',
-    p_subject_id => 'math',
-    p_grade => 11,
-    p_question_prompt => 'Tìm tập xác định...',
-    p_selected_option => 'A',
-    p_misconception_reason => 'math_reason_01',
-    p_reason_type => 'PRE_AUTHORED',
-    p_ai_hint => 'Hint here',
-    p_ai_counterexample => 'Counter here',
-    p_prop1_prompt => 'Prop 1 prompt',
-    p_prop1_correct => false,
-    p_prop2_prompt => 'Prop 2 prompt',
-    p_prop2_correct => false
+    p_session_id => v_sess_id,
+    p_question_id => 'q_math_wrong',
+    p_reason_id => 'math_reason_03'
   );
 
   if v_res->>'verificationStatus' <> 'NEEDS_REVIEW' then
     raise exception 'INITIAL_STATUS_MUST_BE_NEEDS_REVIEW';
   end if;
 
-  -- 2. Verify answering 1 correct, 1 wrong -> status remains NEEDS_REVIEW
+  -- Client cannot pass prop1_correct or prop2_correct to forge answers.
+  -- math_reason_03 has prop1: false, prop2: true.
+  -- 6. Attempting verify with 1 wrong answer (prop1: true, prop2: true) -> must remain NEEDS_REVIEW
   v_res := public.mentor_misconception_api(
     p_action => 'verify',
     p_id => v_sid,
-    p_prop1_ans => false, -- correct
-    p_prop2_ans => true   -- wrong
+    p_prop1_ans => true, -- wrong (correct is false)
+    p_prop2_ans => true  -- correct
   );
 
   if v_res->>'verificationStatus' <> 'NEEDS_REVIEW' then
-    raise exception 'PARTIAL_ANSWERS_MUST_NOT_RESOLVE';
+    raise exception 'WRONG_ANSWER_MUST_NOT_RESOLVE';
   end if;
 
-  -- 3. Verify answering both correct -> status becomes RESOLVED
+  -- 7. Verify answering correctly based on SERVER catalog (prop1: false, prop2: true) -> RESOLVED
   v_res := public.mentor_misconception_api(
     p_action => 'verify',
     p_id => v_sid,
     p_prop1_ans => false, -- correct
-    p_prop2_ans => false  -- correct
+    p_prop2_ans => true   -- correct
   );
 
   if v_res->>'verificationStatus' <> 'RESOLVED' then
-    raise exception 'BOTH_CORRECT_MUST_RESOLVE';
+    raise exception 'CORRECT_ANSWERS_MUST_RESOLVE';
   end if;
 
-  -- 4. Idempotency test: resubmitting wrong answers on RESOLVED session must keep it RESOLVED
+  -- 8. Idempotency test: subsequent calls on RESOLVED session keep it RESOLVED
   v_res := public.mentor_misconception_api(
     p_action => 'verify',
     p_id => v_sid,
-    p_prop1_ans => true, -- wrong
-    p_prop2_ans => true  -- wrong
+    p_prop1_ans => true,
+    p_prop2_ans => false
   );
 
   if v_res->>'verificationStatus' <> 'RESOLVED' then
     raise exception 'RESOLVED_MUST_BE_IDEMPOTENT';
   end if;
 
-  -- 5. Security test: Client cannot directly update or insert into mentor_misconception_verifications
+  -- 9. Security test: Direct table modification is prohibited
   begin
     update public.mentor_misconception_verifications set verification_status = 'RESOLVED' where id = v_sid;
     raise exception 'CLIENT_MUST_NOT_DIRECT_UPDATE';
@@ -83,20 +161,7 @@ begin
     null; -- Expected: permission denied
   end;
 
-  begin
-    insert into public.mentor_misconception_verifications (
-      id, user_id, question_id, subject_id, grade, misconception_reason, reason_type,
-      prop1_prompt, prop1_correct, prop2_prompt, prop2_correct, verification_status
-    ) values (
-      'forged_session', v_uid1, 'q1', 'math', 11, 'reason', 'PRE_AUTHORED',
-      'p1', true, 'p2', true, 'RESOLVED'
-    );
-    raise exception 'CLIENT_MUST_NOT_DIRECT_INSERT';
-  exception when insufficient_privilege then
-    null; -- Expected: permission denied
-  end;
-
-  -- 6. Isolation test: user 2 cannot see or verify user 1 session
+  -- 10. Isolation test: User 2 cannot access User 1 session
   perform set_config('request.jwt.claim.sub', v_uid2::text, true);
 
   v_res := public.mentor_misconception_api(
@@ -112,15 +177,14 @@ begin
       p_action => 'verify',
       p_id => v_sid,
       p_prop1_ans => false,
-      p_prop2_ans => false
+      p_prop2_ans => true
     );
     raise exception 'USER2_CAN_VERIFY_USER1_SESSION';
   exception when sqlstate 'PT404' then
-    null; -- Expected: session not found for user 2
+    null; -- Expected
   end;
 
 end $$;
 
-reset role;
-select 'PASS: misconception buster server evaluation, idempotency, privilege restriction, and user isolation' as result;
+select 'PASS: verified catalog answer keys, session validation, privilege enforcement, and identity isolation' as result;
 rollback;

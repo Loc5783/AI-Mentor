@@ -635,7 +635,10 @@ private fun AiPracticeFeedbackContent(
         mutableStateOf("Giải thích câu hỏi này từng bước, nhất là cách chọn đáp án đúng.")
     }
 
-    if (showMisconceptionFlow && currentQuestion != null && !result.isCorrect) {
+    val isMath = viewModel.session?.subjectId == "math"
+    val hasSessionId = !viewModel.session?.id.isNullOrBlank()
+
+    if (showMisconceptionFlow && currentQuestion != null && !result.isCorrect && isMath && hasSessionId) {
         val context = LocalContext.current
         val ownerId = ActiveUser.get(context)
         val misconceptionRepo = remember(context, ownerId) {
@@ -645,13 +648,14 @@ private fun AiPracticeFeedbackContent(
             MisconceptionViewModel(
                 repository = misconceptionRepo,
                 questionId = currentQuestion.id,
-                sessionId = viewModel.session?.id,
-                subjectId = viewModel.session?.subjectId ?: "math",
+                sessionId = viewModel.session!!.id,
+                subjectId = "math",
                 grade = viewModel.session?.grade ?: 10,
                 questionPrompt = currentQuestion.prompt,
                 selectedOption = result.selectedOption,
                 correctOption = result.correctOption,
-                explanation = result.explanation
+                explanation = result.explanation,
+                context = context
             )
         }
         MisconceptionBusterScreen(
@@ -855,7 +859,7 @@ private fun AiPracticeFeedbackContent(
                     Text("Hỏi thêm AI 💬", fontSize = 13.sp)
                 }
 
-                if (!result.isCorrect && !result.isSkipped) {
+                if (!result.isCorrect && !result.isSkipped && isMath && hasSessionId) {
                     Button(
                         onClick = { showMisconceptionFlow = true },
                         modifier = Modifier.weight(1.3f).testTag("AiMisconceptionBusterBtn"),

@@ -1,5 +1,9 @@
 package com.example.asm_final.learning
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,13 +27,14 @@ enum class MisconceptionStep {
 class MisconceptionViewModel(
     private val repository: MisconceptionRepository,
     val questionId: String,
-    val sessionId: String?,
+    val sessionId: String,
     val subjectId: String,
     val grade: Int,
     val questionPrompt: String,
     val selectedOption: String?,
     val correctOption: String?,
     val explanation: String?,
+    private val context: Context? = null,
     private val externalScope: CoroutineScope? = null
 ) : ViewModel() {
 
@@ -53,7 +58,6 @@ class MisconceptionViewModel(
         private set
 
     var selectedReasonId by mutableStateOf<String?>(null)
-    var customReasonText by mutableStateOf("")
 
     var prop1Answer by mutableStateOf<Boolean?>(null)
     var prop2Answer by mutableStateOf<Boolean?>(null)
@@ -64,8 +68,46 @@ class MisconceptionViewModel(
     var errorMessage by mutableStateOf<String?>(null)
         private set
 
+    private val connectivity = context?.applicationContext?.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+    @Volatile private var wasOnline = isOnline()
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) = checkReconnect()
+        override fun onCapabilitiesChanged(network: Network, capabilities: NetworkCapabilities) = checkReconnect()
+    }
+
+    private fun isOnline(): Boolean {
+        val cm = connectivity ?: return false
+        val active = cm.activeNetwork ?: return false
+        val caps = cm.getNetworkCapabilities(active) ?: return false
+        return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+    }
+
+    private fun checkReconnect() {
+        val online = isOnline()
+        if (online && !wasOnline) {
+            triggerSyncDraft()
+        }
+        wasOnline = online
+    }
+
     init {
+        runCatching { connectivity?.registerDefaultNetworkCallback(networkCallback) }
         restoreDraftOrStart()
+    }
+
+    fun triggerSyncDraft() {
+        val current = activeSession ?: return
+        if (!current.isDraft || closed) return
+        val generation = requestGenerationToken
+        vmScope.launch {
+            try {
+                val synced = repository.syncDraft(current)
+                if (isCurrent(generation)) {
+                    activeSession = synced
+                }
+            } catch (_: Exception) {}
+        }
     }
 
     private fun restoreDraftOrStart() {
@@ -78,10 +120,7 @@ class MisconceptionViewModel(
                     isLoading = false
                     if (draft != null) {
                         activeSession = draft
-                        selectedReasonId = if (draft.reasonType == MisconceptionReasonType.PRE_AUTHORED) {
-                            MisconceptionBuster.MATH_CATALOG.find { it.text == draft.misconceptionReason }?.id
-                        } else null
-                        customReasonText = if (draft.reasonType == MisconceptionReasonType.CUSTOM) draft.misconceptionReason else ""
+                        selectedReasonId = MisconceptionBuster.MATH_CATALOG.find { it.text == draft.misconceptionReason }?.id
                         prop1Answer = draft.prop1UserAns
                         prop2Answer = draft.prop2UserAns
 
@@ -90,11 +129,16 @@ class MisconceptionViewModel(
                             draft.prop1UserAns != null && draft.prop2UserAns != null -> MisconceptionStep.RESULT
                             else -> MisconceptionStep.REVIEW_HINT
                         }
+
+                        // Try to sync with server if draft is pending
+                        if (draft.isDraft) {
+                            triggerSyncDraft()
+                        }
                     }
                 }
             } catch (ce: CancellationException) {
                 throw ce
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 if (isCurrent(generation)) {
                     isLoading = false
                 }
@@ -105,10 +149,9 @@ class MisconceptionViewModel(
     fun proceedToHint() {
         if (isLoading) return
         val reasonId = selectedReasonId
-        val customText = customReasonText.trim()
 
-        if (reasonId.isNullOrBlank() && customText.isBlank()) {
-            errorMessage = "Vui lòng chọn hoặc nhập nguyên nhân bạn nghĩ mình đã nhầm lẫn."
+        if (reasonId.isNullOrBlank()) {
+            errorMessage = "Vui lòng chọn nguyên nhân bạn nghĩ mình đã nhầm lẫn."
             return
         }
 
@@ -118,36 +161,13 @@ class MisconceptionViewModel(
 
         vmScope.launch {
             try {
-                val reasonInput = if (!reasonId.isNullOrBlank()) reasonId else customText
-                val catalogMatch = MisconceptionBuster.MATH_CATALOG.find { it.id == reasonInput || it.text == reasonInput }
-
-                val reasonType = if (catalogMatch != null) MisconceptionReasonType.PRE_AUTHORED else MisconceptionReasonType.CUSTOM
-                val reasonTitle = catalogMatch?.text ?: customText.take(150)
-                val hint = catalogMatch?.verifiedHint ?: MisconceptionBuster.MATH_CATALOG[0].verifiedHint
-                val counterexample = catalogMatch?.counterexample ?: MisconceptionBuster.MATH_CATALOG[0].counterexample
-                val p1Prompt = catalogMatch?.prop1Prompt ?: MisconceptionBuster.MATH_CATALOG[0].prop1Prompt
-                val p1Correct = catalogMatch?.prop1Correct ?: MisconceptionBuster.MATH_CATALOG[0].prop1Correct
-                val p2Prompt = catalogMatch?.prop2Prompt ?: MisconceptionBuster.MATH_CATALOG[0].prop2Prompt
-                val p2Correct = catalogMatch?.prop2Correct ?: MisconceptionBuster.MATH_CATALOG[0].prop2Correct
-
                 val sessionIdToUse = activeSession?.id ?: UUID.randomUUID().toString()
 
                 val session = repository.startSession(
                     id = sessionIdToUse,
                     sessionId = sessionId,
                     questionId = questionId,
-                    subjectId = subjectId,
-                    grade = grade,
-                    questionPrompt = questionPrompt,
-                    selectedOption = selectedOption,
-                    misconceptionReason = reasonTitle,
-                    reasonType = reasonType,
-                    aiHint = hint,
-                    aiCounterexample = counterexample,
-                    prop1Prompt = p1Prompt,
-                    prop1Correct = p1Correct,
-                    prop2Prompt = p2Prompt,
-                    prop2Correct = p2Correct
+                    reasonId = reasonId
                 )
 
                 if (isCurrent(generation)) {
@@ -157,7 +177,7 @@ class MisconceptionViewModel(
                 }
             } catch (ce: CancellationException) {
                 throw ce
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 if (isCurrent(generation)) {
                     isLoading = false
                     errorMessage = "Chưa thể khởi tạo phân tích. Vui lòng thử lại."
@@ -198,11 +218,10 @@ class MisconceptionViewModel(
                 }
             } catch (ce: CancellationException) {
                 throw ce
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 if (isCurrent(generation)) {
                     isLoading = false
                     errorMessage = "Chưa kết nối được máy chủ để chấm. Bản nháp đã được lưu an toàn."
-                    // In case of error, still advance to result screen showing NEEDS_REVIEW / draft state safely
                     currentStep = MisconceptionStep.RESULT
                 }
             }
@@ -229,6 +248,7 @@ class MisconceptionViewModel(
 
     override fun onCleared() {
         closed = true
+        runCatching { connectivity?.unregisterNetworkCallback(networkCallback) }
         invalidateWork()
         super.onCleared()
     }
