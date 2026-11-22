@@ -5,7 +5,7 @@ import android.view.*;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.asm_final.*;
-import com.example.asm_final.competition.CompetitionViewModel;
+import com.example.asm_final.competition.FriendsViewModel;
 import com.example.asm_final.competition.PublicLearnerDialog;
 import com.example.asm_final.activities.HomeActivity;
 import com.example.asm_final.dashboard.*;
@@ -20,13 +20,13 @@ import java.util.Set;
 public final class ProfileHubFragment extends Fragment {
   private OverviewUpdates.Subscription updates;
   private ProfileUi presenter;
-  private CompetitionViewModel friendsModel;
+  private FriendsViewModel friendsModel;
   private int generation;
   private boolean needsLogin;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle state) {
-    friendsModel = new ViewModelProvider(this).get(CompetitionViewModel.class);
+    friendsModel = new ViewModelProvider(this).get(FriendsViewModel.class);
     presenter =
         new ProfileUi(
             requireContext(),
