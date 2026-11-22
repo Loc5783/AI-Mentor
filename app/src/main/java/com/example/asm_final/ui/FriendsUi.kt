@@ -17,14 +17,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.example.asm_final.R
-import com.example.asm_final.competition.CompetitionViewModel
+import com.example.asm_final.competition.FriendsViewModel
 import com.example.mentor.ui.design.*
 @Composable
 internal fun FriendsPanel(
-    state: CompetitionViewModel.FriendsState?,
-    search: CompetitionViewModel.SearchState?,
+    state: FriendsViewModel.FriendsState?,
+    search: FriendsViewModel.SearchState?,
     palette: PremiumDashboardPalette,
-    model: CompetitionViewModel,
+    model: FriendsViewModel,
     openProfile: (String) -> Unit,
     searchMode: Boolean = false,
 ) {

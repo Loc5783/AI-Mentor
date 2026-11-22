@@ -49,7 +49,7 @@ import com.example.asm_final.R
 import com.example.asm_final.competition.PublicLearner
 import com.example.asm_final.dashboard.LearningOverviewData
 import com.example.asm_final.dashboard.LearningOverviewRepository
-import com.example.asm_final.competition.CompetitionViewModel
+import com.example.asm_final.competition.FriendsViewModel
 import androidx.compose.runtime.livedata.observeAsState
 import java.util.function.Consumer
 import com.example.asm_final.utils.LocaleHelper
@@ -76,7 +76,7 @@ class ProfileUi(
     private val edit: Runnable,
     private val settings: Runnable,
     private val learn: Runnable,
-    private val friendsModel: CompetitionViewModel,
+    private val friendsModel: FriendsViewModel,
     private val openFriendProfile: Consumer<String>,
 ) {
     private var displayName by mutableStateOf("")
@@ -157,7 +157,7 @@ private fun ProfileScreen(
     studySeconds: Long?,
     badges: List<ProfileBadge>,
     badgesLoaded: Boolean,
-    friendsModel: CompetitionViewModel,
+    friendsModel: FriendsViewModel,
     refresh: () -> Unit,
     edit: () -> Unit,
     settings: () -> Unit,
