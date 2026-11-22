@@ -22,6 +22,7 @@ declare
   v_cycle_caught boolean := false;
   v_cross_caught boolean := false;
   v_self_caught boolean := false;
+  v_owner_guard_caught boolean := false;
 begin
   -- 1. Setup Auth Users
   insert into auth.users (id, email)
@@ -40,6 +41,16 @@ begin
   select count(*) into v_count from public.mentor_team_members
   where project_id = v_proj_id and user_id = v_owner and role = 'OWNER' and status = 'ACTIVE';
   assert v_count = 1, 'Owner must automatically be an ACTIVE OWNER member';
+
+  begin
+    update public.mentor_team_members set status = 'REMOVED'
+    where project_id = v_proj_id and user_id = v_owner;
+  exception when others then
+    if sqlerrm like '%TEAM_OWNER_MEMBERSHIP_REQUIRED%' then
+      v_owner_guard_caught := true;
+    end if;
+  end;
+  assert v_owner_guard_caught, 'Owner membership cannot be removed';
 
   -- 3. Owner adds Member and Viewer
   insert into public.mentor_team_members (project_id, user_id, role, status)
@@ -140,5 +151,20 @@ begin
     'Removed member must immediately lose active membership';
 
 end $$;
+
+-- Exercise RLS as the authenticated API role, not only as postgres (which
+-- bypasses row policies). The fixtures above remain inside this transaction.
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '99999999-9999-9999-9999-999999999999', true);
+do $$ begin
+  assert not exists (select 1 from public.mentor_team_projects where id = 'proj-test-alpha'),
+    'Outsider must not see the project';
+end $$;
+select set_config('request.jwt.claim.sub', '11111111-1111-1111-1111-111111111111', true);
+do $$ begin
+  assert exists (select 1 from public.mentor_team_projects where id = 'proj-test-alpha'),
+    'Owner must see the project';
+end $$;
+reset role;
 
 rollback;

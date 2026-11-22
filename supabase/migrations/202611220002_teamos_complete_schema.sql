@@ -257,6 +257,23 @@ create trigger trg_mentor_protect_team_owner
   before update on public.mentor_team_projects
   for each row execute function public.mentor_protect_team_owner();
 
+create or replace function public.mentor_protect_owner_membership()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  if old.user_id = (select owner_id from public.mentor_team_projects where id = old.project_id)
+    and (new.role <> 'OWNER' or new.status <> 'ACTIVE'
+      or new.user_id is distinct from old.user_id
+      or new.project_id is distinct from old.project_id) then
+    raise exception 'TEAM_OWNER_MEMBERSHIP_REQUIRED';
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists trg_mentor_protect_owner_membership on public.mentor_team_members;
+create trigger trg_mentor_protect_owner_membership
+  before update on public.mentor_team_members
+  for each row execute function public.mentor_protect_owner_membership();
+
 -- Remove the broad policies from the original schema before adding role-aware
 -- policies. PostgreSQL ORs permissive policies, so leaving them would bypass
 -- the VIEWER and manager restrictions below.

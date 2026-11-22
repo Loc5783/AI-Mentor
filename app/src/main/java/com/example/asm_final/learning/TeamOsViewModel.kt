@@ -495,9 +495,9 @@ class TeamOsViewModel(
                     repository.analyzeGaps(uid, proj.id)
                 }
                 warnings = list
-                actionSuccessMessage = "Đã phân tích khoảng cách nội dung bằng AI"
+                actionSuccessMessage = "Đã kiểm tra yêu cầu và tài liệu"
             } catch (e: Exception) {
-                errorMessage = e.message ?: "Lỗi phân tích AI"
+                errorMessage = e.message ?: "Lỗi kiểm tra nội dung"
             } finally {
                 isLoading = false
             }

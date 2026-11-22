@@ -330,7 +330,7 @@ fun TeamOsProjectDetailScreen(viewModel: TeamOsViewModel) {
                                 TeamOsTab.REQUIREMENTS -> "Yêu cầu (${viewModel.requirements.size})"
                                 TeamOsTab.DOCUMENTS -> "Tài liệu (${viewModel.documents.size})"
                                 TeamOsTab.TASKS -> "Nhiệm vụ (${viewModel.tasks.size})"
-                                TeamOsTab.WARNINGS -> "Cảnh báo AI (${viewModel.warnings.size})"
+                                TeamOsTab.WARNINGS -> "Cảnh báo nội dung (${viewModel.warnings.size})"
                             },
                             style = MaterialTheme.typography.labelMedium
                         )
@@ -410,7 +410,7 @@ fun TeamOsOverviewTab(viewModel: TeamOsViewModel) {
             StatCard(title = "Yêu cầu GV", value = viewModel.requirements.size.toString(), modifier = Modifier.weight(1f))
             StatCard(title = "Tài liệu", value = viewModel.documents.size.toString(), modifier = Modifier.weight(1f))
             StatCard(
-                title = "Cảnh báo AI",
+                title = "Cảnh báo nội dung",
                 value = activeWarnings.toString(),
                 modifier = Modifier.weight(1f),
                 isAlert = activeWarnings > 0
@@ -440,7 +440,7 @@ fun TeamOsOverviewTab(viewModel: TeamOsViewModel) {
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("Phân tích AI", style = MaterialTheme.typography.labelSmall)
+                        Text("Đối chiếu nội dung", style = MaterialTheme.typography.labelSmall)
                     }
                     if (viewModel.canEdit) {
                         Button(
@@ -965,7 +965,7 @@ fun TeamOsWarningsTab(viewModel: TeamOsViewModel) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Cảnh báo & Phát hiện AI",
+                text = "Cảnh báo nội dung",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold
             )
@@ -974,7 +974,7 @@ fun TeamOsWarningsTab(viewModel: TeamOsViewModel) {
                 shape = RoundedCornerShape(8.dp),
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
             ) {
-                Text("Chạy phân tích AI", style = MaterialTheme.typography.labelMedium)
+                Text("Kiểm tra nội dung", style = MaterialTheme.typography.labelMedium)
             }
         }
 
@@ -986,7 +986,7 @@ fun TeamOsWarningsTab(viewModel: TeamOsViewModel) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Không có cảnh báo nào. Bấm 'Chạy phân tích AI' để kiểm tra khoảng cách nội dung.",
+                    text = "Không có cảnh báo nào. Bấm 'Kiểm tra nội dung' để kiểm tra khoảng cách nội dung.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.outline
                 )
@@ -1147,7 +1147,7 @@ fun AddMemberDialog(
                 OutlinedTextField(
                     value = userId,
                     onValueChange = { userId = it },
-                    label = { Text("ID người dùng hoặc Email *") },
+                    label = { Text("ID người dùng *") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
