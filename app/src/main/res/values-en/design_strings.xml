@@ -9,6 +9,8 @@
   <string name="design_path">Learning path</string>
   <string name="lesson_hub_intro">Choose a way to learn that fits today.</string>
   <string name="lesson_hub_grade">Current grade</string>
+  <string name="lesson_hub_load_error">Could not load your grade. You can still view saved content.</string>
+  <string name="lesson_hub_retry">Try again</string>
   <string name="lesson_hub_change_grade">Change grade</string>
   <string name="lesson_hub_path_desc">Lessons by subject, small milestones, and your own progress.</string>
   <string name="lesson_hub_open_path">Open learning path</string>

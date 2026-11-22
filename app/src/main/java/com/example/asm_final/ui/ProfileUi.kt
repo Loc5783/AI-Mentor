@@ -61,6 +61,7 @@ import com.example.mentor.ui.design.MentorTokens
 import com.example.mentor.ui.design.motionEnabled
 
 private data class ProfileBadge(val title: String, val description: String, val unlocked: Boolean)
+private enum class FriendsPage { PROFILE, LIST, SEARCH }
 
 /**
  * Level 4 — Premium EdTech Profile Presentation.
@@ -171,33 +172,33 @@ private fun ProfileScreen(
     val searchState by friendsModel.searchState().observeAsState()
     val friendsPalette = premiumDashboardPalette(
         com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current))
-    var friendsPage by rememberSaveable { mutableStateOf("profile") }
-    BackHandler(enabled = friendsPage != "profile") {
-        friendsPage = if (friendsPage == "search") "list" else "profile"
+    var friendsPage by rememberSaveable { mutableStateOf(FriendsPage.PROFILE) }
+    BackHandler(enabled = friendsPage != FriendsPage.PROFILE) {
+        friendsPage = if (friendsPage == FriendsPage.SEARCH) FriendsPage.LIST else FriendsPage.PROFILE
     }
 
-    if (friendsPage != "profile") {
+    if (friendsPage != FriendsPage.PROFILE) {
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
             .padding(horizontal = MentorTokens.PagePadding, vertical = MentorTokens.SpaceLarge),
             verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceLarge)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = {
-                    friendsPage = if (friendsPage == "search") "list" else "profile"
+                    friendsPage = if (friendsPage == FriendsPage.SEARCH) FriendsPage.LIST else FriendsPage.PROFILE
                 }) { Text(stringResource(R.string.friends_back)) }
                 Spacer(Modifier.weight(1f))
-                if (friendsPage == "list") {
-                    Button(onClick = { friendsPage = "search" }) {
+                if (friendsPage == FriendsPage.LIST) {
+                    Button(onClick = { friendsPage = FriendsPage.SEARCH }) {
                         Text(stringResource(R.string.friends_open_search))
                     }
                 }
             }
-            Text(stringResource(if (friendsPage == "search") R.string.friends_search_title
+            Text(stringResource(if (friendsPage == FriendsPage.SEARCH) R.string.friends_search_title
                 else R.string.friends_manage_title),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = friendsPalette.title)
             FriendsPanel(friendsState, searchState, friendsPalette, friendsModel,
-                openFriendProfile, searchMode = friendsPage == "search")
+                openFriendProfile, searchMode = friendsPage == FriendsPage.SEARCH)
         }
         return
     }
@@ -256,7 +257,7 @@ private fun ProfileScreen(
                         }
                         TextButton(onClick = {
                             friendsModel.refreshFriends()
-                            friendsPage = "list"
+                            friendsPage = FriendsPage.LIST
                         }) { Text(stringResource(R.string.friends_open_list)) }
                     }
                 }
