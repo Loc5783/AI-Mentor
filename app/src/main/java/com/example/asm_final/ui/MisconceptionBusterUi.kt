@@ -144,44 +144,63 @@ private fun MisconceptionSelectReasonStep(
         }
 
         Text(
-            text = "Lý do đã được kiểm duyệt (Môn Toán):",
+            text = "Lý do đã được kiểm duyệt:",
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold
         )
 
-        MisconceptionBuster.MATH_CATALOG.forEach { item ->
-            val isSelected = viewModel.selectedReasonId == item.id
+        if (viewModel.isLoading && viewModel.verifiedReasons.isEmpty()) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+        } else if (viewModel.verifiedReasons.isEmpty()) {
             Card(
-                onClick = {
-                    viewModel.selectedReasonId = item.id
-                },
                 colors = CardDefaults.cardColors(
-                    containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer
-                    else if (dark) MentorTokens.NavyCard else MaterialTheme.colorScheme.surface
-                ),
-                border = BorderStroke(
-                    if (isSelected) 2.dp else 1.dp,
-                    if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+                    containerColor = if (dark) MentorTokens.NavyCard else MaterialTheme.colorScheme.surfaceVariant
                 ),
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth().testTag("MisconceptionReason_${item.id}")
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Row(
-                    modifier = Modifier.padding(14.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Text(
+                    text = "Không có lý do kiểm duyệt nào cho bài học này.",
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        } else {
+            viewModel.verifiedReasons.forEach { item ->
+                val isSelected = viewModel.selectedReasonId == item.reasonId
+                Card(
+                    onClick = {
+                        viewModel.selectedReasonId = item.reasonId
+                    },
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer
+                        else if (dark) MentorTokens.NavyCard else MaterialTheme.colorScheme.surface
+                    ),
+                    border = BorderStroke(
+                        if (isSelected) 2.dp else 1.dp,
+                        if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth().testTag("MisconceptionReason_${item.reasonId}")
                 ) {
-                    RadioButton(
-                        selected = isSelected,
-                        onClick = {
-                            viewModel.selectedReasonId = item.id
-                        }
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = item.text,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                    )
+                    Row(
+                        modifier = Modifier.padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = isSelected,
+                            onClick = {
+                                viewModel.selectedReasonId = item.reasonId
+                            }
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            text = item.reasonText,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
                 }
             }
         }
@@ -198,7 +217,8 @@ private fun MisconceptionSelectReasonStep(
                 .fillMaxWidth()
                 .heightIn(min = 50.dp)
                 .testTag("MisconceptionProceedHintBtn"),
-            enabled = !viewModel.isLoading
+            enabled = !viewModel.isLoading &&
+                viewModel.verifiedReasons.any { it.reasonId == viewModel.selectedReasonId }
         ) {
             if (viewModel.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
@@ -395,7 +415,8 @@ private fun MisconceptionResultStep(
     onClose: () -> Unit
 ) {
     val session = viewModel.activeSession ?: return
-    val isResolved = session.verificationStatus == MisconceptionVerificationStatus.RESOLVED
+    val isResolved = !session.isDraft &&
+        session.verificationStatus == MisconceptionVerificationStatus.RESOLVED
 
     val bannerBg = if (isResolved) {
         if (dark) MentorTokens.SuccessDarkBg else MentorTokens.SuccessLightBg
@@ -409,10 +430,10 @@ private fun MisconceptionResultStep(
         if (dark) MentorTokens.Orange200 else MentorTokens.Orange800
     }
 
-    val bannerText = if (isResolved) {
-        "ĐÃ PHÁ VỠ HIỂU SAI 🎉\nBạn đã trả lời chính xác cả 2 mệnh đề kiểm chứng!"
-    } else {
-        "CẦN ÔN TẬP THÊM ⚠️\nBạn chưa trả lời đúng cả 2 mệnh đề kiểm chứng. Câu hỏi vẫn được giữ trong danh sách cần ôn."
+    val bannerText = when {
+        session.isDraft -> "ĐANG CHỜ MÁY CHỦ KIỂM CHỨNG\nBản nháp chưa được tính là kết quả hoàn thành."
+        isResolved -> "ĐÃ PHÁ VỠ HIỂU SAI 🎉\nBạn đã trả lời chính xác cả 2 mệnh đề kiểm chứng!"
+        else -> "CẦN ÔN TẬP THÊM ⚠️\nBạn chưa trả lời đúng cả 2 mệnh đề kiểm chứng. Câu hỏi vẫn được giữ trong danh sách cần ôn."
     }
 
     Column(
@@ -442,13 +463,15 @@ private fun MisconceptionResultStep(
             )
         }
 
+        viewModel.errorMessage?.let { MentorErrorNotice(it) }
+
         if (session.isDraft) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "Lưu ý: Kết quả đang được lưu dạng bản nháp ngoại tuyến và sẽ tự đồng bộ khi có kết nối mạng.",
+                    text = "Bản nháp chưa được máy chủ xác nhận. Ứng dụng sẽ thử đồng bộ khi kết nối lại; lỗi dữ liệu hoặc quyền truy cập sẽ hiển thị riêng.",
                     modifier = Modifier.padding(12.dp),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -467,7 +490,14 @@ private fun MisconceptionResultStep(
                 Text("Chi tiết lựa chọn của bạn:", fontWeight = FontWeight.Bold)
                 Text("• Mệnh đề 1: ${if (session.prop1UserAns == true) "Đúng" else if (session.prop1UserAns == false) "Sai" else "Chưa chọn"}")
                 Text("• Mệnh đề 2: ${if (session.prop2UserAns == true) "Đúng" else if (session.prop2UserAns == false) "Sai" else "Chưa chọn"}")
-                Text("• Trạng thái: ${if (isResolved) "Đã kiểm chứng (RESOLVED)" else "Cần ôn tập (NEEDS_REVIEW)"}",
+                Text(
+                    "• Trạng thái: ${
+                    when {
+                        session.isDraft -> "Chưa đồng bộ"
+                        isResolved -> "Đã kiểm chứng (RESOLVED)"
+                        else -> "Cần ôn tập (NEEDS_REVIEW)"
+                    }
+                    }",
                     fontWeight = FontWeight.Bold,
                     color = if (isResolved) MentorTokens.SuccessLightText else MentorTokens.Orange600
                 )
@@ -491,7 +521,11 @@ private fun MisconceptionResultStep(
                 modifier = Modifier.weight(1.2f).heightIn(min = 50.dp).testTag("MisconceptionDoneBtn"),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text("Hoàn tất", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimary)
+                Text(
+                    if (session.isDraft) "Đóng" else "Hoàn tất",
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     }

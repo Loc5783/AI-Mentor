@@ -7,12 +7,13 @@ alter table public.mentor_misconception_verifications
   add column if not exists selected_option text,
   add column if not exists answered_at timestamptz default now();
 
--- Revoke direct modification on mentor_misconception_verifications from authenticated users.
--- Client cannot forge verification_status or prop*_correct directly!
-revoke insert, update, delete on public.mentor_misconception_verifications from authenticated;
-grant select on public.mentor_misconception_verifications to authenticated;
+-- All reads and writes go through the security-definer API. In particular,
+-- clients must not be able to read prop*_correct from their own rows.
+revoke all on public.mentor_misconception_verifications from public, anon, authenticated;
+drop policy if exists misconception_verifications_owner on public.mentor_misconception_verifications;
 
--- Server-side catalog table for trusted misconception propositions & answer keys
+-- Server-side catalog table for trusted misconception propositions & answer keys.
+-- PROTECTED: authenticated users have NO DIRECT SELECT on this table to prevent leaking answer keys!
 create table if not exists public.mentor_misconception_catalog (
   reason_id text primary key,
   subject_id text not null,
@@ -28,12 +29,7 @@ create table if not exists public.mentor_misconception_catalog (
 );
 
 alter table public.mentor_misconception_catalog enable row level security;
-revoke all on public.mentor_misconception_catalog from public, anon;
-grant select on public.mentor_misconception_catalog to authenticated;
-
-drop policy if exists misconception_catalog_read on public.mentor_misconception_catalog;
-create policy misconception_catalog_read on public.mentor_misconception_catalog
-  for select to authenticated using (true);
+revoke all on public.mentor_misconception_catalog from public, anon, authenticated;
 
 -- Seed pre-verified catalog items
 insert into public.mentor_misconception_catalog (
@@ -75,15 +71,29 @@ on conflict (reason_id) do update set
   prop2_prompt = excluded.prop2_prompt,
   prop2_correct = excluded.prop2_correct;
 
+alter table public.mentor_misconception_verifications
+  add column if not exists reason_id text references public.mentor_misconception_catalog(reason_id);
+
+update public.mentor_misconception_verifications v
+set reason_id = c.reason_id
+from public.mentor_misconception_catalog c
+where v.reason_id is null
+  and v.reason_type = 'PRE_AUTHORED'
+  and v.subject_id = c.subject_id
+  and v.grade = c.grade
+  and v.misconception_reason = c.reason_text;
+
 -- Server-side API for Xưởng phá mệnh đề (Misconception Buster)
 create or replace function public.mentor_misconception_api(
   p_action text,
-  p_id text,
+  p_id text default null,
   p_session_id uuid default null,
   p_question_id text default null,
   p_reason_id text default null,
   p_prop1_ans boolean default null,
-  p_prop2_ans boolean default null
+  p_prop2_ans boolean default null,
+  p_subject_id text default null,
+  p_grade int default null
 ) returns jsonb
 language plpgsql
 security definer
@@ -98,13 +108,42 @@ declare
   v_ans jsonb;
   v_resolved boolean;
   v_status text;
+  v_reasons jsonb;
 begin
   if v_uid is null then
     raise exception using errcode = 'PT401', message = 'AUTHENTICATION_REQUIRED';
   end if;
 
-  if p_action is null or p_id is null or length(trim(p_id)) = 0 then
+  if p_action is null then
     raise exception using errcode = 'PT400', message = 'INVALID_REQUEST';
+  end if;
+
+  -- ACTION: list_reasons (Safe public catalog info without answer keys)
+  if p_action = 'list_reasons' then
+    if p_subject_id is null or p_grade is null then
+      raise exception using errcode = 'PT400', message = 'SUBJECT_AND_GRADE_REQUIRED';
+    end if;
+
+    select coalesce(jsonb_agg(
+      jsonb_build_object(
+        'reasonId', reason_id,
+        'subjectId', subject_id,
+        'grade', grade,
+        'reasonText', reason_text,
+        'verifiedHint', verified_hint,
+        'counterexample', counterexample,
+        'prop1Prompt', prop1_prompt,
+        'prop2Prompt', prop2_prompt
+      ) order by reason_id
+    ), '[]'::jsonb) into v_reasons
+    from public.mentor_misconception_catalog
+    where subject_id = p_subject_id and grade = p_grade;
+
+    return jsonb_build_object('items', v_reasons);
+  end if;
+
+  if p_id is null or length(trim(p_id)) = 0 then
+    raise exception using errcode = 'PT400', message = 'SESSION_ID_REQUIRED';
   end if;
 
   if p_action = 'start' then
@@ -128,18 +167,24 @@ begin
       raise exception using errcode = 'PT404', message = 'QUESTION_NOT_IN_SESSION';
     end if;
 
-    -- Check question was actually answered incorrectly
+    -- Check question was actually answered incorrectly, reject if skipped or not revealed or correct
     v_ans := v_practice.answers -> p_question_id;
-    if v_ans is null or coalesce((v_ans ->> 'revealed')::boolean, false) = false
-       or coalesce((v_ans ->> 'isCorrect')::boolean, false) = true then
+    if v_ans is null
+       or (v_ans ->> 'revealed') is distinct from 'true'
+       or (v_ans ->> 'skipped') is distinct from 'false'
+       or (v_ans ->> 'isCorrect') is distinct from 'false' then
       raise exception using errcode = 'PT409', message = 'QUESTION_NOT_ANSWERED_WRONGLY';
     end if;
 
-    -- Load pre-verified catalog item. Answer keys are strictly maintained on server!
+    -- Load pre-verified catalog item. Must match subject_id and grade of practice session!
     select * into v_cat from public.mentor_misconception_catalog
     where reason_id = p_reason_id;
     if v_cat.reason_id is null then
       raise exception using errcode = 'PT404', message = 'UNVERIFIED_OR_UNKNOWN_REASON';
+    end if;
+
+    if v_cat.subject_id <> v_practice.subject_id or v_cat.grade <> v_practice.grade then
+      raise exception using errcode = 'PT400', message = 'REASON_SUBJECT_OR_GRADE_MISMATCH';
     end if;
 
     -- Idempotent session recovery if already exists
@@ -147,11 +192,18 @@ begin
     where id = p_id and user_id = v_uid;
 
     if v_rec.id is not null then
+      if v_rec.session_id is distinct from p_session_id
+         or v_rec.question_id is distinct from p_question_id
+         or v_rec.reason_id is distinct from p_reason_id then
+        raise exception using errcode = 'PT409', message = 'MISCONCEPTION_SESSION_CONFLICT';
+      end if;
+
       return jsonb_build_object(
         'id', v_rec.id,
         'userId', v_rec.user_id,
         'sessionId', v_rec.session_id,
         'questionId', v_rec.question_id,
+        'reasonId', v_rec.reason_id,
         'subjectId', v_rec.subject_id,
         'grade', v_rec.grade,
         'questionPrompt', v_rec.question_prompt,
@@ -166,18 +218,18 @@ begin
         'prop2UserAns', v_rec.prop2_user_ans,
         'verificationStatus', v_rec.verification_status,
         'verifiedAt', v_rec.verified_at,
-        'updatedAt', v_rec.updated_at
+        'updatedAtEpochMs', (extract(epoch from v_rec.updated_at) * 1000)::bigint
       );
     end if;
 
     insert into public.mentor_misconception_verifications (
-      id, user_id, session_id, question_id, subject_id, grade,
+      id, user_id, session_id, question_id, reason_id, subject_id, grade,
       question_prompt, selected_option, misconception_reason, reason_type,
       ai_hint, ai_counterexample,
       prop1_prompt, prop1_correct, prop2_prompt, prop2_correct,
       verification_status, created_at, updated_at
     ) values (
-      p_id, v_uid, p_session_id, p_question_id, v_practice.subject_id, v_practice.grade,
+      p_id, v_uid, p_session_id, p_question_id, p_reason_id, v_practice.subject_id, v_practice.grade,
       v_question->>'prompt', v_ans->>'selectedOption', v_cat.reason_text, 'PRE_AUTHORED',
       v_cat.verified_hint, v_cat.counterexample,
       v_cat.prop1_prompt, v_cat.prop1_correct, v_cat.prop2_prompt, v_cat.prop2_correct,
@@ -189,6 +241,7 @@ begin
       'userId', v_rec.user_id,
       'sessionId', v_rec.session_id,
       'questionId', v_rec.question_id,
+      'reasonId', v_rec.reason_id,
       'subjectId', v_rec.subject_id,
       'grade', v_rec.grade,
       'questionPrompt', v_rec.question_prompt,
@@ -203,7 +256,7 @@ begin
       'prop2UserAns', v_rec.prop2_user_ans,
       'verificationStatus', v_rec.verification_status,
       'verifiedAt', v_rec.verified_at,
-      'updatedAt', v_rec.updated_at
+      'updatedAtEpochMs', (extract(epoch from v_rec.updated_at) * 1000)::bigint
     );
 
   elsif p_action = 'verify' then
@@ -225,7 +278,8 @@ begin
         'verificationStatus', 'RESOLVED',
         'prop1UserAns', v_rec.prop1_user_ans,
         'prop2UserAns', v_rec.prop2_user_ans,
-        'verifiedAt', v_rec.verified_at
+        'verifiedAt', v_rec.verified_at,
+        'updatedAtEpochMs', (extract(epoch from v_rec.updated_at) * 1000)::bigint
       );
     end if;
 
@@ -247,7 +301,8 @@ begin
       'verificationStatus', v_rec.verification_status,
       'prop1UserAns', v_rec.prop1_user_ans,
       'prop2UserAns', v_rec.prop2_user_ans,
-      'verifiedAt', v_rec.verified_at
+      'verifiedAt', v_rec.verified_at,
+      'updatedAtEpochMs', (extract(epoch from v_rec.updated_at) * 1000)::bigint
     );
 
   elsif p_action = 'get' then
@@ -263,6 +318,7 @@ begin
       'userId', v_rec.user_id,
       'sessionId', v_rec.session_id,
       'questionId', v_rec.question_id,
+      'reasonId', v_rec.reason_id,
       'subjectId', v_rec.subject_id,
       'grade', v_rec.grade,
       'questionPrompt', v_rec.question_prompt,
@@ -277,7 +333,7 @@ begin
       'prop2UserAns', v_rec.prop2_user_ans,
       'verificationStatus', v_rec.verification_status,
       'verifiedAt', v_rec.verified_at,
-      'updatedAt', v_rec.updated_at
+      'updatedAtEpochMs', (extract(epoch from v_rec.updated_at) * 1000)::bigint
     );
 
   else
@@ -286,7 +342,7 @@ begin
 end;
 $$;
 
-revoke all on function public.mentor_misconception_api(text, text, uuid, text, text, boolean, boolean) from public, anon;
-grant execute on function public.mentor_misconception_api(text, text, uuid, text, text, boolean, boolean) to authenticated;
+revoke all on function public.mentor_misconception_api(text, text, uuid, text, text, boolean, boolean, text, int) from public, anon;
+grant execute on function public.mentor_misconception_api(text, text, uuid, text, text, boolean, boolean, text, int) to authenticated;
 
 commit;

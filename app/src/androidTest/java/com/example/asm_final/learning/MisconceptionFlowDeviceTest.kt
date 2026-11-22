@@ -18,33 +18,40 @@ class MisconceptionFlowDeviceTest {
 
     private class TestRepo(override val ownerId: Int) : MisconceptionRepository {
         val storage = mutableMapOf<String, MisconceptionBusterSession>()
+        private val reason = MisconceptionReasonItem(
+            "math_reason_03", "math", 11, "Grade 11 test reason", "Test hint",
+            "Test counterexample", "Proposition 1", "Proposition 2"
+        )
+
+        override suspend fun getVerifiedReasons(subjectId: String, grade: Int): List<MisconceptionReasonItem> =
+            listOf(reason).filter { it.subjectId == subjectId && it.grade == grade }
 
         override suspend fun startSession(
             id: String,
             sessionId: String,
             questionId: String,
-            reasonId: String
+            subjectId: String,
+            grade: Int,
+            questionPrompt: String,
+            selectedOption: String?,
+            reason: MisconceptionReasonItem
         ): MisconceptionBusterSession {
-            val catalogItem = MisconceptionBuster.MATH_CATALOG.find { it.id == reasonId }
-                ?: MisconceptionBuster.MATH_CATALOG[0]
-
             val session = MisconceptionBusterSession(
                 id = id,
                 ownerId = ownerId,
                 sessionId = sessionId,
                 questionId = questionId,
-                subjectId = "math",
-                grade = 11,
-                questionPrompt = "Tìm nghiệm phương trình sin x = 2",
-                selectedOption = "A",
-                misconceptionReason = catalogItem.text,
+                reasonId = reason.reasonId,
+                subjectId = subjectId,
+                grade = grade,
+                questionPrompt = questionPrompt,
+                selectedOption = selectedOption,
+                misconceptionReason = reason.reasonText,
                 reasonType = MisconceptionReasonType.PRE_AUTHORED,
-                aiHint = catalogItem.verifiedHint,
-                aiCounterexample = catalogItem.counterexample,
-                prop1Prompt = catalogItem.prop1Prompt,
-                prop1Correct = catalogItem.prop1Correct,
-                prop2Prompt = catalogItem.prop2Prompt,
-                prop2Correct = catalogItem.prop2Correct,
+                aiHint = reason.verifiedHint,
+                aiCounterexample = reason.counterexample,
+                prop1Prompt = reason.prop1Prompt,
+                prop2Prompt = reason.prop2Prompt,
                 verificationStatus = MisconceptionVerificationStatus.NEEDS_REVIEW
             )
             storage[id] = session
@@ -59,11 +66,11 @@ class MisconceptionFlowDeviceTest {
             val s = storage[id]!!
             s.prop1UserAns = prop1Ans
             s.prop2UserAns = prop2Ans
-            val resolved = (prop1Ans == s.prop1Correct) && (prop2Ans == s.prop2Correct)
             val updated = s.copy(
                 prop1UserAns = prop1Ans,
                 prop2UserAns = prop2Ans,
-                verificationStatus = if (resolved) MisconceptionVerificationStatus.RESOLVED else MisconceptionVerificationStatus.NEEDS_REVIEW
+                verificationStatus = if (!prop1Ans && prop2Ans) MisconceptionVerificationStatus.RESOLVED
+                else MisconceptionVerificationStatus.NEEDS_REVIEW
             )
             storage[id] = updated
             return updated

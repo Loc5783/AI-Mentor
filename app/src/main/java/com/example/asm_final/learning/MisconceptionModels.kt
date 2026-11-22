@@ -10,11 +10,23 @@ enum class MisconceptionReasonType {
     CUSTOM
 }
 
+data class MisconceptionReasonItem(
+    val reasonId: String,
+    val subjectId: String,
+    val grade: Int,
+    val reasonText: String,
+    val verifiedHint: String,
+    val counterexample: String,
+    val prop1Prompt: String,
+    val prop2Prompt: String
+)
+
 data class MisconceptionBusterSession(
     val id: String,
     val ownerId: Int,
     val sessionId: String,
     val questionId: String,
+    val reasonId: String,
     val subjectId: String,
     val grade: Int,
     val questionPrompt: String,
@@ -24,12 +36,11 @@ data class MisconceptionBusterSession(
     val aiHint: String,
     val aiCounterexample: String,
     val prop1Prompt: String,
-    val prop1Correct: Boolean,
     var prop1UserAns: Boolean? = null,
     val prop2Prompt: String,
-    val prop2Correct: Boolean,
     var prop2UserAns: Boolean? = null,
     var verificationStatus: MisconceptionVerificationStatus = MisconceptionVerificationStatus.NEEDS_REVIEW,
     val answeredAt: Long = System.currentTimeMillis(),
+    val serverUpdatedAt: Long? = null,
     val isDraft: Boolean = false
 )

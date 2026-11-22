@@ -9,12 +9,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.asm_final.backend.BackendClient
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.util.UUID
 
 enum class MisconceptionStep {
@@ -57,6 +59,9 @@ class MisconceptionViewModel(
     var activeSession by mutableStateOf<MisconceptionBusterSession?>(null)
         private set
 
+    var verifiedReasons by mutableStateOf<List<MisconceptionReasonItem>>(emptyList())
+        private set
+
     var selectedReasonId by mutableStateOf<String?>(null)
 
     var prop1Answer by mutableStateOf<Boolean?>(null)
@@ -91,9 +96,27 @@ class MisconceptionViewModel(
         wasOnline = online
     }
 
+    private fun failureMessage(error: Exception): String = when {
+        error is BackendClient.Failure && error.status == 400 ->
+            "Câu trả lời hoặc lý do không khớp với bài luyện. Chỉ câu trả lời sai đã được xác nhận mới mở được luồng này."
+        error is BackendClient.Failure && error.status == 409 ->
+            "Máy chủ từ chối câu trả lời hoặc phát hiện phiên đã thay đổi. Hãy tải lại bài luyện rồi thử lại."
+        error is BackendClient.Failure && error.status == 401 ->
+            "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để đồng bộ."
+        error is BackendClient.Failure && error.status == 403 ->
+            "Tài khoản hiện tại không có quyền truy cập phiên luyện tập này."
+        error is BackendClient.Failure && error.status == 404 ->
+            "Không tìm thấy phiên luyện tập hoặc lý do đã kiểm duyệt trên máy chủ."
+        error is IOException ->
+            "Không kết nối được máy chủ. Chưa có danh mục kiểm duyệt hoặc bản nháp nào được xác nhận."
+        error is BackendClient.Failure && error.status >= 500 ->
+            "Máy chủ chưa xác nhận thao tác. Vui lòng thử lại sau."
+        else -> "Không thể tải hoặc đồng bộ dữ liệu với máy chủ. Vui lòng thử lại."
+    }
+
     init {
         runCatching { connectivity?.registerDefaultNetworkCallback(networkCallback) }
-        restoreDraftOrStart()
+        loadReasonsAndDraft()
     }
 
     fun triggerSyncDraft() {
@@ -105,22 +128,30 @@ class MisconceptionViewModel(
                 val synced = repository.syncDraft(current)
                 if (isCurrent(generation)) {
                     activeSession = synced
+                    errorMessage = null
                 }
-            } catch (_: Exception) {}
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (error: Exception) {
+                if (isCurrent(generation)) errorMessage = failureMessage(error)
+            }
         }
     }
 
-    private fun restoreDraftOrStart() {
+    private fun loadReasonsAndDraft() {
         val generation = requestGenerationToken
         isLoading = true
         vmScope.launch {
             try {
+                val reasons = repository.getVerifiedReasons(subjectId, grade)
                 val draft = repository.getActiveDraft(sessionId, questionId)
+
                 if (isCurrent(generation)) {
+                    verifiedReasons = reasons
                     isLoading = false
                     if (draft != null) {
                         activeSession = draft
-                        selectedReasonId = MisconceptionBuster.MATH_CATALOG.find { it.text == draft.misconceptionReason }?.id
+                        selectedReasonId = reasons.find { it.reasonText == draft.misconceptionReason }?.reasonId
                         prop1Answer = draft.prop1UserAns
                         prop2Answer = draft.prop2UserAns
 
@@ -130,7 +161,6 @@ class MisconceptionViewModel(
                             else -> MisconceptionStep.REVIEW_HINT
                         }
 
-                        // Try to sync with server if draft is pending
                         if (draft.isDraft) {
                             triggerSyncDraft()
                         }
@@ -138,9 +168,10 @@ class MisconceptionViewModel(
                 }
             } catch (ce: CancellationException) {
                 throw ce
-            } catch (_: Exception) {
+            } catch (error: Exception) {
                 if (isCurrent(generation)) {
                     isLoading = false
+                    errorMessage = failureMessage(error)
                 }
             }
         }
@@ -148,9 +179,9 @@ class MisconceptionViewModel(
 
     fun proceedToHint() {
         if (isLoading) return
-        val reasonId = selectedReasonId
+        val reason = verifiedReasons.firstOrNull { it.reasonId == selectedReasonId }
 
-        if (reasonId.isNullOrBlank()) {
+        if (reason == null) {
             errorMessage = "Vui lòng chọn nguyên nhân bạn nghĩ mình đã nhầm lẫn."
             return
         }
@@ -167,7 +198,11 @@ class MisconceptionViewModel(
                     id = sessionIdToUse,
                     sessionId = sessionId,
                     questionId = questionId,
-                    reasonId = reasonId
+                    subjectId = subjectId,
+                    grade = grade,
+                    questionPrompt = questionPrompt,
+                    selectedOption = selectedOption,
+                    reason = reason
                 )
 
                 if (isCurrent(generation)) {
@@ -177,10 +212,10 @@ class MisconceptionViewModel(
                 }
             } catch (ce: CancellationException) {
                 throw ce
-            } catch (_: Exception) {
+            } catch (error: Exception) {
                 if (isCurrent(generation)) {
                     isLoading = false
-                    errorMessage = "Chưa thể khởi tạo phân tích. Vui lòng thử lại."
+                    errorMessage = failureMessage(error)
                 }
             }
         }
@@ -218,11 +253,10 @@ class MisconceptionViewModel(
                 }
             } catch (ce: CancellationException) {
                 throw ce
-            } catch (_: Exception) {
+            } catch (error: Exception) {
                 if (isCurrent(generation)) {
                     isLoading = false
-                    errorMessage = "Chưa kết nối được máy chủ để chấm. Bản nháp đã được lưu an toàn."
-                    currentStep = MisconceptionStep.RESULT
+                    errorMessage = failureMessage(error)
                 }
             }
         }

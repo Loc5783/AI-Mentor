@@ -1,5 +1,6 @@
 package com.example.asm_final.learning
 
+import com.example.asm_final.backend.BackendClient
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -13,45 +14,61 @@ class MisconceptionFlowTest {
     private val testDispatcher = UnconfinedTestDispatcher()
     private val testScope = TestScope(testDispatcher)
 
-    private class FakeMisconceptionRepository(
+    private class TestRepo(
         override val ownerId: Int,
         var shouldSimulateOffline: Boolean = false,
-        var serverHasResolvedConflict: Boolean = false
+        var serverHasResolvedConflict: Boolean = false,
+        var rejectStart: Boolean = false,
+        var rejectVerify: Boolean = false
     ) : MisconceptionRepository {
-        val storage = mutableMapOf<String, MisconceptionBusterSession>()
-        val activeDrafts = mutableMapOf<String, MisconceptionBusterSession>()
+        private val catalog = listOf(
+            MisconceptionReasonItem(
+                "math_reason_01", "math", 10, "Grade 10 reason", "Hint 10",
+                "Counterexample 10", "Proposition 1", "Proposition 2"
+            ),
+            MisconceptionReasonItem(
+                "math_reason_03", "math", 11, "Grade 11 reason", "Hint 11",
+                "Counterexample 11", "Proposition 1", "Proposition 2"
+            )
+        )
+        val sessions = mutableMapOf<String, MisconceptionBusterSession>()
+        val drafts = mutableMapOf<String, MisconceptionBusterSession>()
+
+        override suspend fun getVerifiedReasons(subjectId: String, grade: Int): List<MisconceptionReasonItem> =
+            catalog.filter { it.subjectId == subjectId && it.grade == grade }
 
         override suspend fun startSession(
             id: String,
             sessionId: String,
             questionId: String,
-            reasonId: String
+            subjectId: String,
+            grade: Int,
+            questionPrompt: String,
+            selectedOption: String?,
+            reason: MisconceptionReasonItem
         ): MisconceptionBusterSession {
-            val catalogItem = MisconceptionBuster.MATH_CATALOG.find { it.id == reasonId }
-                ?: throw IllegalArgumentException("Unknown reason")
-
+            if (rejectStart) throw BackendClient.Failure("QUESTION_NOT_ANSWERED_WRONGLY", 409)
+            require(reason.subjectId == subjectId && reason.grade == grade)
             val session = MisconceptionBusterSession(
                 id = id,
                 ownerId = ownerId,
                 sessionId = sessionId,
                 questionId = questionId,
-                subjectId = "math",
-                grade = 11,
-                questionPrompt = "Prompt for $questionId",
-                selectedOption = "B",
-                misconceptionReason = catalogItem.text,
+                reasonId = reason.reasonId,
+                subjectId = subjectId,
+                grade = grade,
+                questionPrompt = questionPrompt,
+                selectedOption = selectedOption,
+                misconceptionReason = reason.reasonText,
                 reasonType = MisconceptionReasonType.PRE_AUTHORED,
-                aiHint = catalogItem.verifiedHint,
-                aiCounterexample = catalogItem.counterexample,
-                prop1Prompt = catalogItem.prop1Prompt,
-                prop1Correct = catalogItem.prop1Correct,
-                prop2Prompt = catalogItem.prop2Prompt,
-                prop2Correct = catalogItem.prop2Correct,
-                verificationStatus = MisconceptionVerificationStatus.NEEDS_REVIEW,
+                aiHint = reason.verifiedHint,
+                aiCounterexample = reason.counterexample,
+                prop1Prompt = reason.prop1Prompt,
+                prop2Prompt = reason.prop2Prompt,
                 isDraft = shouldSimulateOffline
             )
-            storage[id] = session
-            activeDrafts["${sessionId}_$questionId"] = session
+            sessions[id] = session
+            drafts["${sessionId}_$questionId"] = session
             return session
         }
 
@@ -60,57 +77,50 @@ class MisconceptionFlowTest {
             prop1Ans: Boolean,
             prop2Ans: Boolean
         ): MisconceptionBusterSession {
-            val session = storage[id] ?: throw IllegalStateException("Session not found")
-            session.prop1UserAns = prop1Ans
-            session.prop2UserAns = prop2Ans
-
-            if (shouldSimulateOffline) {
-                session.verificationStatus = MisconceptionVerificationStatus.NEEDS_REVIEW
-                val updated = session.copy(isDraft = true)
-                storage[id] = updated
-                return updated
-            }
-
-            // Server-side evaluation using catalog answers
-            val resolved = (prop1Ans == session.prop1Correct) && (prop2Ans == session.prop2Correct)
-            session.verificationStatus = if (resolved) MisconceptionVerificationStatus.RESOLVED else MisconceptionVerificationStatus.NEEDS_REVIEW
-            val updated = session.copy(isDraft = false)
-            storage[id] = updated
-            return updated
+            if (rejectVerify) throw BackendClient.Failure("SESSION_NOT_FOUND", 404)
+            val current = sessions[id] ?: throw BackendClient.Failure("SESSION_NOT_FOUND", 404)
+            val verified = current.copy(
+                prop1UserAns = prop1Ans,
+                prop2UserAns = prop2Ans,
+                verificationStatus = if (!shouldSimulateOffline && !rejectVerify &&
+                    prop1Ans == false && prop2Ans == true
+                ) MisconceptionVerificationStatus.RESOLVED
+                else MisconceptionVerificationStatus.NEEDS_REVIEW,
+                answeredAt = System.currentTimeMillis(),
+                isDraft = shouldSimulateOffline
+            )
+            sessions[id] = verified
+            return verified
         }
 
         override suspend fun getSession(id: String): MisconceptionBusterSession? {
-            if (serverHasResolvedConflict) {
-                val current = storage[id] ?: return null
-                return current.copy(verificationStatus = MisconceptionVerificationStatus.RESOLVED, isDraft = false)
-            }
-            return storage[id]
+            val session = sessions[id] ?: return null
+            return if (serverHasResolvedConflict) {
+                session.copy(verificationStatus = MisconceptionVerificationStatus.RESOLVED, isDraft = false)
+            } else session
         }
 
         override suspend fun getActiveDraft(sessionId: String, questionId: String): MisconceptionBusterSession? =
-            activeDrafts["${sessionId}_$questionId"]
+            drafts["${sessionId}_$questionId"]
 
         override suspend fun syncDraft(session: MisconceptionBusterSession): MisconceptionBusterSession {
             if (serverHasResolvedConflict) {
-                val resolved = session.copy(verificationStatus = MisconceptionVerificationStatus.RESOLVED, isDraft = false)
-                storage[session.id] = resolved
-                return resolved
+                return session.copy(verificationStatus = MisconceptionVerificationStatus.RESOLVED, isDraft = false)
+                    .also { sessions[session.id] = it }
             }
-            val synced = session.copy(isDraft = false)
-            storage[session.id] = synced
-            return synced
+            return session.copy(isDraft = false).also { sessions[session.id] = it }
         }
     }
 
     @Test
-    fun flowAdvancesStepByStepWithVerifiedCatalogReason() = runTest(testDispatcher) {
-        val repo = FakeMisconceptionRepository(ownerId = 101)
+    fun flowUsesOnlyMatchingServerCatalogReasonAndServerStatus() = runTest(testDispatcher) {
+        val repo = TestRepo(ownerId = 101)
         val vm = MisconceptionViewModel(
             repository = repo,
             questionId = "q_test_01",
             sessionId = "sess_01",
             subjectId = "math",
-            grade = 11,
+            grade = 10,
             questionPrompt = "Tìm tập xác định của...",
             selectedOption = "B",
             correctOption = "A",
@@ -119,22 +129,16 @@ class MisconceptionFlowTest {
         )
 
         assertEquals(MisconceptionStep.SELECT_REASON, vm.currentStep)
+        assertEquals(listOf("math_reason_01"), vm.verifiedReasons.map { it.reasonId })
 
-        // Select pre-verified catalog reason
         vm.selectedReasonId = "math_reason_01"
         vm.proceedToHint()
-
         assertEquals(MisconceptionStep.REVIEW_HINT, vm.currentStep)
-        assertNotNull(vm.activeSession)
         assertEquals(MisconceptionReasonType.PRE_AUTHORED, vm.activeSession?.reasonType)
 
-        // Advance to test
         vm.proceedToTest()
-        assertEquals(MisconceptionStep.TEST_PROPOSITIONS, vm.currentStep)
-
-        // Answer propositions: both correct according to catalog
-        vm.prop1Answer = vm.activeSession?.prop1Correct
-        vm.prop2Answer = vm.activeSession?.prop2Correct
+        vm.prop1Answer = false
+        vm.prop2Answer = true
         vm.submitVerifications()
 
         assertEquals(MisconceptionStep.RESULT, vm.currentStep)
@@ -142,37 +146,60 @@ class MisconceptionFlowTest {
     }
 
     @Test
-    fun partialOrIncorrectPropositionsKeepNeedsReviewStatus() = runTest(testDispatcher) {
-        val repo = FakeMisconceptionRepository(ownerId = 101)
+    fun rejectedStartDoesNotBecomeAnOfflineDraft() = runTest(testDispatcher) {
+        val repo = TestRepo(ownerId = 101, rejectStart = true)
         val vm = MisconceptionViewModel(
             repository = repo,
-            questionId = "q_test_02",
-            sessionId = "sess_02",
+            questionId = "q_rejected",
+            sessionId = "sess_rejected",
             subjectId = "math",
-            grade = 11,
-            questionPrompt = "Giải phương trình ax^2+bx+c=0",
-            selectedOption = "C",
+            grade = 10,
+            questionPrompt = "Prompt",
+            selectedOption = "B",
             correctOption = "A",
-            explanation = "Chú ý a=0",
+            explanation = "Explanation",
             externalScope = testScope
         )
 
-        vm.selectedReasonId = "math_reason_02"
+        vm.selectedReasonId = "math_reason_01"
         vm.proceedToHint()
-        vm.proceedToTest()
 
-        // 1 right, 1 wrong
-        vm.prop1Answer = vm.activeSession?.prop1Correct
-        vm.prop2Answer = !(vm.activeSession?.prop2Correct ?: true)
-        vm.submitVerifications()
-
-        assertEquals(MisconceptionStep.RESULT, vm.currentStep)
-        assertEquals(MisconceptionVerificationStatus.NEEDS_REVIEW, vm.activeSession?.verificationStatus)
+        assertNull(vm.activeSession)
+        assertEquals(MisconceptionStep.SELECT_REASON, vm.currentStep)
+        assertTrue(vm.errorMessage?.contains("Máy chủ từ chối") == true)
     }
 
     @Test
-    fun offlineVerificationStaysAsDraftAndDoesNotGrantResolved() = runTest(testDispatcher) {
-        val repo = FakeMisconceptionRepository(ownerId = 101, shouldSimulateOffline = true)
+    fun rejectedVerificationDoesNotShowAnOfflineResult() = runTest(testDispatcher) {
+        val repo = TestRepo(ownerId = 101, rejectVerify = true)
+        val vm = MisconceptionViewModel(
+            repository = repo,
+            questionId = "q_rejected",
+            sessionId = "sess_rejected",
+            subjectId = "math",
+            grade = 10,
+            questionPrompt = "Prompt",
+            selectedOption = "B",
+            correctOption = "A",
+            explanation = "Explanation",
+            externalScope = testScope
+        )
+
+        vm.selectedReasonId = "math_reason_01"
+        vm.proceedToHint()
+        vm.proceedToTest()
+        vm.prop1Answer = false
+        vm.prop2Answer = true
+        vm.submitVerifications()
+
+        assertEquals(MisconceptionStep.TEST_PROPOSITIONS, vm.currentStep)
+        assertFalse(vm.activeSession?.isDraft == true)
+        assertTrue(vm.errorMessage?.contains("Không tìm thấy phiên") == true)
+    }
+
+    @Test
+    fun offlineVerificationRemainsPendingUntilSync() = runTest(testDispatcher) {
+        val repo = TestRepo(ownerId = 101, shouldSimulateOffline = true)
         val vm = MisconceptionViewModel(
             repository = repo,
             questionId = "q_test_offline",
@@ -189,67 +216,52 @@ class MisconceptionFlowTest {
         vm.selectedReasonId = "math_reason_03"
         vm.proceedToHint()
         vm.proceedToTest()
-
-        vm.prop1Answer = vm.activeSession?.prop1Correct
-        vm.prop2Answer = vm.activeSession?.prop2Correct
+        vm.prop1Answer = false
+        vm.prop2Answer = true
         vm.submitVerifications()
 
         assertEquals(MisconceptionStep.RESULT, vm.currentStep)
-        // Must still be NEEDS_REVIEW and marked draft when offline!
         assertEquals(MisconceptionVerificationStatus.NEEDS_REVIEW, vm.activeSession?.verificationStatus)
         assertTrue(vm.activeSession?.isDraft == true)
     }
 
     @Test
-    fun syncDraftPreservesServerResolvedStateAgainstLocalDraftConflict() = runTest(testDispatcher) {
-        val repo = FakeMisconceptionRepository(ownerId = 101, shouldSimulateOffline = true, serverHasResolvedConflict = true)
+    fun syncKeepsNewerServerResolvedState() = runTest(testDispatcher) {
+        val repo = TestRepo(ownerId = 101, shouldSimulateOffline = true, serverHasResolvedConflict = true)
         val vm = MisconceptionViewModel(
             repository = repo,
             questionId = "q_conflict",
             sessionId = "sess_conflict",
             subjectId = "math",
-            grade = 11,
+            grade = 10,
             questionPrompt = "Prompt",
             selectedOption = "A",
             correctOption = "B",
-            explanation = "Expl",
+            explanation = "Explanation",
             externalScope = testScope
         )
 
         vm.selectedReasonId = "math_reason_01"
         vm.proceedToHint()
-
-        // Local state was started as draft
         assertTrue(vm.activeSession?.isDraft == true)
 
-        // Trigger syncDraft
         vm.triggerSyncDraft()
 
-        // Must take server's RESOLVED status and not overwrite with local unverified state
         assertEquals(MisconceptionVerificationStatus.RESOLVED, vm.activeSession?.verificationStatus)
         assertFalse(vm.activeSession?.isDraft == true)
     }
 
     @Test
-    fun accountIsolationPreventsCrossUserDraftAccess() = runTest(testDispatcher) {
-        val repoUser1 = FakeMisconceptionRepository(ownerId = 101)
-        val repoUser2 = FakeMisconceptionRepository(ownerId = 102)
-
-        val vmUser1 = MisconceptionViewModel(
-            repository = repoUser1,
-            questionId = "q_isolated",
-            sessionId = "sess_isolated",
-            subjectId = "math",
-            grade = 11,
-            questionPrompt = "Isolated Prompt",
-            selectedOption = "A",
-            correctOption = "B",
-            explanation = "Expl",
-            externalScope = testScope
+    fun localDraftsAreIsolatedByAccountOwner() = runTest(testDispatcher) {
+        val repoUser1 = TestRepo(ownerId = 101)
+        val repoUser2 = TestRepo(ownerId = 102)
+        val user1 = MisconceptionViewModel(
+            repoUser1, "q_isolated", "sess_isolated", "math", 10,
+            "Prompt", "A", "B", "Explanation", externalScope = testScope
         )
 
-        vmUser1.selectedReasonId = "math_reason_01"
-        vmUser1.proceedToHint()
+        user1.selectedReasonId = "math_reason_01"
+        user1.proceedToHint()
 
         assertNotNull(repoUser1.getActiveDraft("sess_isolated", "q_isolated"))
         assertNull(repoUser2.getActiveDraft("sess_isolated", "q_isolated"))

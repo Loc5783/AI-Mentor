@@ -635,22 +635,51 @@ private fun AiPracticeFeedbackContent(
         mutableStateOf("Giải thích câu hỏi này từng bước, nhất là cách chọn đáp án đúng.")
     }
 
-    val isMath = viewModel.session?.subjectId == "math"
+    val context = LocalContext.current
+    val ownerId = remember(context) { ActiveUser.get(context) }
+    val practiceSubjectId = viewModel.session?.subjectId.orEmpty()
+    val sessionGrade = viewModel.session?.grade ?: 10
     val hasSessionId = !viewModel.session?.id.isNullOrBlank()
+    val misconceptionRepo = remember(context, ownerId) {
+        DefaultMisconceptionRepository(context, ownerId)
+    }
+    var hasVerifiedMisconceptions by remember(ownerId, practiceSubjectId, sessionGrade) {
+        mutableStateOf(false)
+    }
+    var isLoadingMisconceptionCatalog by remember(ownerId, practiceSubjectId, sessionGrade) {
+        mutableStateOf(false)
+    }
+    var misconceptionCatalogError by remember(ownerId, practiceSubjectId, sessionGrade) {
+        mutableStateOf<String?>(null)
+    }
 
-    if (showMisconceptionFlow && currentQuestion != null && !result.isCorrect && isMath && hasSessionId) {
-        val context = LocalContext.current
-        val ownerId = ActiveUser.get(context)
-        val misconceptionRepo = remember(context, ownerId) {
-            DefaultMisconceptionRepository(context, ownerId)
+    LaunchedEffect(misconceptionRepo, practiceSubjectId, sessionGrade) {
+        hasVerifiedMisconceptions = false
+        misconceptionCatalogError = null
+        isLoadingMisconceptionCatalog = practiceSubjectId.isNotBlank()
+        try {
+            if (practiceSubjectId.isNotBlank()) {
+                hasVerifiedMisconceptions =
+                    misconceptionRepo.getVerifiedReasons(practiceSubjectId, sessionGrade).isNotEmpty()
+            }
+        } catch (cancelled: kotlinx.coroutines.CancellationException) {
+            throw cancelled
+        } catch (_: Exception) {
+            misconceptionCatalogError = "Không tải được danh mục đã kiểm duyệt cho môn và lớp này."
+        } finally {
+            isLoadingMisconceptionCatalog = false
         }
+    }
+
+    if (showMisconceptionFlow && currentQuestion != null && !result.isCorrect &&
+        !result.isSkipped && hasVerifiedMisconceptions && hasSessionId) {
         val misconceptionVm = remember(currentQuestion.id, viewModel.session?.id, ownerId) {
             MisconceptionViewModel(
                 repository = misconceptionRepo,
                 questionId = currentQuestion.id,
                 sessionId = viewModel.session!!.id,
-                subjectId = "math",
-                grade = viewModel.session?.grade ?: 10,
+                subjectId = practiceSubjectId,
+                grade = sessionGrade,
                 questionPrompt = currentQuestion.prompt,
                 selectedOption = result.selectedOption,
                 correctOption = result.correctOption,
@@ -859,7 +888,7 @@ private fun AiPracticeFeedbackContent(
                     Text("Hỏi thêm AI 💬", fontSize = 13.sp)
                 }
 
-                if (!result.isCorrect && !result.isSkipped && isMath && hasSessionId) {
+                if (!result.isCorrect && !result.isSkipped && hasVerifiedMisconceptions && hasSessionId) {
                     Button(
                         onClick = { showMisconceptionFlow = true },
                         modifier = Modifier.weight(1.3f).testTag("AiMisconceptionBusterBtn"),
@@ -876,6 +905,20 @@ private fun AiPracticeFeedbackContent(
                     Text("Báo lỗi ⚠️", fontSize = 13.sp)
                 }
             }
+        }
+
+        if (isLoadingMisconceptionCatalog && !result.isCorrect && !result.isSkipped && hasSessionId) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth().testTag("AiMisconceptionCatalogLoading")
+            )
+        }
+        if (misconceptionCatalogError != null && !result.isCorrect && !result.isSkipped && hasSessionId) {
+            Text(
+                text = misconceptionCatalogError.orEmpty(),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.testTag("AiMisconceptionCatalogError")
+            )
         }
 
         // Bottom Navigation Bar
