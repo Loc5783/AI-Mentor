@@ -6,17 +6,10 @@ begin;
 -- cycle prevention, and idempotency.
 -- ============================================================================
 
--- Recreate cleanly to guarantee UUID references and remove legacy integer types
-drop table if exists public.mentor_team_task_dependencies cascade;
-drop table if exists public.mentor_team_warnings cascade;
-drop table if exists public.mentor_team_tasks cascade;
-drop table if exists public.mentor_team_documents cascade;
-drop table if exists public.mentor_team_requirements cascade;
-drop table if exists public.mentor_team_members cascade;
-drop table if exists public.mentor_team_projects cascade;
+-- Extend the existing tables from 202611200001. Never drop team data.
 
 -- 1. Projects
-create table public.mentor_team_projects (
+create table if not exists public.mentor_team_projects (
   id text primary key,
   title text not null check (char_length(trim(title)) between 1 and 200),
   description text check (description is null or char_length(description) <= 2000),
@@ -27,7 +20,7 @@ create table public.mentor_team_projects (
 );
 
 -- 2. Members
-create table public.mentor_team_members (
+create table if not exists public.mentor_team_members (
   project_id text not null references public.mentor_team_projects(id) on delete cascade,
   user_id uuid not null references auth.users(id) on delete cascade,
   role text not null default 'MEMBER' check (role in ('OWNER', 'ADMIN', 'MEMBER', 'VIEWER')),
@@ -38,7 +31,7 @@ create table public.mentor_team_members (
 );
 
 -- 3. Teacher Requirements
-create table public.mentor_team_requirements (
+create table if not exists public.mentor_team_requirements (
   id text primary key,
   project_id text not null references public.mentor_team_projects(id) on delete cascade,
   title text not null check (char_length(trim(title)) between 1 and 200),
@@ -51,7 +44,7 @@ create table public.mentor_team_requirements (
 );
 
 -- 4. Documents
-create table public.mentor_team_documents (
+create table if not exists public.mentor_team_documents (
   id text primary key,
   project_id text not null references public.mentor_team_projects(id) on delete cascade,
   title text not null check (char_length(trim(title)) between 1 and 200),
@@ -64,7 +57,7 @@ create table public.mentor_team_documents (
 );
 
 -- 5. Tasks
-create table public.mentor_team_tasks (
+create table if not exists public.mentor_team_tasks (
   id text primary key,
   project_id text not null references public.mentor_team_projects(id) on delete cascade,
   title text not null check (char_length(trim(title)) between 1 and 200),
@@ -84,7 +77,7 @@ create table public.mentor_team_tasks (
 );
 
 -- 6. Task Dependencies
-create table public.mentor_team_task_dependencies (
+create table if not exists public.mentor_team_task_dependencies (
   task_id text not null references public.mentor_team_tasks(id) on delete cascade,
   depends_on_task_id text not null references public.mentor_team_tasks(id) on delete cascade,
   created_at timestamptz not null default now(),
@@ -93,7 +86,7 @@ create table public.mentor_team_task_dependencies (
 );
 
 -- 7. AI Content Warnings
-create table public.mentor_team_warnings (
+create table if not exists public.mentor_team_warnings (
   id text primary key,
   project_id text not null references public.mentor_team_projects(id) on delete cascade,
   warning_type text not null check (warning_type in ('MISSING_CONTENT', 'DUPLICATION', 'CONTRADICTION', 'UNGROUNDED_CLAIM')),
@@ -111,13 +104,52 @@ create table public.mentor_team_warnings (
   updated_at timestamptz not null default now()
 );
 
+alter table public.mentor_team_projects
+  add column if not exists version int not null default 1;
+alter table public.mentor_team_members
+  add column if not exists status text not null default 'ACTIVE',
+  add column if not exists removed_at timestamptz;
+alter table public.mentor_team_members
+  drop constraint if exists mentor_team_members_role_check;
+alter table public.mentor_team_members
+  add constraint mentor_team_members_role_check check (role in ('OWNER','ADMIN','MEMBER','VIEWER'));
+alter table public.mentor_team_requirements
+  add column if not exists status text not null default 'OPEN',
+  add column if not exists priority text not null default 'MEDIUM',
+  add column if not exists updated_at timestamptz not null default now();
+alter table public.mentor_team_documents
+  add column if not exists updated_by uuid references auth.users(id) on delete set null,
+  add column if not exists version int not null default 1,
+  add column if not exists updated_at timestamptz not null default now();
+alter table public.mentor_team_tasks
+  add column if not exists priority text not null default 'MEDIUM',
+  add column if not exists source text not null default 'HUMAN',
+  add column if not exists confirmation_status text not null default 'CONFIRMED',
+  add column if not exists confirmed_by uuid references auth.users(id) on delete set null,
+  add column if not exists confirmed_at timestamptz,
+  add column if not exists client_request_id text;
+create unique index if not exists mentor_team_tasks_request_unique
+  on public.mentor_team_tasks(project_id, client_request_id);
+alter table public.mentor_team_warnings
+  add column if not exists excerpt text,
+  add column if not exists evidence_ref text,
+  add column if not exists explanation text,
+  add column if not exists created_by_ai boolean not null default true,
+  add column if not exists reviewed_by uuid references auth.users(id) on delete set null,
+  add column if not exists reviewed_at timestamptz,
+  add column if not exists updated_at timestamptz not null default now();
+alter table public.mentor_team_warnings
+  drop constraint if exists mentor_team_warnings_status_check;
+alter table public.mentor_team_warnings
+  add constraint mentor_team_warnings_status_check check (status in ('NEEDS_CHECK','RESOLVED','DISMISSED'));
+
 -- Indexes for foreign keys and RLS evaluation performance
-create index if nontrivial_idx_team_members_user on public.mentor_team_members(user_id, status);
-create index if nontrivial_idx_team_projects_owner on public.mentor_team_projects(owner_id);
-create index if nontrivial_idx_team_requirements_proj on public.mentor_team_requirements(project_id);
-create index if nontrivial_idx_team_documents_proj on public.mentor_team_documents(project_id);
-create index if nontrivial_idx_team_tasks_proj on public.mentor_team_tasks(project_id, status);
-create index if nontrivial_idx_team_warnings_proj on public.mentor_team_warnings(project_id, status);
+create index if not exists nontrivial_idx_team_members_user on public.mentor_team_members(user_id, status);
+create index if not exists nontrivial_idx_team_projects_owner on public.mentor_team_projects(owner_id);
+create index if not exists nontrivial_idx_team_requirements_proj on public.mentor_team_requirements(project_id);
+create index if not exists nontrivial_idx_team_documents_proj on public.mentor_team_documents(project_id);
+create index if not exists nontrivial_idx_team_tasks_proj on public.mentor_team_tasks(project_id, status);
+create index if not exists nontrivial_idx_team_warnings_proj on public.mentor_team_warnings(project_id, status);
 
 -- Trigger: Cycle Prevention & Project Isolation on Task Dependencies
 create or replace function public.mentor_check_task_dependency()
@@ -200,6 +232,7 @@ begin
 end;
 $$;
 
+drop trigger if exists mentor_team_owner_created on public.mentor_team_projects;
 drop trigger if exists trg_mentor_team_owner_created on public.mentor_team_projects;
 create trigger trg_mentor_team_owner_created
   after insert on public.mentor_team_projects
@@ -208,6 +241,15 @@ create trigger trg_mentor_team_owner_created
 -- ============================================================================
 -- ROW LEVEL SECURITY (RLS) POLICIES
 -- ============================================================================
+-- Remove the broad policies from the original schema before adding role-aware
+-- policies. PostgreSQL ORs permissive policies, so leaving them would bypass
+-- the VIEWER and manager restrictions below.
+drop policy if exists team_projects_member on public.mentor_team_projects;
+drop policy if exists team_members_member on public.mentor_team_members;
+drop policy if exists team_reqs_member on public.mentor_team_requirements;
+drop policy if exists team_docs_member on public.mentor_team_documents;
+drop policy if exists team_tasks_member on public.mentor_team_tasks;
+drop policy if exists team_warnings_member on public.mentor_team_warnings;
 alter table public.mentor_team_projects enable row level security;
 alter table public.mentor_team_members enable row level security;
 alter table public.mentor_team_requirements enable row level security;
