@@ -241,6 +241,22 @@ create trigger trg_mentor_team_owner_created
 -- ============================================================================
 -- ROW LEVEL SECURITY (RLS) POLICIES
 -- ============================================================================
+-- The project owner is authoritative; an ADMIN cannot transfer ownership by
+-- changing owner_id or the owner's membership row.
+create or replace function public.mentor_protect_team_owner()
+returns trigger language plpgsql set search_path = '' as $$
+begin
+  if tg_table_name = 'mentor_team_projects' and old.owner_id is distinct from new.owner_id then
+    raise exception 'TEAM_OWNER_IMMUTABLE';
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists trg_mentor_protect_team_owner on public.mentor_team_projects;
+create trigger trg_mentor_protect_team_owner
+  before update on public.mentor_team_projects
+  for each row execute function public.mentor_protect_team_owner();
+
 -- Remove the broad policies from the original schema before adding role-aware
 -- policies. PostgreSQL ORs permissive policies, so leaving them would bypass
 -- the VIEWER and manager restrictions below.
@@ -292,12 +308,21 @@ create policy team_members_select on public.mentor_team_members
 
 create policy team_members_insert on public.mentor_team_members
   for insert to authenticated
-  with check (public.mentor_is_team_manager(project_id, auth.uid()));
+  with check (public.mentor_is_team_manager(project_id, auth.uid())
+    and (role <> 'OWNER' or exists (
+      select 1 from public.mentor_team_projects p
+      where p.id = project_id and p.owner_id = auth.uid()
+    )));
 
 create policy team_members_update on public.mentor_team_members
   for update to authenticated
-  using (public.mentor_is_team_manager(project_id, auth.uid()))
-  with check (public.mentor_is_team_manager(project_id, auth.uid()));
+  using (public.mentor_is_team_manager(project_id, auth.uid())
+    and (role <> 'OWNER' or user_id = auth.uid()))
+  with check (public.mentor_is_team_manager(project_id, auth.uid())
+    and (role <> 'OWNER' or exists (
+      select 1 from public.mentor_team_projects p
+      where p.id = project_id and p.owner_id = auth.uid()
+    )));
 
 create policy team_members_delete on public.mentor_team_members
   for delete to authenticated
