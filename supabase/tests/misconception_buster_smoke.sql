@@ -279,7 +279,8 @@ begin
   if v_res->>'id' <> v_sid or v_res ? 'prop1Correct' or v_res ? 'prop2Correct' then
     raise exception 'RESUME_MUST_RETURN_OWN_SESSION_WITHOUT_ANSWER_KEYS';
   end if;
-  if public.mentor_misconception_resume(v_sess_id, 'q_math_unanswered') is not null then
+  v_res := public.mentor_misconception_resume(v_sess_id, 'q_math_unanswered');
+  if v_res is not null and v_res::text <> 'null' then
     raise exception 'RESUME_RETURNED_UNSTARTED_QUESTION';
   end if;
 
@@ -344,7 +345,8 @@ begin
     raise exception 'USER2_CAN_SEE_USER1_SESSION';
   end if;
 
-  if public.mentor_misconception_resume(v_sess_id, 'q_math_wrong') is not null then
+  v_res := public.mentor_misconception_resume(v_sess_id, 'q_math_wrong');
+  if v_res is not null and v_res::text <> 'null' then
     raise exception 'USER2_CAN_RESUME_USER1_SESSION';
   end if;
 
