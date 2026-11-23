@@ -83,8 +83,8 @@ grant select, insert, update, delete on public.mentor_exam_pack_questions to aut
 
 drop policy if exists exam_pack_questions_owner on public.mentor_exam_pack_questions;
 create policy exam_pack_questions_owner on public.mentor_exam_pack_questions
-  for all to authenticated using (user_id = auth.uid())
-  with check (user_id = auth.uid());
+  for all to authenticated using (user_id = auth.uid() and exists (select 1 from public.mentor_exam_packs p where p.id = pack_id and p.user_id = auth.uid()))
+  with check (user_id = auth.uid() and exists (select 1 from public.mentor_exam_packs p where p.id = pack_id and p.user_id = auth.uid()));
 
 -- ==========================================
 -- 3. AI TEAMOS (DỰ ÁN NHÓM AI)
@@ -183,13 +183,26 @@ grant execute on function public.mentor_is_team_member(text, uuid) to authentica
 -- RLS Policies
 drop policy if exists team_projects_member on public.mentor_team_projects;
 create policy team_projects_member on public.mentor_team_projects
-  for all to authenticated using (public.mentor_is_team_member(id, auth.uid()))
+  for all to authenticated using (owner_id = auth.uid())
   with check (owner_id = auth.uid());
 
 drop policy if exists team_members_member on public.mentor_team_members;
 create policy team_members_member on public.mentor_team_members
   for all to authenticated using (public.mentor_is_team_member(project_id, auth.uid()))
-  with check (public.mentor_is_team_member(project_id, auth.uid()) or user_id = auth.uid());
+  with check (exists (select 1 from public.mentor_team_projects p where p.id = project_id and p.owner_id = auth.uid()));
+
+-- Creating a project must also make its owner a member without allowing self-joins.
+create or replace function public.mentor_add_team_owner()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  insert into public.mentor_team_members(project_id, user_id, role)
+  values (new.id, new.owner_id, 'OWNER');
+  return new;
+end;
+$$;
+drop trigger if exists mentor_team_owner_created on public.mentor_team_projects;
+create trigger mentor_team_owner_created after insert on public.mentor_team_projects
+  for each row execute function public.mentor_add_team_owner();
 
 drop policy if exists team_reqs_member on public.mentor_team_requirements;
 create policy team_reqs_member on public.mentor_team_requirements
