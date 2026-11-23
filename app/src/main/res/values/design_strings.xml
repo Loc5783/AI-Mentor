@@ -9,6 +9,8 @@
   <string name="design_path">Lộ trình học tập</string>
   <string name="lesson_hub_intro">Chọn một hướng học phù hợp với hôm nay.</string>
   <string name="lesson_hub_grade">Lớp đang học</string>
+  <string name="lesson_hub_load_error">Chưa tải được lớp học. Bạn vẫn có thể xem nội dung đã lưu.</string>
+  <string name="lesson_hub_retry">Thử lại</string>
   <string name="lesson_hub_change_grade">Đổi lớp</string>
   <string name="lesson_hub_path_desc">Bài học theo từng môn, từng chặng nhỏ và tiến độ của riêng bạn.</string>
   <string name="lesson_hub_open_path">Vào lộ trình</string>

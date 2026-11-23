@@ -37,7 +37,8 @@ public final class LessonHubFragment extends Fragment {
             requireContext(),
             this::chooseGrade,
             this::openSubject,
-            this::openAiChat);
+            this::openAiChat,
+            this::load);
     if (grade >= 10 && grade <= 12) {
       presenter.render(grade);
     }

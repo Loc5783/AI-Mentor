@@ -47,21 +47,19 @@ class SubjectHubUi(
     private val context: Context,
     private val chooseGrade: Runnable,
     private val openSubject: Consumer<SubjectId>,
-    private val openAiChat: Runnable? = null
+    private val openAiChat: Runnable? = null,
+    private val retryLoad: Runnable
 ) {
     private var grade by mutableIntStateOf(10)
-    private var error by mutableStateOf(false)
-    private var loading by mutableStateOf(false)
+    private var loadError by mutableStateOf(false)
 
     fun render(year: Int) {
         grade = if (year in 10..12) year else 10
-        loading = false
-        error = false
+        loadError = false
     }
 
     fun failure() {
-        loading = false
-        error = true
+        loadError = true
     }
 
     fun view(): View = composeHost(context, scenicBackground = true) {
@@ -81,12 +79,10 @@ class SubjectHubUi(
         when (navModel.currentSection) {
             HubSection.MAIN_HUB -> LessonHubMainView(
                 grade = navModel.grade,
+                loadError = loadError,
+                onRetryLoad = { retryLoad.run() },
                 onChooseGrade = { chooseGrade.run() },
-                onSelectSection = { section ->
-                    try {
-                        navModel.navigateTo(HubSection.valueOf(section))
-                    } catch (_: Exception) {}
-                },
+                onSelectSection = navModel::navigateTo,
                 onOpenAiChat = { openAiChat?.run() }
             )
             HubSection.LIBRARY -> {
@@ -148,8 +144,10 @@ class SubjectHubUi(
 @Composable
 fun LessonHubMainView(
     grade: Int,
+    loadError: Boolean,
+    onRetryLoad: () -> Unit,
     onChooseGrade: () -> Unit,
-    onSelectSection: (String) -> Unit,
+    onSelectSection: (HubSection) -> Unit,
     onOpenAiChat: () -> Unit
 ) {
     val palette = premiumDashboardPalette(com.example.asm_final.utils.ThemeHelper.isDarkMode(
@@ -165,6 +163,13 @@ fun LessonHubMainView(
         }
         Column(Modifier.padding(horizontal = MentorTokens.PagePadding, vertical = 4.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            if (loadError) {
+                PremiumDashboardCard(palette) {
+                    Text(stringResource(R.string.lesson_hub_load_error),
+                        color = palette.title, style = MaterialTheme.typography.bodyMedium)
+                    TextButton(onClick = onRetryLoad) { Text(stringResource(R.string.lesson_hub_retry)) }
+                }
+            }
             PremiumDashboardCard(palette) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween) {
@@ -188,27 +193,27 @@ fun LessonHubMainView(
                     MentorIllustration(MentorArtwork.LEARNING, Modifier.width(112.dp))
                 }
                 PremiumDashboardAction(stringResource(R.string.lesson_hub_open_path), palette,
-                    { onSelectSection("ROADMAP") }, Modifier.fillMaxWidth())
+                    { onSelectSection(HubSection.ROADMAP) }, Modifier.fillMaxWidth())
             }
             Text(stringResource(R.string.lesson_hub_more), style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold, color = palette.title)
             HubSectionCard("01", stringResource(R.string.lesson_hub_library),
                 stringResource(R.string.lesson_hub_library_desc), stringResource(R.string.lesson_hub_library),
-                { onSelectSection("LIBRARY") })
+                { onSelectSection(HubSection.LIBRARY) })
             HubSectionCard("02", stringResource(R.string.lesson_hub_exam),
                 stringResource(R.string.lesson_hub_exam_desc), stringResource(R.string.lesson_hub_exam),
-                { onSelectSection("EXAM_PREP") })
+                { onSelectSection(HubSection.EXAM_PREP) })
             HubSectionCard("03", stringResource(R.string.lesson_hub_chat),
                 stringResource(R.string.lesson_hub_chat_desc), stringResource(R.string.lesson_hub_chat),
                 onOpenAiChat)
             HubSectionCard("04", stringResource(R.string.lesson_hub_ai_practice),
                 stringResource(R.string.lesson_hub_ai_practice_desc), stringResource(R.string.lesson_hub_ai_practice),
-                { onSelectSection("AI_PRACTICE") })
+                { onSelectSection(HubSection.AI_PRACTICE) })
             if (com.example.asm_final.supabase.SupabaseHttp.enabled(
                     androidx.compose.ui.platform.LocalContext.current)) {
                 HubSectionCard("05", stringResource(R.string.lesson_hub_team_os),
                     stringResource(R.string.lesson_hub_team_os_desc), stringResource(R.string.lesson_hub_team_os),
-                    { onSelectSection("TEAM_OS") })
+                    { onSelectSection(HubSection.TEAM_OS) })
             }
             Spacer(Modifier.height(16.dp))
         }

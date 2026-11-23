@@ -18,6 +18,7 @@ public final class AppServices {
   private final com.example.asm_final.competition.CompetitionRepository competition;
   private final com.example.asm_final.competition.PublicProfileRepository publicProfiles;
   private final com.example.asm_final.competition.FriendshipRepository friendships;
+  private final com.example.asm_final.competition.LearnerDirectory learnerDirectory;
   private final com.example.asm_final.chat.ChatStore chats;
   private final com.example.asm_final.onboarding.LearnerProfileRepository learners;
   private final RecoveryService recovery;
@@ -63,6 +64,9 @@ public final class AppServices {
     friendships = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
         ? new com.example.asm_final.competition.SupabaseFriendshipRepository(context)
         : new com.example.asm_final.competition.BackendFriendshipRepository(context);
+    learnerDirectory = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+        ? new com.example.asm_final.competition.SupabaseLearnerSearch(context)
+        : new com.example.asm_final.competition.BackendLearnerSearch(context);
     rankingUpdates =
         new LiveOverviewUpdates(
             context,
@@ -110,6 +114,19 @@ public final class AppServices {
 
   public com.example.asm_final.competition.FriendshipRepository friendships() {
     return friendships;
+  }
+
+  public com.example.asm_final.competition.LearnerDirectory learnerDirectory() {
+    return learnerDirectory;
+  }
+
+  public OverviewUpdates friendUpdates() {
+    return new LiveOverviewUpdates(
+        context,
+        owner -> com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+            ? new com.example.asm_final.supabase.SupabaseEventStream(context, owner)
+            : new com.example.asm_final.backend.BackendEventStream(context, owner),
+        com.example.asm_final.competition.FriendshipEventPolicy::affects);
   }
 
   public OverviewUpdates rankingUpdates() {
