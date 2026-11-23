@@ -19,6 +19,7 @@ import java.util.Set;
 /** Owns account-scoped loading; the Profile UI only renders repository results. */
 public final class ProfileHubFragment extends Fragment {
   private OverviewUpdates.Subscription updates;
+  private OverviewUpdates.Subscription friendUpdates;
   private ProfileUi presenter;
   private FriendsViewModel friendsModel;
   private int generation;
@@ -56,6 +57,8 @@ public final class ProfileHubFragment extends Fragment {
     load();
     friendsModel.refreshFriends();
     updates = OverviewLiveBinding.start(this, this::load);
+    friendUpdates = ((AiMentorApplication) requireActivity().getApplication())
+        .services().friendUpdates().observe(ActiveUser.get(requireContext()), friendsModel::refreshFriends);
   }
 
   @Override
@@ -63,6 +66,10 @@ public final class ProfileHubFragment extends Fragment {
     if (updates != null) {
       updates.close();
       updates = null;
+    }
+    if (friendUpdates != null) {
+      friendUpdates.close();
+      friendUpdates = null;
     }
     super.onPause();
   }

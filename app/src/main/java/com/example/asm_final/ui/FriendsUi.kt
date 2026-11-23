@@ -56,7 +56,7 @@ internal fun FriendsPanel(
             search?.loading == true -> MentorSkeleton(stringResource(R.string.ranking_loading))
             search?.failed == true -> MentorErrorNotice(stringResource(R.string.friends_search_error))
             search?.searched == true -> {
-                val found = search.items.filterNot { model.isCurrentLearner(it.id) }
+                val found = search.items
                 if (found.isEmpty()) Text(stringResource(R.string.friends_search_empty),
                     color = palette.secondary, style = MaterialTheme.typography.bodySmall)
                 found.forEach { learner ->

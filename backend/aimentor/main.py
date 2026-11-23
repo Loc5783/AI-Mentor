@@ -358,6 +358,26 @@ def create_app(settings=None):
 
 
 
+    @app.get("/profiles/search")
+
+    def search_profiles(q:str,user=Depends(current)):
+
+        query=" ".join(q.split())
+
+        if len(query)<2 or len(query)>40:return {"items":[]}
+
+        escaped=query.replace("\\","\\\\").replace("%","\\%").replace("_","\\_")
+
+        with database.read() as db:
+
+            rows=db.execute("SELECT id,nickname FROM users WHERE id<>? AND nickname LIKE ? ESCAPE '\\' ORDER BY nickname LIMIT 30",
+
+                            (user["id"],f"%{escaped}%")).fetchall()
+
+        return {"items":[{"id":str(row["id"]),"nickname":row["nickname"]} for row in rows]}
+
+
+
     @app.get("/profiles/{profile_id}")
 
     def other_public(profile_id:int,user=Depends(current)):

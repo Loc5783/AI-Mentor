@@ -7,16 +7,16 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.example.asm_final.AiMentorApplication;
-import com.example.asm_final.accounts.RemoteAccountLinks;
 import com.example.asm_final.backend.BackendClient;
-import com.example.asm_final.supabase.SupabaseHttp;
 import com.example.mentor.data.ActiveUser;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.IntSupplier;
 
 /** Owns account-scoped friendship and learner-search state. */
 public final class FriendsViewModel extends AndroidViewModel {
@@ -55,25 +55,35 @@ public final class FriendsViewModel extends AndroidViewModel {
   }
 
   private final FriendshipRepository friendships;
+  private final LearnerDirectory directory;
+  private final IntSupplier activeUser;
+  private final Executor network;
+  private final Executor main;
   private final int owner;
-  private volatile String profileId = "";
-  private final ExecutorService network = Executors.newSingleThreadExecutor();
-  private final Handler main = new Handler(Looper.getMainLooper());
   private final MutableLiveData<FriendsState> friendsState =
       new MutableLiveData<>(new FriendsState(Collections.emptyList(), true, false, ""));
   private final MutableLiveData<SearchState> searchState =
       new MutableLiveData<>(new SearchState(Collections.emptyList(), false, false, false));
-  private int searchGeneration;
+  private int searchGeneration, friendsGeneration;
+  private boolean refreshing, pendingRefresh, mutating;
   private volatile boolean closed;
 
   public FriendsViewModel(Application app) {
-    this(app, ((AiMentorApplication) app).services().friendships());
+    this(app, ((AiMentorApplication) app).services().friendships(),
+        ((AiMentorApplication) app).services().learnerDirectory(),
+        () -> ActiveUser.get(app), Executors.newSingleThreadExecutor(),
+        new Handler(Looper.getMainLooper())::post);
   }
 
-  public FriendsViewModel(Application app, FriendshipRepository friendships) {
+  FriendsViewModel(Application app, FriendshipRepository friendships, LearnerDirectory directory,
+      IntSupplier activeUser, Executor network, Executor main) {
     super(app);
-    owner = ActiveUser.get(app);
     this.friendships = friendships;
+    this.directory = directory;
+    this.activeUser = activeUser;
+    this.network = network;
+    this.main = main;
+    owner = activeUser.getAsInt();
   }
 
   private static String friendFailureCode(Exception failure, String fallback) {
@@ -84,67 +94,88 @@ public final class FriendsViewModel extends AndroidViewModel {
     return fallback;
   }
 
+  private boolean current() { return !closed && activeUser.getAsInt() == owner; }
+
+  private static boolean confirmation(String message) {
+    return "REQUEST_SENT".equals(message) || "FRIEND_ACCEPTED".equals(message)
+        || "REQUEST_DECLINED".equals(message) || "FRIEND_REMOVED".equals(message);
+  }
+
   public LiveData<FriendsState> friendsState() { return friendsState; }
 
   public LiveData<SearchState> searchState() { return searchState; }
 
   public void searchLearners(String text) {
-    if (closed || ActiveUser.get(getApplication()) != owner) return;
-    String query = text.trim();
-    if (query.length() < 2 || query.length() > 40) return;
+    if (!current()) return;
+    String query = text == null ? "" : text.trim();
     int version = ++searchGeneration;
+    if (query.length() < 2 || query.length() > 40) {
+      searchState.setValue(new SearchState(Collections.emptyList(), false, false, false));
+      return;
+    }
     searchState.setValue(new SearchState(Collections.emptyList(), true, false, true));
     network.execute(() -> {
       try {
-        List<SearchItem> found = new SupabaseLearnerSearch(getApplication()).search(owner, query);
-        main.post(() -> {
-          if (!closed && version == searchGeneration && ActiveUser.get(getApplication()) == owner)
+        String me = directory.currentProfileId(owner);
+        if (me == null || me.isBlank()) throw new IllegalStateException("Account link unavailable");
+        List<SearchItem> found = new ArrayList<>();
+        for (SearchItem item : directory.search(owner, query))
+          if (!me.equals(item.id)) found.add(item);
+        main.execute(() -> {
+          if (current() && version == searchGeneration)
             searchState.setValue(new SearchState(found, false, false, true));
         });
       } catch (Exception failure) {
-        main.post(() -> {
-          if (!closed && version == searchGeneration && ActiveUser.get(getApplication()) == owner)
+        main.execute(() -> {
+          if (current() && version == searchGeneration)
             searchState.setValue(new SearchState(Collections.emptyList(), false, true, true));
         });
       }
     });
   }
 
-  public boolean isCurrentLearner(String id) { return id != null && !profileId.isEmpty() && profileId.equals(id); }
-
-  private void resolveProfileId() {
-    if (!profileId.isEmpty()) return;
-    try (RemoteAccountLinks links = new RemoteAccountLinks(getApplication())) {
-      String endpoint = SupabaseHttp.enabled(getApplication())
-          ? com.example.asm_final.BuildConfig.SUPABASE_URL : BackendClient.endpoint(getApplication());
-      profileId = links.remoteId(owner, endpoint);
-    } catch (Exception ignored) {
-      // Keep the friends page available while the account link is unavailable.
-    }
-  }
-
   public void refreshFriends() {
-    if (closed || ActiveUser.get(getApplication()) != owner) return;
+    if (!current()) return;
+    if (mutating || refreshing) {
+      pendingRefresh = true;
+      return;
+    }
+    refreshing = true;
+    int version = ++friendsGeneration;
     FriendsState old = friendsState.getValue();
-    friendsState.setValue(new FriendsState(old == null ? Collections.emptyList() : old.items, true, false, ""));
+    friendsState.setValue(new FriendsState(old == null ? Collections.emptyList() : old.items,
+        true, false, old != null && confirmation(old.message) ? old.message : ""));
     network.execute(() -> {
       try {
-        resolveProfileId();
         List<FriendshipRepository.Item> loaded = friendships.list(owner);
-        main.post(() -> {
-          if (!closed && ActiveUser.get(getApplication()) == owner)
-            friendsState.setValue(new FriendsState(loaded, false, false, ""));
+        main.execute(() -> {
+          refreshing = false;
+          if (current() && version == friendsGeneration && !mutating) {
+            FriendsState previous = friendsState.getValue();
+            String message = previous != null && confirmation(previous.message) ? previous.message : "";
+            friendsState.setValue(new FriendsState(loaded, false, false, message));
+          }
+          refreshPending();
         });
       } catch (Exception failure) {
-        main.post(() -> {
-          if (!closed && ActiveUser.get(getApplication()) == owner) {
+        main.execute(() -> {
+          refreshing = false;
+          if (current() && version == friendsGeneration && !mutating) {
             FriendsState previous = friendsState.getValue();
             friendsState.setValue(new FriendsState(previous == null ? Collections.emptyList() : previous.items,
                 false, true, friendFailureCode(failure, "LOAD_FAILED")));
           }
+          refreshPending();
         });
       }
     });
+  }
+
+  private void refreshPending() {
+    if (current() && pendingRefresh && !mutating && !refreshing) {
+      pendingRefresh = false;
+      refreshFriends();
+    }
   }
 
   public void sendFriendRequest(String profileId) {
@@ -163,32 +194,40 @@ public final class FriendsViewModel extends AndroidViewModel {
   private interface FriendMutation { FriendshipRepository.Item run() throws Exception; }
 
   private void runFriendOperation(String successCode, FriendMutation mutation) {
-    if (closed || ActiveUser.get(getApplication()) != owner) return;
+    if (!current() || mutating) return;
+    mutating = true;
+    ++friendsGeneration;
     FriendsState old = friendsState.getValue();
-    friendsState.setValue(new FriendsState(old == null ? Collections.emptyList() : old.items, true, false, ""));
+    List<FriendshipRepository.Item> fallbackItems = old == null ? Collections.emptyList() : old.items;
+    friendsState.setValue(new FriendsState(fallbackItems, true, false, ""));
     network.execute(() -> {
       try {
         mutation.run();
       } catch (Exception failure) {
-        main.post(() -> {
-          if (!closed && ActiveUser.get(getApplication()) == owner) {
-            FriendsState previous = friendsState.getValue();
-            friendsState.setValue(new FriendsState(previous == null ? Collections.emptyList() : previous.items,
-                false, true, friendFailureCode(failure, "ACTION_FAILED")));
-          }
+        main.execute(() -> {
+          mutating = false;
+          if (current())
+            friendsState.setValue(new FriendsState(fallbackItems, false, true,
+                friendFailureCode(failure, "ACTION_FAILED")));
+          // A queued invalidation must not erase the action error before it is seen.
+          pendingRefresh = false;
         });
         return;
       }
-
-      // A mutation can succeed even if the follow-up list refresh fails.
-      // Keep the confirmed outcome instead of showing a false failure and inviting a duplicate retry.
-      FriendsState before = friendsState.getValue();
-      List<FriendshipRepository.Item> loaded = before == null ? Collections.emptyList() : before.items;
-      try { loaded = friendships.list(owner); } catch (Exception ignored) { }
+      // A confirmed mutation stays successful even if the follow-up list fails.
+      List<FriendshipRepository.Item> loaded = fallbackItems;
+      boolean listLoaded = false;
+      try {
+        loaded = friendships.list(owner);
+        listLoaded = true;
+      } catch (Exception ignored) { }
       List<FriendshipRepository.Item> result = loaded;
-      main.post(() -> {
-        if (!closed && ActiveUser.get(getApplication()) == owner)
-          friendsState.setValue(new FriendsState(result, false, false, successCode));
+      boolean refreshed = listLoaded;
+      main.execute(() -> {
+        mutating = false;
+        if (current()) friendsState.setValue(new FriendsState(result, false, false, successCode));
+        if (refreshed) refreshPending();
+        else pendingRefresh = false;
       });
     });
   }
@@ -196,6 +235,6 @@ public final class FriendsViewModel extends AndroidViewModel {
   @Override
   protected void onCleared() {
     closed = true;
-    network.shutdownNow();
+    if (network instanceof ExecutorService) ((ExecutorService) network).shutdownNow();
   }
 }

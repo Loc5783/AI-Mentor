@@ -1,6 +1,8 @@
 package com.example.asm_final.competition;
 
 import android.content.Context;
+import com.example.asm_final.BuildConfig;
+import com.example.asm_final.accounts.RemoteAccountLinks;
 import com.example.asm_final.supabase.SupabaseAccounts;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -10,13 +12,21 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /** Searches only public learner names through the authenticated, row-protected profile view. */
-public final class SupabaseLearnerSearch {
+public final class SupabaseLearnerSearch implements LearnerDirectory {
   private final Context context;
 
   public SupabaseLearnerSearch(Context context) {
     this.context = context.getApplicationContext();
   }
 
+  @Override
+  public String currentProfileId(int owner) throws Exception {
+    try (RemoteAccountLinks links = new RemoteAccountLinks(context)) {
+      return links.remoteId(owner, BuildConfig.SUPABASE_URL);
+    }
+  }
+
+  @Override
   public List<FriendsViewModel.SearchItem> search(int owner, String input) throws Exception {
     String query = input.replaceAll("[^\\p{L}\\p{N} ]", " ").trim().replaceAll(" +", " ");
     if (query.length() < 2) return Collections.emptyList();

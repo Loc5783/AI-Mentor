@@ -6,7 +6,6 @@ import androidx.lifecycle.*;
 import com.example.asm_final.AiMentorApplication;
 import com.example.mentor.data.ActiveUser;
 import java.util.concurrent.*;
-import java.util.*;
 
 /** Owns selection and asynchronous state; obsolete results cannot overwrite a newer filter. */
 public final class CompetitionViewModel extends AndroidViewModel {
