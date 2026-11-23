@@ -2,6 +2,7 @@ package com.example.asm_final.ui
 
 import com.example.mentor.ui.design.mentorHeader
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.example.asm_final.AiMentorApplication
 import com.example.asm_final.R
 import com.example.asm_final.learning.BackendLibraryRepository
+import com.example.asm_final.supabase.SupabaseHttp
 import com.example.mentor.data.ActiveUser
 import com.example.asm_final.utils.LocaleHelper
 import com.example.mentor.learning.SubjectId
@@ -83,7 +85,9 @@ class SubjectHubUi(
                 onRetryLoad = { retryLoad.run() },
                 onChooseGrade = { chooseGrade.run() },
                 onSelectSection = navModel::navigateTo,
-                onOpenAiChat = { openAiChat?.run() }
+                onOpenAiChat = { openAiChat?.run() },
+                onOpenExamPack = { context.startActivity(Intent(context, com.example.asm_final.activities.ExamPackActivity::class.java)) },
+                examPackAvailable = SupabaseHttp.enabled(context)
             )
             HubSection.LIBRARY -> {
                 val subject = navModel.selectedSubject
@@ -148,7 +152,9 @@ fun LessonHubMainView(
     onRetryLoad: () -> Unit,
     onChooseGrade: () -> Unit,
     onSelectSection: (HubSection) -> Unit,
-    onOpenAiChat: () -> Unit
+    onOpenAiChat: () -> Unit,
+    onOpenExamPack: () -> Unit = {},
+    examPackAvailable: Boolean = false
 ) {
     val palette = premiumDashboardPalette(com.example.asm_final.utils.ThemeHelper.isDarkMode(
         androidx.compose.ui.platform.LocalContext.current))
@@ -215,6 +221,9 @@ fun LessonHubMainView(
                     stringResource(R.string.lesson_hub_team_os_desc), stringResource(R.string.lesson_hub_team_os),
                     { onSelectSection(HubSection.TEAM_OS) })
             }
+            if (examPackAvailable) HubSectionCard("06", stringResource(R.string.exam_pack_hub_title),
+                stringResource(R.string.exam_pack_hub_desc), stringResource(R.string.exam_pack_hub_open),
+                onOpenExamPack)
             Spacer(Modifier.height(16.dp))
         }
     }

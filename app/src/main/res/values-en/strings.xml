@@ -39,4 +39,7 @@ BTEC FPT Student</string>
   <string name="reminders_channel_desc">Daily notifications to remind you to review knowledge</string>
   <string name="reminders_notif_title">It\'s time to study! 📚</string>
   <string name="reminders_notif_content">Open AI Mentor to review your lessons together.</string>
+  <string name="exam_pack_hub_title">Your exam packs</string>
+  <string name="exam_pack_hub_desc">Create a pack from a PDF or image, review questions, and practice</string>
+  <string name="exam_pack_hub_open">Open exam packs</string>
 </resources>
