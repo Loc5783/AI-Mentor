@@ -1,4 +1,6 @@
 import json
+import time
+import uuid
 import pytest
 from starlette.testclient import TestClient
 
@@ -70,6 +72,32 @@ def test_config_endpoint(env):
     assert "physics" in data["subjects"]
     assert "math" in data["subjects"]
     assert data["defaultQuestions"] == 5
+
+
+def test_history_is_account_scoped_and_contains_no_answer_keys(env):
+    c = env["client"]
+    assert c.get("/ai-practice/sessions").status_code == 401
+    own_id, other_id = str(uuid.uuid4()), str(uuid.uuid4())
+    now = time.time()
+    with env["app"].state.db.transaction() as db:
+        for sid, owner, state in (
+            (own_id, env["user1_id"], "IN_PROGRESS"),
+            (other_id, env["user2_id"], "COMPLETED"),
+        ):
+            db.execute("""INSERT INTO ai_practice_sessions
+                (id,user_id,subject_id,grade,topic,difficulty,question_count,
+                 questions_snapshot,answers,state,created_at,updated_at)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?)""",
+                (sid, owner, "math", 10, "Đạo hàm", "MEDIUM", 1,
+                 json.dumps([{"id": "q1", "correctOption": "A"}]), "{}", state, now, now))
+    own = c.get("/ai-practice/sessions", headers=auth(env["token1"]))
+    assert own.status_code == 200
+    assert own_id in [item["id"] for item in own.json()["items"]]
+    assert other_id not in [item["id"] for item in own.json()["items"]]
+    assert "correctOption" not in own.text
+    other = c.get("/ai-practice/sessions", headers=auth(env["token2"]))
+    assert other.status_code == 200
+    assert own_id not in [item["id"] for item in other.json()["items"]]
 
 
 def test_unauthenticated_and_ownership_isolation(env):

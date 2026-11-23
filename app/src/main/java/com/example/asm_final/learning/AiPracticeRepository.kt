@@ -20,6 +20,10 @@ interface AiPracticeRepository {
     ): AiPracticeSession
     suspend fun getSession(sessionId: String): AiPracticeSession
     suspend fun getResumableSession(): AiPracticeSession? = null
+    suspend fun listHistory(): List<AiPracticeHistoryItem> = getResumableSession()?.let {
+        listOf(AiPracticeHistoryItem(it.id, it.subjectId, it.grade, it.topic,
+            it.questionCount, it.answers.size, it.state, ""))
+    } ?: emptyList()
     suspend fun submitAnswer(sessionId: String, questionId: String, option: String): AiAnswerResult
     suspend fun submitAnswerOperation(sessionId: String, questionId: String, option: String, submissionId: String): AiAnswerResult =
         submitAnswer(sessionId, questionId, option)
@@ -57,6 +61,18 @@ class BackendAiPracticeRepository(
                 sessionPrefs.edit().remove(pointerKey()).apply()
                 null
             } else throw failure
+        }
+    }
+
+    override suspend fun listHistory(): List<AiPracticeHistoryItem> = withContext(Dispatchers.IO) {
+        val response = client().request("GET", "/ai-practice/sessions?limit=50", null, null, null)
+        val items = response.optJSONArray("items") ?: JSONArray()
+        (0 until items.length()).map { i ->
+            val row = items.getJSONObject(i)
+            AiPracticeHistoryItem(row.getString("id"), row.getString("subjectId"),
+                row.getInt("grade"), row.getString("topic"), row.getInt("questionCount"),
+                row.optInt("answeredCount"), row.getString("state"),
+                row.optString("updatedAt"))
         }
     }
 

@@ -33,6 +33,12 @@ class AiPracticeViewModelTest {
         var explanationDeferred: CompletableDeferred<String>? = null
         var resumable: AiPracticeSession? = null
         override suspend fun getResumableSession(): AiPracticeSession? = resumable
+        var historyItems = emptyList<AiPracticeHistoryItem>()
+        var failHistoryWith: Exception? = null
+        override suspend fun listHistory(): List<AiPracticeHistoryItem> {
+            failHistoryWith?.let { throw it }
+            return historyItems
+        }
         var getConfigCalls = 0
         var failConfigWith: Exception? = null
         val creationKeys = mutableListOf<String?>()
@@ -293,6 +299,42 @@ class AiPracticeViewModelTest {
         assertNotNull(vm.config)
         assertTrue(vm.config?.configured == true)
         assertEquals(3, vm.config?.subjects?.size)
+    }
+
+    @Test
+    fun historyShowsOnlyListedSessionsAndRestoresUnfinishedWork() = runTest {
+        val vm = AiPracticeViewModel(fakeRepo, backgroundScope)
+        currentVm = vm
+        runCurrent()
+        val active = AiPracticeHistoryItem("active-1", "math", 10, "Đạo hàm", 2, 1,
+            "IN_PROGRESS", "2026-11-23")
+        fakeRepo.historyItems = listOf(active)
+        vm.openHistory()
+        runCurrent()
+        assertEquals(AiPracticeScreenState.HISTORY, vm.screenState)
+        assertEquals(listOf(active), vm.history)
+        vm.openHistorySession(active.copy(id = "someone-else"))
+        runCurrent()
+        assertEquals(AiPracticeScreenState.HISTORY, vm.screenState)
+        fakeRepo.resumable = AiPracticeSession(active.id, "math", "Toán", 10, "Đạo hàm",
+            "MEDIUM", 2, 0, "IN_PROGRESS", fakeRepo.sampleQuestions, emptyMap())
+        vm.openHistorySession(active)
+        runCurrent()
+        assertEquals(AiPracticeScreenState.PRACTICING, vm.screenState)
+        assertEquals(active.id, vm.session?.id)
+    }
+
+    @Test
+    fun historyFailureDoesNotInventAResumableSession() = runTest {
+        fakeRepo.failHistoryWith = java.io.IOException("offline")
+        val vm = AiPracticeViewModel(fakeRepo, backgroundScope)
+        currentVm = vm
+        runCurrent()
+        vm.openHistory()
+        runCurrent()
+        assertEquals(AiPracticeScreenState.HISTORY, vm.screenState)
+        assertTrue(vm.history.isEmpty())
+        assertNotNull(vm.errorMessage)
     }
 
     @Test

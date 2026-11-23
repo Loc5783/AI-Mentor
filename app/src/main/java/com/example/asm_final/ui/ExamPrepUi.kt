@@ -65,6 +65,10 @@ fun ExamPrepScreen(
     }
 
     val state by viewModel.uiState.collectAsState()
+    var showHistory by remember(viewModel) { mutableStateOf(false) }
+    LaunchedEffect(showHistory, state.selectedSubjectId, state.selectedGrade) {
+        if (showHistory) viewModel.loadHistory()
+    }
 
     ActiveStudyTime(state.screenState == ExamScreenState.IN_PROGRESS,
         state.currentSession?.subjectId, state.currentSession?.grade ?: initialGrade)
@@ -72,6 +76,8 @@ fun ExamPrepScreen(
     when (state.screenState) {
         ExamScreenState.LIST -> ExamListContent(
             state = state,
+            showHistory = showHistory,
+            onToggleHistory = { showHistory = !showHistory },
             onSelectSubject = { viewModel.setSubjectFilter(it) },
             onSelectGrade = { viewModel.setGradeFilter(it) },
             onSelectExamType = { viewModel.setExamTypeFilter(it) },
@@ -79,7 +85,7 @@ fun ExamPrepScreen(
             onSelectExam = { viewModel.selectExam(it) },
             onResumeSession = { viewModel.resumeSession(it) },
             onReviewSession = { viewModel.reviewSession(it) },
-            onReload = { viewModel.loadExams() },
+            onReload = { if (showHistory) viewModel.loadHistory() else viewModel.loadExams() },
             onBack = onBack,
             onOpenNotebook = { onOpenNotebook?.invoke(null) }
         )
@@ -122,6 +128,8 @@ fun ExamPrepScreen(
 @Composable
 private fun ExamListContent(
     state: ExamUiState,
+    showHistory: Boolean,
+    onToggleHistory: () -> Unit,
     onSelectSubject: (String?) -> Unit,
     onSelectGrade: (Int) -> Unit,
     onSelectExamType: (String?) -> Unit,
@@ -156,6 +164,9 @@ private fun ExamListContent(
                 }
                 Text("Ôn thi Giữa kỳ & Cuối kỳ", style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 12.dp))
+                TextButton(onClick = onToggleHistory) {
+                    Text(if (showHistory) "← Danh sách đề" else "Lịch sử làm bài →")
+                }
             }
         }
 
@@ -254,7 +265,9 @@ private fun ExamListContent(
         HorizontalDivider()
 
         // List Content
-        if (state.isLoadingExams) {
+        if (showHistory) {
+            ExamHistoryContent(state, onResumeSession, onReviewSession, onReload)
+        } else if (state.isLoadingExams) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     CircularProgressIndicator(strokeWidth = 3.dp)
@@ -293,11 +306,7 @@ private fun ExamListContent(
                         exam = exam,
                         activeSession = activeSession,
                         onSelect = {
-                            if (activeSession != null) {
-                                onResumeSession(activeSession)
-                            } else {
-                                onSelectExam(exam)
-                            }
+                            if (activeSession != null) onToggleHistory() else onSelectExam(exam)
                         }
                     )
                 }
@@ -319,6 +328,65 @@ private fun ExamListContent(
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExamHistoryContent(
+    state: ExamUiState,
+    onResume: (ExamSession) -> Unit,
+    onReview: (ExamSession) -> Unit,
+    onReload: () -> Unit
+) {
+    val active = state.historySessions.filter { it.state == "IN_PROGRESS" }
+    val completed = state.historySessions.filter { it.state == "SUBMITTED" || it.state == "TIMED_OUT" }
+    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        if (state.isHistoryLoading) item { CircularProgressIndicator() }
+        state.historyError?.let { message ->
+            item {
+                MentorErrorNotice(message)
+                TextButton(onClick = onReload) { Text("Thử lại") }
+            }
+        }
+        if (!state.isHistoryLoading && state.historyError == null && state.historySessions.isEmpty()) {
+            item { Text("Bạn chưa có bài thi đã lưu ở lớp này.",
+                color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        }
+        if (active.isNotEmpty()) {
+            item { Text("Đang làm dở", style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold) }
+            items(active, key = { it.id }) { session ->
+                ExamHistoryCard(session, false, onResume, onReview)
+            }
+        }
+        if (completed.isNotEmpty()) {
+            item { Text("Đã hoàn thành", style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold) }
+            items(completed, key = { it.id }) { session ->
+                ExamHistoryCard(session, true, onResume, onReview)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExamHistoryCard(
+    session: ExamSession,
+    completed: Boolean,
+    onResume: (ExamSession) -> Unit,
+    onReview: (ExamSession) -> Unit
+) {
+    Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(session.examTitle, style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold)
+            Text(if (completed) String.format(Locale.ROOT, "%.2f/10 điểm", session.score10)
+                else "Bài đang làm · ${session.totalCount} câu",
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Button(onClick = { if (completed) onReview(session) else onResume(session) }) {
+                Text(if (completed) "Xem lại bài" else "Làm tiếp")
             }
         }
     }
@@ -447,7 +515,7 @@ private fun ExamCard(
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
-                            "Tiếp tục làm →",
+                            "Xem trong lịch sử →",
                             style = MaterialTheme.typography.bodySmall,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary

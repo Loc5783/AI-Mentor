@@ -407,6 +407,31 @@ class AiPracticeService:
     def set_provider(self, provider: AiProvider):
         self.provider = provider
 
+    def list_history(self, user_id: int, limit: int = 50) -> dict[str, Any]:
+        """Return only the learner's session summaries, never question answer keys."""
+        def answered_count(raw: str) -> int:
+            try:
+                answers = json.loads(raw or "{}")
+                return len(answers) if isinstance(answers, dict) else 0
+            except (TypeError, ValueError):
+                return 0
+
+        with self.db.read() as db:
+            rows = db.execute(
+                """SELECT id, subject_id, grade, topic, question_count, answers, state, updated_at
+                   FROM ai_practice_sessions
+                   WHERE user_id=? AND state IN ('IN_PROGRESS', 'COMPLETED')
+                   ORDER BY updated_at DESC, id DESC LIMIT ?""",
+                (user_id, min(max(limit, 1), 100)),
+            ).fetchall()
+        return {"items": [
+            {"id": row["id"], "subjectId": row["subject_id"], "grade": row["grade"],
+             "topic": row["topic"], "questionCount": row["question_count"],
+             "answeredCount": answered_count(row["answers"]),
+             "state": row["state"], "updatedAt": row["updated_at"]}
+            for row in rows
+        ]}
+
     def _claim_provider(self, user_id, operation, key, request_hash):
         """Reserve a paid call durably without holding a transaction during network IO.
 

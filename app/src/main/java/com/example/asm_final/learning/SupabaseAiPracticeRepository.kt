@@ -81,6 +81,18 @@ class SupabaseAiPracticeRepository(context: Context, private val owner: Int) : A
         parseSession(JSONObject(raw)).also { prefs.edit().putString(pointerKey(), it.id).apply() }
     }
 
+    override suspend fun listHistory(): List<AiPracticeHistoryItem> = withContext(Dispatchers.IO) {
+        val result = JSONObject(request("POST", "/rest/v1/rpc/mentor_learning_session_history",
+            JSONObject().put("p_kind", "ai_practice").put("p_limit", 50)))
+        val rows = result.optJSONArray("items") ?: JSONArray()
+        (0 until rows.length()).map { index ->
+            val row = rows.getJSONObject(index)
+            AiPracticeHistoryItem(row.getString("id"), row.getString("subjectId"),
+                row.getInt("grade"), row.getString("topic"), row.getInt("questionCount"),
+                row.optInt("answeredCount"), row.getString("state"), row.optString("updatedAt"))
+        }
+    }
+
     override suspend fun createSession(subjectId: String, grade: Int, topic: String,
                                        difficulty: String, questionCount: Int,
                                        idempotencyKey: String?): AiPracticeSession = withContext(Dispatchers.IO) {

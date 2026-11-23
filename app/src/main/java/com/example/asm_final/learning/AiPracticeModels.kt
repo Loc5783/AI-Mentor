@@ -59,6 +59,17 @@ data class AiPracticeSession(
     val summary: AiPracticeSummary? = null
 )
 
+data class AiPracticeHistoryItem(
+    val id: String,
+    val subjectId: String,
+    val grade: Int,
+    val topic: String,
+    val questionCount: Int,
+    val answeredCount: Int,
+    val state: String,
+    val updatedAt: String
+)
+
 data class AiAnswerResult(
     val questionId: String,
     val isCorrect: Boolean,

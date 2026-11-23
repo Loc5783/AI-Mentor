@@ -43,7 +43,7 @@ class SupabaseExamRepository(
     }
 
     override suspend fun listUserSessions(subjectId: String?, grade: Int?): List<ExamSession> = withContext(Dispatchers.IO) {
-        val query = JSONObject()
+        val query = JSONObject().put("limit", 100)
         subjectId?.takeIf { it.isNotBlank() }?.let { query.put("subject_id", it) }
         grade?.takeIf { it in 10..12 }?.let { query.put("grade", it) }
         val rows = call("GET", "/exams/sessions", query = query).optJSONArray("items") ?: JSONArray()

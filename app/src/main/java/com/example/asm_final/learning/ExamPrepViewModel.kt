@@ -37,6 +37,9 @@ data class ExamUiState(
     val selectedSemester: Int? = null, // null = all, 1, 2
     val exams: List<ExamSummary> = emptyList(),
     val activeSessionsByExamId: Map<String, ExamSession> = emptyMap(),
+    val historySessions: List<ExamSession> = emptyList(),
+    val isHistoryLoading: Boolean = false,
+    val historyError: String? = null,
     val completedSessions: List<ExamSession> = emptyList(),
     val sessionListError: String? = null,
     val isLoadingExams: Boolean = false,
@@ -123,6 +126,7 @@ class ExamPrepViewModel(
     private var isCleared = false
 
     private var loadExamsJob: Job? = null
+    private var historyGeneration = 0
     private var startExamJob: Job? = null
     private var submitJob: Job? = null
     private var openSessionJob: Job? = null
@@ -152,13 +156,17 @@ class ExamPrepViewModel(
     }
 
     fun setSubjectFilter(subjectId: String?) {
-        _uiState.update { it.copy(selectedSubjectId = subjectId) }
+        historyGeneration++
+        _uiState.update { it.copy(selectedSubjectId = subjectId,
+            historySessions = emptyList(), historyError = null) }
         loadExams()
     }
 
     fun setGradeFilter(grade: Int) {
         if (grade in 10..12) {
-            _uiState.update { it.copy(selectedGrade = grade) }
+            historyGeneration++
+            _uiState.update { it.copy(selectedGrade = grade,
+                historySessions = emptyList(), historyError = null) }
             loadExams()
         }
     }
@@ -237,6 +245,31 @@ class ExamPrepViewModel(
         }
         loadExamsJob = job
         return job
+    }
+
+    fun loadHistory(): Job {
+        val generation = ++historyGeneration
+        val controller = controllerGeneration
+        val subject = _uiState.value.selectedSubjectId
+        val grade = _uiState.value.selectedGrade
+        _uiState.update { it.copy(historySessions = emptyList(),
+            isHistoryLoading = true, historyError = null) }
+        return scope.launch {
+            try {
+                val sessions = repository.listUserSessions(subjectId = subject, grade = grade)
+                if (generation == historyGeneration && controller == controllerGeneration && !isCleared) {
+                    _uiState.update { it.copy(historySessions = sessions,
+                        isHistoryLoading = false, historyError = null) }
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (generation == historyGeneration && controller == controllerGeneration && !isCleared) {
+                    _uiState.update { it.copy(isHistoryLoading = false,
+                        historyError = "Chưa tải được lịch sử bài thi. Kiểm tra mạng rồi thử lại.") }
+                }
+            }
+        }
     }
 
     fun selectExam(exam: ExamSummary) {

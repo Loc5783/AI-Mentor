@@ -70,6 +70,7 @@ fun AiPracticeScreen(
             onBack = onBack,
             onOpenNotebook = onOpenNotebook
         )
+        AiPracticeScreenState.HISTORY -> AiPracticeHistoryContent(viewModel)
         AiPracticeScreenState.GENERATING -> AiPracticeGeneratingContent(
             onCancel = { viewModel.cancelGeneration() }
         )
@@ -83,6 +84,63 @@ fun AiPracticeScreen(
             onBack = onBack,
             onOpenNotebook = onOpenNotebook
         )
+    }
+}
+
+@Composable
+private fun AiPracticeHistoryContent(viewModel: AiPracticeViewModel) {
+    val active = viewModel.history.filter { it.state == "IN_PROGRESS" }
+    val completed = viewModel.history.filter { it.state == "COMPLETED" }
+    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            TextButton(onClick = viewModel::closeHistory) { Text("← Luyện cùng AI") }
+            Text("Lịch sử làm bài", style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold)
+        }
+        LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            if (viewModel.isHistoryLoading) item { CircularProgressIndicator() }
+            viewModel.errorMessage?.let { message ->
+                item {
+                    MentorErrorNotice(message)
+                    TextButton(onClick = viewModel::refreshHistory) { Text("Thử lại") }
+                }
+            }
+            if (!viewModel.isHistoryLoading && viewModel.errorMessage == null && viewModel.history.isEmpty()) {
+                item { Text("Bạn chưa có bài luyện AI nào.",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            }
+            if (active.isNotEmpty()) {
+                item { Text("Đang làm dở", style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold) }
+                items(active, key = { it.id }) { entry ->
+                    AiPracticeHistoryCard(entry, viewModel)
+                }
+            }
+            if (completed.isNotEmpty()) {
+                item { Text("Đã hoàn thành", style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold) }
+                items(completed, key = { it.id }) { entry ->
+                    AiPracticeHistoryCard(entry, viewModel)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AiPracticeHistoryCard(entry: AiPracticeHistoryItem, viewModel: AiPracticeViewModel) {
+    val subject = SubjectId.values().firstOrNull { it.wireId == entry.subjectId }?.label("vi")
+        ?: "Môn học"
+    Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(entry.topic, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            Text("$subject · Lớp ${entry.grade}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("Đã làm ${entry.answeredCount}/${entry.questionCount} câu",
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Button(onClick = { viewModel.openHistorySession(entry) }, enabled = !viewModel.isSubmitting) {
+                Text(if (entry.state == "IN_PROGRESS") "Làm tiếp" else "Xem kết quả")
+            }
+        }
     }
 }
 
@@ -174,13 +232,10 @@ private fun AiPracticeSetupContent(
                 }
             }
 
-            viewModel.resumableSession?.let { saved ->
-                OutlinedButton(
-                    onClick = { viewModel.resumePractice() },
-                    enabled = !viewModel.isSubmitting,
-                    modifier = Modifier.fillMaxWidth().testTag("AiPracticeResumeBtn")
-                ) { Text("Tiếp tục bài đang làm: ${saved.topic}") }
-            }
+            OutlinedButton(
+                onClick = { viewModel.openHistory() },
+                modifier = Modifier.fillMaxWidth().testTag("AiPracticeHistoryBtn")
+            ) { Text("Lịch sử làm bài →") }
 
             // Warning if AI provider is not configured
             if (config != null && (!config.configured || config.provider == "demo")) {

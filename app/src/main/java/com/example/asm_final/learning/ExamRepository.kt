@@ -143,7 +143,7 @@ class BackendExamRepository(
     }
 
     override suspend fun listUserSessions(subjectId: String?, grade: Int?): List<ExamSession> = withContext(Dispatchers.IO) {
-        val queryParts = mutableListOf<String>()
+        val queryParts = mutableListOf("limit=100")
         if (!subjectId.isNullOrBlank()) queryParts.add("subject_id=" + java.net.URLEncoder.encode(subjectId, "UTF-8"))
         if (grade != null && grade > 0) queryParts.add("grade=$grade")
         val path = if (queryParts.isEmpty()) "/exams/sessions" else "/exams/sessions?" + queryParts.joinToString("&")

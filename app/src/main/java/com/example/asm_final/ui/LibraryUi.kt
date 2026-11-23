@@ -71,6 +71,7 @@ import com.example.asm_final.learning.PracticeQuestion
 import com.example.asm_final.learning.visiblePracticeOptions
 
 import com.example.asm_final.learning.PracticeSession
+import com.example.asm_final.learning.SessionSummary
 
 import com.example.asm_final.learning.QuizSummary
 
@@ -427,6 +428,7 @@ fun LibraryPracticeScreen(
     val pointerStore = remember(context) { SharedPreferencesSessionPointerStore(context) }
 
     val controller = remember(repository, pointerStore) { LibraryPracticeController(repository, scope, pointerStore) }
+    var showHistory by remember(repository, subjectId, grade) { mutableStateOf(false) }
 
     val selectionState by controller.selectionState.collectAsState()
 
@@ -438,6 +440,12 @@ fun LibraryPracticeScreen(
 
     BackHandler(enabled = sessionState != null) {
         controller.backToList()
+    }
+
+    BackHandler(enabled = sessionState == null && showHistory) { showHistory = false }
+
+    LaunchedEffect(showHistory, sessionState == null, subjectId, grade) {
+        if (showHistory && sessionState == null) controller.loadHistory(subjectId.wireId, grade)
     }
 
 
@@ -470,7 +478,13 @@ fun LibraryPracticeScreen(
 
 
 
-    if (sessionState == null) {
+    if (sessionState == null && showHistory) {
+        LibraryHistoryView(subjectId, grade, selectionState,
+            onBack = { showHistory = false },
+            onReload = { controller.loadHistory(subjectId.wireId, grade) },
+            onResume = { controller.resumeSessionDirect(it) },
+            onReview = { session, title -> controller.reviewHistorySession(session, title) })
+    } else if (sessionState == null) {
 
         // LUỒNG 1: DANH SÁCH BỘ ĐỀ
 
@@ -483,6 +497,7 @@ fun LibraryPracticeScreen(
             controller = controller,
 
             selectionState = selectionState,
+            onShowHistory = { showHistory = true },
 
             onBack = onBack,
 
@@ -521,6 +536,7 @@ private fun LibraryQuizSelectionView(
     grade: Int,
     controller: LibraryPracticeController,
     selectionState: QuizSelectionState,
+    onShowHistory: () -> Unit,
     onBack: () -> Unit,
     onOpenNotebook: () -> Unit
 ) {
@@ -550,6 +566,7 @@ private fun LibraryQuizSelectionView(
                 )
                 OutlinedButton(onClick = onOpenNotebook) { Text("📖 Sổ lỗi sai") }
             }
+            TextButton(onClick = onShowHistory) { Text("Lịch sử làm bài →") }
         }
 
         if (selectionState.confirmingRestartQuiz != null) {
@@ -707,10 +724,10 @@ private fun LibraryQuizSelectionView(
                             }
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                                 Button(
-                                    onClick = { controller.resumeSessionDirect(activeCard.session) },
+                                    onClick = onShowHistory,
                                     enabled = selectionState.startingQuizId == null && selectionState.resumingQuizId == null
                                 ) {
-                                    Text(if (activeCard.isResuming) "Đang mở lại..." else "Tiếp tục làm bài")
+                                    Text("Xem trong lịch sử")
                                 }
                             }
                         }
@@ -881,10 +898,10 @@ private fun LibraryQuizSelectionView(
                                             Text("Bắt đầu lại")
                                         }
                                         Button(
-                                            onClick = { controller.resumeSession(quiz, activeSession.id) },
+                                            onClick = onShowHistory,
                                             enabled = selectionState.startingQuizId == null && selectionState.resumingQuizId == null
                                         ) {
-                                            Text(if (itemPresentation.isResuming) "Đang mở lại..." else "Tiếp tục làm bài")
+                                            Text("Xem trong lịch sử")
                                         }
                                     }
                                 } else {
@@ -910,6 +927,82 @@ private fun LibraryQuizSelectionView(
 
 @Composable
 
+private fun LibraryHistoryView(
+    subjectId: SubjectId,
+    grade: Int,
+    state: QuizSelectionState,
+    onBack: () -> Unit,
+    onReload: () -> Unit,
+    onResume: (SessionSummary) -> Unit,
+    onReview: (SessionSummary, String) -> Unit
+) {
+    val active = state.historySessions.filter { it.state == "IN_PROGRESS" }
+    val completed = state.historySessions.filter { it.state == "COMPLETED" }
+    val subjectName = subjectId.label("vi")
+    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            TextButton(onClick = onBack) { Text("← Kho câu hỏi") }
+            Text("Lịch sử làm bài", style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold)
+        }
+        LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            if (state.isHistoryLoading) item { CircularProgressIndicator() }
+            state.startErrorMessage?.let { message -> item { MentorErrorNotice(message) } }
+            state.historyError?.let { message ->
+                item {
+                    MentorErrorNotice(message)
+                    TextButton(onClick = onReload) { Text("Thử lại") }
+                }
+            }
+            if (!state.isHistoryLoading && state.historyError == null && state.historySessions.isEmpty()) {
+                item { Text("Bạn chưa có bài làm trong $subjectName lớp $grade.",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            }
+            if (active.isNotEmpty()) {
+                item { Text("Đang làm dở", style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold) }
+                items(active, key = { it.id }) { session ->
+                    LibraryHistoryCard(session, state, subjectName, onResume, onReview)
+                }
+            }
+            if (completed.isNotEmpty()) {
+                item { Text("Đã hoàn thành", style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold) }
+                items(completed, key = { it.id }) { session ->
+                    LibraryHistoryCard(session, state, subjectName, onResume, onReview)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LibraryHistoryCard(
+    session: SessionSummary,
+    state: QuizSelectionState,
+    subjectName: String,
+    onResume: (SessionSummary) -> Unit,
+    onReview: (SessionSummary, String) -> Unit
+) {
+    val title = state.quizzes?.firstOrNull { it.id == session.quizId }?.title
+        ?: "Bài luyện $subjectName · Lớp ${session.grade}"
+    Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            Text(if (session.state == "IN_PROGRESS")
+                "Đã làm ${session.answeredCount}/${session.totalCount} câu"
+            else "${session.correctCount}/${session.totalCount} câu đúng",
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Button(onClick = {
+                if (session.state == "IN_PROGRESS") onResume(session) else onReview(session, title)
+            }, enabled = !state.isHistoryLoading && state.resumingQuizId == null) {
+                Text(if (session.state == "IN_PROGRESS") "Làm tiếp" else "Xem lại bài")
+            }
+        }
+    }
+}
+
+@Composable
 private fun LibrarySessionPracticeView(
 
     sessionState: SessionPracticeState,

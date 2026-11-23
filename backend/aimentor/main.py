@@ -1527,6 +1527,10 @@ def create_app(settings=None):
             idempotency_key=key,
         )
 
+    @app.get("/ai-practice/sessions", tags=["AI Practice"])
+    def ai_practice_session_history(limit: int = Query(50, ge=1, le=100), user=Depends(current)):
+        return ai_practice.list_history(user["id"], limit)
+
     @app.get("/ai-practice/sessions/{session_id}", tags=["AI Practice"])
     def ai_practice_session_get(session_id: str, user=Depends(current)):
         return ai_practice.get_session(user["id"], session_id)

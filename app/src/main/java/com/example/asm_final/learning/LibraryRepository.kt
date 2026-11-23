@@ -106,6 +106,8 @@ interface LibraryRepository {
     val ownerId: Int
     suspend fun loadQuizzes(subjectWireId: String, grade: Int): List<QuizSummary>
     suspend fun listActiveSessions(subjectWireId: String, grade: Int): List<SessionSummary>
+    suspend fun listHistorySessions(subjectWireId: String, grade: Int): List<SessionSummary> =
+        listActiveSessions(subjectWireId, grade)
     suspend fun getSession(sessionId: String): PracticeSession
     suspend fun startSession(quizId: String): PracticeSession
     suspend fun submitAnswer(sessionId: String, questionId: String, selectedOption: String): PracticeSession
@@ -176,6 +178,18 @@ class BackendLibraryRepository(
             )
         }
         list
+    }
+
+    override suspend fun listHistorySessions(subjectWireId: String, grade: Int): List<SessionSummary> = withContext(Dispatchers.IO) {
+        val resp = client().request("GET", "/library/sessions?subject_id=$subjectWireId&grade=$grade&state=ALL&limit=50", null, null, null)
+        val items = resp.optJSONArray("items") ?: JSONArray()
+        (0 until items.length()).map { i ->
+            val obj = items.getJSONObject(i)
+            SessionSummary(obj.getString("id"), obj.getString("quizId"), obj.getString("subjectId"),
+                obj.getInt("grade"), obj.getString("state"), obj.optInt("score"),
+                obj.optInt("correctCount"), obj.optInt("totalCount"), obj.optInt("answeredCount"),
+                obj.optInt("firstUnansweredIndex"), obj.optString("updatedAt"))
+        }
     }
 
     override suspend fun getSession(sessionId: String): PracticeSession = withContext(Dispatchers.IO) {

@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 
 enum class AiPracticeScreenState {
     SETUP,
+    HISTORY,
     GENERATING,
     PRACTICING,
     FEEDBACK,
@@ -69,6 +70,10 @@ class AiPracticeViewModel(
     var config by mutableStateOf<AiPracticeConfig?>(null)
         private set
     var resumableSession by mutableStateOf<AiPracticeSession?>(null)
+        private set
+    var history by mutableStateOf<List<AiPracticeHistoryItem>>(emptyList())
+        private set
+    var isHistoryLoading by mutableStateOf(false)
         private set
 
     var session by mutableStateOf<AiPracticeSession?>(null)
@@ -228,16 +233,69 @@ class AiPracticeViewModel(
         }
     }
 
+    fun openHistory() {
+        if (closed) return
+        screenState = AiPracticeScreenState.HISTORY
+        refreshHistory()
+    }
+
+    fun refreshHistory() {
+        if (closed || isHistoryLoading) return
+        val generation = requestGenerationToken
+        isHistoryLoading = true
+        history = emptyList()
+        errorMessage = null
+        vmScope.launch {
+            try {
+                val loaded = repository.listHistory()
+                if (isCurrent(generation) && screenState == AiPracticeScreenState.HISTORY) {
+                    history = loaded
+                    isHistoryLoading = false
+                }
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (e: Exception) {
+                if (isCurrent(generation)) {
+                    isHistoryLoading = false
+                    errorMessage = "Chưa tải được lịch sử làm bài. Kiểm tra mạng rồi thử lại."
+                }
+            }
+        }
+    }
+
+    fun closeHistory() {
+        invalidateWork()
+        isHistoryLoading = false
+        errorMessage = null
+        screenState = AiPracticeScreenState.SETUP
+        if (config == null) loadConfig()
+    }
+
     fun resumePractice() {
         val saved = resumableSession ?: return
+        restoreSession(saved.id)
+    }
+
+    fun openHistorySession(item: AiPracticeHistoryItem) {
+        if (item.state != "IN_PROGRESS" && item.state != "COMPLETED") return
+        if (history.none { it.id == item.id }) return
+        restoreSession(item.id)
+    }
+
+    private fun restoreSession(sessionId: String) {
         if (closed || isSubmitting) return
         invalidateWork()
         val generation = requestGenerationToken
         isSubmitting = true
         vmScope.launch {
             try {
-                val restored = repository.getSession(saved.id)
+                val restored = repository.getSession(sessionId)
                 if (!isCurrent(generation)) return@launch
+                if (restored.state == "ABANDONED") {
+                    isSubmitting = false
+                    errorMessage = "Bài làm này không còn tiếp tục được."
+                    return@launch
+                }
                 session = restored
                 val unanswered = restored.questions.indexOfFirst { !restored.answers.containsKey(it.id) }
                 currentQuestionIndex = if (unanswered >= 0) unanswered else (restored.questions.size - 1).coerceAtLeast(0)
@@ -263,7 +321,7 @@ class AiPracticeViewModel(
             } catch (failure: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isSubmitting = false
-                errorMessage = "Chưa thể mở bài đang làm. Vui lòng thử lại khi có mạng."
+                errorMessage = "Chưa thể mở bài đã lưu. Vui lòng thử lại khi có mạng."
             }
         }
     }
