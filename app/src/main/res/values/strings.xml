@@ -39,4 +39,7 @@ BTEC FPT Student</string>
   <string name="reminders_channel_desc">Thông báo nhắc nhở ôn tập kiến thức hàng ngày</string>
   <string name="reminders_notif_title">Đến giờ học rồi! 📚</string>
   <string name="reminders_notif_content">Hãy mở AI Mentor để cùng ôn tập kiến thức nhé.</string>
+  <string name="exam_pack_hub_title">Kho đề của bạn</string>
+  <string name="exam_pack_hub_desc">Tạo đề từ PDF hoặc ảnh, rà câu hỏi và luyện tập</string>
+  <string name="exam_pack_hub_open">Mở kho đề</string>
 </resources>

@@ -209,8 +209,9 @@ fun LessonHubMainView(
             HubSectionCard("04", stringResource(R.string.lesson_hub_ai_practice),
                 stringResource(R.string.lesson_hub_ai_practice_desc), stringResource(R.string.lesson_hub_ai_practice),
                 { onSelectSection("AI_PRACTICE") })
-            if (examPackAvailable) HubSectionCard("05", "Kho đề của bạn",
-                "Tạo đề từ PDF hoặc ảnh, rà câu hỏi và luyện tập", "Mở kho đề", onOpenExamPack)
+            if (examPackAvailable) HubSectionCard("05", stringResource(R.string.exam_pack_hub_title),
+                stringResource(R.string.exam_pack_hub_desc), stringResource(R.string.exam_pack_hub_open),
+                onOpenExamPack)
             Spacer(Modifier.height(16.dp))
         }
     }

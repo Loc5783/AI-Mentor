@@ -70,6 +70,7 @@ private fun ExamPackPage(store: ExamPackStore, pickedImage: Uri?, onPick: () -> 
     var revealed by remember { mutableStateOf(false) }
     val language = LocaleHelper.getLanguage(LocalContext.current)
     val context = LocalContext.current
+    fun label(vi: String, en: String) = if (language == "en") en else vi
     BackHandler { if (current != null) { current = null; practice = false } else onBack() }
 
     fun run(block: suspend () -> Unit) {
@@ -77,7 +78,10 @@ private fun ExamPackPage(store: ExamPackStore, pickedImage: Uri?, onPick: () -> 
         busy = true; error = ""
         scope.launch {
             try { block() }
-            catch (failure: Exception) { error = failure.message ?: "Không thể kết nối. Hãy thử lại." }
+            catch (failure: Exception) {
+                error = if (language == "en") "Could not complete the request. Please try again."
+                    else failure.message ?: "Không thể kết nối. Hãy thử lại."
+            }
             finally { busy = false }
         }
     }
@@ -87,10 +91,11 @@ private fun ExamPackPage(store: ExamPackStore, pickedImage: Uri?, onPick: () -> 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)) {
         TextButton(onClick = { if (current != null) { current = null; practice = false } else onBack() }) {
-            Text("← Quay lại")
+            Text(label("← Quay lại", "← Back"))
         }
-        Text("Kho đề của bạn", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Text("Tách câu từ PDF hoặc ảnh đề, rà đáp án rồi mới luyện tập. Đề nháp chỉ mình bạn thấy.",
+        Text(label("Kho đề của bạn", "Your exam packs"), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Text(label("Tách câu từ PDF hoặc ảnh đề, rà đáp án rồi mới luyện tập. Đề nháp chỉ mình bạn thấy.",
+            "Extract questions from a PDF or image. Review answers before practice. Drafts are private."),
             style = MaterialTheme.typography.bodyMedium)
         if (busy) LinearProgressIndicator(Modifier.fillMaxWidth())
         if (error.isNotBlank()) Surface(color = MaterialTheme.colorScheme.errorContainer,
@@ -103,32 +108,33 @@ private fun ExamPackPage(store: ExamPackStore, pickedImage: Uri?, onPick: () -> 
             Surface(shape = RoundedCornerShape(22.dp), color = MaterialTheme.colorScheme.surface,
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
                 Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Tạo đề từ PDF hoặc ảnh", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text(label("Tạo đề từ PDF hoặc ảnh", "Create from PDF or image"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     OutlinedTextField(title, { title = it.take(120) }, Modifier.fillMaxWidth(),
-                        label = { Text("Tên đề") }, singleLine = true)
+                        label = { Text(label("Tên đề", "Pack title")) }, singleLine = true)
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         (10..12).forEach { value -> FilterChip(grade == value, onClick = { grade = value },
-                            label = { Text("Lớp $value") }) }
+                            label = { Text(label("Lớp $value", "Grade $value")) }) }
                     }
                     var expanded by remember { mutableStateOf(false) }
                     Box {
-                        OutlinedButton(onClick = { expanded = true }) { Text("Môn: ${subject.label(language)} ▾") }
+                        OutlinedButton(onClick = { expanded = true }) { Text("${label("Môn", "Subject")}: ${subject.label(language)} ▾") }
                         DropdownMenu(expanded, onDismissRequest = { expanded = false }) {
                             SubjectId.values().forEach { item -> DropdownMenuItem(text = { Text(item.label(language)) },
                                 onClick = { subject = item; expanded = false }) }
                         }
                     }
-                    OutlinedButton(onClick = onPick) { Text(if (pickedImage == null) "Chọn tệp đề" else "Đã chọn tệp · Đổi tệp") }
+                    OutlinedButton(onClick = onPick) { Text(if (pickedImage == null)
+                        label("Chọn tệp đề", "Choose a source file") else label("Đã chọn tệp · Đổi tệp", "File selected · Change")) }
                     Button(enabled = !busy && title.isNotBlank() && pickedImage != null, onClick = {
                         val image = pickedImage ?: return@Button
                         run {
                             val created = store.importFile(title, subject.wireId, grade, image)
                             packs = store.list(); current = created; questionIndex = 0
                         }
-                    }) { Text("Tách câu hỏi bằng AI") }
+                    }) { Text(label("Tách câu hỏi bằng AI", "Extract questions with AI")) }
                 }
             }
-            Text("Đề đã lưu", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text(label("Đề đã lưu", "Saved packs"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             packs.forEach { item ->
                 Surface(Modifier.fillMaxWidth().clickable(enabled = !busy) {
                     run { current = store.load(item.id); questionIndex = 0; practice = false }
@@ -138,16 +144,19 @@ private fun ExamPackPage(store: ExamPackStore, pickedImage: Uri?, onPick: () -> 
                         Text(item.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                         val label = runCatching { SubjectId.fromWireId(item.subjectId).label(language) }
                             .getOrDefault(item.subjectId)
-                        Text("Lớp ${item.grade} · $label · Chạm để mở")
+                        Text(if (language == "en") "Grade ${item.grade} · $label · Tap to open"
+                            else "Lớp ${item.grade} · $label · Chạm để mở")
                     }
                 }
             }
         } else if (pack.questions.isEmpty()) {
-            Text("Đề này chưa lưu được câu hỏi. Hãy thử nhập lại tệp khi có mạng.")
+            Text(label("Đề này chưa lưu được câu hỏi. Hãy thử nhập lại tệp khi có mạng.",
+                "This pack has no saved questions. Reimport the source when online."))
         } else {
             val question = pack.questions[questionIndex.coerceIn(pack.questions.indices)]
             Text(pack.title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-            Text("Câu ${questionIndex + 1}/${pack.questions.size} · ${question.sourceFileName}, trang ${question.sourcePageIndex}")
+            Text(if (language == "en") "Question ${questionIndex + 1}/${pack.questions.size} · ${question.sourceFileName}, page ${question.sourcePageIndex}"
+                else "Câu ${questionIndex + 1}/${pack.questions.size} · ${question.sourceFileName}, trang ${question.sourcePageIndex}")
             if (pack.sourceFiles.firstOrNull()?.storagePath != null) {
                 TextButton(enabled = !busy, onClick = {
                     run {
@@ -158,13 +167,14 @@ private fun ExamPackPage(store: ExamPackStore, pickedImage: Uri?, onPick: () -> 
                             .setDataAndType(uri, pack.sourceFiles.first().mimeType)
                             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION))
                     }
-                }) { Text("Mở tệp nguồn để đối chiếu") }
+                }) { Text(label("Mở tệp nguồn để đối chiếu", "Open source file")) }
             }
             if (!practice) {
-                Text("${pack.questions.count { it.isApproved }}/${pack.questions.size} câu đã rà")
+                Text(if (language == "en") "${pack.questions.count { it.isApproved }}/${pack.questions.size} reviewed"
+                    else "${pack.questions.count { it.isApproved }}/${pack.questions.size} câu đã rà")
                 if (pack.isApproved) Button(onClick = {
                     practice = true; questionIndex = 0; selectedAnswer = null; revealed = false
-                }) { Text("Luyện đề") }
+                }) { Text(label("Luyện đề", "Practice")) }
                 ExamPackReview(question, busy) { key, prompt, options, explanation, topic ->
                     run { current = store.review(pack, question.id, key, prompt, options, explanation, topic) }
                 }
@@ -176,17 +186,20 @@ private fun ExamPackPage(store: ExamPackStore, pickedImage: Uri?, onPick: () -> 
                         label = { Text("$key. $answer") })
                 }
                 if (revealed) {
-                    Text(if (selectedAnswer == question.correctOption) "Đúng" else "Cần ôn lại · Đáp án ${question.correctOption}")
+                    Text(if (selectedAnswer == question.correctOption) label("Đúng", "Correct")
+                        else if (language == "en") "Review needed · Answer ${question.correctOption}"
+                        else "Cần ôn lại · Đáp án ${question.correctOption}")
                     Text(question.explanation.orEmpty())
-                } else Button(enabled = selectedAnswer != null, onClick = { revealed = true }) { Text("Kiểm tra") }
+                } else Button(enabled = selectedAnswer != null, onClick = { revealed = true }) {
+                    Text(label("Kiểm tra", "Check")) }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(enabled = questionIndex > 0, onClick = {
                     questionIndex--; selectedAnswer = null; revealed = false
-                }) { Text("Câu trước") }
+                }) { Text(label("Câu trước", "Previous")) }
                 Button(enabled = questionIndex < pack.questions.lastIndex, onClick = {
                     questionIndex++; selectedAnswer = null; revealed = false
-                }) { Text("Câu sau") }
+                }) { Text(label("Câu sau", "Next")) }
             }
         }
         Spacer(Modifier.height(24.dp))
@@ -196,6 +209,8 @@ private fun ExamPackPage(store: ExamPackStore, pickedImage: Uri?, onPick: () -> 
 @Composable
 private fun ExamPackReview(q: ExamPackFoundry.ExtractedQuestion, busy: Boolean,
                            onSave: (String, String, Map<String, String>, String, String) -> Unit) {
+    val english = LocaleHelper.isEnglish(LocalContext.current)
+    fun label(vi: String, en: String) = if (english) en else vi
     var prompt by remember(q.id) { mutableStateOf(q.prompt) }
     var answer by remember(q.id) { mutableStateOf(q.correctOption.orEmpty()) }
     var explanation by remember(q.id) { mutableStateOf(q.explanation.orEmpty()) }
@@ -204,23 +219,25 @@ private fun ExamPackReview(q: ExamPackFoundry.ExtractedQuestion, busy: Boolean,
     Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(if (q.isApproved) "Đã rà đáp án" else "Rà câu hỏi và chọn đáp án đúng",
+            Text(if (q.isApproved) label("Đã rà đáp án", "Answer reviewed")
+                else label("Rà câu hỏi và chọn đáp án đúng", "Review the question and correct answer"),
                 fontWeight = FontWeight.Bold)
-            OutlinedTextField(prompt, { prompt = it }, Modifier.fillMaxWidth(), label = { Text("Câu hỏi") })
+            OutlinedTextField(prompt, { prompt = it }, Modifier.fillMaxWidth(), label = { Text(label("Câu hỏi", "Question")) })
             listOf("A", "B", "C", "D").forEach { key ->
                 OutlinedTextField(options[key].orEmpty(), { options[key] = it }, Modifier.fillMaxWidth(),
-                    label = { Text("Đáp án $key") })
+                    label = { Text(label("Đáp án $key", "Option $key")) })
             }
             Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                 listOf("A", "B", "C", "D").forEach { key ->
-                    FilterChip(answer == key, onClick = { answer = key }, label = { Text("Đúng: $key") })
+                    FilterChip(answer == key, onClick = { answer = key }, label = { Text(label("Đúng: $key", "Correct: $key")) })
                 }
             }
             OutlinedTextField(explanation, { explanation = it }, Modifier.fillMaxWidth(),
-                label = { Text("Lời giải đã kiểm tra") })
-            OutlinedTextField(topic, { topic = it }, Modifier.fillMaxWidth(), label = { Text("Chủ đề") })
+                label = { Text(label("Lời giải đã kiểm tra", "Verified explanation")) })
+            OutlinedTextField(topic, { topic = it }, Modifier.fillMaxWidth(), label = { Text(label("Chủ đề", "Topic")) })
             Button(enabled = !busy && answer.isNotBlank(),
-                onClick = { onSave(answer, prompt, options.toMap(), explanation, topic) }) { Text("Lưu câu đã rà") }
+                onClick = { onSave(answer, prompt, options.toMap(), explanation, topic) }) {
+                Text(label("Lưu câu đã rà", "Save reviewed question")) }
         }
     }
 }
