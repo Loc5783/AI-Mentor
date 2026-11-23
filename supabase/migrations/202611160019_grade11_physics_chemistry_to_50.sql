@@ -14,6 +14,33 @@ select id,upper(replace(id,'-','_')),subject_id,11,topic,topic,'Kết nối tri 
   'AI Mentor','Nội bộ','PUBLISHED' from seed
 on conflict(id) do nothing;
 
+-- 30 authored + 12 published lesson questions + 5 foundation questions = 47.
+-- Add three independently checked questions per subject to meet the 50-question gate.
+insert into public.mentor_questions(
+  id,code,subject_id,grade,chapter,topic,textbook,prompt,option_a,option_b,option_c,option_d,
+  correct_option,explanation,difficulty,points,source,author,license,status
+)
+values
+('g11-physics-authored-31','G11_PHYSICS_AUTHORED_31','physics',11,'Dao động điều hòa','Chu kì dao động','Kết nối tri thức',
+ 'Một vật dao động điều hòa có tần số 2 Hz. Chu kì dao động bằng bao nhiêu?',
+ '0,5 s','2 s','4 s','0,25 s','A','Chu kì T = 1/f = 1/2 = 0,5 s.','EASY',10,'AI Mentor biên soạn','AI Mentor','Nội bộ','PUBLISHED'),
+('g11-physics-authored-32','G11_PHYSICS_AUTHORED_32','physics',11,'Sóng cơ','Bước sóng','Kết nối tri thức',
+ 'Sóng cơ truyền với tốc độ 12 m/s và tần số 3 Hz. Bước sóng bằng bao nhiêu?',
+ '3 m','4 m','9 m','36 m','B','Bước sóng λ = v/f = 12/3 = 4 m.','EASY',10,'AI Mentor biên soạn','AI Mentor','Nội bộ','PUBLISHED'),
+('g11-physics-authored-33','G11_PHYSICS_AUTHORED_33','physics',11,'Điện trường','Cường độ điện trường','Kết nối tri thức',
+ 'Điện tích thử 2 μC chịu lực điện 0,01 N. Độ lớn cường độ điện trường tại điểm đặt điện tích là bao nhiêu?',
+ '200 V/m','500 V/m','5 000 V/m','20 000 V/m','C','E = F/|q| = 0,01/(2 × 10⁻⁶) = 5 000 V/m.','MEDIUM',10,'AI Mentor biên soạn','AI Mentor','Nội bộ','PUBLISHED'),
+('g11-chemistry-authored-31','G11_CHEMISTRY_AUTHORED_31','chemistry',11,'Cân bằng hóa học','Nguyên lí Le Chatelier','Kết nối tri thức',
+ 'Với cân bằng N₂(g) + 3H₂(g) ⇌ 2NH₃(g), tăng áp suất ở nhiệt độ không đổi làm cân bằng chuyển dịch theo chiều nào?',
+ 'Chiều tạo NH₃','Chiều tạo N₂ và H₂','Không chuyển dịch','Không thể xác định','A','Chiều tạo NH₃ làm giảm tổng số mol khí từ 4 xuống 2 nên được ưu tiên khi tăng áp suất.','MEDIUM',10,'AI Mentor biên soạn','AI Mentor','Nội bộ','PUBLISHED'),
+('g11-chemistry-authored-32','G11_CHEMISTRY_AUTHORED_32','chemistry',11,'Acid và base','Thang pH','Kết nối tri thức',
+ 'Ở 25 °C, dung dịch có pH = 3 được xếp vào loại nào?',
+ 'Trung tính','Acid','Base','Muối không xác định','B','pH < 7 cho biết dung dịch có tính acid ở 25 °C.','EASY',10,'AI Mentor biên soạn','AI Mentor','Nội bộ','PUBLISHED'),
+('g11-chemistry-authored-33','G11_CHEMISTRY_AUTHORED_33','chemistry',11,'Hydrocarbon','Phản ứng cháy','Kết nối tri thức',
+ 'Đốt cháy hoàn toàn 1 mol methane cần bao nhiêu mol oxygen?',
+ '1 mol','1,5 mol','2 mol','4 mol','C','Phương trình CH₄ + 2O₂ → CO₂ + 2H₂O cho tỉ lệ 1 mol CH₄ cần 2 mol O₂.','EASY',10,'AI Mentor biên soạn','AI Mentor','Nội bộ','PUBLISHED')
+on conflict(id) do nothing;
+
 do $$
 declare s text; n integer;
 begin

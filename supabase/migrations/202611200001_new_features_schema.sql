@@ -5,7 +5,7 @@ begin;
 -- ==========================================
 create table if not exists public.mentor_misconception_verifications (
   id text primary key,
-  user_id int not null references public.users(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
   question_id text not null,
   subject_id text not null,
   grade int not null,
@@ -31,15 +31,15 @@ grant select, insert, update on public.mentor_misconception_verifications to aut
 
 drop policy if exists misconception_verifications_owner on public.mentor_misconception_verifications;
 create policy misconception_verifications_owner on public.mentor_misconception_verifications
-  for all to authenticated using (user_id = (auth.jwt()->>'sub')::int)
-  with check (user_id = (auth.jwt()->>'sub')::int);
+  for all to authenticated using (user_id = auth.uid())
+  with check (user_id = auth.uid());
 
 -- ==========================================
 -- 2. AI EXAMPACK FOUNDRY
 -- ==========================================
 create table if not exists public.mentor_exam_packs (
   id text primary key,
-  user_id int not null references public.users(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
   title text not null,
   subject_id text not null,
   grade int not null,
@@ -56,13 +56,13 @@ grant select, insert, update, delete on public.mentor_exam_packs to authenticate
 
 drop policy if exists exam_packs_owner on public.mentor_exam_packs;
 create policy exam_packs_owner on public.mentor_exam_packs
-  for all to authenticated using (user_id = (auth.jwt()->>'sub')::int)
-  with check (user_id = (auth.jwt()->>'sub')::int);
+  for all to authenticated using (user_id = auth.uid())
+  with check (user_id = auth.uid());
 
 create table if not exists public.mentor_exam_pack_questions (
   id text primary key,
   pack_id text not null references public.mentor_exam_packs(id) on delete cascade,
-  user_id int not null references public.users(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
   prompt text not null,
   options jsonb not null,
   correct_option text,
@@ -83,8 +83,8 @@ grant select, insert, update, delete on public.mentor_exam_pack_questions to aut
 
 drop policy if exists exam_pack_questions_owner on public.mentor_exam_pack_questions;
 create policy exam_pack_questions_owner on public.mentor_exam_pack_questions
-  for all to authenticated using (user_id = (auth.jwt()->>'sub')::int)
-  with check (user_id = (auth.jwt()->>'sub')::int);
+  for all to authenticated using (user_id = auth.uid() and exists (select 1 from public.mentor_exam_packs p where p.id = pack_id and p.user_id = auth.uid()))
+  with check (user_id = auth.uid() and exists (select 1 from public.mentor_exam_packs p where p.id = pack_id and p.user_id = auth.uid()));
 
 -- ==========================================
 -- 3. AI TEAMOS (DỰ ÁN NHÓM AI)
@@ -93,14 +93,14 @@ create table if not exists public.mentor_team_projects (
   id text primary key,
   title text not null,
   description text,
-  owner_id int not null references public.users(id) on delete cascade,
+  owner_id uuid not null references auth.users(id) on delete cascade,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
 create table if not exists public.mentor_team_members (
   project_id text not null references public.mentor_team_projects(id) on delete cascade,
-  user_id int not null references public.users(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
   role text not null default 'MEMBER' check (role in ('OWNER', 'MEMBER')),
   joined_at timestamptz not null default now(),
   primary key (project_id, user_id)
@@ -111,7 +111,7 @@ create table if not exists public.mentor_team_requirements (
   project_id text not null references public.mentor_team_projects(id) on delete cascade,
   title text not null,
   description text not null,
-  added_by int not null references public.users(id) on delete cascade,
+  added_by uuid not null references auth.users(id) on delete cascade,
   created_at timestamptz not null default now()
 );
 
@@ -120,7 +120,7 @@ create table if not exists public.mentor_team_documents (
   project_id text not null references public.mentor_team_projects(id) on delete cascade,
   title text not null,
   content text not null,
-  uploaded_by int not null references public.users(id) on delete cascade,
+  uploaded_by uuid not null references auth.users(id) on delete cascade,
   created_at timestamptz not null default now()
 );
 
@@ -129,7 +129,7 @@ create table if not exists public.mentor_team_tasks (
   project_id text not null references public.mentor_team_projects(id) on delete cascade,
   title text not null,
   description text,
-  assignee_id int references public.users(id) on delete set null,
+  assignee_id uuid references auth.users(id) on delete set null,
   depends_on_task_id text,
   deadline timestamptz,
   status text not null default 'TODO' check (status in ('TODO', 'IN_PROGRESS', 'DONE')),
@@ -164,7 +164,7 @@ grant select, insert, update, delete on public.mentor_team_projects, public.ment
   public.mentor_team_documents, public.mentor_team_tasks, public.mentor_team_warnings to authenticated;
 
 -- Helper function to check team membership
-create or replace function public.mentor_is_team_member(p_project_id text, p_user_id int)
+create or replace function public.mentor_is_team_member(p_project_id text, p_user_id uuid)
 returns boolean
 language sql
 stable
@@ -177,38 +177,51 @@ as $$
   );
 $$;
 
-revoke all on function public.mentor_is_team_member(text, int) from public, anon;
-grant execute on function public.mentor_is_team_member(text, int) to authenticated;
+revoke all on function public.mentor_is_team_member(text, uuid) from public, anon;
+grant execute on function public.mentor_is_team_member(text, uuid) to authenticated;
 
 -- RLS Policies
 drop policy if exists team_projects_member on public.mentor_team_projects;
 create policy team_projects_member on public.mentor_team_projects
-  for all to authenticated using (public.mentor_is_team_member(id, (auth.jwt()->>'sub')::int))
-  with check (owner_id = (auth.jwt()->>'sub')::int);
+  for all to authenticated using (owner_id = auth.uid())
+  with check (owner_id = auth.uid());
 
 drop policy if exists team_members_member on public.mentor_team_members;
 create policy team_members_member on public.mentor_team_members
-  for all to authenticated using (public.mentor_is_team_member(project_id, (auth.jwt()->>'sub')::int))
-  with check (public.mentor_is_team_member(project_id, (auth.jwt()->>'sub')::int) or user_id = (auth.jwt()->>'sub')::int);
+  for all to authenticated using (public.mentor_is_team_member(project_id, auth.uid()))
+  with check (exists (select 1 from public.mentor_team_projects p where p.id = project_id and p.owner_id = auth.uid()));
+
+-- Creating a project must also make its owner a member without allowing self-joins.
+create or replace function public.mentor_add_team_owner()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  insert into public.mentor_team_members(project_id, user_id, role)
+  values (new.id, new.owner_id, 'OWNER');
+  return new;
+end;
+$$;
+drop trigger if exists mentor_team_owner_created on public.mentor_team_projects;
+create trigger mentor_team_owner_created after insert on public.mentor_team_projects
+  for each row execute function public.mentor_add_team_owner();
 
 drop policy if exists team_reqs_member on public.mentor_team_requirements;
 create policy team_reqs_member on public.mentor_team_requirements
-  for all to authenticated using (public.mentor_is_team_member(project_id, (auth.jwt()->>'sub')::int))
-  with check (public.mentor_is_team_member(project_id, (auth.jwt()->>'sub')::int));
+  for all to authenticated using (public.mentor_is_team_member(project_id, auth.uid()))
+  with check (public.mentor_is_team_member(project_id, auth.uid()));
 
 drop policy if exists team_docs_member on public.mentor_team_documents;
 create policy team_docs_member on public.mentor_team_documents
-  for all to authenticated using (public.mentor_is_team_member(project_id, (auth.jwt()->>'sub')::int))
-  with check (public.mentor_is_team_member(project_id, (auth.jwt()->>'sub')::int));
+  for all to authenticated using (public.mentor_is_team_member(project_id, auth.uid()))
+  with check (public.mentor_is_team_member(project_id, auth.uid()));
 
 drop policy if exists team_tasks_member on public.mentor_team_tasks;
 create policy team_tasks_member on public.mentor_team_tasks
-  for all to authenticated using (public.mentor_is_team_member(project_id, (auth.jwt()->>'sub')::int))
-  with check (public.mentor_is_team_member(project_id, (auth.jwt()->>'sub')::int));
+  for all to authenticated using (public.mentor_is_team_member(project_id, auth.uid()))
+  with check (public.mentor_is_team_member(project_id, auth.uid()));
 
 drop policy if exists team_warnings_member on public.mentor_team_warnings;
 create policy team_warnings_member on public.mentor_team_warnings
-  for all to authenticated using (public.mentor_is_team_member(project_id, (auth.jwt()->>'sub')::int))
-  with check (public.mentor_is_team_member(project_id, (auth.jwt()->>'sub')::int));
+  for all to authenticated using (public.mentor_is_team_member(project_id, auth.uid()))
+  with check (public.mentor_is_team_member(project_id, auth.uid()));
 
 commit;
