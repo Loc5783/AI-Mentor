@@ -7,6 +7,7 @@ import android.util.Base64
 import com.example.asm_final.BuildConfig
 import com.example.asm_final.accounts.RemoteAccountLinks
 import com.example.asm_final.supabase.SupabaseAccounts
+import com.example.asm_final.supabase.SupabaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -38,6 +39,13 @@ class CloudExamPackStore(context: Context, private val owner: Int) : ExamPackSto
         val rows = JSONArray(call("GET", "/rest/v1/mentor_exam_pack_questions?select=*&pack_id=eq.$id&order=created_at.asc&limit=100"))
         repeat(rows.length()) { pack.questions.add(parseQuestion(rows.getJSONObject(it), pack)) }
         ExamPackFoundry.finalizePack(pack)
+    }
+
+    override suspend fun sourceFile(pack: ExamPackFoundry.ExamPack): java.io.File = withContext(Dispatchers.IO) {
+        val verified = load(pack.id)
+        val file = verified.sourceFiles.single()
+        val path = file.storagePath ?: error("Tệp nguồn chưa tải lên xong")
+        SupabaseStorage(app).cacheExamSource(owner, verified.id, path, file.mimeType)
     }
 
     override suspend fun importFile(title: String, subjectId: String, grade: Int, uri: Uri): ExamPackFoundry.ExamPack =
@@ -85,13 +93,18 @@ class CloudExamPackStore(context: Context, private val owner: Int) : ExamPackSto
                 .put("grade", pack.grade).put("source_files", JSONArray().put(JSONObject()
                     .put("fileName", name).put("pageCount", pages).put("mimeType", mime)))
                 .put("status", "DRAFT").put("question_count", 0))
+            val path = SupabaseStorage(app).uploadExamSource(owner, pack.id, bytes, mime)
+            val sources = JSONArray().put(JSONObject().put("fileName", name)
+                .put("pageCount", pages).put("mimeType", mime).put("storagePath", path))
+            call("PATCH", "/rest/v1/mentor_exam_packs?id=eq.${pack.id}", JSONObject()
+                .put("source_files", sources))
             // A network failure leaves the parent draft visible for a later retry; never claim approval.
             pack.questions.forEach { q ->
                 call("POST", "/rest/v1/mentor_exam_pack_questions", questionBody(q, uid))
             }
             call("PATCH", "/rest/v1/mentor_exam_packs?id=eq.${pack.id}", JSONObject()
                 .put("question_count", pack.questions.size))
-            pack
+            pack.copy(sourceFiles = listOf(pack.sourceFiles.single().copy(storagePath = path)))
         }
 
     override suspend fun review(pack: ExamPackFoundry.ExamPack, questionId: String, key: String,
@@ -121,7 +134,8 @@ class CloudExamPackStore(context: Context, private val owner: Int) : ExamPackSto
             title = row.getString("title"), subjectId = row.getString("subject_id"), grade = row.getInt("grade"),
             sourceFiles = (0 until files.length()).map { i ->
                 val f = files.getJSONObject(i)
-                ExamPackFoundry.ExamPackFile(f.getString("fileName"), f.getInt("pageCount"), f.getString("mimeType"))
+                ExamPackFoundry.ExamPackFile(f.getString("fileName"), f.getInt("pageCount"),
+                    f.getString("mimeType"), f.optNullable("storagePath"))
             })
     }
 

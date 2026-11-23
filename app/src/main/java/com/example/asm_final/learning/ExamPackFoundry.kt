@@ -13,7 +13,8 @@ object ExamPackFoundry {
     data class ExamPackFile(
         val fileName: String,
         val pageCount: Int = 1,
-        val mimeType: String = "application/pdf"
+        val mimeType: String = "application/pdf",
+        val storagePath: String? = null
     )
 
     data class ExtractedQuestion(

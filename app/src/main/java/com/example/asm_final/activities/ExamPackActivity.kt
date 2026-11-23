@@ -1,10 +1,12 @@
 package com.example.asm_final.activities
 
 import android.net.Uri
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.BackHandler
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -67,6 +69,7 @@ private fun ExamPackPage(store: ExamPackStore, pickedImage: Uri?, onPick: () -> 
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
     var revealed by remember { mutableStateOf(false) }
     val language = LocaleHelper.getLanguage(LocalContext.current)
+    val context = LocalContext.current
     BackHandler { if (current != null) { current = null; practice = false } else onBack() }
 
     fun run(block: suspend () -> Unit) {
@@ -145,6 +148,18 @@ private fun ExamPackPage(store: ExamPackStore, pickedImage: Uri?, onPick: () -> 
             val question = pack.questions[questionIndex.coerceIn(pack.questions.indices)]
             Text(pack.title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             Text("Câu ${questionIndex + 1}/${pack.questions.size} · ${question.sourceFileName}, trang ${question.sourcePageIndex}")
+            if (pack.sourceFiles.firstOrNull()?.storagePath != null) {
+                TextButton(enabled = !busy, onClick = {
+                    run {
+                        val source = store.sourceFile(pack)
+                        val uri = FileProvider.getUriForFile(context,
+                            context.packageName + ".fileprovider", source)
+                        context.startActivity(Intent(Intent.ACTION_VIEW)
+                            .setDataAndType(uri, pack.sourceFiles.first().mimeType)
+                            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION))
+                    }
+                }) { Text("Mở tệp nguồn để đối chiếu") }
+            }
             if (!practice) {
                 Text("${pack.questions.count { it.isApproved }}/${pack.questions.size} câu đã rà")
                 if (pack.isApproved) Button(onClick = {
