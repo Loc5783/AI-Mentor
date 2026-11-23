@@ -21,6 +21,8 @@
   <string name="lesson_hub_chat_desc">Hỏi bài và trao đổi khi bạn cần giải thích thêm.</string>
   <string name="lesson_hub_ai_practice">Luyện cùng AI</string>
   <string name="lesson_hub_ai_practice_desc">Luyện từng bước với gợi ý phù hợp trình độ.</string>
+  <string name="lesson_hub_team_os">Dự án nhóm</string>
+  <string name="lesson_hub_team_os_desc">Cùng bạn bè chia việc, theo dõi tiến độ và đối chiếu tài liệu.</string>
   <string name="lesson_hub_roadmap_grade">Lộ trình học · Lớp %1$d</string>
   <string name="lesson_hub_roadmap_desc">Chọn môn để tiếp tục chặng học của bạn.</string>
   <string name="lesson_hub_enrolled">Đang học trong lộ trình</string>

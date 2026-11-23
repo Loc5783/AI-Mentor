@@ -41,10 +41,8 @@ fun TeamOsScreen(
 ) {
     val context = LocalContext.current
     val ownerId = remember(context) { ActiveUser.get(context).toString() }
-    val app = context.applicationContext as? AiMentorApplication
-    val repository = remember(context) {
-        app?.services()?.teamOs() ?: TeamOsRepository()
-    }
+    val app = context.applicationContext as AiMentorApplication
+    val repository = remember(app) { app.services().teamOs() }
     val scope = rememberCoroutineScope()
     val viewModel = remember(repository, scope) {
         TeamOsViewModel(repository, scope)
