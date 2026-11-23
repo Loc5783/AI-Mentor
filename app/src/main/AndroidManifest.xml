@@ -60,6 +60,10 @@
             android:name=".activities.ScheduleAiActivity"
             android:exported="false"
             android:theme="@style/Theme.ASMfinal" />
+        <activity
+            android:name=".activities.ExamPackActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ASMfinal" />
 
         <!-- Register -->
         <activity android:name=".activities.LessonActivity" android:exported="false" />

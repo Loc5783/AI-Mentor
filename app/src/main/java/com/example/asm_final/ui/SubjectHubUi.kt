@@ -2,6 +2,7 @@ package com.example.asm_final.ui
 
 import com.example.mentor.ui.design.mentorHeader
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.example.asm_final.AiMentorApplication
 import com.example.asm_final.R
 import com.example.asm_final.learning.BackendLibraryRepository
+import com.example.asm_final.supabase.SupabaseHttp
 import com.example.mentor.data.ActiveUser
 import com.example.asm_final.utils.LocaleHelper
 import com.example.mentor.learning.SubjectId
@@ -87,7 +89,9 @@ class SubjectHubUi(
                         navModel.navigateTo(HubSection.valueOf(section))
                     } catch (_: Exception) {}
                 },
-                onOpenAiChat = { openAiChat?.run() }
+                onOpenAiChat = { openAiChat?.run() },
+                onOpenExamPack = { context.startActivity(Intent(context, com.example.asm_final.activities.ExamPackActivity::class.java)) },
+                examPackAvailable = SupabaseHttp.enabled(context)
             )
             HubSection.LIBRARY -> {
                 val subject = navModel.selectedSubject
@@ -149,7 +153,9 @@ fun LessonHubMainView(
     grade: Int,
     onChooseGrade: () -> Unit,
     onSelectSection: (String) -> Unit,
-    onOpenAiChat: () -> Unit
+    onOpenAiChat: () -> Unit,
+    onOpenExamPack: () -> Unit = {},
+    examPackAvailable: Boolean = false
 ) {
     val palette = premiumDashboardPalette(com.example.asm_final.utils.ThemeHelper.isDarkMode(
         androidx.compose.ui.platform.LocalContext.current))
@@ -203,6 +209,8 @@ fun LessonHubMainView(
             HubSectionCard("04", stringResource(R.string.lesson_hub_ai_practice),
                 stringResource(R.string.lesson_hub_ai_practice_desc), stringResource(R.string.lesson_hub_ai_practice),
                 { onSelectSection("AI_PRACTICE") })
+            if (examPackAvailable) HubSectionCard("05", "Kho đề của bạn",
+                "Tạo đề từ PDF hoặc ảnh, rà câu hỏi và luyện tập", "Mở kho đề", onOpenExamPack)
             Spacer(Modifier.height(16.dp))
         }
     }

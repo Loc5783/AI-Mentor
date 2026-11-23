@@ -190,6 +190,12 @@ public final class AppServices {
     return new com.example.asm_final.learning.BackendExamRepository(context, owner);
   }
 
+  public com.example.asm_final.learning.ExamPackStore examPacks(int owner) {
+    if (!com.example.asm_final.supabase.SupabaseHttp.enabled(context))
+      throw new IllegalStateException("Exam packs require Supabase authentication");
+    return new com.example.asm_final.learning.CloudExamPackStore(context, owner);
+  }
+
   public com.example.mentor.schedule.domain.ScheduleImportRepository scheduleImport() {
     return com.example.asm_final.supabase.SupabaseHttp.enabled(context)
       ? new com.example.asm_final.supabase.SupabaseScheduleRepository(context)
