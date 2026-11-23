@@ -8,6 +8,9 @@ declare
   old_expression text := 'dense_rank() over(order by score desc)';
 begin
   if position(old_expression in definition) = 0 then
+    if position('rank() over(order by score desc)' in definition) > 0 then
+      return; -- Hosted function already uses competition ranking.
+    end if;
     raise exception 'Expected ranking expression is missing from mentor_social_api_v1';
   end if;
   execute replace(definition, old_expression, 'rank() over(order by score desc)');
