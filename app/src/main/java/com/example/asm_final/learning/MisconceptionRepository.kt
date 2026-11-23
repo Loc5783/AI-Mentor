@@ -398,7 +398,30 @@ class DefaultMisconceptionRepository(
 
     override suspend fun getActiveDraft(sessionId: String, questionId: String): MisconceptionBusterSession? =
         withContext(Dispatchers.IO) {
-            parseLocalSession(prefs.getString(draftKey(sessionId, questionId), null))
+            val local = parseLocalSession(prefs.getString(draftKey(sessionId, questionId), null))
+            val response = try {
+                accounts.requestFor(ownerId, "POST", "/rest/v1/rpc/mentor_misconception_resume",
+                    JSONObject().put("p_session_id", UUID.fromString(sessionId).toString())
+                        .put("p_question_id", questionId))
+            } catch (rejected: BackendClient.Failure) {
+                if (rejected.status in 400..499) throw rejected
+                currentCoroutineContext().ensureActive()
+                return@withContext local
+            } catch (offline: IOException) {
+                currentCoroutineContext().ensureActive()
+                return@withContext local
+            }
+            if (response.isBlank() || response == "null") return@withContext local
+            val server = parseServerSession(JSONObject(response))
+            check(server.sessionId == sessionId && server.questionId == questionId)
+            // A completed cloud verification wins. Otherwise retain newer unsent answers.
+            if (local?.isDraft == true && local.prop1UserAns != null && local.prop2UserAns != null &&
+                server.verificationStatus != MisconceptionVerificationStatus.RESOLVED &&
+                (server.serverUpdatedAt == null || local.answeredAt > server.serverUpdatedAt)) {
+                return@withContext local
+            }
+            saveLocalSession(server)
+            server
         }
 
     override suspend fun syncDraft(session: MisconceptionBusterSession): MisconceptionBusterSession =

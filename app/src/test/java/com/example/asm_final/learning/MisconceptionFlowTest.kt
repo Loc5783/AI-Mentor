@@ -33,6 +33,7 @@ class MisconceptionFlowTest {
         )
         val sessions = mutableMapOf<String, MisconceptionBusterSession>()
         val drafts = mutableMapOf<String, MisconceptionBusterSession>()
+        var startCalls = 0
 
         override suspend fun getVerifiedReasons(subjectId: String, grade: Int): List<MisconceptionReasonItem> =
             catalog.filter { it.subjectId == subjectId && it.grade == grade }
@@ -47,6 +48,7 @@ class MisconceptionFlowTest {
             selectedOption: String?,
             reason: MisconceptionReasonItem
         ): MisconceptionBusterSession {
+            startCalls++
             if (rejectStart) throw BackendClient.Failure("QUESTION_NOT_ANSWERED_WRONGLY", 409)
             require(reason.subjectId == subjectId && reason.grade == grade)
             val session = MisconceptionBusterSession(
@@ -249,6 +251,24 @@ class MisconceptionFlowTest {
 
         assertEquals(MisconceptionVerificationStatus.RESOLVED, vm.activeSession?.verificationStatus)
         assertFalse(vm.activeSession?.isDraft == true)
+    }
+
+    @Test
+    fun restoredCloudVerificationOpensResultWithoutCreatingAnotherSession() = runTest(testDispatcher) {
+        val repo = TestRepo(ownerId = 101)
+        val reason = repo.getVerifiedReasons("math", 10).single()
+        val original = repo.startSession("verification-1", "practice-1", "question-1", "math", 10,
+            "Prompt", "B", reason).copy(
+                prop1UserAns = false, prop2UserAns = true,
+                verificationStatus = MisconceptionVerificationStatus.RESOLVED, isDraft = false)
+        repo.drafts["practice-1_question-1"] = original
+
+        val vm = MisconceptionViewModel(repo, "question-1", "practice-1", "math", 10,
+            "Prompt", "B", "A", "Explanation", externalScope = testScope)
+
+        assertEquals(MisconceptionStep.RESULT, vm.currentStep)
+        assertEquals(MisconceptionVerificationStatus.RESOLVED, vm.activeSession?.verificationStatus)
+        assertEquals(1, repo.startCalls)
     }
 
     @Test
