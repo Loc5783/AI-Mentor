@@ -21,6 +21,8 @@
   <string name="lesson_hub_chat_desc">Ask questions whenever you need another explanation.</string>
   <string name="lesson_hub_ai_practice">Practice with AI</string>
   <string name="lesson_hub_ai_practice_desc">Learn step by step with guidance at your level.</string>
+  <string name="lesson_hub_team_os">Group projects</string>
+  <string name="lesson_hub_team_os_desc">Share tasks, track progress, and review project materials together.</string>
   <string name="lesson_hub_roadmap_grade">Learning path · Grade %1$d</string>
   <string name="lesson_hub_roadmap_desc">Choose a subject to continue your path.</string>
   <string name="lesson_hub_enrolled">In your learning path</string>

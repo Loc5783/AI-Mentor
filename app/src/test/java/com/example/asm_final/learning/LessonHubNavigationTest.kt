@@ -9,6 +9,16 @@ import org.junit.Test
 
 class LessonHubNavigationTest {
 
+    @Test
+    fun teamProjectNavigationReturnsToLearningHub() {
+        val nav = LessonHubNavigationModel(initialGrade = 11)
+        nav.navigateTo(HubSection.TEAM_OS)
+        assertEquals(HubSection.TEAM_OS, nav.currentSection)
+        assertTrue(nav.handleBack())
+        assertEquals(HubSection.MAIN_HUB, nav.currentSection)
+        assertEquals(11, nav.grade)
+    }
+
     // 1. Bốn khu vực trong Tab Bài học: Thư viện, Ôn thi, Lộ trình, Luyện cùng AI
     @Test
     fun test1_FourSections_ExistAndHaveDistinctRoutes() {

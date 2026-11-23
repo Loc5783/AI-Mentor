@@ -140,6 +140,7 @@ class SubjectHubUi(
                 onOpenNotebook = { subj -> navModel.openNotebook(subj, fromSection = HubSection.AI_PRACTICE) },
                 onOpenAiChat = { openAiChat?.run() }
             )
+            HubSection.TEAM_OS -> TeamOsScreen(onBack = { navModel.handleBack() })
         }
     }
 }
@@ -203,6 +204,12 @@ fun LessonHubMainView(
             HubSectionCard("04", stringResource(R.string.lesson_hub_ai_practice),
                 stringResource(R.string.lesson_hub_ai_practice_desc), stringResource(R.string.lesson_hub_ai_practice),
                 { onSelectSection("AI_PRACTICE") })
+            if (com.example.asm_final.supabase.SupabaseHttp.enabled(
+                    androidx.compose.ui.platform.LocalContext.current)) {
+                HubSectionCard("05", stringResource(R.string.lesson_hub_team_os),
+                    stringResource(R.string.lesson_hub_team_os_desc), stringResource(R.string.lesson_hub_team_os),
+                    { onSelectSection("TEAM_OS") })
+            }
             Spacer(Modifier.height(16.dp))
         }
     }
