@@ -55,6 +55,21 @@ class SupabaseLibraryRepository(
         }
     }
 
+    override suspend fun listHistorySessions(subjectWireId: String, grade: Int): List<SessionSummary> = withContext(Dispatchers.IO) {
+        val result = JSONObject(SupabaseAccounts(appContext).requestFor(ownerId, "POST",
+            "/rest/v1/rpc/mentor_learning_session_history", JSONObject()
+                .put("p_kind", "library").put("p_subject_id", subjectWireId)
+                .put("p_grade", grade).put("p_limit", 50)))
+        val rows = result.optJSONArray("items") ?: JSONArray()
+        (0 until rows.length()).map { i ->
+            val row = rows.getJSONObject(i)
+            SessionSummary(row.getString("id"), row.getString("quizId"), row.getString("subjectId"),
+                row.getInt("grade"), row.getString("state"), row.optInt("score"),
+                row.optInt("correctCount"), row.optInt("totalCount"), row.optInt("answeredCount"),
+                row.optInt("firstUnansweredIndex"), row.optString("updatedAt"))
+        }
+    }
+
     override suspend fun getSession(sessionId: String): PracticeSession = withContext(Dispatchers.IO) {
         BackendLibraryRepository.parseSession(request("GET", "/library/sessions/${safeId(sessionId)}"))
     }

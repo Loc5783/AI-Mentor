@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit
 
 /** Supabase-backed AI practice. Question generation, answer keys, scoring and reports stay server-side. */
 class SupabaseAiPracticeRepository(context: Context, private val owner: Int) : AiPracticeRepository {
+    override val supportsAnswerConfidence = true
     private val app = context.applicationContext
     private val accounts = SupabaseAccounts(app)
     private val http = OkHttpClient.Builder()
@@ -80,6 +81,18 @@ class SupabaseAiPracticeRepository(context: Context, private val owner: Int) : A
         parseSession(JSONObject(raw)).also { prefs.edit().putString(pointerKey(), it.id).apply() }
     }
 
+    override suspend fun listHistory(): List<AiPracticeHistoryItem> = withContext(Dispatchers.IO) {
+        val result = JSONObject(request("POST", "/rest/v1/rpc/mentor_learning_session_history",
+            JSONObject().put("p_kind", "ai_practice").put("p_limit", 50)))
+        val rows = result.optJSONArray("items") ?: JSONArray()
+        (0 until rows.length()).map { index ->
+            val row = rows.getJSONObject(index)
+            AiPracticeHistoryItem(row.getString("id"), row.getString("subjectId"),
+                row.getInt("grade"), row.getString("topic"), row.getInt("questionCount"),
+                row.optInt("answeredCount"), row.getString("state"), row.optString("updatedAt"))
+        }
+    }
+
     override suspend fun createSession(subjectId: String, grade: Int, topic: String,
                                        difficulty: String, questionCount: Int,
                                        idempotencyKey: String?): AiPracticeSession = withContext(Dispatchers.IO) {
@@ -134,6 +147,24 @@ class SupabaseAiPracticeRepository(context: Context, private val owner: Int) : A
             .put("questionId", questionId).put("query", query.trim())))
             .optString("text", "")
     }
+
+    override suspend fun getAnswerConfidence(sessionId: String, questionId: String): AnswerConfidence? =
+        withContext(Dispatchers.IO) {
+            val response = JSONObject(request("POST", "/rest/v1/rpc/mentor_ai_answer_confidence_api",
+                sessionArgs("get", sessionId).put("p_question_id", questionId)))
+            response.optString("confidence").takeIf { it.isNotBlank() && it != "null" }
+                ?.let { AnswerConfidence.valueOf(it) }
+        }
+
+    override suspend fun setAnswerConfidence(sessionId: String, questionId: String,
+                                             attemptCount: Int, confidence: AnswerConfidence): AnswerConfidence =
+        withContext(Dispatchers.IO) {
+            require(attemptCount > 0)
+            val response = JSONObject(request("POST", "/rest/v1/rpc/mentor_ai_answer_confidence_api",
+                sessionArgs("set", sessionId).put("p_question_id", questionId)
+                    .put("p_attempt_count", attemptCount).put("p_confidence", confidence.name)))
+            AnswerConfidence.valueOf(response.getString("confidence"))
+        }
 
     private fun parseAnswerResult(obj: JSONObject) = AiAnswerResult(
         questionId = obj.getString("questionId"),

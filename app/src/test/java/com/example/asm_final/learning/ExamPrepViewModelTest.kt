@@ -229,6 +229,34 @@ class ExamPrepViewModelTest {
         currentVm = null
     }
 
+    @Test
+    fun evidenceIsHiddenForAnotherAccountAndAfterClear() = runTest {
+        val vm = ExamPrepViewModel(fakeRepo, this, clockProvider = { baseEpochSeconds })
+        currentVm = vm
+        vm.reviewSession(fakeRepo.activeSession.copy(state = "SUBMITTED",
+            answers = mapOf("Q1" to "A")))
+        assertEquals(1, vm.observedEvidence(fakeRepo.ownerId).size)
+        assertTrue(vm.observedEvidence(fakeRepo.ownerId + 1).isEmpty())
+        assertTrue(vm.observedEvidence(0).isEmpty())
+        assertEquals(0, fakeRepo.getSessionCallCount)
+        vm.clear()
+        assertTrue(vm.observedEvidence(fakeRepo.ownerId).isEmpty())
+    }
+
+    @Test
+    fun historyLoadsSavedSessionsWithoutStartingAnotherExam() = runTest {
+        val vm = ExamPrepViewModel(fakeRepo, this, clockProvider = { baseEpochSeconds })
+        currentVm = vm
+        vm.loadHistory().join()
+        assertEquals(1, vm.uiState.value.historySessions.size)
+        assertEquals("IN_PROGRESS", vm.uiState.value.historySessions.single().state)
+        assertEquals(0, fakeRepo.startSessionCallCount)
+        fakeRepo.failListSessionsWith = IOException("offline")
+        vm.loadHistory().join()
+        assertTrue(vm.uiState.value.historySessions.isEmpty())
+        assertNotNull(vm.uiState.value.historyError)
+    }
+
     @After
     fun tearDown() {
         currentVm?.clear()

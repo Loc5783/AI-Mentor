@@ -52,6 +52,15 @@ def test_public_profile_hides_private_fields_and_revision_prevents_overwrite(api
     assert changed.json()["bio"]=="Mình thích Sinh học"
     assert client.patch("/me/public-profile",headers=headers(first,**{"If-Match":revision}),json={"bio":"Ghi đè"}).status_code==412
 
+def test_profile_search_excludes_self_and_private_fields(api):
+    client,_=api
+    first,second=signup(client,"SearchOne"),signup(client,"SearchTwo")
+    response=client.get("/profiles/search",params={"q":"Search"},headers=headers(first))
+    assert response.status_code==200,response.text
+    assert response.json()=={"items":[{"id":second["userId"],"nickname":"SearchTwo"}]}
+    assert client.get("/profiles/search",params={"q":"%_"},headers=headers(first)).json()=={"items":[]}
+    assert client.get("/profiles/search",params={"q":"Search"}).status_code==401
+
 def test_project_ownership_idempotency_and_folder_deletion_keeps_chat(api):
     client,_=api
     first,second=signup(client,"First"),signup(client,"Second")

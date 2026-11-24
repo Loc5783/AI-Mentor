@@ -46,7 +46,7 @@ class ComposeRedesignTest {
         LearningSetupStore(context).use { it.save(owner, 11, setOf(SubjectId.BIOLOGY, SubjectId.PHYSICS)) }
         ActiveUser.set(context, owner)
         scenario = ActivityScenario.launch(Intent(context, HomeActivity::class.java).putExtra("USERNAME", qaUsername))
-        waitForTag("home-schedule-card")
+        waitForTag("home-progress-hero")
     }
 
     @After fun cleanup() {
@@ -99,11 +99,11 @@ class ComposeRedesignTest {
     }
 
     @Test(timeout = 60000) fun fiveTabsAndEmptyChartHaveUsefulContent() {
-        listOf(R.string.design_tab_home, R.string.design_tab_lessons, R.string.design_tab_schedule, R.string.design_tab_competition, R.string.nav_profile_label).forEach {
+        listOf(R.string.design_tab_home, R.string.design_tab_lessons, R.string.team_tab_title, R.string.design_tab_competition, R.string.nav_profile_label).forEach {
             compose.onAllNodesWithText(label(it)).onFirst().assertExists()
         }
         capture("home")
-        compose.onNodeWithTag("home-schedule-card").assertExists()
+        compose.onNodeWithTag("home-progress-hero").assertExists()
         compose.onNodeWithTag("dashboard-subject:physics").assertDoesNotExist()
         compose.onNodeWithTag("dashboard-subject:chemistry").assertDoesNotExist()
         compose.onAllNodesWithText(label(R.string.design_week_empty)).onFirst().assertExists()
@@ -115,12 +115,29 @@ class ComposeRedesignTest {
         compose.onNodeWithTag("profile-total-xp").assertExists()
         compose.onNodeWithTag("profile-week-empty").assertExists()
         compose.onNodeWithTag("profile-badges-empty").assertExists()
-        compose.onNodeWithTag("profile-friends-empty").assertExists()
+        compose.onNodeWithText(label(R.string.friends_open_list)).performScrollTo().assertExists()
         compose.onNodeWithContentDescription(label(R.string.settings_title)).assertExists()
         compose.onNodeWithText(label(R.string.profile_edit)).assertExists()
         capture("profile")
         compose.onNodeWithTag("profile-screen").performTouchInput { swipeUp() }
         capture("profile-lower")
+    }
+
+    @Test(timeout = 45000) fun studyPlanAndGroupHaveSeparateDestinations() {
+        navigate(R.id.nav_category)
+        compose.waitUntil(15000) {
+            compose.onAllNodesWithText(label(R.string.study_plan_title)).fetchSemanticsNodes().isNotEmpty()
+        }
+        compose.onNodeWithText(label(R.string.study_plan_title)).performScrollTo().performClick()
+        compose.onNodeWithText(label(com.example.mentor.schedule.R.string.schedule_page_title)).assertExists()
+
+        navigate(R.id.nav_team)
+        compose.onNodeWithText(label(R.string.team_tab_online_required)).assertExists()
+
+        navigate(R.id.nav_category)
+        compose.waitUntil(15000) {
+            compose.onAllNodesWithText(label(R.string.study_subjects_title)).fetchSemanticsNodes().isNotEmpty()
+        }
     }
 
     @Test(timeout = 60000) fun profileSupportsDarkModeWithoutInventedProgress() {
@@ -143,6 +160,7 @@ class ComposeRedesignTest {
         compose.onNodeWithTag("profile-edit").performClick()
         androidx.test.espresso.Espresso.onView(
             androidx.test.espresso.matcher.ViewMatchers.withId(R.id.btnUpdateProfile))
+            .perform(androidx.test.espresso.action.ViewActions.scrollTo())
             .check(androidx.test.espresso.assertion.ViewAssertions.matches(
                 androidx.test.espresso.matcher.ViewMatchers.isDisplayed()))
         capture("profile-editor")
@@ -191,7 +209,7 @@ class ComposeRedesignTest {
     @Test(timeout = 60000) fun subjectChangesSurviveRecreation() {
         LearningSetupStore(context).use { it.save(owner, 11, setOf(SubjectId.CHEMISTRY, SubjectId.PHYSICS)) }
         navigate(R.id.nav_category)
-        compose.onNodeWithText("Lộ trình học 9 môn").performClick()
+        compose.onNodeWithText(label(R.string.study_manage_path)).performScrollTo().performClick()
         waitForTag("subject-list")
         compose.onNodeWithTag("subject-list").performScrollToNode(hasTestTag("subject:physics"))
         scenario.recreate()
@@ -201,7 +219,7 @@ class ComposeRedesignTest {
         compose.onNodeWithTag("subject-list").performScrollToNode(hasTestTag("subject:chemistry"))
         compose.onNodeWithTag("subject:chemistry").assertExists()
         navigate(R.id.nav_home)
-        waitForTag("home-schedule-card")
+        waitForTag("home-progress-hero")
         compose.onNodeWithTag("dashboard-subject:chemistry").assertDoesNotExist()
         compose.onNodeWithTag("dashboard-subject:biology").assertDoesNotExist()
     }

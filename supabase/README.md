@@ -7,6 +7,7 @@ Tài liệu này mô tả **mã nguồn trong repo**, không xác nhận trạng
 | Phần | Vị trí | Giới hạn của bằng chứng |
 | --- | --- | --- |
 | Auth, hồ sơ, bạn bè, tiến độ, lịch, chat, thư viện, đề thi | `app/src/main/java/com/example/asm_final/supabase/`, `app/src/main/java/com/example/asm_final/learning/` | Adapter/RPC caller có trong app; chưa chứng minh project cloud đã có đủ bảng, policy hoặc dữ liệu. |
+| Xưởng phá mệnh đề | `202611210002_misconception_buster_api.sql`, `app/src/main/java/com/example/asm_final/learning/MisconceptionRepository.kt` | Danh mục chỉ trả metadata hiển thị qua RPC; bảng đáp án không đọc trực tiếp được. Server kiểm tra câu sai đã mở, môn/lớp và chấm kết quả. Bản nháp cục bộ chưa phải kết quả đã xác nhận. |
 | Schema, RPC và nội dung seed | `supabase/migrations/` | Migration lớp 10–12 có trong Git. Phải so sánh lịch sử remote trước khi áp dụng; file SQL không chứng minh đã deploy. |
 | Chat, lập kế hoạch to-do, đọc ảnh thời khóa biểu, luyện AI | `supabase/functions/mentor-ai/` | Source có các mode `general`, `todo_plan`, `timetable_scan`, `practice_generate`, `practice_explain`. `config.toml` đặt `verify_jwt = true`. Cần Edge Function đã triển khai và Gemini secrets hợp lệ để chạy online. |
 | SQL smoke | `supabase/tests/*_smoke.sql` | Test được viết để chạy trong transaction và rollback; chỉ có kết quả khi thực sự chạy trong môi trường phù hợp. |

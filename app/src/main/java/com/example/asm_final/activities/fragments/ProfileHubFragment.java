@@ -5,7 +5,7 @@ import android.view.*;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.asm_final.*;
-import com.example.asm_final.competition.CompetitionViewModel;
+import com.example.asm_final.competition.FriendsViewModel;
 import com.example.asm_final.competition.PublicLearnerDialog;
 import com.example.asm_final.activities.HomeActivity;
 import com.example.asm_final.dashboard.*;
@@ -19,14 +19,15 @@ import java.util.Set;
 /** Owns account-scoped loading; the Profile UI only renders repository results. */
 public final class ProfileHubFragment extends Fragment {
   private OverviewUpdates.Subscription updates;
+  private OverviewUpdates.Subscription friendUpdates;
   private ProfileUi presenter;
-  private CompetitionViewModel friendsModel;
+  private FriendsViewModel friendsModel;
   private int generation;
   private boolean needsLogin;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle state) {
-    friendsModel = new ViewModelProvider(this).get(CompetitionViewModel.class);
+    friendsModel = new ViewModelProvider(this).get(FriendsViewModel.class);
     presenter =
         new ProfileUi(
             requireContext(),
@@ -56,6 +57,8 @@ public final class ProfileHubFragment extends Fragment {
     load();
     friendsModel.refreshFriends();
     updates = OverviewLiveBinding.start(this, this::load);
+    friendUpdates = ((AiMentorApplication) requireActivity().getApplication())
+        .services().friendUpdates().observe(ActiveUser.get(requireContext()), friendsModel::refreshFriends);
   }
 
   @Override
@@ -63,6 +66,10 @@ public final class ProfileHubFragment extends Fragment {
     if (updates != null) {
       updates.close();
       updates = null;
+    }
+    if (friendUpdates != null) {
+      friendUpdates.close();
+      friendUpdates = null;
     }
     super.onPause();
   }

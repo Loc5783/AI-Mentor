@@ -358,6 +358,26 @@ def create_app(settings=None):
 
 
 
+    @app.get("/profiles/search")
+
+    def search_profiles(q:str,user=Depends(current)):
+
+        query=" ".join(q.split())
+
+        if len(query)<2 or len(query)>40:return {"items":[]}
+
+        escaped=query.replace("\\","\\\\").replace("%","\\%").replace("_","\\_")
+
+        with database.read() as db:
+
+            rows=db.execute("SELECT id,nickname FROM users WHERE id<>? AND nickname LIKE ? ESCAPE '\\' ORDER BY nickname LIMIT 30",
+
+                            (user["id"],f"%{escaped}%")).fetchall()
+
+        return {"items":[{"id":str(row["id"]),"nickname":row["nickname"]} for row in rows]}
+
+
+
     @app.get("/profiles/{profile_id}")
 
     def other_public(profile_id:int,user=Depends(current)):
@@ -1506,6 +1526,10 @@ def create_app(settings=None):
             question_count=body.questionCount,
             idempotency_key=key,
         )
+
+    @app.get("/ai-practice/sessions", tags=["AI Practice"])
+    def ai_practice_session_history(limit: int = Query(50, ge=1, le=100), user=Depends(current)):
+        return ai_practice.list_history(user["id"], limit)
 
     @app.get("/ai-practice/sessions/{session_id}", tags=["AI Practice"])
     def ai_practice_session_get(session_id: str, user=Depends(current)):

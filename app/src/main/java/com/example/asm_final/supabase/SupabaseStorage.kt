@@ -35,6 +35,52 @@ class SupabaseStorage(private val context:Context) {
   require(path.length()==file.size.toLong())
   SupabaseAccounts(context).authorized(owner) { transfer("POST",objectPath(owner,file),it,path.readBytes(),file.mime) }
  }
+ fun uploadExamSource(owner:Int,packId:String,bytes:ByteArray,mime:String):String {
+  val uid=userId(owner)
+  require(uid.matches(Regex("[0-9a-fA-F-]{36}")) &&
+      packId.matches(Regex("[0-9a-fA-F-]{36}")))
+  val extension=when(mime) {
+   "application/pdf" -> "pdf"
+   "image/jpeg" -> "jpg"
+   "image/png" -> "png"
+   "image/webp" -> "webp"
+   else -> throw IllegalArgumentException("Unsupported exam source")
+  }
+  require(bytes.isNotEmpty() && bytes.size<=4194304)
+  val objectName="$uid/$packId/source.$extension"
+  SupabaseAccounts(context).authorized(owner) { token ->
+   transfer("POST","/storage/v1/object/mentor-exam-sources/$objectName",token,
+    bytes,mime,4194304)
+  }
+  return objectName
+ }
+
+ fun cacheExamSource(owner:Int,packId:String,storagePath:String,mime:String):java.io.File {
+  val uid=userId(owner)
+  require(packId.matches(Regex("[0-9a-fA-F-]{36}")) &&
+      storagePath.matches(Regex("[0-9a-fA-F-]{36}/[0-9a-fA-F-]{36}/source\\.(pdf|jpg|png|webp)")) &&
+      storagePath.startsWith("$uid/$packId/"))
+  val extension=storagePath.substringAfterLast('.')
+  require(when(extension) {
+   "pdf" -> mime=="application/pdf"
+   "jpg" -> mime=="image/jpeg"
+   "png" -> mime=="image/png"
+   "webp" -> mime=="image/webp"
+   else -> false
+  })
+  val bytes=SupabaseAccounts(context).authorized(owner) { token ->
+   transfer("GET","/storage/v1/object/mentor-exam-sources/$storagePath",token,limit=4194304)
+  }
+  val directory=java.io.File(context.cacheDir,"exam_pack_source")
+  check(directory.isDirectory || directory.mkdirs())
+  val target=java.io.File(directory,"$packId.$extension")
+  val temp=java.io.File(directory,"$packId.$extension.download")
+  try {
+   temp.writeBytes(bytes)
+   check(temp.renameTo(target))
+  } finally { temp.delete() }
+  return target
+ }
  fun removeDraft(owner:Int,file:ChatRecords.FileItem) {
   try {
    SupabaseAccounts(context).authorized(owner) {

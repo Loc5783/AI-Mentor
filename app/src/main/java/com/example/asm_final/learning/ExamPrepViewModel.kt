@@ -37,6 +37,9 @@ data class ExamUiState(
     val selectedSemester: Int? = null, // null = all, 1, 2
     val exams: List<ExamSummary> = emptyList(),
     val activeSessionsByExamId: Map<String, ExamSession> = emptyMap(),
+    val historySessions: List<ExamSession> = emptyList(),
+    val isHistoryLoading: Boolean = false,
+    val historyError: String? = null,
     val completedSessions: List<ExamSession> = emptyList(),
     val sessionListError: String? = null,
     val isLoadingExams: Boolean = false,
@@ -109,12 +112,21 @@ class ExamPrepViewModel(
     private val _uiState = MutableStateFlow(ExamUiState())
     val uiState: StateFlow<ExamUiState> = _uiState.asStateFlow()
 
+    /** Observations already loaded for this account; never starts a request or awards points. */
+    internal fun observedEvidence(activeOwnerId: Int): List<LearningEvidence> {
+        if (isCleared || activeOwnerId <= 0 || activeOwnerId != repository.ownerId) return emptyList()
+        val state = _uiState.value
+        return LearningEvidenceReader.fromExamSessions(repository.ownerId,
+            state.completedSessions + listOfNotNull(state.currentSession, state.completedSession))
+    }
+
     private var timerJob: Job? = null
     private var requestGeneration = 0
     private var controllerGeneration = 0
     private var isCleared = false
 
     private var loadExamsJob: Job? = null
+    private var historyGeneration = 0
     private var startExamJob: Job? = null
     private var submitJob: Job? = null
     private var openSessionJob: Job? = null
@@ -144,13 +156,17 @@ class ExamPrepViewModel(
     }
 
     fun setSubjectFilter(subjectId: String?) {
-        _uiState.update { it.copy(selectedSubjectId = subjectId) }
+        historyGeneration++
+        _uiState.update { it.copy(selectedSubjectId = subjectId,
+            historySessions = emptyList(), historyError = null) }
         loadExams()
     }
 
     fun setGradeFilter(grade: Int) {
         if (grade in 10..12) {
-            _uiState.update { it.copy(selectedGrade = grade) }
+            historyGeneration++
+            _uiState.update { it.copy(selectedGrade = grade,
+                historySessions = emptyList(), historyError = null) }
             loadExams()
         }
     }
@@ -229,6 +245,31 @@ class ExamPrepViewModel(
         }
         loadExamsJob = job
         return job
+    }
+
+    fun loadHistory(): Job {
+        val generation = ++historyGeneration
+        val controller = controllerGeneration
+        val subject = _uiState.value.selectedSubjectId
+        val grade = _uiState.value.selectedGrade
+        _uiState.update { it.copy(historySessions = emptyList(),
+            isHistoryLoading = true, historyError = null) }
+        return scope.launch {
+            try {
+                val sessions = repository.listUserSessions(subjectId = subject, grade = grade)
+                if (generation == historyGeneration && controller == controllerGeneration && !isCleared) {
+                    _uiState.update { it.copy(historySessions = sessions,
+                        isHistoryLoading = false, historyError = null) }
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (generation == historyGeneration && controller == controllerGeneration && !isCleared) {
+                    _uiState.update { it.copy(isHistoryLoading = false,
+                        historyError = "Chưa tải được lịch sử bài thi. Kiểm tra mạng rồi thử lại.") }
+                }
+            }
+        }
     }
 
     fun selectExam(exam: ExamSummary) {
@@ -501,8 +542,8 @@ class ExamPrepViewModel(
 
         val currentSelected = _uiState.value.localAnswers[questionId]
         // Toggle: if clicking already selected option, unselect (clear) it
-        val type = session.questions.firstOrNull { it.id == questionId }?.questionType
-        val targetSelection: String? = if (type == "SINGLE_CHOICE" && currentSelected == option) null else option
+        val kind = session.questions.firstOrNull { it.id == questionId }?.kind
+        val targetSelection: String? = if (kind == ExamQuestionKind.SINGLE_CHOICE && currentSelected == option) null else option
 
         return performSaveAnswer(session, questionId, targetSelection)
     }
@@ -510,8 +551,12 @@ class ExamPrepViewModel(
     fun setTextAnswer(questionId: String, text: String): Job? {
         val session = _uiState.value.currentSession ?: return null
         if (_uiState.value.isSubmitting || session.state != "IN_PROGRESS") return null
-        val type = session.questions.firstOrNull { it.id == questionId }?.questionType ?: return null
-        val limit = if (type == "ESSAY") 4000 else if (type == "SHORT_ANSWER") 200 else return null
+        val kind = session.questions.firstOrNull { it.id == questionId }?.kind ?: return null
+        val limit = when (kind) {
+            ExamQuestionKind.ESSAY -> 4000
+            ExamQuestionKind.SHORT_ANSWER -> 200
+            else -> return null
+        }
         if (text.length > limit) return null
         return performSaveAnswer(session, questionId, text.ifBlank { null }, 500L)
     }

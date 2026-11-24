@@ -18,10 +18,11 @@ public final class AppServices {
   private final com.example.asm_final.competition.CompetitionRepository competition;
   private final com.example.asm_final.competition.PublicProfileRepository publicProfiles;
   private final com.example.asm_final.competition.FriendshipRepository friendships;
+  private final com.example.asm_final.competition.LearnerDirectory learnerDirectory;
   private final com.example.asm_final.chat.ChatStore chats;
   private final com.example.asm_final.onboarding.LearnerProfileRepository learners;
   private final RecoveryService recovery;
-  private final com.example.asm_final.learning.TeamOsRepository teamOs = new com.example.asm_final.learning.TeamOsRepository();
+  private final com.example.asm_final.learning.TeamOsRepository teamOs;
   private final com.example.asm_final.supabase.SupabaseStudyRepository study;
   private final Context context;
   private final UserProfileRepository profiles;
@@ -63,6 +64,9 @@ public final class AppServices {
     friendships = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
         ? new com.example.asm_final.competition.SupabaseFriendshipRepository(context)
         : new com.example.asm_final.competition.BackendFriendshipRepository(context);
+    learnerDirectory = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+        ? new com.example.asm_final.competition.SupabaseLearnerSearch(context)
+        : new com.example.asm_final.competition.BackendLearnerSearch(context);
     rankingUpdates =
         new LiveOverviewUpdates(
             context,
@@ -70,6 +74,9 @@ public final class AppServices {
                 ? new com.example.asm_final.supabase.SupabaseEventStream(context, owner)
                 : new com.example.asm_final.backend.BackendEventStream(context, owner),
             com.example.asm_final.competition.RankingEventPolicy::affects);
+    teamOs = com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+        ? new com.example.asm_final.supabase.SupabaseTeamOsRepository(context)
+        : new com.example.asm_final.learning.TeamOsRepository();
   }
 
   public com.example.asm_final.onboarding.LearnerProfileRepository learners() {
@@ -107,6 +114,19 @@ public final class AppServices {
 
   public com.example.asm_final.competition.FriendshipRepository friendships() {
     return friendships;
+  }
+
+  public com.example.asm_final.competition.LearnerDirectory learnerDirectory() {
+    return learnerDirectory;
+  }
+
+  public OverviewUpdates friendUpdates() {
+    return new LiveOverviewUpdates(
+        context,
+        owner -> com.example.asm_final.supabase.SupabaseHttp.enabled(context)
+            ? new com.example.asm_final.supabase.SupabaseEventStream(context, owner)
+            : new com.example.asm_final.backend.BackendEventStream(context, owner),
+        com.example.asm_final.competition.FriendshipEventPolicy::affects);
   }
 
   public OverviewUpdates rankingUpdates() {
@@ -188,6 +208,12 @@ public final class AppServices {
     if (com.example.asm_final.supabase.SupabaseHttp.enabled(context))
       return new com.example.asm_final.learning.SupabaseExamRepository(context, owner);
     return new com.example.asm_final.learning.BackendExamRepository(context, owner);
+  }
+
+  public com.example.asm_final.learning.ExamPackStore examPacks(int owner) {
+    if (!com.example.asm_final.supabase.SupabaseHttp.enabled(context))
+      throw new IllegalStateException("Exam packs require Supabase authentication");
+    return new com.example.asm_final.learning.CloudExamPackStore(context, owner);
   }
 
   public com.example.mentor.schedule.domain.ScheduleImportRepository scheduleImport() {

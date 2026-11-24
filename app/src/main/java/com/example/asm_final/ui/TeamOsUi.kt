@@ -1,0 +1,1593 @@
+package com.example.asm_final.ui
+
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.asm_final.AiMentorApplication
+import com.example.asm_final.R
+import com.example.asm_final.learning.*
+import com.example.mentor.data.ActiveUser
+import com.example.mentor.ui.design.*
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TeamOsScreen(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val ownerId = remember(context) { ActiveUser.get(context).toString() }
+    val app = context.applicationContext as AiMentorApplication
+    val repository = remember(app) { app.services().teamOs() }
+    val scope = rememberCoroutineScope()
+    val viewModel = remember(repository, scope) {
+        TeamOsViewModel(repository, scope)
+    }
+
+    LaunchedEffect(ownerId) {
+        viewModel.loadProjects(ownerId)
+    }
+
+    BackHandler {
+        if (viewModel.screen == TeamOsScreen.PROJECT_DETAIL) {
+            viewModel.backToProjectList()
+        } else {
+            onBack()
+        }
+    }
+
+    Scaffold(
+        containerColor = Color.Transparent,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = if (viewModel.screen == TeamOsScreen.PROJECT_DETAIL)
+                            viewModel.selectedProject?.title ?: "Chi tiết dự án"
+                        else "Dự án nhóm (TeamOS)",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        if (viewModel.screen == TeamOsScreen.PROJECT_DETAIL) {
+                            viewModel.backToProjectList()
+                        } else {
+                            onBack()
+                        }
+                    }) {
+                        Text(
+                            text = "←",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                },
+                actions = {
+                    if (viewModel.screen == TeamOsScreen.PROJECT_DETAIL) {
+                        viewModel.currentUserRole?.let { role ->
+                            RoleBadge(role = role)
+                            Spacer(Modifier.width(8.dp))
+                        }
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            )
+        },
+        modifier = modifier.fillMaxSize()
+    ) { padding ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            // Error banner
+            viewModel.errorMessage?.let { error ->
+                Surface(
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 6.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = error,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.weight(1f)
+                        )
+                        TextButton(onClick = { viewModel.dismissError() }) {
+                            Text("Đóng", style = MaterialTheme.typography.labelSmall)
+                        }
+                    }
+                }
+            }
+
+            // Success banner
+            viewModel.actionSuccessMessage?.let { msg ->
+                Surface(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 6.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = msg,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.weight(1f)
+                        )
+                        TextButton(onClick = { viewModel.dismissActionMessage() }) {
+                            Text("Đóng", style = MaterialTheme.typography.labelSmall)
+                        }
+                    }
+                }
+            }
+
+            if (viewModel.isLoading) {
+                LinearProgressIndicator(Modifier.fillMaxWidth())
+            }
+
+            when (viewModel.screen) {
+                TeamOsScreen.PROJECT_LIST -> {
+                    TeamOsProjectListScreen(viewModel = viewModel)
+                }
+                TeamOsScreen.PROJECT_DETAIL -> {
+                    TeamOsProjectDetailScreen(viewModel = viewModel)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TeamOsProjectListScreen(viewModel: TeamOsViewModel) {
+    var showCreateDialog by remember { mutableStateOf(false) }
+
+    Column(Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Danh sách dự án của bạn",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold
+            )
+            Button(
+                onClick = { showCreateDialog = true },
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+            ) {
+                Text("+ Dự án mới", style = MaterialTheme.typography.labelMedium)
+            }
+        }
+
+        if (viewModel.projects.isEmpty() && !viewModel.isLoading) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "Chưa tham gia dự án nhóm nào",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = "Bấm '+ Dự án mới' để bắt đầu làm việc nhóm cùng AI Mentor",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(viewModel.projects, key = { it.id }) { project ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { viewModel.selectProject(project) },
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                    ) {
+                        Column(Modifier.padding(16.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = project.title,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Text(
+                                    text = "v${project.version}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                            }
+                            if (!project.description.isNullOrBlank()) {
+                                Spacer(Modifier.height(6.dp))
+                                Text(
+                                    text = project.description,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                            Spacer(Modifier.height(10.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "${project.members.size} thành viên",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Text(
+                                    text = "Xem chi tiết →",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (showCreateDialog) {
+        CreateProjectDialog(
+            onDismiss = { showCreateDialog = false },
+            onCreate = { title, desc ->
+                viewModel.createProject(title, desc) {
+                    showCreateDialog = false
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun TeamOsProjectDetailScreen(viewModel: TeamOsViewModel) {
+    Column(Modifier.fillMaxSize()) {
+        ScrollableTabRow(
+            selectedTabIndex = viewModel.currentTab.ordinal,
+            edgePadding = 12.dp,
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.primary
+        ) {
+            TeamOsTab.values().forEach { tab ->
+                Tab(
+                    selected = viewModel.currentTab == tab,
+                    onClick = { viewModel.switchTab(tab) },
+                    text = {
+                        Text(
+                            text = when (tab) {
+                                TeamOsTab.OVERVIEW -> "Tổng quan"
+                                TeamOsTab.MEMBERS -> "Thành viên (${viewModel.members.size})"
+                                TeamOsTab.REQUIREMENTS -> "Yêu cầu (${viewModel.requirements.size})"
+                                TeamOsTab.DOCUMENTS -> "Tài liệu (${viewModel.documents.size})"
+                                TeamOsTab.TASKS -> "Nhiệm vụ (${viewModel.tasks.size})"
+                                TeamOsTab.WARNINGS -> "Cảnh báo nội dung (${viewModel.warnings.size})"
+                            },
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                )
+            }
+        }
+
+        Box(
+            Modifier
+                .fillMaxSize()
+                .weight(1f)
+        ) {
+            when (viewModel.currentTab) {
+                TeamOsTab.OVERVIEW -> TeamOsOverviewTab(viewModel)
+                TeamOsTab.MEMBERS -> TeamOsMembersTab(viewModel)
+                TeamOsTab.REQUIREMENTS -> TeamOsRequirementsTab(viewModel)
+                TeamOsTab.DOCUMENTS -> TeamOsDocumentsTab(viewModel)
+                TeamOsTab.TASKS -> TeamOsTasksTab(viewModel)
+                TeamOsTab.WARNINGS -> TeamOsWarningsTab(viewModel)
+            }
+        }
+    }
+}
+
+@Composable
+fun TeamOsOverviewTab(viewModel: TeamOsViewModel) {
+    val project = viewModel.selectedProject ?: return
+    val totalTasks = viewModel.tasks.size
+    val doneTasks = viewModel.tasks.count { it.status == TeamOsRepository.TaskStatus.DONE }
+    val progressPercent = if (totalTasks > 0) (doneTasks * 100) / totalTasks else 0
+    val activeWarnings = viewModel.warnings.count { it.status == TeamOsRepository.WarningStatus.NEEDS_CHECK }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Card(
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(Modifier.padding(16.dp)) {
+                Text(text = project.title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                if (!project.description.isNullOrBlank()) {
+                    Spacer(Modifier.height(6.dp))
+                    Text(text = project.description, style = MaterialTheme.typography.bodyMedium)
+                }
+                Spacer(Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Tiến độ nhiệm vụ: $progressPercent%", style = MaterialTheme.typography.labelMedium)
+                    Text(text = "$doneTasks / $totalTasks hoàn thành", style = MaterialTheme.typography.labelSmall)
+                }
+                Spacer(Modifier.height(6.dp))
+                LinearProgressIndicator(
+                    progress = { if (totalTasks > 0) doneTasks.toFloat() / totalTasks else 0f },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                )
+            }
+        }
+
+        // Quick Stats Row
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            StatCard(title = "Thành viên", value = viewModel.members.size.toString(), modifier = Modifier.weight(1f))
+            StatCard(title = "Yêu cầu GV", value = viewModel.requirements.size.toString(), modifier = Modifier.weight(1f))
+            StatCard(title = "Tài liệu", value = viewModel.documents.size.toString(), modifier = Modifier.weight(1f))
+            StatCard(
+                title = "Cảnh báo nội dung",
+                value = activeWarnings.toString(),
+                modifier = Modifier.weight(1f),
+                isAlert = activeWarnings > 0
+            )
+        }
+
+        // Action recommendations
+        Card(
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(Modifier.padding(16.dp)) {
+                Text(
+                    text = "Hành động nhanh",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = { viewModel.runGapAnalysis() },
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("Đối chiếu nội dung", style = MaterialTheme.typography.labelSmall)
+                    }
+                    if (viewModel.canEdit) {
+                        Button(
+                            onClick = { viewModel.switchTab(TeamOsTab.TASKS) },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text("Xem nhiệm vụ", style = MaterialTheme.typography.labelSmall)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun StatCard(title: String, value: String, modifier: Modifier = Modifier, isAlert: Boolean = false) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isAlert) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = if (isAlert) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelSmall,
+                color = if (isAlert) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.outline
+            )
+        }
+    }
+}
+
+@Composable
+fun TeamOsMembersTab(viewModel: TeamOsViewModel) {
+    var showAddMemberDialog by remember { mutableStateOf(false) }
+
+    Column(Modifier.fillMaxSize()) {
+        if (viewModel.canManageMembers) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Quản lý thành viên",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Button(
+                    onClick = { showAddMemberDialog = true },
+                    shape = RoundedCornerShape(8.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text("+ Thêm thành viên", style = MaterialTheme.typography.labelMedium)
+                }
+            }
+        } else {
+            Surface(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    text = "Chỉ Trưởng nhóm (OWNER) hoặc Quản trị viên (ADMIN) mới có quyền quản lý thành viên.",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(12.dp),
+                    color = MaterialTheme.colorScheme.outline
+                )
+            }
+        }
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(viewModel.members, key = { it.userId }) { member ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "Người dùng: ${member.userId}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Spacer(Modifier.height(4.dp))
+                            RoleBadge(role = member.role)
+                        }
+                        if (viewModel.canManageMembers && member.userId != viewModel.currentUserId && member.role != TeamOsRepository.TeamRole.OWNER) {
+                            OutlinedButton(
+                                onClick = { viewModel.removeMember(member.userId) },
+                                shape = RoundedCornerShape(6.dp),
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
+                            ) {
+                                Text("Xóa", style = MaterialTheme.typography.labelSmall)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (showAddMemberDialog) {
+        AddMemberDialog(
+            onDismiss = { showAddMemberDialog = false },
+            onAdd = { targetId, role ->
+                viewModel.addMember(targetId, role) {
+                    showAddMemberDialog = false
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun TeamOsRequirementsTab(viewModel: TeamOsViewModel) {
+    var showAddDialog by remember { mutableStateOf(false) }
+
+    Column(Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Yêu cầu của giáo viên",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold
+            )
+            if (viewModel.canEdit) {
+                Button(
+                    onClick = { showAddDialog = true },
+                    shape = RoundedCornerShape(8.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text("+ Thêm yêu cầu", style = MaterialTheme.typography.labelMedium)
+                }
+            }
+        }
+
+        if (viewModel.requirements.isEmpty()) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Chưa có yêu cầu giáo viên nào được ghi nhận",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.outline
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(viewModel.requirements, key = { it.id }) { req ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                    ) {
+                        Column(Modifier.padding(12.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = req.title,
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                PriorityBadge(priority = req.priority)
+                            }
+                            Spacer(Modifier.height(6.dp))
+                            Text(
+                                text = req.description,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (showAddDialog) {
+        AddRequirementDialog(
+            onDismiss = { showAddDialog = false },
+            onAdd = { title, desc, prio ->
+                viewModel.addRequirement(title, desc, prio) {
+                    showAddDialog = false
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun TeamOsDocumentsTab(viewModel: TeamOsViewModel) {
+    var showUploadDialog by remember { mutableStateOf(false) }
+    var editingDoc by remember { mutableStateOf<TeamOsRepository.TeamDocument?>(null) }
+
+    Column(Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Tài liệu nhóm",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold
+            )
+            if (viewModel.canEdit) {
+                Button(
+                    onClick = { showUploadDialog = true },
+                    shape = RoundedCornerShape(8.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text("+ Tải tài liệu", style = MaterialTheme.typography.labelMedium)
+                }
+            }
+        }
+
+        if (viewModel.documents.isEmpty()) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Chưa có tài liệu nào trong dự án",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.outline
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(viewModel.documents, key = { it.id }) { doc ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                    ) {
+                        Column(Modifier.padding(12.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = doc.title,
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Surface(
+                                    shape = RoundedCornerShape(4.dp),
+                                    color = MaterialTheme.colorScheme.secondaryContainer
+                                ) {
+                                    Text(
+                                        text = "v${doc.version}",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                    )
+                                }
+                            }
+                            Spacer(Modifier.height(6.dp))
+                            Text(
+                                text = doc.content,
+                                style = MaterialTheme.typography.bodySmall,
+                                maxLines = 4,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            if (viewModel.canEdit) {
+                                Spacer(Modifier.height(8.dp))
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.End
+                                ) {
+                                    TextButton(onClick = { editingDoc = doc }) {
+                                        Text("Sửa tài liệu", style = MaterialTheme.typography.labelSmall)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (showUploadDialog) {
+        UploadDocumentDialog(
+            onDismiss = { showUploadDialog = false },
+            onUpload = { title, content ->
+                viewModel.uploadDocument(title, content) {
+                    showUploadDialog = false
+                }
+            }
+        )
+    }
+
+    editingDoc?.let { doc ->
+        EditDocumentDialog(
+            initialTitle = doc.title,
+            initialContent = doc.content,
+            onDismiss = { editingDoc = null },
+            onSave = { newTitle, newContent ->
+                viewModel.updateDocument(doc.id, newTitle, newContent) {
+                    editingDoc = null
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun TeamOsTasksTab(viewModel: TeamOsViewModel) {
+    var showAddTaskDialog by remember { mutableStateOf(false) }
+    var taskForDependency by remember { mutableStateOf<TeamOsRepository.TeamTask?>(null) }
+
+    Column(Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Nhiệm vụ (${viewModel.tasks.size})",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold
+            )
+            if (viewModel.canEdit) {
+                Button(
+                    onClick = { showAddTaskDialog = true },
+                    shape = RoundedCornerShape(8.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text("+ Tạo nhiệm vụ", style = MaterialTheme.typography.labelMedium)
+                }
+            }
+        }
+
+        if (viewModel.tasks.isEmpty()) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Chưa có nhiệm vụ nào được xác nhận trong dự án",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.outline
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(viewModel.tasks, key = { it.id }) { task ->
+                    val deps = viewModel.taskDependencies[task.id] ?: emptySet()
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                    ) {
+                        Column(Modifier.padding(12.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = task.title,
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                PriorityBadge(priority = task.priority)
+                            }
+                            if (!task.description.isNullOrBlank()) {
+                                Spacer(Modifier.height(4.dp))
+                                Text(text = task.description, style = MaterialTheme.typography.bodySmall)
+                            }
+
+                            if (deps.isNotEmpty()) {
+                                Spacer(Modifier.height(6.dp))
+                                Text(
+                                    text = "Phụ thuộc: ${deps.joinToString(", ") { depId ->
+                                        viewModel.tasks.firstOrNull { it.id == depId }?.title ?: depId
+                                    }}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+
+                            Spacer(Modifier.height(8.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TaskStatusBadge(status = task.status)
+                                if (viewModel.canEdit) {
+                                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                        TextButton(
+                                            onClick = { taskForDependency = task },
+                                            contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
+                                        ) {
+                                            Text("+ Phụ thuộc", style = MaterialTheme.typography.labelSmall)
+                                        }
+                                        if (task.status != TeamOsRepository.TaskStatus.DONE) {
+                                            FilledTonalButton(
+                                                onClick = {
+                                                    val next = if (task.status == TeamOsRepository.TaskStatus.TODO)
+                                                        TeamOsRepository.TaskStatus.IN_PROGRESS
+                                                    else TeamOsRepository.TaskStatus.DONE
+                                                    viewModel.updateTaskStatus(task.id, next)
+                                                },
+                                                shape = RoundedCornerShape(6.dp),
+                                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                                            ) {
+                                                Text(
+                                                    text = if (task.status == TeamOsRepository.TaskStatus.TODO) "Bắt đầu" else "Xong",
+                                                    style = MaterialTheme.typography.labelSmall
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (showAddTaskDialog) {
+        AddTaskDialog(
+            existingTasks = viewModel.tasks,
+            onDismiss = { showAddTaskDialog = false },
+            onAdd = { title, desc, assignee, deadline, prio, depId ->
+                viewModel.createTask(title, desc, assignee, deadline, prio, depId) {
+                    showAddTaskDialog = false
+                }
+            }
+        )
+    }
+
+    taskForDependency?.let { currentTask ->
+        AddDependencyDialog(
+            currentTask = currentTask,
+            availableTasks = viewModel.tasks.filter { it.id != currentTask.id },
+            onDismiss = { taskForDependency = null },
+            onAdd = { dependsOnId ->
+                viewModel.addTaskDependency(currentTask.id, dependsOnId) {
+                    taskForDependency = null
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun TeamOsWarningsTab(viewModel: TeamOsViewModel) {
+    Column(Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Cảnh báo nội dung",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold
+            )
+            Button(
+                onClick = { viewModel.runGapAnalysis() },
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+            ) {
+                Text("Kiểm tra nội dung", style = MaterialTheme.typography.labelMedium)
+            }
+        }
+
+        if (viewModel.warnings.isEmpty()) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Không có cảnh báo nào. Bấm 'Kiểm tra nội dung' để kiểm tra khoảng cách nội dung.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.outline
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(viewModel.warnings, key = { it.id }) { warning ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = when (warning.status) {
+                                TeamOsRepository.WarningStatus.NEEDS_CHECK -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)
+                                TeamOsRepository.WarningStatus.RESOLVED -> MaterialTheme.colorScheme.surfaceVariant
+                                TeamOsRepository.WarningStatus.DISMISSED -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                            }
+                        )
+                    ) {
+                        Column(Modifier.padding(12.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                WarningTypeBadge(type = warning.warningType)
+                                WarningStatusBadge(status = warning.status)
+                            }
+                            Spacer(Modifier.height(6.dp))
+                            Text(
+                                text = warning.message,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                text = "Vị trí: ${warning.locationInfo}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.outline
+                            )
+                            if (!warning.excerpt.isNullOrBlank()) {
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    text = "Trích đoạn: \"${warning.excerpt}\"",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                                )
+                            }
+                            if (!warning.explanation.isNullOrBlank()) {
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    text = "Giải thích: ${warning.explanation}",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                            if (!warning.evidenceRef.isNullOrBlank()) {
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    text = "Dẫn chứng: ${warning.evidenceRef}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+
+                            if (viewModel.canEdit && warning.status == TeamOsRepository.WarningStatus.NEEDS_CHECK) {
+                                Spacer(Modifier.height(8.dp))
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.End,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    OutlinedButton(
+                                        onClick = { viewModel.reviewWarning(warning.id, TeamOsRepository.WarningStatus.DISMISSED) },
+                                        shape = RoundedCornerShape(6.dp),
+                                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                                    ) {
+                                        Text("Bỏ qua", style = MaterialTheme.typography.labelSmall)
+                                    }
+                                    Spacer(Modifier.width(8.dp))
+                                    Button(
+                                        onClick = { viewModel.reviewWarning(warning.id, TeamOsRepository.WarningStatus.RESOLVED) },
+                                        shape = RoundedCornerShape(6.dp),
+                                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                                    ) {
+                                        Text("Xác nhận khắc phục", style = MaterialTheme.typography.labelSmall)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Dialogs
+
+@Composable
+fun CreateProjectDialog(
+    onDismiss: () -> Unit,
+    onCreate: (title: String, description: String?) -> Unit
+) {
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Tạo dự án nhóm mới") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Tên dự án *") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Mô tả ngắn") },
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 3
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { if (title.isNotBlank()) onCreate(title, description) },
+                enabled = title.isNotBlank()
+            ) {
+                Text("Tạo")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Hủy") }
+        }
+    )
+}
+
+@Composable
+fun AddMemberDialog(
+    onDismiss: () -> Unit,
+    onAdd: (userId: String, role: TeamOsRepository.TeamRole) -> Unit
+) {
+    var userId by remember { mutableStateOf("") }
+    var selectedRole by remember { mutableStateOf(TeamOsRepository.TeamRole.MEMBER) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Thêm thành viên vào nhóm") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = userId,
+                    onValueChange = { userId = it },
+                    label = { Text("ID người dùng *") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text("Chọn vai trò:", style = MaterialTheme.typography.labelMedium)
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    TeamOsRepository.TeamRole.values().filter { it != TeamOsRepository.TeamRole.OWNER }.forEach { role ->
+                        FilterChip(
+                            selected = selectedRole == role,
+                            onClick = { selectedRole = role },
+                            label = { Text(role.name, style = MaterialTheme.typography.labelSmall) }
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { if (userId.isNotBlank()) onAdd(userId, selectedRole) },
+                enabled = userId.isNotBlank()
+            ) {
+                Text("Thêm")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Hủy") }
+        }
+    )
+}
+
+@Composable
+fun AddRequirementDialog(
+    onDismiss: () -> Unit,
+    onAdd: (title: String, desc: String, priority: TeamOsRepository.TaskPriority) -> Unit
+) {
+    var title by remember { mutableStateOf("") }
+    var desc by remember { mutableStateOf("") }
+    var priority by remember { mutableStateOf(TeamOsRepository.TaskPriority.MEDIUM) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Thêm yêu cầu giáo viên") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Tiêu đề yêu cầu *") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = desc,
+                    onValueChange = { desc = it },
+                    label = { Text("Chi tiết yêu cầu *") },
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 4
+                )
+                Text("Độ ưu tiên:", style = MaterialTheme.typography.labelMedium)
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    TeamOsRepository.TaskPriority.values().forEach { prio ->
+                        FilterChip(
+                            selected = priority == prio,
+                            onClick = { priority = prio },
+                            label = { Text(prio.name, style = MaterialTheme.typography.labelSmall) }
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { if (title.isNotBlank() && desc.isNotBlank()) onAdd(title, desc, priority) },
+                enabled = title.isNotBlank() && desc.isNotBlank()
+            ) {
+                Text("Thêm")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Hủy") }
+        }
+    )
+}
+
+@Composable
+fun UploadDocumentDialog(
+    onDismiss: () -> Unit,
+    onUpload: (title: String, content: String) -> Unit
+) {
+    var title by remember { mutableStateOf("") }
+    var content by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Tải lên tài liệu mới") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Tên tài liệu *") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = content,
+                    onValueChange = { content = it },
+                    label = { Text("Nội dung tài liệu *") },
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 6
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { if (title.isNotBlank() && content.isNotBlank()) onUpload(title, content) },
+                enabled = title.isNotBlank() && content.isNotBlank()
+            ) {
+                Text("Tải lên")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Hủy") }
+        }
+    )
+}
+
+@Composable
+fun EditDocumentDialog(
+    initialTitle: String,
+    initialContent: String,
+    onDismiss: () -> Unit,
+    onSave: (title: String, content: String) -> Unit
+) {
+    var title by remember { mutableStateOf(initialTitle) }
+    var content by remember { mutableStateOf(initialContent) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Chỉnh sửa tài liệu (Tăng phiên bản)") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Tên tài liệu *") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = content,
+                    onValueChange = { content = it },
+                    label = { Text("Nội dung cập nhật *") },
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 6
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { if (title.isNotBlank() && content.isNotBlank()) onSave(title, content) },
+                enabled = title.isNotBlank() && content.isNotBlank()
+            ) {
+                Text("Lưu phiên bản mới")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Hủy") }
+        }
+    )
+}
+
+@Composable
+fun AddTaskDialog(
+    existingTasks: List<TeamOsRepository.TeamTask>,
+    onDismiss: () -> Unit,
+    onAdd: (title: String, desc: String?, assignee: String?, deadline: String?, priority: TeamOsRepository.TaskPriority, depId: String?) -> Unit
+) {
+    var title by remember { mutableStateOf("") }
+    var desc by remember { mutableStateOf("") }
+    var assignee by remember { mutableStateOf("") }
+    var deadline by remember { mutableStateOf("") }
+    var priority by remember { mutableStateOf(TeamOsRepository.TaskPriority.MEDIUM) }
+    var selectedDepId by remember { mutableStateOf<String?>(null) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Tạo nhiệm vụ nhóm") },
+        text = {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Tên nhiệm vụ *") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = desc,
+                    onValueChange = { desc = it },
+                    label = { Text("Mô tả công việc") },
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 3
+                )
+                OutlinedTextField(
+                    value = assignee,
+                    onValueChange = { assignee = it },
+                    label = { Text("ID người phụ trách (tùy chọn)") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = deadline,
+                    onValueChange = { deadline = it },
+                    label = { Text("Hạn chót (YYYY-MM-DD)") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text("Độ ưu tiên:", style = MaterialTheme.typography.labelMedium)
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    TeamOsRepository.TaskPriority.values().forEach { prio ->
+                        FilterChip(
+                            selected = priority == prio,
+                            onClick = { priority = prio },
+                            label = { Text(prio.name, style = MaterialTheme.typography.labelSmall) }
+                        )
+                    }
+                }
+                if (existingTasks.isNotEmpty()) {
+                    Text("Phụ thuộc vào nhiệm vụ khác:", style = MaterialTheme.typography.labelMedium)
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        items(existingTasks) { t ->
+                            FilterChip(
+                                selected = selectedDepId == t.id,
+                                onClick = { selectedDepId = if (selectedDepId == t.id) null else t.id },
+                                label = { Text(t.title, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelSmall) }
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    if (title.isNotBlank()) {
+                        onAdd(
+                            title,
+                            desc.takeIf { it.isNotBlank() },
+                            assignee.takeIf { it.isNotBlank() },
+                            deadline.takeIf { it.isNotBlank() },
+                            priority,
+                            selectedDepId
+                        )
+                    }
+                },
+                enabled = title.isNotBlank()
+            ) {
+                Text("Tạo")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Hủy") }
+        }
+    )
+}
+
+@Composable
+fun AddDependencyDialog(
+    currentTask: TeamOsRepository.TeamTask,
+    availableTasks: List<TeamOsRepository.TeamTask>,
+    onDismiss: () -> Unit,
+    onAdd: (dependsOnId: String) -> Unit
+) {
+    var selectedTaskId by remember { mutableStateOf<String?>(null) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Thêm phụ thuộc cho nhiệm vụ") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = "Nhiệm vụ: ${currentTask.title}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = "Chọn nhiệm vụ phải hoàn thành trước:",
+                    style = MaterialTheme.typography.labelMedium
+                )
+                if (availableTasks.isEmpty()) {
+                    Text("Không có nhiệm vụ nào khác trong dự án", style = MaterialTheme.typography.bodySmall)
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.heightIn(max = 240.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        items(availableTasks) { task ->
+                            Surface(
+                                shape = RoundedCornerShape(6.dp),
+                                color = if (selectedTaskId == task.id) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { selectedTaskId = task.id }
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    RadioButton(
+                                        selected = selectedTaskId == task.id,
+                                        onClick = { selectedTaskId = task.id }
+                                    )
+                                    Spacer(Modifier.width(8.dp))
+                                    Text(text = task.title, style = MaterialTheme.typography.bodySmall)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { selectedTaskId?.let { onAdd(it) } },
+                enabled = selectedTaskId != null
+            ) {
+                Text("Xác nhận")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Hủy") }
+        }
+    )
+}
+
+// Badges
+
+@Composable
+fun RoleBadge(role: TeamOsRepository.TeamRole) {
+    val (label, bg, fg) = when (role) {
+        TeamOsRepository.TeamRole.OWNER -> Triple("Trưởng nhóm", MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.onPrimary)
+        TeamOsRepository.TeamRole.ADMIN -> Triple("Quản trị", MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.onSecondary)
+        TeamOsRepository.TeamRole.MEMBER -> Triple("Thành viên", MaterialTheme.colorScheme.tertiary, MaterialTheme.colorScheme.onTertiary)
+        TeamOsRepository.TeamRole.VIEWER -> Triple("Người xem", MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+    Surface(
+        shape = RoundedCornerShape(4.dp),
+        color = bg
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = fg,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+        )
+    }
+}
+
+@Composable
+fun PriorityBadge(priority: TeamOsRepository.TaskPriority) {
+    val (label, color) = when (priority) {
+        TeamOsRepository.TaskPriority.HIGH -> "Cao" to MaterialTheme.colorScheme.error
+        TeamOsRepository.TaskPriority.MEDIUM -> "Vừa" to MaterialTheme.colorScheme.primary
+        TeamOsRepository.TaskPriority.LOW -> "Thấp" to MaterialTheme.colorScheme.outline
+    }
+    Surface(
+        shape = RoundedCornerShape(4.dp),
+        color = color.copy(alpha = 0.15f)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = color,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+        )
+    }
+}
+
+@Composable
+fun TaskStatusBadge(status: TeamOsRepository.TaskStatus) {
+    val (label, color) = when (status) {
+        TeamOsRepository.TaskStatus.TODO -> "Cần làm" to MaterialTheme.colorScheme.outline
+        TeamOsRepository.TaskStatus.IN_PROGRESS -> "Đang làm" to MaterialTheme.colorScheme.primary
+        TeamOsRepository.TaskStatus.DONE -> "Hoàn thành" to MaterialTheme.colorScheme.tertiary
+    }
+    Surface(
+        shape = RoundedCornerShape(4.dp),
+        color = color.copy(alpha = 0.15f)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = color,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+        )
+    }
+}
+
+@Composable
+fun WarningTypeBadge(type: TeamOsRepository.WarningType) {
+    val label = when (type) {
+        TeamOsRepository.WarningType.MISSING_CONTENT -> "Thiếu nội dung"
+        TeamOsRepository.WarningType.DUPLICATION -> "Trùng lặp"
+        TeamOsRepository.WarningType.CONTRADICTION -> "Mâu thuẫn"
+        TeamOsRepository.WarningType.UNGROUNDED_CLAIM -> "Thiếu căn cứ"
+    }
+    Surface(
+        shape = RoundedCornerShape(4.dp),
+        color = MaterialTheme.colorScheme.error.copy(alpha = 0.15f)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.error,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+        )
+    }
+}
+
+@Composable
+fun WarningStatusBadge(status: TeamOsRepository.WarningStatus) {
+    val (label, color) = when (status) {
+        TeamOsRepository.WarningStatus.NEEDS_CHECK -> "Cần kiểm tra" to MaterialTheme.colorScheme.error
+        TeamOsRepository.WarningStatus.RESOLVED -> "Đã khắc phục" to MaterialTheme.colorScheme.primary
+        TeamOsRepository.WarningStatus.DISMISSED -> "Đã bỏ qua" to MaterialTheme.colorScheme.outline
+    }
+    Surface(
+        shape = RoundedCornerShape(4.dp),
+        color = color.copy(alpha = 0.15f)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = color,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+        )
+    }
+}

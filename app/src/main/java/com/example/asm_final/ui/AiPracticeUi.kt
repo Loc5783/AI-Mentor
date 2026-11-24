@@ -70,6 +70,7 @@ fun AiPracticeScreen(
             onBack = onBack,
             onOpenNotebook = onOpenNotebook
         )
+        AiPracticeScreenState.HISTORY -> AiPracticeHistoryContent(viewModel)
         AiPracticeScreenState.GENERATING -> AiPracticeGeneratingContent(
             onCancel = { viewModel.cancelGeneration() }
         )
@@ -83,6 +84,63 @@ fun AiPracticeScreen(
             onBack = onBack,
             onOpenNotebook = onOpenNotebook
         )
+    }
+}
+
+@Composable
+private fun AiPracticeHistoryContent(viewModel: AiPracticeViewModel) {
+    val active = viewModel.history.filter { it.state == "IN_PROGRESS" }
+    val completed = viewModel.history.filter { it.state == "COMPLETED" }
+    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            TextButton(onClick = viewModel::closeHistory) { Text("← Luyện cùng AI") }
+            Text("Lịch sử làm bài", style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold)
+        }
+        LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            if (viewModel.isHistoryLoading) item { CircularProgressIndicator() }
+            viewModel.errorMessage?.let { message ->
+                item {
+                    MentorErrorNotice(message)
+                    TextButton(onClick = viewModel::refreshHistory) { Text("Thử lại") }
+                }
+            }
+            if (!viewModel.isHistoryLoading && viewModel.errorMessage == null && viewModel.history.isEmpty()) {
+                item { Text("Bạn chưa có bài luyện AI nào.",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            }
+            if (active.isNotEmpty()) {
+                item { Text("Đang làm dở", style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold) }
+                items(active, key = { it.id }) { entry ->
+                    AiPracticeHistoryCard(entry, viewModel)
+                }
+            }
+            if (completed.isNotEmpty()) {
+                item { Text("Đã hoàn thành", style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold) }
+                items(completed, key = { it.id }) { entry ->
+                    AiPracticeHistoryCard(entry, viewModel)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AiPracticeHistoryCard(entry: AiPracticeHistoryItem, viewModel: AiPracticeViewModel) {
+    val subject = SubjectId.values().firstOrNull { it.wireId == entry.subjectId }?.label("vi")
+        ?: "Môn học"
+    Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(entry.topic, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            Text("$subject · Lớp ${entry.grade}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("Đã làm ${entry.answeredCount}/${entry.questionCount} câu",
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Button(onClick = { viewModel.openHistorySession(entry) }, enabled = !viewModel.isSubmitting) {
+                Text(if (entry.state == "IN_PROGRESS") "Làm tiếp" else "Xem kết quả")
+            }
+        }
     }
 }
 
@@ -174,13 +232,10 @@ private fun AiPracticeSetupContent(
                 }
             }
 
-            viewModel.resumableSession?.let { saved ->
-                OutlinedButton(
-                    onClick = { viewModel.resumePractice() },
-                    enabled = !viewModel.isSubmitting,
-                    modifier = Modifier.fillMaxWidth().testTag("AiPracticeResumeBtn")
-                ) { Text("Tiếp tục bài đang làm: ${saved.topic}") }
-            }
+            OutlinedButton(
+                onClick = { viewModel.openHistory() },
+                modifier = Modifier.fillMaxWidth().testTag("AiPracticeHistoryBtn")
+            ) { Text("Lịch sử làm bài →") }
 
             // Warning if AI provider is not configured
             if (config != null && (!config.configured || config.provider == "demo")) {
@@ -452,64 +507,71 @@ private fun AiPracticeActiveContent(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Top Bar
+        // Keep the current question and exit action visible without crowding the prompt.
         Surface(
-            tonalElevation = 2.dp,
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 2.dp,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                IconButton(onClick = onBack) {
-                    Text("←", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Column(Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = onBack, modifier = Modifier.testTag("AiPracticeExitBtn")) {
+                        Text("←  Thoát", color = MaterialTheme.colorScheme.primary)
+                    }
+                    Spacer(Modifier.weight(1f))
+                    Text("LUYỆN TẬP", style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                Text(
-                    text = "Câu $index / $total",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = when (q.difficulty) {
-                        "EASY" -> "Dễ"
-                        "HARD" -> "Nâng cao"
-                        else -> "Trung bình"
-                    },
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MentorTokens.Blue600
-                )
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp)) {
+                    Text("Câu $index / $total", style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                    Spacer(Modifier.weight(1f))
+                    Surface(shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.secondaryContainer) {
+                        Text(
+                            when (q.difficulty) {
+                                "EASY" -> "Dễ"
+                                "HARD" -> "Nâng cao"
+                                else -> "Trung bình"
+                            },
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
+                }
             }
         }
 
         LinearProgressIndicator(
             progress = { index.toFloat() / total },
-            modifier = Modifier.fillMaxWidth(),
-            color = MentorTokens.Blue500
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            color = MaterialTheme.colorScheme.primary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant
         )
 
         Column(
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(horizontal = 16.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
-            // Question Prompt Card
+            Text("CHỌN MỘT ĐÁP ÁN", style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = if (dark) MentorTokens.NavyCard else MaterialTheme.colorScheme.surface
                 ),
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                shape = RoundedCornerShape(20.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
             ) {
-                Column(Modifier.padding(16.dp)) {
+                Column(Modifier.fillMaxWidth().padding(20.dp)) {
                     Text(
                         text = q.prompt,
-                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 17.sp, lineHeight = 24.sp),
-                        fontWeight = FontWeight.Medium
+                        style = MaterialTheme.typography.titleMedium.copy(lineHeight = 27.sp),
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -518,47 +580,48 @@ private fun AiPracticeActiveContent(
             listOf("A", "B", "C", "D").forEach { optKey ->
                 val optText = q.options[optKey] ?: return@forEach
                 val isSelected = viewModel.selectedOption == optKey
-                val cardBorder = if (isSelected) {
-                    BorderStroke(2.dp, MentorTokens.Blue500)
-                } else {
-                    BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
-                }
-                val cardBg = if (isSelected) {
-                    if (dark) MentorTokens.NavyElevated else MentorTokens.Blue50
-                } else {
-                    if (dark) MentorTokens.NavySurface else MaterialTheme.colorScheme.surface
-                }
+                val cardBorder = BorderStroke(
+                    if (isSelected) 2.dp else 1.dp,
+                    if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+                )
+                val cardBg = if (isSelected) MaterialTheme.colorScheme.primaryContainer
+                    else MaterialTheme.colorScheme.surface
 
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { viewModel.selectOption(optKey) }
                         .testTag("AiOption_${optKey}"),
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(containerColor = cardBg),
                     border = cardBorder
                 ) {
                     Row(
-                        modifier = Modifier.padding(14.dp),
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 60.dp)
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(32.dp)
+                                .size(36.dp)
                                 .clip(CircleShape)
-                                .background(if (isSelected) MentorTokens.Blue600 else MaterialTheme.colorScheme.surfaceVariant),
+                                .background(if (isSelected) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.surfaceVariant),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = optKey,
                                 fontWeight = FontWeight.Bold,
-                                color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                         Spacer(Modifier.width(12.dp))
                         Text(
                             text = optText,
-                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
+                                else MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -570,21 +633,22 @@ private fun AiPracticeActiveContent(
             }
         }
 
-        // Bottom Action Bar
+        // Fixed actions remain reachable when a long question scrolls.
         Surface(
-            tonalElevation = 4.dp,
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 8.dp,
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 OutlinedButton(
                     onClick = { viewModel.skipCurrentQuestion() },
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(1f).heightIn(min = 52.dp)
                         .testTag("AiPracticeSkipBtn"),
                     enabled = !viewModel.isSubmitting
                 ) {
@@ -594,15 +658,15 @@ private fun AiPracticeActiveContent(
                 Button(
                     onClick = { viewModel.submitAnswer() },
                     modifier = Modifier
-                        .weight(1.5f)
+                        .weight(1.5f).heightIn(min = 52.dp)
                         .testTag("AiPracticeSubmitBtn"),
                     enabled = viewModel.selectedOption != null && !viewModel.isSubmitting,
-                    colors = ButtonDefaults.buttonColors(containerColor = MentorTokens.Blue600)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
                         text = if (viewModel.isSubmitting) "Đang nộp..." else "Xác nhận",
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -619,10 +683,70 @@ private fun AiPracticeFeedbackContent(
     val currentQuestion = viewModel.currentQuestion
     var showReportDialog by remember { mutableStateOf(false) }
     var showAskAiDialog by remember { mutableStateOf(false) }
+    var showMisconceptionFlow by remember(currentQuestion?.id) { mutableStateOf(false) }
     var showExplanationPage by remember(currentQuestion?.id) { mutableStateOf(false) }
     var askedQuery by remember(currentQuestion?.id) { mutableStateOf("") }
     var askAiQuery by remember(currentQuestion?.id) {
         mutableStateOf("Giải thích câu hỏi này từng bước, nhất là cách chọn đáp án đúng.")
+    }
+
+    val context = LocalContext.current
+    val ownerId = remember(context) { ActiveUser.get(context) }
+    val practiceSubjectId = viewModel.session?.subjectId.orEmpty()
+    val sessionGrade = viewModel.session?.grade ?: 10
+    val hasSessionId = !viewModel.session?.id.isNullOrBlank()
+    val misconceptionRepo = remember(context, ownerId) {
+        DefaultMisconceptionRepository(context, ownerId)
+    }
+    var hasVerifiedMisconceptions by remember(ownerId, practiceSubjectId, sessionGrade) {
+        mutableStateOf(false)
+    }
+    var isLoadingMisconceptionCatalog by remember(ownerId, practiceSubjectId, sessionGrade) {
+        mutableStateOf(false)
+    }
+    var misconceptionCatalogError by remember(ownerId, practiceSubjectId, sessionGrade) {
+        mutableStateOf<String?>(null)
+    }
+
+    LaunchedEffect(misconceptionRepo, practiceSubjectId, sessionGrade) {
+        hasVerifiedMisconceptions = false
+        misconceptionCatalogError = null
+        isLoadingMisconceptionCatalog = practiceSubjectId.isNotBlank()
+        try {
+            if (practiceSubjectId.isNotBlank()) {
+                hasVerifiedMisconceptions =
+                    misconceptionRepo.getVerifiedReasons(practiceSubjectId, sessionGrade).isNotEmpty()
+            }
+        } catch (cancelled: kotlinx.coroutines.CancellationException) {
+            throw cancelled
+        } catch (_: Exception) {
+            misconceptionCatalogError = "Không tải được danh mục đã kiểm duyệt cho môn và lớp này."
+        } finally {
+            isLoadingMisconceptionCatalog = false
+        }
+    }
+
+    if (showMisconceptionFlow && currentQuestion != null && !result.isCorrect &&
+        !result.isSkipped && hasVerifiedMisconceptions && hasSessionId) {
+        val misconceptionVm = remember(currentQuestion.id, viewModel.session?.id, ownerId) {
+            MisconceptionViewModel(
+                repository = misconceptionRepo,
+                questionId = currentQuestion.id,
+                sessionId = viewModel.session!!.id,
+                subjectId = practiceSubjectId,
+                grade = sessionGrade,
+                questionPrompt = currentQuestion.prompt,
+                selectedOption = result.selectedOption,
+                correctOption = result.correctOption,
+                explanation = result.explanation,
+                context = context
+            )
+        }
+        MisconceptionBusterScreen(
+            viewModel = misconceptionVm,
+            onClose = { showMisconceptionFlow = false }
+        )
+        return
     }
 
     if (showExplanationPage) {
@@ -682,21 +806,22 @@ private fun AiPracticeFeedbackContent(
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(horizontal = 16.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
-            // Result Banner
+            Text("KẾT QUẢ CÂU HỎI", style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Card(
                 colors = CardDefaults.cardColors(containerColor = bannerBg),
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(20.dp),
                 modifier = Modifier.fillMaxWidth().testTag("AiFeedbackBanner")
             ) {
                 Text(
                     text = bannerText,
                     color = bannerTextColor,
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(16.dp)
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(20.dp)
                 )
             }
 
@@ -705,10 +830,10 @@ private fun AiPracticeFeedbackContent(
                 colors = CardDefaults.cardColors(
                     containerColor = if (dark) MentorTokens.NavyCard else MaterialTheme.colorScheme.surface
                 ),
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                shape = RoundedCornerShape(20.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
             ) {
-                Column(Modifier.padding(16.dp)) {
+                Column(Modifier.fillMaxWidth().padding(20.dp)) {
                     Text(
                         text = "💡 Lời giải chi tiết từ Gia sư AI:",
                         style = MaterialTheme.typography.titleSmall,
@@ -720,6 +845,71 @@ private fun AiPracticeFeedbackContent(
                         result.explanation,
                         if (dark) Color.White else MaterialTheme.colorScheme.onSurface
                     )
+                }
+            }
+
+            if (viewModel.confidenceSupported && !result.isSkipped) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    shape = RoundedCornerShape(20.dp),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                    modifier = Modifier.fillMaxWidth().testTag("AiAnswerConfidenceCard")
+                ) {
+                    Column(Modifier.fillMaxWidth().padding(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Text("Bạn chắc về cách giải đến đâu?",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface)
+                        Text("Chọn theo cảm nhận của bạn. Mức này không ảnh hưởng điểm số.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        when {
+                            !viewModel.confidenceAvailable -> Text(
+                                "Tính năng này đang chờ cập nhật trên máy chủ. Bạn vẫn có thể tiếp tục làm bài.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.testTag("AiConfidenceUnavailable")
+                            )
+                            viewModel.confidenceLoading -> {
+                                Text("Đang kiểm tra mức đã lưu…",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                            }
+                            else -> {
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp),
+                                    modifier = Modifier.fillMaxWidth()) {
+                                    listOf(
+                                        AnswerConfidence.LOW to "Chưa chắc",
+                                        AnswerConfidence.MEDIUM to "Khá chắc",
+                                        AnswerConfidence.HIGH to "Rất chắc"
+                                    ).forEach { (value, label) ->
+                                        FilterChip(
+                                            selected = viewModel.answerConfidence == value,
+                                            onClick = { viewModel.chooseAnswerConfidence(value) },
+                                            label = { Text(label, style = MaterialTheme.typography.bodyMedium) },
+                                            enabled = !viewModel.confidenceBusy,
+                                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                                                .testTag("AiConfidence_${value.name}")
+                                        )
+                                    }
+                                }
+                                if (viewModel.confidenceBusy) {
+                                    Text("Đang lưu lựa chọn…",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                                }
+                                if (viewModel.answerConfidence != null) {
+                                    Text("Đã lưu cho câu trả lời này",
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.primary)
+                                }
+                                viewModel.confidenceError?.let { MentorErrorNotice(it) }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -741,7 +931,7 @@ private fun AiPracticeFeedbackContent(
             }
             viewModel.reportError?.let { MentorErrorNotice(it) }
 
-            // Inquiry row: Ask AI More & Report Question
+            // Inquiry row: Ask AI More, Misconception Buster (if wrong) & Report Question
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -753,24 +943,49 @@ private fun AiPracticeFeedbackContent(
                     Text("Hỏi thêm AI 💬", fontSize = 13.sp)
                 }
 
+                if (!result.isCorrect && !result.isSkipped && hasVerifiedMisconceptions && hasSessionId) {
+                    Button(
+                        onClick = { showMisconceptionFlow = true },
+                        modifier = Modifier.weight(1.3f).testTag("AiMisconceptionBusterBtn"),
+                        colors = ButtonDefaults.buttonColors(containerColor = MentorTokens.Orange600)
+                    ) {
+                        Text("Phá mệnh đề ⚡", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    }
+                }
+
                 OutlinedButton(
                     onClick = { showReportDialog = true },
                     modifier = Modifier.weight(1f).testTag("AiReportBtn")
                 ) {
-                    Text("Báo lỗi câu hỏi ⚠️", fontSize = 13.sp)
+                    Text("Báo lỗi ⚠️", fontSize = 13.sp)
                 }
             }
         }
 
+        if (isLoadingMisconceptionCatalog && !result.isCorrect && !result.isSkipped && hasSessionId) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth().testTag("AiMisconceptionCatalogLoading")
+            )
+        }
+        if (misconceptionCatalogError != null && !result.isCorrect && !result.isSkipped && hasSessionId) {
+            Text(
+                text = misconceptionCatalogError.orEmpty(),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.testTag("AiMisconceptionCatalogError")
+            )
+        }
+
         // Bottom Navigation Bar
         Surface(
-            tonalElevation = 4.dp,
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 8.dp,
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 // If wrong, allow Retry
@@ -778,7 +993,7 @@ private fun AiPracticeFeedbackContent(
                     OutlinedButton(
                         onClick = { viewModel.retryQuestion() },
                         modifier = Modifier
-                            .weight(1f)
+                            .weight(1f).heightIn(min = 52.dp)
                             .testTag("AiRetryBtn")
                     ) {
                         Text("Luyện lại câu này")
@@ -789,14 +1004,14 @@ private fun AiPracticeFeedbackContent(
                 Button(
                     onClick = { viewModel.nextQuestion() },
                     modifier = Modifier
-                        .weight(1.2f)
+                        .weight(1.2f).heightIn(min = 52.dp)
                         .testTag("AiNextQuestionBtn"),
-                    colors = ButtonDefaults.buttonColors(containerColor = MentorTokens.Blue600)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
                         text = if (isLast) "Xem kết quả" else "Câu tiếp theo →",
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }

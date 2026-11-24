@@ -1,5 +1,26 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
+  <string name="team_tab_title">Groups</string>
+  <string name="team_tab_online_required">Group learning requires sign-in and a Supabase connection.</string>
+  <string name="study_hub_title">Study</string>
+  <string name="study_hub_intro">Choose a subject or review your study plan.</string>
+  <string name="study_plan_title">7-day study plan</string>
+  <string name="study_plan_desc">See your study sessions, tasks and AI suggestions.</string>
+  <string name="study_plan_open">Open plan</string>
+  <string name="study_subjects_title">Choose a subject</string>
+  <string name="study_subject_open_desc">Lessons, practice and exams for this subject.</string>
+  <string name="study_manage_path">Manage subjects in your learning path</string>
+  <string name="study_path_title">Learning path</string>
+  <string name="study_path_desc">Continue lessons and progress for this subject.</string>
+  <string name="study_path_open">Open learning path</string>
+  <string name="study_practice_group">Practice</string>
+  <string name="study_exam_group">Exam prep</string>
+  <string name="study_review_group">Review</string>
+  <string name="study_wrong_answers">Mistake notebook</string>
+  <string name="study_wrong_answers_desc">Review questions and misunderstandings to revisit.</string>
+  <string name="home_next_step_title">Keep learning today</string>
+  <string name="home_next_step_desc">Choose a subject to continue a lesson or unfinished practice.</string>
+  <string name="home_next_step_action">Open Study</string>
   <string name="design_today">Hello,</string>
   <string name="design_week">Your last 7 days</string>
   <string name="design_week_empty">Your week starts here. Complete a lesson to record your first progress.</string>
@@ -9,6 +30,8 @@
   <string name="design_path">Learning path</string>
   <string name="lesson_hub_intro">Choose a way to learn that fits today.</string>
   <string name="lesson_hub_grade">Current grade</string>
+  <string name="lesson_hub_load_error">Could not load your grade. You can still view saved content.</string>
+  <string name="lesson_hub_retry">Try again</string>
   <string name="lesson_hub_change_grade">Change grade</string>
   <string name="lesson_hub_path_desc">Lessons by subject, small milestones, and your own progress.</string>
   <string name="lesson_hub_open_path">Open learning path</string>
@@ -21,6 +44,8 @@
   <string name="lesson_hub_chat_desc">Ask questions whenever you need another explanation.</string>
   <string name="lesson_hub_ai_practice">Practice with AI</string>
   <string name="lesson_hub_ai_practice_desc">Learn step by step with guidance at your level.</string>
+  <string name="lesson_hub_team_os">Group projects</string>
+  <string name="lesson_hub_team_os_desc">Share tasks, track progress, and review project materials together.</string>
   <string name="lesson_hub_roadmap_grade">Learning path · Grade %1$d</string>
   <string name="lesson_hub_roadmap_desc">Choose a subject to continue your path.</string>
   <string name="lesson_hub_enrolled">In your learning path</string>
@@ -62,9 +87,9 @@
   <string name="home_tool_compete">Compete</string>
   <string name="home_today_tasks">Tasks for today</string>
   <string name="home_tasks_count">%1$d/%2$d done</string>
-  <string name="home_tasks_empty">No tasks for today. Add one in your Schedule.</string>
-  <string name="home_tasks_unavailable">Tasks could not be loaded. Open Schedule to try again.</string>
-  <string name="home_tasks_open">Open Schedule ›</string>
+  <string name="home_tasks_empty">No tasks for today. Add one in your Study plan.</string>
+  <string name="home_tasks_unavailable">Tasks could not be loaded. Open Study plan to try again.</string>
+  <string name="home_tasks_open">Open Study plan ›</string>
   <string name="home_analysis_title">Your learning progress</string>
   <string name="home_week_chart_legend">Bar height shows XP · 🔥 marks a streak day</string>
   <string name="home_subject_chart_title">XP by subject</string>
@@ -74,16 +99,16 @@
   <string name="design_mentor">Your mentor</string>
   <string name="design_understood">Got it! Return to lesson</string>
   <string name="design_initial">Discover knowledge, one step at a time</string>
-  <string name="design_tab_home">Home</string>
+  <string name="design_tab_home">Today</string>
   <string name="design_tab_chat">AI Chat</string>
-  <string name="design_tab_lessons">Learn</string>
+  <string name="design_tab_lessons">Study</string>
   <string name="design_tab_schedule">Schedule</string>
   <string name="design_tab_competition">Ranks</string>
   <string name="design_chart_legend">Blue bars: XP · Flame: streak day</string>
   <string name="design_streak_day">, streak kept</string>
   <string name="home_status_title">Learning progress</string>
   <string name="home_schedule_title">Your 7-day plan</string>
-  <string name="home_schedule_subtitle">Timetable · To-do list</string>
+  <string name="home_schedule_subtitle">Study plan · Tasks</string>
   <string name="home_schedule_days">Mo,Tu,We,Th,Fr,Sa,Su</string>
   <string name="home_progress_title">Your learning journey</string>
   <string name="home_suggestion_subtitle">Finish a lesson or review to grow your streak and update your progress.</string>

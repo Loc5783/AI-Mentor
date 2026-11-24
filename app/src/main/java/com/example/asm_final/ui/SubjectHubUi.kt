@@ -2,6 +2,7 @@ package com.example.asm_final.ui
 
 import com.example.mentor.ui.design.mentorHeader
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.example.asm_final.AiMentorApplication
 import com.example.asm_final.R
 import com.example.asm_final.learning.BackendLibraryRepository
+import com.example.asm_final.supabase.SupabaseHttp
 import com.example.mentor.data.ActiveUser
 import com.example.asm_final.utils.LocaleHelper
 import com.example.mentor.learning.SubjectId
@@ -47,21 +49,20 @@ class SubjectHubUi(
     private val context: Context,
     private val chooseGrade: Runnable,
     private val openSubject: Consumer<SubjectId>,
-    private val openAiChat: Runnable? = null
+    private val openPlan: Runnable,
+    private val openAiChat: Runnable? = null,
+    private val retryLoad: Runnable
 ) {
     private var grade by mutableIntStateOf(10)
-    private var error by mutableStateOf(false)
-    private var loading by mutableStateOf(false)
+    private var loadError by mutableStateOf(false)
 
     fun render(year: Int) {
         grade = if (year in 10..12) year else 10
-        loading = false
-        error = false
+        loadError = false
     }
 
     fun failure() {
-        loading = false
-        error = true
+        loadError = true
     }
 
     fun view(): View = composeHost(context, scenicBackground = true) {
@@ -81,14 +82,28 @@ class SubjectHubUi(
         when (navModel.currentSection) {
             HubSection.MAIN_HUB -> LessonHubMainView(
                 grade = navModel.grade,
+                loadError = loadError,
+                onRetryLoad = { retryLoad.run() },
                 onChooseGrade = { chooseGrade.run() },
-                onSelectSection = { section ->
-                    try {
-                        navModel.navigateTo(HubSection.valueOf(section))
-                    } catch (_: Exception) {}
-                },
-                onOpenAiChat = { openAiChat?.run() }
+                onSelectSection = navModel::navigateTo,
+                onSelectSubject = navModel::openWorkspace,
+                onOpenPlan = { openPlan.run() }
             )
+            HubSection.SUBJECT_WORKSPACE -> navModel.selectedSubject?.let { subject ->
+                SubjectWorkspace(
+                    subject = subject,
+                    grade = navModel.grade,
+                    onBack = { navModel.handleBack() },
+                    onOpenLesson = { openSubject.accept(subject) },
+                    onOpenLibrary = { navModel.openWorkspaceTool(HubSection.LIBRARY) },
+                    onOpenAiPractice = { navModel.openWorkspaceTool(HubSection.AI_PRACTICE) },
+                    onOpenExam = { navModel.openWorkspaceTool(HubSection.EXAM_PREP) },
+                    onOpenNotebook = { navModel.openNotebook(subject, HubSection.SUBJECT_WORKSPACE) },
+                    onOpenChat = { openAiChat?.run() },
+                    onOpenExamPack = { context.startActivity(Intent(context, com.example.asm_final.activities.ExamPackActivity::class.java)) },
+                    examPackAvailable = SupabaseHttp.enabled(context)
+                )
+            }
             HubSection.LIBRARY -> {
                 val subject = navModel.selectedSubject
                 if (subject != null) {
@@ -147,23 +162,34 @@ class SubjectHubUi(
 @Composable
 fun LessonHubMainView(
     grade: Int,
+    loadError: Boolean,
+    onRetryLoad: () -> Unit,
     onChooseGrade: () -> Unit,
-    onSelectSection: (String) -> Unit,
-    onOpenAiChat: () -> Unit
+    onSelectSection: (HubSection) -> Unit,
+    onSelectSubject: (SubjectId) -> Unit,
+    onOpenPlan: () -> Unit
 ) {
-    val palette = premiumDashboardPalette(com.example.asm_final.utils.ThemeHelper.isDarkMode(
-        androidx.compose.ui.platform.LocalContext.current))
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val palette = premiumDashboardPalette(com.example.asm_final.utils.ThemeHelper.isDarkMode(context))
+    val language = LocaleHelper.getLanguage(context)
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         PremiumDashboardHeader(artwork = MentorArtwork.LEARNING) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(stringResource(R.string.lesson_title), style = MaterialTheme.typography.titleLarge,
+                Text(stringResource(R.string.study_hub_title), style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold, color = palette.title)
-                Text(stringResource(R.string.lesson_hub_intro), style = MaterialTheme.typography.bodyMedium,
+                Text(stringResource(R.string.study_hub_intro), style = MaterialTheme.typography.bodyMedium,
                     color = palette.secondary)
             }
         }
         Column(Modifier.padding(horizontal = MentorTokens.PagePadding, vertical = 4.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            if (loadError) {
+                PremiumDashboardCard(palette) {
+                    Text(stringResource(R.string.lesson_hub_load_error),
+                        color = palette.title, style = MaterialTheme.typography.bodyMedium)
+                    TextButton(onClick = onRetryLoad) { Text(stringResource(R.string.lesson_hub_retry)) }
+                }
+            }
             PremiumDashboardCard(palette) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween) {
@@ -176,33 +202,105 @@ fun LessonHubMainView(
                     TextButton(onClick = onChooseGrade) { Text(stringResource(R.string.lesson_hub_change_grade)) }
                 }
             }
-            PremiumDashboardCard(palette, highlighted = true) {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(stringResource(R.string.design_path), style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold, color = palette.title)
-                        Text(stringResource(R.string.lesson_hub_path_desc), style = MaterialTheme.typography.bodyMedium,
-                            color = palette.secondary)
-                    }
-                    MentorIllustration(MentorArtwork.LEARNING, Modifier.width(112.dp))
-                }
-                PremiumDashboardAction(stringResource(R.string.lesson_hub_open_path), palette,
-                    { onSelectSection("ROADMAP") }, Modifier.fillMaxWidth())
-            }
-            Text(stringResource(R.string.lesson_hub_more), style = MaterialTheme.typography.titleMedium,
+            HubSectionCard("7", stringResource(R.string.study_plan_title),
+                stringResource(R.string.study_plan_desc), stringResource(R.string.study_plan_open), onOpenPlan)
+            Text(stringResource(R.string.study_subjects_title), style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold, color = palette.title)
-            HubSectionCard("01", stringResource(R.string.lesson_hub_library),
-                stringResource(R.string.lesson_hub_library_desc), stringResource(R.string.lesson_hub_library),
-                { onSelectSection("LIBRARY") })
-            HubSectionCard("02", stringResource(R.string.lesson_hub_exam),
-                stringResource(R.string.lesson_hub_exam_desc), stringResource(R.string.lesson_hub_exam),
-                { onSelectSection("EXAM_PREP") })
-            HubSectionCard("03", stringResource(R.string.lesson_hub_chat),
-                stringResource(R.string.lesson_hub_chat_desc), stringResource(R.string.lesson_hub_chat),
-                onOpenAiChat)
-            HubSectionCard("04", stringResource(R.string.lesson_hub_ai_practice),
-                stringResource(R.string.lesson_hub_ai_practice_desc), stringResource(R.string.lesson_hub_ai_practice),
-                { onSelectSection("AI_PRACTICE") })
+            PremiumDashboardCard(palette) {
+                SubjectId.values().forEachIndexed { index, subject ->
+                    val label = subject.label(language)
+                    Row(
+                        Modifier.fillMaxWidth().heightIn(min = 56.dp)
+                            .clickable(onClickLabel = label) { onSelectSubject(subject) },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Box(Modifier.size(36.dp).clip(RoundedCornerShape(11.dp))
+                            .background(palette.iconSurface), contentAlignment = Alignment.Center) {
+                            Text(label.take(1), color = palette.accent,
+                                style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+                        }
+                        Text(label, Modifier.weight(1f), color = palette.title,
+                            style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
+                        Text("›", color = palette.accent, style = MaterialTheme.typography.titleLarge)
+                    }
+                    if (index < SubjectId.values().lastIndex) HorizontalDivider(color = palette.border)
+                }
+            }
+            TextButton(onClick = { onSelectSection(HubSection.ROADMAP) }) {
+                Text(stringResource(R.string.study_manage_path))
+            }
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun SubjectWorkspace(
+    subject: SubjectId,
+    grade: Int,
+    onBack: () -> Unit,
+    onOpenLesson: () -> Unit,
+    onOpenLibrary: () -> Unit,
+    onOpenAiPractice: () -> Unit,
+    onOpenExam: () -> Unit,
+    onOpenNotebook: () -> Unit,
+    onOpenChat: () -> Unit,
+    onOpenExamPack: () -> Unit,
+    examPackAvailable: Boolean
+) {
+    BackHandler(onBack = onBack)
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val palette = premiumDashboardPalette(com.example.asm_final.utils.ThemeHelper.isDarkMode(context))
+    val title = subject.label(LocaleHelper.getLanguage(context))
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        PremiumDashboardHeader(artwork = MentorArtwork.LEARNING) {
+            Column(Modifier.weight(1f)) {
+                Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+                    color = palette.title)
+                Text(stringResource(R.string.chat_grade, grade), style = MaterialTheme.typography.bodyMedium,
+                    color = palette.secondary)
+            }
+        }
+        Column(Modifier.padding(horizontal = MentorTokens.PagePadding, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            TextButton(onClick = onBack) { Text(stringResource(R.string.course_back)) }
+            PremiumDashboardCard(palette, highlighted = true) {
+                Text(stringResource(R.string.study_path_title), style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold, color = palette.title)
+                Text(stringResource(R.string.study_path_desc), style = MaterialTheme.typography.bodyMedium,
+                    color = palette.secondary)
+                PremiumDashboardAction(stringResource(R.string.study_path_open), palette,
+                    onOpenLesson, Modifier.fillMaxWidth())
+            }
+            PremiumDashboardCard(palette) {
+                Text(stringResource(R.string.study_practice_group), style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold, color = palette.title)
+                Text(stringResource(R.string.lesson_hub_library_desc), color = palette.secondary,
+                    style = MaterialTheme.typography.bodySmall)
+                OutlinedButton(onClick = onOpenLibrary, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.lesson_hub_library))
+                }
+                OutlinedButton(onClick = onOpenAiPractice, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.lesson_hub_ai_practice))
+                }
+            }
+            PremiumDashboardCard(palette) {
+                Text(stringResource(R.string.study_exam_group), style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold, color = palette.title)
+                OutlinedButton(onClick = onOpenExam, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.lesson_hub_exam))
+                }
+                if (examPackAvailable) OutlinedButton(onClick = onOpenExamPack, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.exam_pack_hub_title))
+                }
+            }
+            PremiumDashboardCard(palette) {
+                Text(stringResource(R.string.study_review_group), style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold, color = palette.title)
+                TextButton(onClick = onOpenNotebook) { Text(stringResource(R.string.study_wrong_answers)) }
+                TextButton(onClick = onOpenChat) { Text(stringResource(R.string.lesson_hub_chat)) }
+            }
             Spacer(Modifier.height(16.dp))
         }
     }
