@@ -2,9 +2,9 @@ package com.example.asm_final
 
 import android.app.Application
 import androidx.activity.ComponentActivity
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.SavedStateHandle
 import com.example.asm_final.learning.LessonViewModel
 import com.example.asm_final.ui.LearningUi
@@ -39,6 +39,14 @@ class PlacementQuizUiInteractionTest {
             key: String?,
             revision: Int?
         ): JSONObject {
+            if (method == "POST" && path == "/enrollments") {
+                return JSONObject().put("id", "placement-ui-enrollment-1")
+            }
+            if (method == "GET" && path.endsWith("/path")) {
+                return JSONObject().put("enrollment", JSONObject().put("id", "placement-ui-enrollment-1"))
+                    .put("curriculumVersion", "placement-ui-v1")
+            }
+            require(method == "POST" && path == "/placements") { "Unexpected request: $method $path" }
             return JSONObject().put("id", "placement-ui-attempt-1")
                 .put("kind", "PLACEMENT")
                 .put("step", 0)
@@ -64,13 +72,17 @@ class PlacementQuizUiInteractionTest {
         val client = FakeUiApiClient()
         val directExecutor = DirectExecutor()
         val vm = LessonViewModel(context.application as Application, SavedStateHandle(), client, directExecutor, directExecutor) { 1 }
-        vm.bind(1, "biology", 10)
-        vm.start("placement", true)
+        // LessonViewModel publishes LiveData to the UI; initialize it on main
+        // just as the real Activity does before composing the quiz screen.
+        composeTestRule.activity.runOnUiThread {
+            vm.bind(1, "biology", 10)
+            vm.start("placement", true)
+        }
 
         composeTestRule.setContent {
-            MaterialTheme {
+            AndroidView(factory = {
                 LearningUi.screen(context, vm, SubjectId.BIOLOGY, 10, true, {}, null, {})
-            }
+            })
         }
 
         // Verify Question 1 prompt is visible
@@ -92,5 +104,19 @@ class PlacementQuizUiInteractionTest {
         // Verify Question 2 prompt is visible
         assertEquals(1, vm.placementIndex())
         composeTestRule.onNodeWithText("Cau hoi 2 - Sinh hoc").assertIsDisplayed()
+
+        // Going back must keep the edited answer instead of resetting the draft.
+        composeTestRule.onNodeWithText("Câu trước").performClick()
+        assertEquals(0, vm.placementIndex())
+        assertEquals("b", vm.placementAnswer("q1"))
+        composeTestRule.onNodeWithText("Dap an B").assertIsDisplayed()
+
+        // A skipped question is reported before the learner confirms submission.
+        composeTestRule.onNodeWithText("Câu tiếp theo").performClick()
+        composeTestRule.onNodeWithText("Nộp bài").performClick()
+        composeTestRule.onNodeWithText("Đã hoàn thành 1/2 câu. Các câu bỏ qua: 2. Nộp bài?")
+            .assertIsDisplayed()
+        composeTestRule.onAllNodesWithText("Quay lại").onLast().performClick()
+        assertEquals(1, vm.placementIndex())
     }
 }
