@@ -43,6 +43,13 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
             return
         }
         if (navigation?.currentDestination?.route == route) return
+        // A study-plan subpage must not be restored as the top of the Study tab after
+        // switching to another tab. Return to its parent before saving tab state.
+        if (!remember && route in tabs.map { it.route } &&
+            navigation?.currentDestination?.route == "schedule") {
+            navigation?.popBackStack()
+            if (navigation?.currentDestination?.route == route) return
+        }
         // Settings and editing sit above Profile; return to that screen instead of restoring
         // a saved tab stack that may bring the subpage back to the top.
         if (route == "profile" && navigation?.currentDestination?.route in listOf("settings", "edit-profile")
