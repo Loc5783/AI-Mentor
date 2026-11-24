@@ -50,17 +50,8 @@ class SupabaseScheduleRepository(private val context: Context): ScheduleReposito
             val first=duplicateInput.first()
             throw DuplicateScheduleEntryException(first.dayOfWeek,first.period,duplicateInput)
         }
-        val conflicts=entries.flatMap { entry ->
-            getEntries(entry.accountId,entry.dayOfWeek).filter {
-                it.period==entry.period && (!isEdit || it.id!=entry.id)
-            }
-        }
-        conflicts.firstOrNull()?.let { duplicate ->
-            throw DuplicateScheduleEntryException(
-                duplicate.dayOfWeek,duplicate.period,
-                conflicts.filter { it.dayOfWeek==duplicate.dayOfWeek && it.period==duplicate.period }
-            )
-        }
+        // The database enforces (user_id, day, period) atomically. A separate
+        // read can fail or race and must not prevent a valid write.
         if (isEdit) {
             updateEntry(entries.single())
         } else {
@@ -81,15 +72,25 @@ class SupabaseScheduleRepository(private val context: Context): ScheduleReposito
     override fun getTodos(accountId:String,dayOfWeek:Int):List<TodoTask> {
         val rows=call(accountId,"todos",JSONObject().put("day",dayOfWeek)
             .put("date",TodoDates.nextOccurrence(dayOfWeek))).getJSONArray("items")
-        return (0 until rows.length()).map {
-            val r=rows.getJSONObject(it)
-            TodoTask(id=r.getLong("id"),accountId=accountId,title=r.getString("title"),
-                isCompleted=r.getBoolean("completed"),dayOfWeek=r.getInt("day"),
-                priority=r.getInt("priority"),linkedSubject=nullable(r,"linked_subject"),
-                createdAt=millis(r,"created_at") ?: 0,completedAt=millis(r,"completed_at"),
-                dueDate=nullable(r,"due_date"),planStartDate=nullable(r,"plan_start_date"))
+        return (0 until rows.length()).map { todoFromRow(rows.getJSONObject(it),accountId) }
+    }
+    override fun getAllTodos(accountId:String):List<TodoTask> {
+        val owner=accountId.toInt()
+        check(owner>0 && ActiveUser.get(context)==owner)
+        return try {
+            val rows=JSONArray(SupabaseAccounts(context).requestFor(owner,"GET",
+                "/rest/v1/mentor_todos?select=id,title,completed,day,priority,linked_subject,created_at,completed_at,due_date,plan_start_date&due_date=not.is.null&order=due_date.asc&limit=200"))
+            (0 until rows.length()).map { todoFromRow(rows.getJSONObject(it),accountId) }
+        } catch (failure: java.io.IOException) {
+            super<ScheduleRepository>.getAllTodos(accountId)
         }
     }
+    private fun todoFromRow(r:JSONObject,accountId:String)=TodoTask(
+        id=r.getLong("id"),accountId=accountId,title=r.getString("title"),
+        isCompleted=r.getBoolean("completed"),dayOfWeek=r.getInt("day"),
+        priority=r.getInt("priority"),linkedSubject=nullable(r,"linked_subject"),
+        createdAt=millis(r,"created_at") ?: 0,completedAt=millis(r,"completed_at"),
+        dueDate=nullable(r,"due_date"),planStartDate=nullable(r,"plan_start_date"))
     override fun insertTodo(task:TodoTask)=call(task.accountId,"insert_todo",todoData(task)).getLong("id")
     override fun updateTodo(task:TodoTask) {call(task.accountId,"update_todo",todoData(task))}
     override fun deleteTodo(id:Long,accountId:String) {call(accountId,"delete_todo",JSONObject().put("id",id))}

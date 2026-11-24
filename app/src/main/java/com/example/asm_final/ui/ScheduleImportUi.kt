@@ -21,6 +21,7 @@ import com.example.asm_final.R
 import com.example.asm_final.chat.ScheduleProposal
 import com.example.mentor.data.ActiveUser
 import com.example.asm_final.AiMentorApplication
+import com.example.asm_final.backend.BackendClient
 import com.example.mentor.schedule.domain.ScheduleEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,7 +51,7 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
     var didReplace by remember { mutableStateOf(false) }
     var existingCountsLoaded by remember(owner) { mutableStateOf(false) }
     var existingCountsFailed by remember(owner) { mutableStateOf(false) }
-    var failed by remember { mutableStateOf(false) }
+    var saveFailure by remember { mutableStateOf<String?>(null) }
     var invalid by remember { mutableStateOf(false) }
     var selectedDay by remember(text) { mutableIntStateOf(1) }
     var showAddDialog by remember { mutableStateOf(false) }
@@ -99,7 +100,7 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
         retainedBeforeImport = if (replaceDays) 0 else importDays.sumOf { existingCounts[it] ?: 0 }
         didReplace = replaceDays
         saving = true
-        failed = false
+        saveFailure = null
         scope.launch {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -136,8 +137,13 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
                 preview = false
             } catch (cancelled: kotlinx.coroutines.CancellationException) {
                 throw cancelled
-            } catch (_: Exception) {
-                failed = true
+            } catch (failure: Exception) {
+                saveFailure = when {
+                    failure is BackendClient.Failure && failure.status == 401 -> "Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại để lưu lịch."
+                    failure is BackendClient.Failure && failure.status == 409 -> "Một số tiết đã có trong lịch. Hãy chọn thêm vào ô trống hoặc thay lịch các ngày đã chọn."
+                    failure is java.io.IOException && failure !is BackendClient.Failure -> "Chưa kết nối được máy chủ. Kiểm tra mạng rồi thử lại."
+                    else -> "Không thể lưu lịch học. Vui lòng thử lại."
+                }
             } finally {
                 saving = false
             }
@@ -318,12 +324,12 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
                 if (invalid) {
                     MentorErrorNotice(stringResource(R.string.schedule_import_check_entries))
                 }
-                if (failed) {
-                    MentorErrorNotice(stringResource(R.string.schedule_import_error))
+                saveFailure?.let { message ->
+                    MentorErrorNotice(message)
                 }
                 if (existingCountsFailed) {
                     MentorErrorNotice(
-                        "Chưa kiểm tra được thời khóa biểu hiện tại. Đóng bản xem trước rồi mở lại để tải lại lịch trước khi xác nhận."
+                        "Chưa tải được lịch hiện tại. Bạn vẫn có thể thêm vào các tiết trống; hãy thử lại khi muốn thay lịch cũ."
                     )
                 }
 
@@ -337,14 +343,14 @@ internal fun ScheduleImportAction(text: String, owner: Int, onDone: () -> Unit) 
                             return@Button
                         }
                         val priorCount = importDays.sumOf { existingCounts[it] ?: 0 }
-                        if (priorCount > 0) {
+                        if (priorCount > 0 && !existingCountsFailed) {
                             pendingImport = chosen
                             showImportOptions = true
                         } else {
                             saveChosen(chosen, replaceDays = false)
                         }
                     },
-                    enabled = !saving && existingCountsLoaded && !existingCountsFailed && edits.any { it.selected && it.subject.isNotBlank() },
+                    enabled = !saving && existingCountsLoaded && edits.any { it.selected && it.subject.isNotBlank() },
                     modifier = Modifier.fillMaxWidth().height(50.dp),
                     shape = RoundedCornerShape(24.dp)
                 ) {
