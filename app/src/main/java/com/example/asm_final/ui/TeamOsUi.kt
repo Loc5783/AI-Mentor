@@ -1,5 +1,8 @@
 package com.example.asm_final.ui
 
+import android.provider.OpenableColumns
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
@@ -27,6 +30,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.example.asm_final.AiMentorApplication
 import com.example.asm_final.R
 import com.example.asm_final.learning.*
@@ -680,8 +686,38 @@ fun TeamOsRequirementsTab(viewModel: TeamOsViewModel) {
 
 @Composable
 fun TeamOsDocumentsTab(viewModel: TeamOsViewModel) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     var showUploadDialog by remember { mutableStateOf(false) }
     var editingDoc by remember { mutableStateOf<TeamOsRepository.TeamDocument?>(null) }
+    var importError by remember { mutableStateOf<String?>(null) }
+    var importing by remember { mutableStateOf(false) }
+    val documentPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            scope.launch {
+                importing = true
+                importError = null
+                try {
+                    val (title, content) = withContext(Dispatchers.IO) {
+                        val name = context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
+                            if (cursor.moveToFirst()) cursor.getString(0) else null
+                        } ?: "Tài liệu nhóm.txt"
+                        require(name.endsWith(".txt", true) || name.endsWith(".md", true)) {
+                            "Chỉ hỗ trợ tệp .txt hoặc .md."
+                        }
+                        val text = context.contentResolver.openInputStream(uri)?.use(TeamDocumentText::read)
+                            ?: throw IllegalArgumentException("Không mở được tệp đã chọn.")
+                        name.substringBeforeLast('.').take(120) to text
+                    }
+                    viewModel.uploadDocument(title, content)
+                } catch (e: Exception) {
+                    importError = e.message ?: "Không đọc được tài liệu."
+                } finally {
+                    importing = false
+                }
+            }
+        }
+    }
 
     Column(Modifier.fillMaxSize()) {
         Row(
@@ -697,14 +733,25 @@ fun TeamOsDocumentsTab(viewModel: TeamOsViewModel) {
                 fontWeight = FontWeight.SemiBold
             )
             if (viewModel.canEdit) {
-                Button(
-                    onClick = { showUploadDialog = true },
-                    shape = RoundedCornerShape(8.dp),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    Text("+ Tải tài liệu", style = MaterialTheme.typography.labelMedium)
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    OutlinedButton(
+                        onClick = { showUploadDialog = true },
+                        enabled = !importing && !viewModel.isLoading,
+                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+                    ) { Text("Nhập tay", style = MaterialTheme.typography.labelMedium) }
+                    Button(
+                        onClick = { documentPicker.launch(arrayOf("text/plain", "text/markdown", "application/octet-stream")) },
+                        enabled = !importing && !viewModel.isLoading,
+                        shape = RoundedCornerShape(8.dp),
+                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+                    ) {
+                        Text(if (importing || viewModel.isLoading) "Đang lưu…" else "+ Tệp văn bản", style = MaterialTheme.typography.labelMedium)
+                    }
                 }
             }
+        }
+        importError?.let { message ->
+            Text(message, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(horizontal = 16.dp))
         }
 
         if (viewModel.documents.isEmpty()) {
@@ -1261,7 +1308,7 @@ fun UploadDocumentDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Tải lên tài liệu mới") },
+        title = { Text("Thêm nội dung tài liệu") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
@@ -1285,7 +1332,7 @@ fun UploadDocumentDialog(
                 onClick = { if (title.isNotBlank() && content.isNotBlank()) onUpload(title, content) },
                 enabled = title.isNotBlank() && content.isNotBlank()
             ) {
-                Text("Tải lên")
+                Text("Thêm nội dung")
             }
         },
         dismissButton = {
