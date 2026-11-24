@@ -43,9 +43,10 @@ fun TeamOsScreen(
     val ownerId = remember(context) { ActiveUser.get(context).toString() }
     val app = context.applicationContext as AiMentorApplication
     val repository = remember(app) { app.services().teamOs() }
+    val learnerDirectory = remember(app) { app.services().learnerDirectory() }
     val scope = rememberCoroutineScope()
     val viewModel = remember(repository, scope) {
-        TeamOsViewModel(repository, scope)
+        TeamOsViewModel(repository, scope, learnerDirectory = learnerDirectory)
     }
 
     LaunchedEffect(ownerId) {
@@ -436,6 +437,7 @@ fun TeamOsOverviewTab(viewModel: TeamOsViewModel) {
                 ) {
                     OutlinedButton(
                         onClick = { viewModel.runGapAnalysis() },
+                        enabled = viewModel.canEdit && !viewModel.isLoading,
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(8.dp)
                     ) {
@@ -548,7 +550,7 @@ fun TeamOsMembersTab(viewModel: TeamOsViewModel) {
                     ) {
                         Column {
                             Text(
-                                text = "Người dùng: ${member.userId}",
+                                text = member.displayName?.takeIf { it.isNotBlank() } ?: "Thành viên",
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -574,6 +576,9 @@ fun TeamOsMembersTab(viewModel: TeamOsViewModel) {
     if (showAddMemberDialog) {
         AddMemberDialog(
             onDismiss = { showAddMemberDialog = false },
+            results = viewModel.memberSearchResults,
+            searching = viewModel.memberSearchBusy,
+            onSearch = viewModel::searchMembers,
             onAdd = { targetId, role ->
                 viewModel.addMember(targetId, role) {
                     showAddMemberDialog = false
@@ -970,6 +975,7 @@ fun TeamOsWarningsTab(viewModel: TeamOsViewModel) {
             )
             Button(
                 onClick = { viewModel.runGapAnalysis() },
+                enabled = viewModel.canEdit && !viewModel.isLoading,
                 shape = RoundedCornerShape(8.dp),
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
             ) {
@@ -1133,9 +1139,13 @@ fun CreateProjectDialog(
 @Composable
 fun AddMemberDialog(
     onDismiss: () -> Unit,
+    results: List<com.example.asm_final.competition.FriendsViewModel.SearchItem>,
+    searching: Boolean,
+    onSearch: (String) -> Unit,
     onAdd: (userId: String, role: TeamOsRepository.TeamRole) -> Unit
 ) {
-    var userId by remember { mutableStateOf("") }
+    var query by remember { mutableStateOf("") }
+    var selected by remember { mutableStateOf<com.example.asm_final.competition.FriendsViewModel.SearchItem?>(null) }
     var selectedRole by remember { mutableStateOf(TeamOsRepository.TeamRole.MEMBER) }
 
     AlertDialog(
@@ -1144,12 +1154,23 @@ fun AddMemberDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
-                    value = userId,
-                    onValueChange = { userId = it },
-                    label = { Text("ID người dùng *") },
+                    value = query,
+                    onValueChange = { query = it; selected = null; onSearch("") },
+                    label = { Text("Tìm theo tên người học") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
+                OutlinedButton(onClick = { onSearch(query) }, enabled = query.trim().length >= 2 && !searching) {
+                    Text("Tìm người học")
+                }
+                if (searching) CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                results.take(10).forEach { person ->
+                    FilterChip(
+                        selected = selected?.id == person.id,
+                        onClick = { selected = person },
+                        label = { Text(person.nickname.ifBlank { "Người học" }, maxLines = 1) }
+                    )
+                }
                 Text("Chọn vai trò:", style = MaterialTheme.typography.labelMedium)
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     TeamOsRepository.TeamRole.values().filter { it != TeamOsRepository.TeamRole.OWNER }.forEach { role ->
@@ -1164,8 +1185,8 @@ fun AddMemberDialog(
         },
         confirmButton = {
             Button(
-                onClick = { if (userId.isNotBlank()) onAdd(userId, selectedRole) },
-                enabled = userId.isNotBlank()
+                onClick = { selected?.let { onAdd(it.id, selectedRole) } },
+                enabled = selected != null && !searching
             ) {
                 Text("Thêm")
             }

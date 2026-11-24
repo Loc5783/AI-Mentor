@@ -64,7 +64,8 @@ open class TeamOsRepository {
         var role: TeamRole = TeamRole.MEMBER,
         var status: MemberStatus = MemberStatus.ACTIVE,
         val joinedAt: Long = System.currentTimeMillis(),
-        var removedAt: Long? = null
+        var removedAt: Long? = null,
+        val displayName: String? = null
     )
 
     data class TeamProject(

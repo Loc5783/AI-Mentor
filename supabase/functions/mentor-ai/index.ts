@@ -3,6 +3,7 @@ import {createConfigLoader} from './server_config.mjs';
 import {plannerPrompt,plannerResult} from './planner.mjs';
 import {essayPrompt,parseEssayGrade} from './essay_grader.mjs';
 import {examPackSources,examPackPrompt,examPackResult} from './exam_pack.mjs';
+import {analyzeTeamProject} from './team_analysis.mjs';
 
 // Authenticated AI proxy. Provider credentials and practice scoring stay server-side.
 const base = Deno.env.get('SUPABASE_URL')!;
@@ -43,6 +44,11 @@ Deno.serve(async (request: Request) => {
   if(!pref.ok&&mode!=='exam_grade_essay')return failure(503,'PROVIDER');
   const rows=pref.ok?await pref.json():[];const learner=rows[0];
   if(mode!=='exam_grade_essay'&&(!learner||![10,11,12].includes(learner.grade)))return failure(400,'INVALID_REQUEST');
+  if(mode==='teamos_analyze'){
+   const result=await analyzeTeamProject({fetcher:fetch,base,headers,userId:user.id,
+    projectId:input.projectId,pool:pool!,model:config.model,signal:request.signal});
+   return json(result.status,result.body);
+  }
   if(mode==='exam_grade_essay'){
    if(!validUuid(input.sessionId))return failure(400,'INVALID_REQUEST');
    let service=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');

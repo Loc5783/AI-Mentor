@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.asm_final.competition.FriendsViewModel
+import com.example.asm_final.competition.LearnerDirectory
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +38,8 @@ enum class TeamOsTab {
 class TeamOsViewModel(
     private val repository: TeamOsRepository,
     private val scope: CoroutineScope? = null,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val learnerDirectory: LearnerDirectory? = null
 ) : ViewModel() {
 
     private val ownedJob = SupervisorJob((scope ?: viewModelScope).coroutineContext[Job])
@@ -84,6 +87,12 @@ class TeamOsViewModel(
     var actionSuccessMessage by mutableStateOf<String?>(null)
         private set
 
+    var memberSearchResults by mutableStateOf<List<FriendsViewModel.SearchItem>>(emptyList())
+        private set
+    var memberSearchBusy by mutableStateOf(false)
+        private set
+    private var memberSearchGeneration = 0
+
     // Role-based capability properties
     val currentUserRole: TeamOsRepository.TeamRole?
         get() {
@@ -109,6 +118,9 @@ class TeamOsViewModel(
      */
     fun loadProjects(userId: String) {
         if (currentUserId != null && currentUserId != userId) {
+            memberSearchGeneration++
+            memberSearchResults = emptyList()
+            memberSearchBusy = false
             // Identity switch: isolate state
             repository.clearUserCache(currentUserId!!)
             selectedProject = null
@@ -137,6 +149,29 @@ class TeamOsViewModel(
                 errorMessage = e.message ?: "Không tải được danh sách dự án"
             } finally {
                 isLoading = false
+            }
+        }
+    }
+
+    fun searchMembers(query: String) {
+        val owner = currentUserId?.toIntOrNull() ?: return
+        val directory = learnerDirectory ?: return
+        val generation = ++memberSearchGeneration
+        memberSearchResults = emptyList()
+        if (query.trim().length < 2) { memberSearchBusy = false; return }
+        vmScope.launch {
+            memberSearchBusy = true
+            try {
+                val results = withContext(ioDispatcher) {
+                    val self = directory.currentProfileId(owner)
+                    directory.search(owner, query.trim()).filterNot { it.id == self }
+                }
+                if (generation == memberSearchGeneration && currentUserId == owner.toString())
+                    memberSearchResults = results
+            } catch (e: Exception) {
+                if (generation == memberSearchGeneration) errorMessage = "Chưa tìm được người học. Vui lòng thử lại."
+            } finally {
+                if (generation == memberSearchGeneration) memberSearchBusy = false
             }
         }
     }
@@ -487,6 +522,10 @@ class TeamOsViewModel(
     fun runGapAnalysis() {
         val uid = currentUserId ?: return
         val proj = selectedProject ?: return
+        if (!canEdit) {
+            errorMessage = "Vai trò Người xem không thể tạo cảnh báo mới."
+            return
+        }
 
         vmScope.launch {
             isLoading = true
@@ -495,9 +534,16 @@ class TeamOsViewModel(
                     repository.analyzeGaps(uid, proj.id)
                 }
                 warnings = list
-                actionSuccessMessage = "Đã kiểm tra yêu cầu và tài liệu"
+                actionSuccessMessage = "AI đã đối chiếu nội dung. Hãy kiểm tra từng cảnh báo trước khi quyết định."
             } catch (e: Exception) {
-                errorMessage = e.message ?: "Lỗi kiểm tra nội dung"
+                errorMessage = when (e.message) {
+                    "TEAM_MEMBERSHIP_REQUIRED" -> "Bạn không còn là thành viên của dự án này."
+                    "TEAM_EDIT_REQUIRED" -> "Vai trò Người xem không thể tạo cảnh báo mới."
+                    "TEAM_CONTENT_REQUIRED" -> "Hãy thêm yêu cầu và nội dung tài liệu trước khi AI đối chiếu."
+                    "TEAM_TOO_LARGE" -> "Dự án có quá nhiều nội dung cho một lượt kiểm tra. Hãy chia nhỏ tài liệu."
+                    "INVALID_AI_OUTPUT" -> "AI chưa đưa ra được cảnh báo có bằng chứng. Vui lòng thử lại."
+                    else -> e.message ?: "Chưa kiểm tra được nội dung. Vui lòng thử lại."
+                }
             } finally {
                 isLoading = false
             }

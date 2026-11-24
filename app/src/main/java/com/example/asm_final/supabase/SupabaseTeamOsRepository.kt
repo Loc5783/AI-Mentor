@@ -178,25 +178,9 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
     }
 
     override fun analyzeGaps(userId: String, projectId: String, aiResponseJson: String?): List<TeamWarning> {
-        val reqs = getRequirements(userId, projectId)
-        val docs = getDocuments(userId, projectId)
-        val existing = getWarnings(userId, projectId)
-        val missing = if (reqs.isEmpty() || docs.isEmpty()) {
-            listOf("Chưa đủ yêu cầu hoặc tài liệu để đối chiếu.")
-        } else reqs.filter { req ->
-            val words = req.title.lowercase().split(" ").filter { it.length > 3 }
-            docs.none { doc -> words.any { doc.content.lowercase().contains(it) } }
-        }.map { "Yêu cầu '${it.title}' chưa thấy trong tài liệu." }
         val owner = onlineUser(userId)
-        for (message in missing) {
-            if (existing.any { it.message == message && it.status == WarningStatus.NEEDS_CHECK }) continue
-            val body = JSONObject().put("id", "warning-${UUID.randomUUID()}")
-                .put("project_id", projectId).put("warning_type", WarningType.MISSING_CONTENT.name)
-                .put("message", message).put("location_info", "Toàn bộ dự án")
-                .put("doc_id", docs.firstOrNull()?.id ?: JSONObject.NULL)
-                .put("created_by_ai", false)
-            accounts().requestFor(owner, "POST", "/rest/v1/mentor_team_warnings", body)
-        }
+        accounts().requestFor(owner, "POST", "/functions/v1/mentor-ai",
+            JSONObject().put("mode", "teamos_analyze").put("projectId", projectId))
         return getWarnings(userId, projectId)
     }
 
@@ -356,6 +340,15 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
                     "/rest/v1/mentor_team_members?project_id=eq.$projectId&status=eq.ACTIVE&select=user_id,role,status,joined_at"
                 )
                 val rows = JSONArray(resp)
+                val ids = (0 until rows.length()).map { rows.getJSONObject(it).getString("user_id") }
+                val names = if (ids.isEmpty()) emptyMap() else {
+                    val profiles = JSONArray(accounts().requestFor(userInt, "GET",
+                        "/rest/v1/mentor_profiles?select=id,nickname&id=in.(${ids.joinToString(",")})"))
+                    (0 until profiles.length()).associate { i ->
+                        val profile = profiles.getJSONObject(i)
+                        profile.getString("id") to profile.optString("nickname")
+                    }
+                }
                 val list = mutableListOf<TeamMember>()
                 for (i in 0 until rows.length()) {
                     val r = rows.getJSONObject(i)
@@ -364,7 +357,8 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
                     list.add(TeamMember(
                         userId = localUserId(r.getString("user_id")),
                         role = rRole,
-                        status = rStatus
+                        status = rStatus,
+                        displayName = names[r.getString("user_id")]
                     ))
                 }
                 return list
