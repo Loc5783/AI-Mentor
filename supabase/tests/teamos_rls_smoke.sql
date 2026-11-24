@@ -58,10 +58,10 @@ begin
     (v_proj_id, v_member, 'MEMBER', 'ACTIVE'),
     (v_proj_id, v_viewer, 'VIEWER', 'ACTIVE');
 
-  -- 4. Verify helper functions
+  -- 4. Helpers may only disclose the current learner's membership.
+  perform set_config('request.jwt.claim.sub', v_owner::text, true);
   assert public.mentor_is_team_active_member(v_proj_id, v_owner) = true, 'Owner is active member';
-  assert public.mentor_is_team_active_member(v_proj_id, v_member) = true, 'Member is active member';
-  assert public.mentor_is_team_active_member(v_proj_id, v_viewer) = true, 'Viewer is active member';
+  assert public.mentor_is_team_active_member(v_proj_id, v_member) = false, 'Owner cannot probe member';
   assert public.mentor_is_team_active_member(v_proj_id, v_outsider) = false, 'Outsider is not active member';
 
   assert public.mentor_is_team_manager(v_proj_id, v_owner) = true, 'Owner is manager';
@@ -69,7 +69,17 @@ begin
   assert public.mentor_is_team_manager(v_proj_id, v_viewer) = false, 'Viewer is not manager';
 
   assert public.mentor_get_team_role(v_proj_id, v_owner) = 'OWNER', 'Owner role is OWNER';
+  assert public.mentor_get_team_role(v_proj_id, v_member) is null, 'Owner cannot probe member role';
+  assert not has_function_privilege('authenticated', 'public.mentor_is_team_member(text,uuid)', 'EXECUTE'),
+    'Legacy helper must not expose removed memberships';
+
+  perform set_config('request.jwt.claim.sub', v_member::text, true);
+  assert public.mentor_is_team_active_member(v_proj_id, v_member) = true, 'Member is active member';
+  assert public.mentor_is_team_manager(v_proj_id, v_member) = false, 'Member is not manager';
   assert public.mentor_get_team_role(v_proj_id, v_member) = 'MEMBER', 'Member role is MEMBER';
+
+  perform set_config('request.jwt.claim.sub', v_viewer::text, true);
+  assert public.mentor_is_team_active_member(v_proj_id, v_viewer) = true, 'Viewer is active member';
   assert public.mentor_get_team_role(v_proj_id, v_viewer) = 'VIEWER', 'Viewer role is VIEWER';
 
   -- 5. Create Documents and Tasks
@@ -147,6 +157,7 @@ begin
   set status = 'REMOVED', removed_at = now()
   where project_id = v_proj_id and user_id = v_member;
 
+  perform set_config('request.jwt.claim.sub', v_member::text, true);
   assert public.mentor_is_team_active_member(v_proj_id, v_member) = false,
     'Removed member must immediately lose active membership';
 
@@ -164,6 +175,13 @@ select set_config('request.jwt.claim.sub', '11111111-1111-1111-1111-111111111111
 do $$ begin
   assert exists (select 1 from public.mentor_team_projects where id = 'proj-test-alpha'),
     'Owner must see the project';
+end $$;
+select set_config('request.jwt.claim.sub', '22222222-2222-2222-2222-222222222222', true);
+do $$ begin
+  assert not exists (select 1 from public.mentor_team_projects where id = 'proj-test-alpha'),
+    'Removed member must lose project access';
+  assert not exists (select 1 from public.mentor_team_tasks where project_id = 'proj-test-alpha'),
+    'Removed member must lose task access';
 end $$;
 reset role;
 

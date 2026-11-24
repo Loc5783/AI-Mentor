@@ -188,12 +188,39 @@ create trigger trg_mentor_check_task_dependency
   before insert or update on public.mentor_team_task_dependencies
   for each row execute function public.mentor_check_task_dependency();
 
+-- Preserve dependencies recorded by the original TeamOS schema. Reject
+-- inconsistent legacy rows instead of silently hiding a learner's work.
+do $$
+begin
+  if exists (
+    select 1 from public.mentor_team_tasks task
+    left join public.mentor_team_tasks prerequisite
+      on prerequisite.id = task.depends_on_task_id
+    where task.depends_on_task_id is not null
+      and (prerequisite.id is null or prerequisite.project_id <> task.project_id
+        or prerequisite.id = task.id)
+  ) then
+    raise exception 'TEAM_LEGACY_DEPENDENCY_INVALID';
+  end if;
+end $$;
+
+insert into public.mentor_team_task_dependencies(task_id, depends_on_task_id)
+select id, depends_on_task_id
+from public.mentor_team_tasks
+where depends_on_task_id is not null
+on conflict (task_id, depends_on_task_id) do nothing;
+
+update public.mentor_team_tasks
+set confirmation_status = 'PENDING_CONFIRMATION'
+where not is_confirmed and confirmation_status = 'CONFIRMED';
+
 -- Helper Security Functions (SECURITY DEFINER with strict search_path = '')
 create or replace function public.mentor_is_team_active_member(p_project_id text, p_user_id uuid)
 returns boolean language sql stable security definer set search_path = '' as $$
   select exists (
     select 1 from public.mentor_team_members
     where project_id = p_project_id and user_id = p_user_id and status = 'ACTIVE'
+      and p_user_id = auth.uid()
   );
 $$;
 
@@ -202,6 +229,7 @@ returns boolean language sql stable security definer set search_path = '' as $$
   select exists (
     select 1 from public.mentor_team_members
     where project_id = p_project_id and user_id = p_user_id and status = 'ACTIVE' and role in ('OWNER', 'ADMIN')
+      and p_user_id = auth.uid()
   );
 $$;
 
@@ -209,6 +237,7 @@ create or replace function public.mentor_get_team_role(p_project_id text, p_user
 returns text language sql stable security definer set search_path = '' as $$
   select role from public.mentor_team_members
   where project_id = p_project_id and user_id = p_user_id and status = 'ACTIVE'
+    and p_user_id = auth.uid()
   limit 1;
 $$;
 
@@ -283,6 +312,8 @@ drop policy if exists team_reqs_member on public.mentor_team_requirements;
 drop policy if exists team_docs_member on public.mentor_team_documents;
 drop policy if exists team_tasks_member on public.mentor_team_tasks;
 drop policy if exists team_warnings_member on public.mentor_team_warnings;
+-- The old helper ignores removal status and is no longer used by any policy.
+revoke execute on function public.mentor_is_team_member(text, uuid) from authenticated;
 alter table public.mentor_team_projects enable row level security;
 alter table public.mentor_team_members enable row level security;
 alter table public.mentor_team_requirements enable row level security;
