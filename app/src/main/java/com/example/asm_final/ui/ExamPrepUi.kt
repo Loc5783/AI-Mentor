@@ -159,15 +159,23 @@ private fun ExamListContent(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    TextButton(onClick = onBack) { Text("← Quay lại", fontWeight = FontWeight.Bold) }
+                    TextButton(onClick = if (showHistory) onToggleHistory else onBack) {
+                        Text("←", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                        Spacer(Modifier.width(6.dp))
+                        Text(if (showHistory) "Danh sách đề" else "Quay lại", fontWeight = FontWeight.Bold)
+                    }
                     TextButton(onClick = onOpenNotebook) { Text("📖 Sổ lỗi sai", style = MaterialTheme.typography.bodySmall) }
                 }
                 Text("Ôn thi Giữa kỳ & Cuối kỳ", style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 12.dp))
-                TextButton(onClick = onToggleHistory) {
-                    Text(if (showHistory) "← Danh sách đề" else "Lịch sử làm bài →")
-                }
             }
+        }
+
+        if (!showHistory) {
+            TextButton(
+                onClick = onToggleHistory,
+                modifier = Modifier.align(Alignment.End).padding(horizontal = 16.dp)
+            ) { Text("Lịch sử làm bài →") }
         }
 
         // Filters scroll
