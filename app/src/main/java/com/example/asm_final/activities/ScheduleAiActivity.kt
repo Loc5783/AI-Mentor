@@ -149,17 +149,19 @@ private fun PlannerScreen(
         "Toán: Hàm số lượng giác, Cấp số cộng, Giới hạn\nVật lý: Dao động điều hòa, Sóng cơ, Điện trường\nHóa học: Cân bằng hóa học, Hydrocarbon"
     }
 
-    var goal by remember { mutableStateOf(if (action == ScheduleAiActivity.EXAM) defaultSampleGoal else "") }
-    var examDate by remember { mutableStateOf(if (action == ScheduleAiActivity.EXAM) defaultExamDate else "") }
+    var todoGoal by remember { mutableStateOf("") }
+    var examSubjectsInput by remember { mutableStateOf("") }
+    var examDate by remember { mutableStateOf("") }
     var dailyMinutes by remember { mutableStateOf("60") }
     var reminderHour by remember { mutableStateOf("19") }
-    var availability by remember { mutableStateOf(if (action == ScheduleAiActivity.EXAM) "Tối chủ nhật rảnh 5 tiếng, các tối khác từ 19h-21h" else "") }
+    var availability by remember { mutableStateOf("") }
     var useOldTimetable by remember { mutableStateOf(true) }
     var result by remember { mutableStateOf<String?>(null) }
     var error by remember { mutableIntStateOf(0) }
     var busy by remember { mutableStateOf(false) }
     var job by remember { mutableStateOf<Job?>(null) }
     var generation by remember { mutableIntStateOf(0) }
+    val goal = if (isExam) examSubjectsInput else todoGoal
     LaunchedEffect(image) {
         generation++
         job?.cancel()
@@ -168,8 +170,11 @@ private fun PlannerScreen(
         result = null
         error = 0
     }
-    val parsedExamDate = remember(examDate) { runCatching { LocalDate.parse(examDate) }.getOrNull() ?: runCatching { LocalDate.parse(defaultExamDate) }.getOrNull() }
-    val parsedSubjects = remember(goal) { parseExamSubjects(goal) ?: if (isExam) parseExamSubjects(defaultSampleGoal) else null }
+    val parsedExamDate = remember(examDate) { runCatching { LocalDate.parse(examDate) }.getOrNull() }
+    val parsedSubjects = remember(examSubjectsInput) { parseExamSubjects(examSubjectsInput) }
+    val examReady = parsedExamDate?.isAfter(today.plusDays(1)) == true && parsedSubjects != null &&
+        availability.isNotBlank() && dailyMinutes.toIntOrNull()?.let { it in 10..480 } == true &&
+        reminderHour.toIntOrNull()?.let { it in 0..23 } == true
     Column(
         Modifier
             .fillMaxSize()
@@ -321,13 +326,10 @@ private fun PlannerScreen(
                     label = { Text(stringResource(R.string.planner_todo_title)) })
                 FilterChip(selected = isExam, enabled = !busy, onClick = {
                     examMode = true; result = null
-                    if (goal.isBlank()) goal = defaultSampleGoal
-                    if (examDate.isBlank()) examDate = defaultExamDate
-                    if (availability.isBlank()) availability = "Tối chủ nhật rảnh 5 tiếng, các tối khác từ 19h-21h"
                 }, label = { Text(stringResource(R.string.exam_plan_title)) })
             }
             if (isExam) {
-                OutlinedButton(onClick = {
+                OutlinedButton(enabled = !busy, onClick = {
                     val initial = parsedExamDate ?: today.plusDays(7)
                     android.app.DatePickerDialog(context, { _, year, month, day ->
                         examDate = LocalDate.of(year, month + 1, day).toString(); result = null
@@ -338,19 +340,19 @@ private fun PlannerScreen(
                 }) { Text(stringResource(R.string.exam_plan_pick_date)) }
                 OutlinedTextField(examDate, onValueChange = { if (it.length <= 10) { examDate = it; result = null } },
                     label = { Text(stringResource(R.string.exam_plan_date)) },
-                    placeholder = { Text("2026-12-15") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+                    placeholder = { Text("YYYY-MM-DD") }, modifier = Modifier.fillMaxWidth(), singleLine = true, enabled = !busy)
                 Text(stringResource(R.string.exam_plan_days,
                     parsedExamDate?.let { java.time.temporal.ChronoUnit.DAYS.between(today, it).toInt().coerceAtLeast(0) } ?: 0))
                 OutlinedTextField(dailyMinutes, onValueChange = { if (it.length <= 3 && it.all(Char::isDigit)) { dailyMinutes = it; result = null } },
-                    label = { Text(stringResource(R.string.exam_plan_minutes)) }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+                    label = { Text(stringResource(R.string.exam_plan_minutes)) }, modifier = Modifier.fillMaxWidth(), singleLine = true, enabled = !busy)
                 OutlinedTextField(reminderHour, onValueChange = { if (it.length <= 2 && it.all(Char::isDigit)) { reminderHour = it; result = null } },
-                    label = { Text(stringResource(R.string.exam_plan_reminder)) }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+                    label = { Text(stringResource(R.string.exam_plan_reminder)) }, modifier = Modifier.fillMaxWidth(), singleLine = true, enabled = !busy)
                 OutlinedTextField(availability, onValueChange = { if (it.length <= 300) { availability = it; result = null } },
                     label = { Text(stringResource(R.string.exam_plan_availability)) },
                     placeholder = { Text(stringResource(R.string.exam_plan_availability_example)) },
-                    modifier = Modifier.fillMaxWidth(), minLines = 2)
+                    modifier = Modifier.fillMaxWidth(), minLines = 2, enabled = !busy)
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(useOldTimetable, onCheckedChange = { useOldTimetable = it; result = null })
+                    Checkbox(useOldTimetable, onCheckedChange = { useOldTimetable = it; result = null }, enabled = !busy)
                     Text(stringResource(R.string.exam_plan_use_old_timetable))
                 }
                 Row(
@@ -363,8 +365,8 @@ private fun PlannerScreen(
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
-                    TextButton(onClick = {
-                        goal = defaultSampleGoal
+                    TextButton(enabled = !busy, onClick = {
+                        examSubjectsInput = defaultSampleGoal
                         if (examDate.isBlank()) examDate = defaultExamDate
                         if (availability.isBlank()) availability = "Tối chủ nhật rảnh 5 tiếng, các tối khác từ 19h-21h"
                         result = null
@@ -374,9 +376,21 @@ private fun PlannerScreen(
                     }
                 }
             }
+            if (!isExam) {
+                OutlinedTextField(availability, onValueChange = { if (it.length <= 300) { availability = it; result = null } },
+                    label = { Text("Giờ rảnh hôm nay") },
+                    placeholder = { Text("Ví dụ: 19:00–21:00") },
+                    modifier = Modifier.fillMaxWidth(), enabled = !busy)
+                OutlinedTextField(dailyMinutes, onValueChange = { if (it.length <= 3 && it.all(Char::isDigit)) { dailyMinutes = it; result = null } },
+                    label = { Text("Số phút muốn học hôm nay") },
+                    modifier = Modifier.fillMaxWidth(), singleLine = true, enabled = !busy)
+            }
             OutlinedTextField(
                 value = goal,
-                onValueChange = { if (it.length <= 1000) { goal = it; result = null; error = 0 } },
+                onValueChange = { if (it.length <= 1000) {
+                    if (isExam) examSubjectsInput = it else todoGoal = it
+                    result = null; error = 0
+                } },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3,
                 maxLines = 6,
@@ -452,16 +466,16 @@ private fun PlannerScreen(
             Button(
                 onClick = {
                     error = 0; result = null; busy = true
-                    val effectiveAvail = availability.ifBlank { "Tối chủ nhật rảnh 5 tiếng, các tối khác từ 19h-21h" }
-                    val effectiveExamDate = parsedExamDate ?: today.plusDays(30)
-                    val effectiveSubjects = parsedSubjects ?: parseExamSubjects(defaultSampleGoal)!!
+                    val effectiveAvail = availability.trim()
+                    val effectiveExamDate = parsedExamDate
+                    val effectiveSubjects = parsedSubjects
                     val token = ++generation
                     job = scope.launch {
                         try {
                             val proposal = if (isPhoto) gateway.scanTimetable(owner, image!!)
-                                else if (isExam) gateway.planExam(owner, today, effectiveExamDate,
-                                    effectiveSubjects, dailyMinutes.toIntOrNull() ?: 60, effectiveAvail, useOldTimetable)
-                                else gateway.planTodos(owner, details, goal)
+                                else if (isExam) gateway.planExam(owner, today, requireNotNull(effectiveExamDate),
+                                    requireNotNull(effectiveSubjects), dailyMinutes.toInt(), effectiveAvail, useOldTimetable)
+                                else gateway.planTodos(owner, details, goal, availability.trim(), dailyMinutes.toInt())
                             if (token == generation) result = proposal
                         } catch (cancelled: CancellationException) { throw cancelled }
                         catch (failure: Exception) { if (token == generation) error = plannerMessage(failure, isPhoto) }
@@ -469,8 +483,9 @@ private fun PlannerScreen(
                     }
                 },
                 enabled = if (isPhoto) image != null else if (isExam)
-                    (parsedExamDate != null || examDate.isBlank()) && (parsedSubjects != null || goal.isBlank())
-                    else goal.isNotBlank(),
+                    examReady
+                    else goal.isNotBlank() && availability.isNotBlank() &&
+                        dailyMinutes.toIntOrNull()?.let { it in 10..480 } == true,
                 modifier = Modifier.fillMaxWidth().height(54.dp),
                 shape = RoundedCornerShape(27.dp)
             ) {

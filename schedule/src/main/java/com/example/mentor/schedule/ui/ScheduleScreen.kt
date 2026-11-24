@@ -266,8 +266,12 @@ fun ScheduleScreen(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     ScheduleAiActionCard(Modifier.weight(1f), R.string.schedule_ai_plan,
                         R.string.schedule_ai_plan_hint,
-                        onClick = { onAiPlan(ScheduleAiContext.forDay(selectedDay,
-                            viewModel.entries.toList(), viewModel.todos.toList())) },
+                        onClick = {
+                            val todayDay = java.time.LocalDate.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh")).dayOfWeek.value
+                            onAiPlan(ScheduleAiContext.forDay(todayDay,
+                                if (selectedDay == todayDay) viewModel.entries.toList() else emptyList(),
+                                if (selectedDay == todayDay) viewModel.todos.toList() else emptyList()))
+                        },
                         enabled = !viewModel.loading.value && !viewModel.error.value)
                     ScheduleAiActionCard(Modifier.weight(1f), R.string.schedule_ai_exam,
                         R.string.schedule_ai_exam_hint, onClick = onAiExam)
@@ -452,18 +456,6 @@ fun ScheduleScreen(
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                                viewModel.entries.map { it.title.trim() }.filter { it.isNotEmpty() }
-                                    .distinct().take(3).forEach { subject ->
-                                        SuggestionChip(
-                                            onClick = {
-                                                taskToEdit = null
-                                                suggestedTodoTitle = context.getString(R.string.todo_review_subject, subject)
-                                                todoDialogSession++
-                                                showTodoForm = true
-                                            },
-                                            label = { Text(stringResource(R.string.todo_review_subject, subject)) }
-                                        )
-                                    }
                             }
                         }
                     } else {

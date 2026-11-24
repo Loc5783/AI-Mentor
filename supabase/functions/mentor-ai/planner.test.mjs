@@ -16,9 +16,17 @@ test('validates extracted slots before exposing a draft', () => {
 });
 
 test('to-do planning remains a separate draft', () => {
-  const ok=plannerResult('todo_plan',JSON.stringify({status:'OK',tasks:[{day:2,title:'Ôn Toán',subject:'Toán',priority:1}]}));
+  const context='Only selected weekday 2 was loaded. Giờ rảnh hôm nay: 19:00–21:00. Total study time limit: 60 minutes.';
+  const task={day:2,startTime:'19:00',minutes:30,title:'Ôn Toán',subject:'Toán',priority:1};
+  const ok=plannerResult('todo_plan',JSON.stringify({status:'OK',tasks:[task]}),false,context);
   assert.match(ok.text,/```ai_todo/);
   assert.equal(plannerResult('todo_plan','{"status":"NEED_DETAILS"}').error_code,'TODO_DETAILS_REQUIRED');
+  for (const tasks of [
+    [{...task,day:3}],
+    [task,{...task,title:'Làm đề Toán',startTime:'19:15'}],
+    [task,{...task,title:'Làm đề Toán',startTime:'20:00',minutes:40}],
+    [{...task,startTime:'18:00'}],
+  ]) assert.equal(plannerResult('todo_plan',JSON.stringify({status:'OK',tasks}),false,context).error_code,'INVALID_AI_OUTPUT');
 });
 
 test('exam plan stays inside requested dates, subjects and daily time budget', () => {

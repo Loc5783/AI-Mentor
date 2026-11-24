@@ -46,7 +46,7 @@ internal fun TodoImportAction(text: String, owner: Int, onDone: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val rows = remember(text) { suggested.map {
-        DraftTodo(it.day, it.title, it.subject.orEmpty(), it.priority)
+        DraftTodo(it.day, "${it.startTime} · ${it.minutes} phút · ${it.title}", it.subject.orEmpty(), it.priority)
     }.toMutableStateList() }
     val planStartDate = remember(text) { TodoDates.today() }
     var preview by remember { mutableStateOf(false) }

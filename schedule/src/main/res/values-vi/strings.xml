@@ -58,8 +58,8 @@
     <string name="schedule_ai_title">Lên kế hoạch học</string>
     <string name="schedule_ai_photo">Ảnh → TKB</string>
     <string name="schedule_ai_photo_hint">Đọc ảnh, duyệt rồi lưu</string>
-    <string name="schedule_ai_plan">Gợi ý to-do</string>
-    <string name="schedule_ai_plan_hint">Gợi ý việc cho hôm nay</string>
+    <string name="schedule_ai_plan">Lịch học hôm nay</string>
+    <string name="schedule_ai_plan_hint">AI xếp giờ và bài cần học</string>
     <string name="schedule_ai_exam">Lộ trình ôn thi</string>
     <string name="schedule_ai_exam_hint">Theo ngày thi và bài cần ôn</string>
     <string name="schedule_old_show">Xem thời khóa biểu cũ (để tham khảo giờ bận)</string>

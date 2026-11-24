@@ -31,14 +31,18 @@ internal fun ExamPlanImportAction(text: String, owner: Int, today: LocalDate,
     val selected = remember(text) { mutableStateListOf<Boolean>().apply { repeat(tasks.size) { add(true) } } }
     var preview by remember { mutableStateOf(false) }
     var saving by remember { mutableStateOf(false) }
-    var saved by remember { mutableStateOf(false) }
+    var savedCount by remember { mutableStateOf<Int?>(null) }
     var failed by remember { mutableStateOf(false) }
 
-    Button(onClick = { preview = true }, enabled = !saving && !saved) {
+    Button(onClick = { preview = true }, enabled = !saving && savedCount == null) {
         Text(stringResource(R.string.exam_plan_review))
     }
-    if (saved) {
-        Text(stringResource(R.string.exam_plan_saved))
+    savedCount?.let { count ->
+        Text(if (count > 0) "$count việc ôn đã được lưu vào lịch học."
+            else "Các việc đã chọn đã có trong lịch học.")
+        if (!ReminderHelper.isReminderEnabled(context.applicationContext)) {
+            Text("Bật thông báo trong Cài đặt để nhận nhắc học.", style = MaterialTheme.typography.bodySmall)
+        }
         TextButton(onClick = onDone) { Text(stringResource(R.string.home_schedule_title)) }
     }
     if (preview) AlertDialog(onDismissRequest = { if (!saving) preview = false },
@@ -62,7 +66,7 @@ internal fun ExamPlanImportAction(text: String, owner: Int, today: LocalDate,
             saving = true; failed = false
             scope.launch {
                 try {
-                    withContext(Dispatchers.IO) {
+                    val count = withContext(Dispatchers.IO) {
                         check(owner > 0 && ActiveUser.get(context) == owner)
                         val repo = (context.applicationContext as AiMentorApplication).services().scheduleImport()
                         try {
@@ -75,8 +79,8 @@ internal fun ExamPlanImportAction(text: String, owner: Int, today: LocalDate,
                             repo.importTodos(owner.toString(), rows)
                         } finally { repo.close() }
                     }
-                    ReminderHelper.setExamPlanHour(context.applicationContext, reminderHour)
-                    saved = true; preview = false
+                    runCatching { ReminderHelper.setExamPlanHour(context.applicationContext, reminderHour) }
+                    savedCount = count; preview = false
                 } catch (_: Exception) { failed = true }
                 finally { saving = false }
             }
