@@ -55,13 +55,13 @@
     <string name="schedule_loading">Đang tải lịch học</string>
     <string name="schedule_unavailable">Chưa tải được dữ liệu.</string>
     <string name="schedule_week_hint">Chọn ngày để xem và sắp xếp</string>
-    <string name="schedule_ai_title">AI hỗ trợ</string>
+    <string name="schedule_ai_title">Lên kế hoạch học</string>
     <string name="schedule_ai_photo">Ảnh → TKB</string>
     <string name="schedule_ai_photo_hint">Đọc ảnh, duyệt rồi lưu</string>
     <string name="schedule_ai_plan">Gợi ý to-do</string>
-    <string name="schedule_ai_plan_hint">Lên kế hoạch cùng AI</string>
+    <string name="schedule_ai_plan_hint">Gợi ý việc cho hôm nay</string>
     <string name="schedule_ai_exam">Lộ trình ôn thi</string>
-    <string name="schedule_ai_exam_hint">Chọn ngày thi, môn và bài cần ôn</string>
+    <string name="schedule_ai_exam_hint">Theo ngày thi và bài cần ôn</string>
     <string name="schedule_old_show">Xem thời khóa biểu cũ (để tham khảo giờ bận)</string>
     <string name="schedule_old_hide">Ẩn thời khóa biểu cũ</string>
     <string name="todo_progress_short">Đã xong</string>
@@ -79,6 +79,8 @@
     <string name="schedule_duplicate_legacy_notice">Phát hiện các tiết trùng đã lưu. Tất cả vẫn được hiển thị; chạm vào mục để sửa hoặc xóa.</string>
     <string name="schedule_duplicate_legacy_item">Tiết %1$d: %2$s</string>
     <string name="schedule_save_failed">Không thể lưu lịch học. Vui lòng thử lại.</string>
+    <string name="schedule_conflict_server">Tiết này đã có trong lịch. Hãy chọn tiết khác rồi lưu lại.</string>
+    <string name="schedule_auth_required">Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại để lưu lịch.</string>
     <string name="schedule_confirm_delete_title">Xóa tiết học này?</string>
     <string name="schedule_confirm_delete_message">Xóa “%1$s” khỏi lịch học ngày này?</string>
 </resources>

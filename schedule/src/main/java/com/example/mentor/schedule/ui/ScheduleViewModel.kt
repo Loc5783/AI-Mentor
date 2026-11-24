@@ -179,11 +179,11 @@ class ScheduleViewModel(
                 }
                 repository.saveEntries(entries, isEdit)
                 val titles = entries.joinToString { it.title }
-                logAction(
+                runCatching { logAction(
                     actionType = if (isEdit) "UPDATE" else "CREATE",
                     entityType = "SCHEDULE",
                     description = if (isEdit) "Đã cập nhật môn: $titles" else "Đã thêm môn: $titles"
-                )
+                ) }
 
                 try {
                     val helperClass = Class.forName("com.example.asm_final.utils.ReminderHelper")

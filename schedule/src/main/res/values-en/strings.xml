@@ -79,6 +79,8 @@
     <string name="schedule_duplicate_legacy_notice">Saved duplicate periods were found. All entries remain visible; tap one to edit or delete it.</string>
     <string name="schedule_duplicate_legacy_item">Period %1$d: %2$s</string>
     <string name="schedule_save_failed">Could not save this schedule. Please try again.</string>
+    <string name="schedule_conflict_server">This period is already in your schedule. Choose another period and save again.</string>
+    <string name="schedule_auth_required">Your session has expired. Sign in again to save the schedule.</string>
     <string name="schedule_confirm_delete_title">Delete this class?</string>
     <string name="schedule_confirm_delete_message">Delete “%1$s” from this day’s schedule?</string>
 </resources>
