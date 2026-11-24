@@ -10,12 +10,30 @@ import org.junit.Test
 class LessonHubNavigationTest {
 
     @Test
-    fun teamProjectNavigationReturnsToLearningHub() {
+    fun subjectWorkspaceReturnsToLearningHub() {
         val nav = LessonHubNavigationModel(initialGrade = 11)
-        nav.navigateTo(HubSection.TEAM_OS)
-        assertEquals(HubSection.TEAM_OS, nav.currentSection)
+        nav.openWorkspace(SubjectId.MATH)
+        assertEquals(HubSection.SUBJECT_WORKSPACE, nav.currentSection)
         assertTrue(nav.handleBack())
         assertEquals(HubSection.MAIN_HUB, nav.currentSection)
+        assertNull(nav.selectedSubject)
+        assertEquals(11, nav.grade)
+    }
+
+    @Test
+    fun workspaceToolsReturnToSameSubjectAndGradeChangeClearsContext() {
+        val nav = LessonHubNavigationModel(initialGrade = 10)
+        nav.openWorkspace(SubjectId.MATH)
+        nav.openWorkspaceTool(HubSection.LIBRARY)
+        assertTrue(nav.handleBack())
+        assertEquals(HubSection.SUBJECT_WORKSPACE, nav.currentSection)
+        assertEquals(SubjectId.MATH, nav.selectedSubject)
+        nav.openWorkspaceTool(HubSection.EXAM_PREP)
+        assertTrue(nav.handleBack())
+        assertEquals(HubSection.SUBJECT_WORKSPACE, nav.currentSection)
+        nav.setGrade(11)
+        assertEquals(HubSection.MAIN_HUB, nav.currentSection)
+        assertNull(nav.selectedSubject)
         assertEquals(11, nav.grade)
     }
 

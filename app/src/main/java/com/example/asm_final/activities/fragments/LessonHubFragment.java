@@ -37,6 +37,7 @@ public final class LessonHubFragment extends Fragment {
             requireContext(),
             this::chooseGrade,
             this::openSubject,
+            this::openPlan,
             this::openAiChat,
             this::load);
     if (grade >= 10 && grade <= 12) {
@@ -61,6 +62,13 @@ public final class LessonHubFragment extends Fragment {
             .putExtra(
                 "USERNAME",
                 getArguments() == null ? "" : getArguments().getString("USERNAME", "")));
+  }
+
+  private void openPlan() {
+    if (getActivity() instanceof com.example.asm_final.activities.HomeActivity) {
+      ((com.example.asm_final.activities.HomeActivity) getActivity())
+          .navigateTo(R.id.nav_schedule, true);
+    }
   }
 
   private long lastChatClickTime = 0;

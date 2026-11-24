@@ -61,6 +61,7 @@ fun TeamOsScreen(
     }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
                 title = {

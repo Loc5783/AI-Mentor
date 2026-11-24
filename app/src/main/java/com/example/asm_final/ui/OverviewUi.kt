@@ -15,7 +15,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -37,7 +36,6 @@ import com.example.asm_final.utils.LocaleHelper
 import com.example.mentor.learning.SubjectId
 import com.example.mentor.schedule.domain.TodoTask
 import com.example.mentor.ui.design.*
-import java.util.Calendar
 
 private data class StudyTimeSummary(val totalSeconds: Long, val week: List<Day>) {
     data class Day(val date: String, val seconds: Long)
@@ -67,8 +65,7 @@ private data class StudyTimeSummary(val totalSeconds: Long, val week: List<Day>)
 class OverviewUi(private val context: Context, private val profile: Boolean,
     private val action: Runnable,
     private val edit: Runnable, private val settings: Runnable, private val learn: Runnable,
-    private val schedule: Runnable = Runnable{}, private val ai: Runnable = Runnable{},
-    private val competition: Runnable = Runnable{}) {
+    private val schedule: Runnable = Runnable{}) {
     private var snapshot by mutableStateOf<LearningOverviewRepository.Snapshot?>(null)
     private var studyTime by mutableStateOf<StudyTimeSummary?>(null)
     private var studyTimeLoaded by mutableStateOf(false)
@@ -84,7 +81,7 @@ class OverviewUi(private val context: Context, private val profile: Boolean,
         OverviewScreen(profile, name, avatar, grade, snapshot, studyTime, studyTimeLoaded,
             todayTasks, todayTasksLoaded, loading, failed,
             { action.run() }, { edit.run() }, { settings.run() }, { learn.run() },
-            { schedule.run() }, { ai.run() }, { competition.run() })
+            { schedule.run() })
     }
     fun loading() { loading = true; failed = false; studyTimeLoaded = false; todayTasksLoaded = false }
     fun failure() { loading = false; failed = true }
@@ -108,7 +105,7 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
     todayTasks: List<TodoTask>?, todayTasksLoaded: Boolean,
     loading: Boolean, failed: Boolean,
     action: () -> Unit, edit: () -> Unit, settings: () -> Unit, learn: () -> Unit,
-    schedule: () -> Unit = {}, ai: () -> Unit = {}, competition: () -> Unit = {}) {
+    schedule: () -> Unit = {}) {
     val context = LocalContext.current
     val data = snapshot?.data
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(context)
@@ -159,10 +156,7 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
             if (!profile) {
                 HomeGreeting(name, avatar, grade, palette, schedule)
                 HomeProgressHero(data, loading, palette, learn)
-                HomeMentorSuggestion(palette, ai)
-                HomeQuickTools(palette, ai, learn, schedule, competition)
                 HomeTodayTasks(todayTasks, todayTasksLoaded, palette, schedule)
-                HomeScheduleCard(palette, schedule)
             }
             if (loading) {
                 repeat(2) { MentorSkeleton(stringResource(R.string.course_loading)) }
@@ -214,9 +208,13 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                     if (!profile) Text(stringResource(R.string.home_analysis_title),
                         style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
                         color = palette.title)
-                    HomeWeekChart(data, palette)
-                    SubjectPieChart(data.subjects, palette)
-                    if (!profile) HomeStudyTimeChart(studyTime, studyTimeLoaded, palette)
+                    if (profile) {
+                        HomeWeekChart(data, palette)
+                        SubjectPieChart(data.subjects, palette)
+                    } else {
+                        HomeStudyTimeChart(studyTime, studyTimeLoaded, palette)
+                        SubjectPieChart(data.subjects, palette)
+                    }
                 } else if (!failed) PremiumDashboardCard(palette) {
                     Text(stringResource(R.string.design_week), style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold, color = palette.title)
@@ -277,125 +275,23 @@ private fun HomeGreeting(name: String, avatar: String?, grade: Int,
 @Composable
 private fun HomeProgressHero(data: LearningOverviewData?, loading: Boolean,
     palette: PremiumDashboardPalette, learn: () -> Unit) {
-    val shape = RoundedCornerShape(26.dp)
-    val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
     val progress = if (data == null || data.totalLessons == 0) 0f
         else (data.completedLessons.toFloat() / data.totalLessons).coerceIn(0f, 1f)
-    val percent = (progress * 100).toInt()
-    Box(Modifier.fillMaxWidth().shadow(12.dp, shape).clip(shape)
-        .background(Brush.linearGradient(if (dark)
-            listOf(Color(0xFF354287), Color(0xFF643694), Color(0xFF753B93))
-            else listOf(Color(0xFF4258DC), Color(0xFF7146D8), Color(0xFF963ADB))))
-        .testTag("home-progress-hero")) {
-        Box(Modifier.align(Alignment.TopEnd).offset(x = 32.dp, y = (-42).dp)
-            .size(138.dp).background(Color.White.copy(alpha = .10f), CircleShape))
-        Box(Modifier.align(Alignment.BottomStart).offset(x = (-34).dp, y = 42.dp)
-            .size(116.dp).background(Color.White.copy(alpha = .08f), CircleShape))
-        Column(Modifier.fillMaxWidth().padding(18.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically) {
-                Text(if (data == null) stringResource(R.string.home_streak_pending)
-                    else stringResource(R.string.home_streak_chip, data.streakDays),
-                    Modifier.clip(CircleShape).background(Color.White.copy(alpha = .17f))
-                        .padding(horizontal = 11.dp, vertical = 7.dp),
-                    style = MaterialTheme.typography.labelMedium, color = Color.White,
-                    fontWeight = FontWeight.SemiBold)
-                Text(if (data == null) stringResource(R.string.home_xp_pending)
-                    else stringResource(R.string.home_xp_chip, data.totalXp),
-                    Modifier.clip(CircleShape).background(Color(0xFFFFD88F).copy(alpha = .20f))
-                        .padding(horizontal = 11.dp, vertical = 7.dp),
-                    style = MaterialTheme.typography.labelMedium, color = Color(0xFFFFE9AD),
-                    fontWeight = FontWeight.Bold)
-            }
-            Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                Text(stringResource(R.string.home_hero_eyebrow),
-                    style = MaterialTheme.typography.labelMedium, color = Color.White.copy(alpha = .85f))
-                Text(stringResource(if (loading && data == null) R.string.course_loading else R.string.home_hero_title),
-                    style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
-                    color = Color.White)
-            }
-            Box(Modifier.fillMaxWidth().height(10.dp).clip(CircleShape)
-                .background(Color.Black.copy(alpha = .22f))) {
-                if (progress > 0f) Box(Modifier.fillMaxWidth(progress).fillMaxHeight()
-                    .clip(CircleShape).background(Brush.horizontalGradient(
-                        listOf(Color(0xFFFFD46E), Color(0xFF90E6C7)))))
-            }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(if (data == null) stringResource(if (loading) R.string.course_loading else R.string.home_progress_pending)
-                    else stringResource(R.string.overview_lessons, data.completedLessons, data.totalLessons),
-                    style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = .92f))
-                Text(if (data == null) "—" else "$percent%", style = MaterialTheme.typography.bodySmall,
-                    color = Color.White, fontWeight = FontWeight.Bold)
-            }
-            Button(learn, shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White,
-                    contentColor = Color(0xFF493BC3)),
-                modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp)) {
-                Text(stringResource(R.string.course_continue), fontWeight = FontWeight.Bold)
-            }
+    PremiumDashboardCard(palette, Modifier.testTag("home-progress-hero"), highlighted = true) {
+        Text(stringResource(R.string.home_next_step_title),
+            style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+            color = palette.title)
+        Text(stringResource(R.string.home_next_step_desc),
+            style = MaterialTheme.typography.bodyMedium, color = palette.secondary)
+        if (data != null && data.totalLessons > 0) {
+            Text(stringResource(R.string.overview_lessons, data.completedLessons, data.totalLessons),
+                style = MaterialTheme.typography.bodySmall, color = palette.title)
+            MentorProgress(progress)
+        } else if (loading) {
+            MentorSkeleton(stringResource(R.string.course_loading))
         }
-    }
-}
-
-@Composable
-private fun HomeMentorSuggestion(palette: PremiumDashboardPalette, openAi: () -> Unit) {
-    PremiumDashboardCard(palette, Modifier.testTag("home-mentor-suggestion")) {
-        Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Box(Modifier.size(44.dp).clip(RoundedCornerShape(14.dp))
-                .background(Color(0xFF7165E8).copy(alpha = .15f)), contentAlignment = Alignment.Center) {
-                Icon(painterResource(R.drawable.ic_chat), null, tint = Color(0xFF7165E8))
-            }
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(stringResource(R.string.home_mentor_tag), style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.Bold, color = palette.accent)
-                Text(stringResource(R.string.home_mentor_title), style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold, color = palette.title)
-                Text(stringResource(R.string.home_mentor_body), style = MaterialTheme.typography.bodySmall,
-                    color = palette.secondary)
-            }
-        }
-        PremiumDashboardAction(stringResource(R.string.home_mentor_action), palette, openAi,
-            Modifier.fillMaxWidth())
-    }
-}
-
-@Composable
-private fun HomeQuickTools(palette: PremiumDashboardPalette, openAi: () -> Unit,
-    learn: () -> Unit, schedule: () -> Unit, competition: () -> Unit) {
-    Text(stringResource(R.string.home_quick_tools), style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.Bold, color = palette.title)
-    Row(Modifier.fillMaxWidth().testTag("home-quick-tools"),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        HomeQuickTool(Modifier.weight(1f), R.drawable.ic_chat, R.string.home_tool_ai,
-            Color(0xFF7461D8), palette, openAi)
-        HomeQuickTool(Modifier.weight(1f), R.drawable.ic_category, R.string.home_tool_practice,
-            Color(0xFF0B9C86), palette, learn)
-        HomeQuickTool(Modifier.weight(1f), R.drawable.ic_schedule, R.string.home_tool_plan,
-            Color(0xFFDE8D29), palette, schedule)
-        HomeQuickTool(Modifier.weight(1f), R.drawable.ic_competition, R.string.home_tool_compete,
-            Color(0xFFDB5C85), palette, competition)
-    }
-}
-
-@Composable
-private fun HomeQuickTool(modifier: Modifier, icon: Int, label: Int, accent: Color,
-    palette: PremiumDashboardPalette, onClick: () -> Unit) {
-    Surface(modifier.clickable(role = Role.Button, onClick = onClick),
-        shape = RoundedCornerShape(18.dp), color = palette.card,
-        border = BorderStroke(1.dp, palette.border), shadowElevation = 4.dp) {
-        Column(Modifier.fillMaxWidth().heightIn(min = 104.dp).padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
-            Box(Modifier.size(38.dp).clip(RoundedCornerShape(12.dp))
-                .background(accent.copy(alpha = .13f)), contentAlignment = Alignment.Center) {
-                Icon(painterResource(icon), null, Modifier.size(21.dp), tint = accent)
-            }
-            Text(stringResource(label), style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.SemiBold, color = palette.title,
-                maxLines = 2, overflow = TextOverflow.Ellipsis,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-        }
+        PremiumDashboardAction(stringResource(R.string.home_next_step_action), palette,
+            learn, Modifier.fillMaxWidth())
     }
 }
 
@@ -442,42 +338,6 @@ private fun HomeTodayTasks(tasks: List<TodoTask>?, loaded: Boolean,
             }
         }
         TextButton(openSchedule) { Text(stringResource(R.string.home_tasks_open)) }
-    }
-}
-
-@Composable
-private fun HomeScheduleCard(palette: PremiumDashboardPalette, openSchedule: () -> Unit) {
-    val today = Calendar.getInstance().let { (it.get(Calendar.DAY_OF_WEEK) + 5) % 7 }
-    val days = stringResource(R.string.home_schedule_days).split(",")
-    PremiumDashboardCard(
-        palette,
-        modifier = Modifier.testTag("home-schedule-card").clickable(role = Role.Button, onClick = openSchedule),
-        highlighted = true,
-    ) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                Text(stringResource(R.string.home_schedule_title), style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold, color = palette.title)
-                Text(stringResource(R.string.home_schedule_subtitle), style = MaterialTheme.typography.bodySmall,
-                    color = palette.secondary)
-            }
-            Text("›", style = MaterialTheme.typography.headlineMedium, color = palette.accent)
-        }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-            days.take(7).forEachIndexed { index, day ->
-                val active = today == index
-                Box(
-                    Modifier.weight(1f).heightIn(min = 38.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(if (active) palette.accent else palette.iconSurface),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(day, style = MaterialTheme.typography.labelSmall,
-                        color = if (active) palette.onAction else palette.title,
-                        fontWeight = if (active) FontWeight.Bold else FontWeight.Medium)
-                }
-            }
-        }
     }
 }
 

@@ -73,7 +73,7 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
         val top = destinations.firstOrNull { it.route == route }
         val selectedRoute = when (route) {
             "settings", "edit-profile" -> "profile"
-            "chat" -> "lessons"
+            "chat", "schedule" -> "lessons"
             else -> route
         }
         val motion = motionEnabled()
@@ -113,7 +113,7 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
             ) { padding ->
                 Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
                     OfflineBanner()
-                    if (top != null && top !in tabs && route != "schedule") Row(Modifier.fillMaxWidth()
+                    if (top != null && top !in tabs) Row(Modifier.fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background)) {
                         TextButton({
                             if (!nav.popBackStack()) {
@@ -146,6 +146,7 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
             Destination(R.id.nav_home, "home", R.string.design_tab_home, R.drawable.ic_home, HomeFragment::class.java),
             Destination(R.id.nav_category, "lessons", R.string.design_tab_lessons, R.drawable.ic_category, LessonHubFragment::class.java),
             Destination(R.id.nav_schedule, "schedule", R.string.design_tab_schedule, R.drawable.ic_schedule, com.example.mentor.schedule.ui.ScheduleFragment::class.java),
+            Destination(R.id.nav_team, "team", R.string.team_tab_title, R.drawable.ic_team, TeamOsFragment::class.java),
             Destination(R.id.nav_competition, "competition", R.string.design_tab_competition, R.drawable.ic_competition, CompetitionFragment::class.java),
             Destination(R.id.nav_profile, "profile", R.string.nav_profile_label, R.drawable.ic_nav_profile, ProfileHubFragment::class.java),
             Destination(R.id.nav_chat, "chat", R.string.design_tab_chat, R.drawable.ic_chat, GeneralChatFragment::class.java),
@@ -154,7 +155,7 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
         )
         val tabs = listOf(
             destinations.first { it.id == R.id.nav_category },
-            destinations.first { it.id == R.id.nav_schedule },
+            destinations.first { it.id == R.id.nav_team },
             destinations.first { it.id == R.id.nav_home },
             destinations.first { it.id == R.id.nav_competition },
             destinations.first { it.id == R.id.nav_profile }

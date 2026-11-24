@@ -36,14 +36,6 @@ public final class HomeFragment extends Fragment {
     }
   }
 
-  private void openChat() {
-    ((com.example.asm_final.activities.HomeActivity) requireActivity()).navigateTo(R.id.nav_chat, false);
-  }
-
-  private void openCompetition() {
-    ((com.example.asm_final.activities.HomeActivity) requireActivity()).navigateTo(R.id.nav_competition, false);
-  }
-
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle state) {
     owner = ActiveUser.get(requireContext());
@@ -55,9 +47,7 @@ public final class HomeFragment extends Fragment {
             () -> {},
             () -> {},
             this::openLessons,
-            this::openSchedule,
-            this::openChat,
-            this::openCompetition);
+            this::openSchedule);
     root = subjectsView.view();
     return root;
   }
