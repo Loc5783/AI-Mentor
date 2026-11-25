@@ -13,7 +13,7 @@
     <string name="exam_plan_subjects_example">Toán: Hàm số, Vectơ\nVật lý: Chuyển động thẳng</string>
     <string name="exam_plan_busy">AI đang sắp xếp các buổi ôn...</string>
     <string name="exam_plan_review">Xem lộ trình đề xuất</string>
-    <string name="exam_plan_review_hint">Chỉ những buổi được chọn mới được thêm vào việc cần làm. Thông báo cần được bật trong cài đặt.</string>
+    <string name="exam_plan_review_hint">Chỉ buổi được chọn mới được lưu. Giờ học là dự kiến; app nhắc một lần mỗi ngày theo giờ bạn đặt, không báo riêng từng buổi.</string>
     <string name="exam_plan_minutes_value">%1$d phút</string>
     <string name="exam_plan_saved">Đã thêm lộ trình vào việc cần làm.</string>
     <string name="exam_plan_reminder_title">Đến giờ ôn thi</string>

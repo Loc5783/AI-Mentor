@@ -61,7 +61,7 @@ internal fun TodoImportAction(text: String, owner: Int, onDone: () -> Unit) {
         stringResource(R.string.todo_import_high),
     )
 
-    OutlinedButton(onClick = { preview = true }, enabled = !saving) {
+    OutlinedButton(onClick = { preview = true }, enabled = !saving && saved == null) {
         Text(stringResource(R.string.todo_import_preview))
     }
     saved?.let { count ->

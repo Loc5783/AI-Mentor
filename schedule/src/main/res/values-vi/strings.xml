@@ -71,7 +71,6 @@
     <string name="todo_card_title">Việc cần làm</string>
     <string name="todo_next_up">Nên làm tiếp</string>
     <string name="todo_focus_label">Ưu tiên hôm nay</string>
-    <string name="todo_review_subject">Ôn bài %1$s</string>
     <string name="todo_btn_add_task">Thêm việc</string>
     <string name="todo_empty_day">Chưa có việc cần làm</string>
     <string name="schedule_duplicate_slot_warning">Tiết đã có lịch: %1$s</string>

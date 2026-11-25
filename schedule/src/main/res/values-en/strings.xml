@@ -71,7 +71,6 @@
     <string name="todo_card_title">To-Do List</string>
     <string name="todo_next_up">Up next</string>
     <string name="todo_focus_label">Today’s focus</string>
-    <string name="todo_review_subject">Review %1$s</string>
     <string name="todo_btn_add_task">Add Task</string>
     <string name="todo_empty_day">No tasks yet</string>
     <string name="schedule_duplicate_slot_warning">This period is already used: %1$s</string>
