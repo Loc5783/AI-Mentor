@@ -367,6 +367,7 @@ class TeamOsViewModel(
         title: String,
         description: String,
         priority: TeamOsRepository.TaskPriority = TeamOsRepository.TaskPriority.MEDIUM,
+        file: TeamOsRepository.TeamFileInput? = null,
         onSuccess: (() -> Unit)? = null
     ) {
         val uid = currentUserId ?: return
@@ -382,8 +383,11 @@ class TeamOsViewModel(
             try {
                 withContext(ioDispatcher) {
                     repository.addRequirement(uid, proj.id, title.trim(), description.trim(), priority)
+                    if (file != null) {
+                        repository.uploadFileDocument(uid, proj.id, title.trim(), description.trim(), file)
+                    }
                 }
-                actionSuccessMessage = "Thêm yêu cầu giáo viên thành công"
+                actionSuccessMessage = "Thêm yêu cầu và tài liệu đính kèm thành công"
                 refreshProjectDetails()
                 onSuccess?.invoke()
             } catch (e: Exception) {
@@ -527,6 +531,7 @@ class TeamOsViewModel(
         priority: TeamOsRepository.TaskPriority = TeamOsRepository.TaskPriority.MEDIUM,
         dependsOnTaskId: String? = null,
         clientRequestId: String? = null,
+        file: TeamOsRepository.TeamFileInput? = null,
         onSuccess: (() -> Unit)? = null
     ) {
         val uid = currentUserId ?: return
@@ -554,9 +559,12 @@ class TeamOsViewModel(
                     if (!dependsOnTaskId.isNullOrBlank()) {
                         repository.addTaskDependency(uid, proj.id, t.id, dependsOnTaskId)
                     }
+                    if (file != null) {
+                        repository.uploadFileDocument(uid, proj.id, title.trim(), description?.trim() ?: title.trim(), file)
+                    }
                     t
                 }
-                actionSuccessMessage = "Xác nhận tạo nhiệm vụ thành công"
+                actionSuccessMessage = "Xác nhận tạo nhiệm vụ và tài liệu thành công"
                 refreshProjectDetails()
                 onSuccess?.invoke()
             } catch (e: Exception) {

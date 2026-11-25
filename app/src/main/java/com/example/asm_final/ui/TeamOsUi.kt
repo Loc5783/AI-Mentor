@@ -779,8 +779,8 @@ fun TeamOsRequirementsTab(viewModel: TeamOsViewModel) {
     if (showAddDialog) {
         AddRequirementDialog(
             onDismiss = { showAddDialog = false },
-            onAdd = { title, desc, prio ->
-                viewModel.addRequirement(title, desc, prio) {
+            onAdd = { title, desc, prio, file ->
+                viewModel.addRequirement(title, desc, prio, file) {
                     showAddDialog = false
                 }
             }
@@ -1062,8 +1062,8 @@ fun TeamOsTasksTab(viewModel: TeamOsViewModel) {
             members = viewModel.members,
             existingTasks = viewModel.tasks,
             onDismiss = { showAddTaskDialog = false },
-            onAdd = { title, desc, assignee, deadline, prio, depId ->
-                viewModel.createTask(title, desc, assignee, deadline, prio, depId) {
+            onAdd = { title, desc, assignee, deadline, prio, depId, file ->
+                viewModel.createTask(title, desc, assignee, deadline, prio, depId, null, file) {
                     showAddTaskDialog = false
                 }
             }
@@ -1333,17 +1333,32 @@ fun AddMemberDialog(
 @Composable
 fun AddRequirementDialog(
     onDismiss: () -> Unit,
-    onAdd: (title: String, desc: String, priority: TeamOsRepository.TaskPriority) -> Unit
+    onAdd: (title: String, desc: String, priority: TeamOsRepository.TaskPriority, file: TeamOsRepository.TeamFileInput?) -> Unit
 ) {
+    val context = LocalContext.current
     var title by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
     var priority by remember { mutableStateOf(TeamOsRepository.TaskPriority.MEDIUM) }
+    var selectedUri by remember { mutableStateOf<Uri?>(null) }
+    var selectedName by remember { mutableStateOf("") }
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        selectedUri = uri
+        if (uri != null) {
+            selectedName = runCatching {
+                context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+                    ?.use { cursor -> if (cursor.moveToFirst()) cursor.getString(0) else null }
+            }.getOrNull() ?: "Tài liệu"
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Thêm yêu cầu giáo viên") },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
@@ -1358,6 +1373,20 @@ fun AddRequirementDialog(
                     modifier = Modifier.fillMaxWidth(),
                     maxLines = 4
                 )
+                OutlinedButton(
+                    onClick = {
+                        picker.launch(arrayOf(
+                            "application/pdf",
+                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            "text/plain", "image/jpeg", "image/png", "image/webp"
+                        ))
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(if (selectedUri == null) "Đính kèm tệp tài liệu (tùy chọn)" else "Tệp: $selectedName")
+                }
                 Text("Độ ưu tiên:", style = MaterialTheme.typography.labelMedium)
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     TeamOsRepository.TaskPriority.values().forEach { prio ->
@@ -1372,7 +1401,40 @@ fun AddRequirementDialog(
         },
         confirmButton = {
             Button(
-                onClick = { if (title.isNotBlank() && desc.isNotBlank()) onAdd(title, desc, priority) },
+                onClick = {
+                    if (title.isNotBlank() && desc.isNotBlank()) {
+                        val fileInput = selectedUri?.let { uri ->
+                            runCatching {
+                                val mime = context.contentResolver.getType(uri)
+                                    ?.takeUnless { it == "application/octet-stream" }
+                                    ?: when (selectedName.substringAfterLast('.', "").lowercase()) {
+                                        "pdf" -> "application/pdf"
+                                        "docx" -> "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                        "pptx" -> "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                                        "xlsx" -> "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                        "txt" -> "text/plain"
+                                        "jpg", "jpeg" -> "image/jpeg"
+                                        "png" -> "image/png"
+                                        "webp" -> "image/webp"
+                                        else -> "application/pdf"
+                                    }
+                                val bytes = context.contentResolver.openInputStream(uri)?.use { stream ->
+                                    val out = java.io.ByteArrayOutputStream()
+                                    val buffer = ByteArray(8192)
+                                    while (true) {
+                                        val count = stream.read(buffer)
+                                        if (count < 0) break
+                                        require(out.size() + count <= 8 * 1024 * 1024) { "Tệp vượt quá 8 MB" }
+                                        out.write(buffer, 0, count)
+                                    }
+                                    out.toByteArray()
+                                } ?: return@let null
+                                TeamOsRepository.TeamFileInput(selectedName, mime, bytes)
+                            }.getOrNull()
+                        }
+                        onAdd(title, desc, priority, fileInput)
+                    }
+                },
                 enabled = title.isNotBlank() && desc.isNotBlank()
             ) {
                 Text("Thêm")
@@ -1547,14 +1609,26 @@ fun AddTaskDialog(
     members: List<TeamOsRepository.TeamMember>,
     existingTasks: List<TeamOsRepository.TeamTask>,
     onDismiss: () -> Unit,
-    onAdd: (title: String, desc: String?, assignee: String?, deadline: String?, priority: TeamOsRepository.TaskPriority, depId: String?) -> Unit
+    onAdd: (title: String, desc: String?, assignee: String?, deadline: String?, priority: TeamOsRepository.TaskPriority, depId: String?, file: TeamOsRepository.TeamFileInput?) -> Unit
 ) {
+    val context = LocalContext.current
     var title by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
     var selectedAssigneeId by remember { mutableStateOf<String?>(null) }
     var deadline by remember { mutableStateOf("") }
     var priority by remember { mutableStateOf(TeamOsRepository.TaskPriority.MEDIUM) }
     var selectedDepId by remember { mutableStateOf<String?>(null) }
+    var selectedUri by remember { mutableStateOf<Uri?>(null) }
+    var selectedName by remember { mutableStateOf("") }
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        selectedUri = uri
+        if (uri != null) {
+            selectedName = runCatching {
+                context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+                    ?.use { cursor -> if (cursor.moveToFirst()) cursor.getString(0) else null }
+            }.getOrNull() ?: "Tài liệu"
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -1578,6 +1652,20 @@ fun AddTaskDialog(
                     modifier = Modifier.fillMaxWidth(),
                     maxLines = 3
                 )
+                OutlinedButton(
+                    onClick = {
+                        picker.launch(arrayOf(
+                            "application/pdf",
+                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            "text/plain", "image/jpeg", "image/png", "image/webp"
+                        ))
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(if (selectedUri == null) "Đính kèm tệp tài liệu (tùy chọn)" else "Tệp: $selectedName")
+                }
                 if (members.isNotEmpty()) {
                     Text("Người phụ trách:", style = MaterialTheme.typography.labelMedium)
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -1632,13 +1720,43 @@ fun AddTaskDialog(
             Button(
                 onClick = {
                     if (title.isNotBlank()) {
+                        val fileInput = selectedUri?.let { uri ->
+                            runCatching {
+                                val mime = context.contentResolver.getType(uri)
+                                    ?.takeUnless { it == "application/octet-stream" }
+                                    ?: when (selectedName.substringAfterLast('.', "").lowercase()) {
+                                        "pdf" -> "application/pdf"
+                                        "docx" -> "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                        "pptx" -> "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                                        "xlsx" -> "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                        "txt" -> "text/plain"
+                                        "jpg", "jpeg" -> "image/jpeg"
+                                        "png" -> "image/png"
+                                        "webp" -> "image/webp"
+                                        else -> "application/pdf"
+                                    }
+                                val bytes = context.contentResolver.openInputStream(uri)?.use { stream ->
+                                    val out = java.io.ByteArrayOutputStream()
+                                    val buffer = ByteArray(8192)
+                                    while (true) {
+                                        val count = stream.read(buffer)
+                                        if (count < 0) break
+                                        require(out.size() + count <= 8 * 1024 * 1024) { "Tệp vượt quá 8 MB" }
+                                        out.write(buffer, 0, count)
+                                    }
+                                    out.toByteArray()
+                                } ?: return@let null
+                                TeamOsRepository.TeamFileInput(selectedName, mime, bytes)
+                            }.getOrNull()
+                        }
                         onAdd(
                             title,
                             desc.takeIf { it.isNotBlank() },
                             selectedAssigneeId,
                             deadline.takeIf { it.isNotBlank() },
                             priority,
-                            selectedDepId
+                            selectedDepId,
+                            fileInput
                         )
                     }
                 },
