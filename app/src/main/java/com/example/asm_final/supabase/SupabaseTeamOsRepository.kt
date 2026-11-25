@@ -76,6 +76,7 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
     override fun getProjectsForUser(userId: String): List<TeamProject> {
         val ownerInt = userId.toIntOrNull()
         if (ownerInt != null && SupabaseHttp.enabled(appContext)) {
+            runCatching { cleanDeletedProjects(ownerInt) }
             val remoteUid = remoteUserId(ownerInt)
             return try {
                 val resp = accounts().requestFor(
@@ -320,6 +321,17 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
         if (project.ownerId != userId) throw SecurityException("ONLY_PROJECT_OWNER_CAN_DELETE")
         val verifiedToken = accounts().reauthenticate(owner, password)
         val files = getDocuments(userId, projectId).filter { it.filePath != null }
+        val paths = JSONArray(files.mapNotNull { it.filePath })
+        val cleanup = JSONObject().put("project_id", projectId)
+            .put("owner_id", remoteUserId(owner)).put("file_paths", paths)
+        try {
+            accounts().requestFor(owner, "POST", "/rest/v1/mentor_team_file_cleanup", cleanup)
+        } catch (error: BackendClient.Failure) {
+            if (error.status != 409) throw error
+            accounts().requestFor(owner, "PATCH",
+                "/rest/v1/mentor_team_file_cleanup?project_id=eq.$projectId",
+                JSONObject().put("file_paths", paths))
+        }
 
         // 1. Delete project database record first.
         // Once this succeeds, the project is removed from the database and UI instantly,
@@ -329,15 +341,33 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
             "/rest/v1/mentor_team_projects?id=eq.$projectId&owner_id=eq.${remoteUserId(owner)}",
             token = verifiedToken)
 
-        // 2. Clean up storage files and local cache afterwards.
-        // Failures here (other than 404) are reported precisely rather than silently ignored.
-        files.forEach { doc ->
-            try {
-                SupabaseStorage(appContext).deleteTeamFile(owner, doc.filePath!!)
-            } catch (error: BackendClient.Failure) {
-                if (error.status != 404) throw error
+        // Cleanup is durable and retried on the next project-list load.
+        runCatching { cleanDeletedProjects(owner) }
+    }
+
+    private fun cleanDeletedProjects(owner: Int) {
+        val jobs = JSONArray(accounts().requestFor(owner, "GET",
+            "/rest/v1/mentor_team_file_cleanup?select=project_id,file_paths"))
+        for (i in 0 until jobs.length()) {
+            val job = jobs.getJSONObject(i)
+            val projectId = job.getString("project_id")
+            val existing = JSONArray(accounts().requestFor(owner, "GET",
+                "/rest/v1/mentor_team_projects?id=eq.$projectId&select=id"))
+            if (existing.length() != 0) continue
+            val paths = job.getJSONArray("file_paths")
+            for (j in 0 until paths.length()) {
+                val path = paths.getString(j)
+                try {
+                    SupabaseStorage(appContext).deleteTeamFile(owner, path)
+                } catch (error: BackendClient.Failure) {
+                    if (error.status != 404) throw error
+                }
+                path.split('/').getOrNull(1)?.let { docId ->
+                    SupabaseStorage(appContext).clearCachedTeamFile(owner, docId)
+                }
             }
-            SupabaseStorage(appContext).clearCachedTeamFile(owner, doc.id)
+            accounts().requestFor(owner, "DELETE",
+                "/rest/v1/mentor_team_file_cleanup?project_id=eq.$projectId")
         }
     }
 
