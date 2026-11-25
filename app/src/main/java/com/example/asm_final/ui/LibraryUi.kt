@@ -547,26 +547,32 @@ private fun LibraryQuizSelectionView(
     }
 
     Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        Box(
+        Column(
             Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                .padding(16.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            TextButton(onClick = onBack) { Text("← Danh sách môn") }
+            Text(
+                "${subjectId.label(LocaleHelper.getLanguage(context))} - Lớp $grade",
+                modifier = Modifier.fillMaxWidth(),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
             Row(
                 Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                TextButton(onClick = onBack) { Text("← Danh sách môn") }
-                Text(
-                    "${subjectId.label(LocaleHelper.getLanguage(context))} - Lớp $grade",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                OutlinedButton(onClick = onOpenNotebook) { Text("📖 Sổ lỗi sai") }
+                OutlinedButton(onClick = onOpenNotebook, modifier = Modifier.weight(1f)) {
+                    Text("Sổ lỗi sai", textAlign = TextAlign.Center)
+                }
+                TextButton(onClick = onShowHistory, modifier = Modifier.weight(1f)) {
+                    Text("Lịch sử làm bài →", textAlign = TextAlign.Center)
+                }
             }
-            TextButton(onClick = onShowHistory) { Text("Lịch sử làm bài →") }
         }
 
         if (selectionState.confirmingRestartQuiz != null) {
