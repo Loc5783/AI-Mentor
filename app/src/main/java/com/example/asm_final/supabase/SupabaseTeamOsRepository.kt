@@ -322,7 +322,9 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
         // Remove private objects first; a failed removal leaves the project visible for retry.
         val files = getDocuments(userId, projectId).filter { it.filePath != null }
         files.forEach { doc ->
-            SupabaseStorage(appContext).deleteTeamFile(owner, doc.filePath!!)
+            runCatching {
+                SupabaseStorage(appContext).deleteTeamFile(owner, doc.filePath!!)
+            }
         }
         check(com.example.mentor.data.ActiveUser.get(appContext) == owner)
         SupabaseHttp().request("DELETE",
