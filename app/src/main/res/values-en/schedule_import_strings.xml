@@ -22,7 +22,7 @@
     <string name="schedule_ai_photo_prompt">Read my attached timetable photo and draft the clearly visible classes for me to review before adding them. Ask if a day or period is unclear.</string>
     <string name="schedule_ai_plan_prompt">Help me make a short study to-do list for this week based on my grade and the tasks I describe. Ask if details are missing; do not claim you saved tasks in the app.</string>
     <string name="todo_import_preview">Review plan</string>
-    <string name="todo_import_note">AI can be wrong. Edit or uncheck tasks before saving.</string>
+    <string name="todo_import_note">AI can be wrong. The time in each task is a suggested study time, not an individual alarm. Review before saving.</string>
     <string name="todo_import_invalid">Could not read the to-do draft. Ask AI to create it again.</string>
     <string name="todo_import_task_index">Task %1$d</string>
     <string name="todo_import_task">To-do</string>

@@ -58,8 +58,8 @@
     <string name="schedule_ai_title">Plan with AI</string>
     <string name="schedule_ai_photo">Photo → timetable</string>
     <string name="schedule_ai_photo_hint">Review before saving</string>
-    <string name="schedule_ai_plan">Suggest to-dos</string>
-    <string name="schedule_ai_plan_hint">Plan together with AI</string>
+    <string name="schedule_ai_plan">Today\'s study plan</string>
+    <string name="schedule_ai_plan_hint">AI suggests study times and lessons</string>
     <string name="schedule_ai_exam">Exam study plan</string>
     <string name="schedule_ai_exam_hint">Choose exam date, subjects and lessons</string>
     <string name="schedule_old_show">View old timetable (busy hours)</string>
@@ -71,7 +71,6 @@
     <string name="todo_card_title">To-Do List</string>
     <string name="todo_next_up">Up next</string>
     <string name="todo_focus_label">Priority today</string>
-    <string name="todo_review_subject">Review %1$s</string>
     <string name="todo_btn_add_task">Add Task</string>
     <string name="todo_empty_day">No tasks yet</string>
     <string name="schedule_duplicate_slot_warning">This period is already used: %1$s</string>
@@ -79,6 +78,8 @@
     <string name="schedule_duplicate_legacy_notice">Saved duplicate periods were found. All entries remain visible; tap one to edit or delete it.</string>
     <string name="schedule_duplicate_legacy_item">Period %1$d: %2$s</string>
     <string name="schedule_save_failed">Could not save this schedule. Please try again.</string>
+    <string name="schedule_conflict_server">This period is already in your schedule. Choose another period and save again.</string>
+    <string name="schedule_auth_required">Your session has expired. Sign in again to save the schedule.</string>
     <string name="schedule_confirm_delete_title">Delete this class?</string>
     <string name="schedule_confirm_delete_message">Delete “%1$s” from this day’s schedule?</string>
 </resources>

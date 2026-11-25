@@ -22,7 +22,7 @@
     <string name="schedule_ai_photo_prompt">Hãy đọc ảnh thời khóa biểu tôi đính kèm và tạo bản nháp để tôi kiểm tra trước khi thêm vào lịch. Chỉ ghi những tiết nhìn rõ; nếu không rõ thứ hoặc tiết, hãy hỏi lại.</string>
     <string name="schedule_ai_plan_prompt">Hãy dựa trên lớp học của tôi và các việc tôi mô tả để gợi ý một to-do list học tập ngắn gọn cho tuần này. Hỏi thêm nếu thiếu thông tin; đừng nói rằng bạn đã lưu việc vào app.</string>
     <string name="todo_import_preview">Duyệt kế hoạch</string>
-    <string name="todo_import_note">AI có thể sai. Chỉnh sửa hoặc bỏ chọn việc trước khi lưu.</string>
+    <string name="todo_import_note">AI có thể sai. Giờ trong tên việc là giờ học dự kiến, không phải báo thức riêng. Kiểm tra và chỉnh sửa trước khi lưu.</string>
     <string name="todo_import_invalid">Chưa đọc được bản nháp to-do. Hãy yêu cầu AI tạo lại.</string>
     <string name="todo_import_task_index">Việc %1$d</string>
     <string name="todo_import_task">Việc cần làm</string>

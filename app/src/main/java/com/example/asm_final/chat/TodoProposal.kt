@@ -4,7 +4,8 @@ import org.json.JSONObject
 
 /** Treat AI output as an untrusted suggestion until the learner reviews every task. */
 object TodoProposal {
-    data class Task(val day: Int, val title: String, val subject: String?, val priority: Int)
+    data class Task(val day: Int, val title: String, val subject: String?, val priority: Int,
+        val startTime: String, val minutes: Int)
 
     private val block = Regex("```ai_todo\\s*([\\s\\S]*?)```", RegexOption.IGNORE_CASE)
 
@@ -23,7 +24,13 @@ object TodoProposal {
             require(title is String && title.isNotBlank() && title.length <= 160 && title.none { it.isISOControl() })
             val subject = if (row.isNull("subject")) null else row.get("subject")
             require(subject == null || subject is String && subject.length <= 80 && subject.none { it.isISOControl() })
-            Task(day.toInt(), title.trim(), (subject as? String)?.trim()?.ifEmpty { null }, priority.toInt())
+            val startTime = row.get("startTime")
+            val minutes = row.get("minutes")
+            require(startTime is String && minutes is Number &&
+                minutes.toDouble() == minutes.toInt().toDouble())
+            require(Regex("([01]\\d|2[0-3]):[0-5]\\d").matches(startTime) && minutes.toInt() in 10..240)
+            Task(day.toInt(), title.trim(), (subject as? String)?.trim()?.ifEmpty { null }, priority.toInt(),
+                startTime, minutes.toInt())
         }
         require(tasks.distinctBy { Triple(it.day, it.title.lowercase(), it.subject?.lowercase()) }.size == tasks.size)
         tasks

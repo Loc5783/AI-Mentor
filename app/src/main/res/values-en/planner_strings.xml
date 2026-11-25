@@ -13,7 +13,7 @@
     <string name="exam_plan_subjects_example">Math: Functions, Vectors\nPhysics: Linear motion</string>
     <string name="exam_plan_busy">AI is arranging revision sessions...</string>
     <string name="exam_plan_review">Review suggested plan</string>
-    <string name="exam_plan_review_hint">Only selected sessions are added to to-dos. Enable notifications in settings for reminders.</string>
+    <string name="exam_plan_review_hint">Only selected sessions are saved. Study times are suggestions; the app sends one daily reminder at your chosen hour, not one per session.</string>
     <string name="exam_plan_minutes_value">%1$d minutes</string>
     <string name="exam_plan_saved">Study plan added to to-dos.</string>
     <string name="exam_plan_reminder_title">Time to revise</string>

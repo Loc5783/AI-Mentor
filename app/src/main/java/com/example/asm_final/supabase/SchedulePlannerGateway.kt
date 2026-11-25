@@ -33,10 +33,13 @@ class SchedulePlannerGateway(context: Context) {
         text
     }
 
-    suspend fun planTodos(owner: Int, context: String, goal: String): String = withContext(Dispatchers.IO) {
-        require(goal.isNotBlank() && goal.length <= 1000)
+    suspend fun planTodos(owner: Int, context: String, goal: String,
+        availability: String, dailyMinutes: Int): String = withContext(Dispatchers.IO) {
+        require(goal.isNotBlank() && goal.length <= 1000 && availability.isNotBlank() &&
+            availability.length <= 300 && dailyMinutes in 10..480)
         val prompt = "Mục tiêu và việc người học muốn làm: ${goal.trim()}\n" +
-            "Dữ liệu lịch hiện có cho ngày đã chọn (chỉ là bối cảnh): ${context.take(1600)}"
+            "Giờ rảnh hôm nay: $availability. Total study time limit: $dailyMinutes minutes.\n" +
+            "Dữ liệu lịch hiện có cho ngày đã chọn (chỉ là bối cảnh): ${context.take(1200)}"
         val text = call(owner, "todo_plan", prompt, JSONArray())
         if (TodoProposal.parse(text) == null) throw BackendClient.Failure("INVALID_AI_OUTPUT", 502)
         text

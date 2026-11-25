@@ -263,11 +263,19 @@ fun ScheduleScreen(
                 Text(stringResource(R.string.schedule_ai_title),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold)
-                ScheduleAiActionCard(Modifier.fillMaxWidth(), R.string.schedule_ai_plan,
-                    R.string.schedule_ai_plan_hint,
-                    onClick = { onAiPlan(ScheduleAiContext.forDay(selectedDay,
-                        viewModel.entries.toList(), viewModel.todos.toList())) },
-                    enabled = !viewModel.loading.value && !viewModel.error.value)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    ScheduleAiActionCard(Modifier.weight(1f), R.string.schedule_ai_plan,
+                        R.string.schedule_ai_plan_hint,
+                        onClick = {
+                            val todayDay = java.time.LocalDate.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh")).dayOfWeek.value
+                            onAiPlan(ScheduleAiContext.forDay(todayDay,
+                                if (selectedDay == todayDay) viewModel.entries.toList() else emptyList(),
+                                if (selectedDay == todayDay) viewModel.todos.toList() else emptyList()))
+                        },
+                        enabled = !viewModel.loading.value && !viewModel.error.value)
+                    ScheduleAiActionCard(Modifier.weight(1f), R.string.schedule_ai_exam,
+                        R.string.schedule_ai_exam_hint, onClick = onAiExam)
+                }
             }
 
             // === KHUNG 1: THỜI KHÓA BIỂU ===
@@ -448,18 +456,6 @@ fun ScheduleScreen(
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                                viewModel.entries.map { it.title.trim() }.filter { it.isNotEmpty() }
-                                    .distinct().take(3).forEach { subject ->
-                                        SuggestionChip(
-                                            onClick = {
-                                                taskToEdit = null
-                                                suggestedTodoTitle = context.getString(R.string.todo_review_subject, subject)
-                                                todoDialogSession++
-                                                showTodoForm = true
-                                            },
-                                            label = { Text(stringResource(R.string.todo_review_subject, subject)) }
-                                        )
-                                    }
                             }
                         }
                     } else {
@@ -611,6 +607,10 @@ fun ScheduleScreen(
                                 daysArray.getOrElse(failure.dayOfWeek - 1) { failure.dayOfWeek.toString() },
                                 failure.existingEntries.joinToString { it.title }
                             )
+                        } else if (failure.message == "SCHEDULE_CONFLICT") {
+                            context.getString(R.string.schedule_conflict_server)
+                        } else if (failure.message == "AUTHENTICATION_REQUIRED") {
+                            context.getString(R.string.schedule_auth_required)
                         } else {
                             context.getString(R.string.schedule_save_failed)
                         }
@@ -671,7 +671,7 @@ private fun ScheduleAiActionCard(
     Surface(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier.heightIn(min = 112.dp),
+        modifier = modifier.heightIn(min = 88.dp),
         shape = RoundedCornerShape(18.dp),
         color = MaterialTheme.colorScheme.surface,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = .3f)),
@@ -792,11 +792,17 @@ fun ScheduleFormDialog(
     }
 
     LaunchedEffect(period, selectedDays.toList()) {
-        val overlaps = selectedDays.flatMap { day ->
-            viewModel.findOverlaps(day, period, initialEntry?.id ?: 0L)
-        }.distinctBy { it.id }
-        overlapWarning = overlaps.takeIf { it.isNotEmpty() }?.joinToString {
-            "${daysArray[it.dayOfWeek - 1]} · ${it.period}: ${it.title}"
+        overlapWarning = try {
+            selectedDays.flatMap { day ->
+                viewModel.findOverlaps(day, period, initialEntry?.id ?: 0L)
+            }.distinctBy { it.id }.takeIf { it.isNotEmpty() }?.joinToString {
+                "${daysArray[it.dayOfWeek - 1]} · ${it.period}: ${it.title}"
+            }
+        } catch (cancelled: kotlinx.coroutines.CancellationException) {
+            throw cancelled
+        } catch (_: Exception) {
+            // The save endpoint still validates duplicate periods atomically.
+            null
         }
     }
 
@@ -955,6 +961,7 @@ private fun ExamPlanRoadmapCard(
     onSelectDay: (Int) -> Unit
 ) {
     if (allTasks.isEmpty()) return
+    var showDays by remember { mutableStateOf(false) }
 
     val total = allTasks.size
     val completed = allTasks.count { it.isCompleted }
@@ -1009,7 +1016,7 @@ private fun ExamPlanRoadmapCard(
                         modifier = Modifier.size(24.dp)
                     )
                     Text(
-                        "🎯 Lộ trình Ôn thi AI",
+                        "Lộ trình ôn thi",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
@@ -1063,14 +1070,10 @@ private fun ExamPlanRoadmapCard(
 
             // Daily Roadmap Timeline Strip
             if (tasksByDate.isNotEmpty()) {
-                Text(
-                    "Theo dõi tiến độ các ngày:",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-
-                Row(
+                TextButton(onClick = { showDays = !showDays }) {
+                    Text(if (showDays) "Ẩn lịch theo ngày" else "Xem lịch theo ngày (${tasksByDate.size})")
+                }
+                if (showDays) Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(rememberScrollState()),

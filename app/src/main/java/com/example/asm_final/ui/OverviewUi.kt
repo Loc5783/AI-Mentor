@@ -303,7 +303,7 @@ private fun HomeTodayTasks(tasks: List<TodoTask>?, loaded: Boolean,
             horizontalArrangement = Arrangement.SpaceBetween) {
             Text(stringResource(R.string.home_today_tasks), style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold, color = palette.title)
-            if (tasks != null) Text(stringResource(R.string.home_tasks_count,
+            if (!tasks.isNullOrEmpty()) Text(stringResource(R.string.home_tasks_count,
                 tasks.count { it.isCompleted }, tasks.size),
                 style = MaterialTheme.typography.labelMedium, color = palette.accent,
                 fontWeight = FontWeight.Bold)
