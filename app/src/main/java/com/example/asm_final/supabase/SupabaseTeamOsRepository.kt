@@ -319,21 +319,26 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
         val project = getProject(userId, projectId)
         if (project.ownerId != userId) throw SecurityException("ONLY_PROJECT_OWNER_CAN_DELETE")
         val verifiedToken = accounts().reauthenticate(owner, password)
-        // A missing object was deleted by an earlier attempt. Any other failure
-        // must stop before deleting the project, so its files remain recoverable.
         val files = getDocuments(userId, projectId).filter { it.filePath != null }
+
+        // 1. Delete project database record first.
+        // Once this succeeds, the project is removed from the database and UI instantly,
+        // preventing any surviving project with broken file links.
+        check(com.example.mentor.data.ActiveUser.get(appContext) == owner)
+        SupabaseHttp().request("DELETE",
+            "/rest/v1/mentor_team_projects?id=eq.$projectId&owner_id=eq.${remoteUserId(owner)}",
+            token = verifiedToken)
+
+        // 2. Clean up storage files and local cache afterwards.
+        // Failures here (other than 404) are reported precisely rather than silently ignored.
         files.forEach { doc ->
             try {
                 SupabaseStorage(appContext).deleteTeamFile(owner, doc.filePath!!)
             } catch (error: BackendClient.Failure) {
                 if (error.status != 404) throw error
             }
+            SupabaseStorage(appContext).clearCachedTeamFile(owner, doc.id)
         }
-        check(com.example.mentor.data.ActiveUser.get(appContext) == owner)
-        SupabaseHttp().request("DELETE",
-            "/rest/v1/mentor_team_projects?id=eq.$projectId&owner_id=eq.${remoteUserId(owner)}",
-            token = verifiedToken)
-        files.forEach { doc -> SupabaseStorage(appContext).clearCachedTeamFile(owner, doc.id) }
     }
 
     override fun confirmTask(
