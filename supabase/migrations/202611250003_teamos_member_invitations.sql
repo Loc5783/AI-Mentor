@@ -49,5 +49,13 @@ returns table(project_id text,title text,role text) language sql stable security
   where m.user_id=auth.uid() and m.status='INVITED';
 $$;
 
-revoke all on function public.mentor_team_invite(text,uuid,text), public.mentor_team_respond_invite(text,boolean), public.mentor_team_change_role(text,uuid,text), public.mentor_team_remove_member(text,uuid), public.mentor_team_my_invites() from public, anon;
-grant execute on function public.mentor_team_invite(text,uuid,text), public.mentor_team_respond_invite(text,boolean), public.mentor_team_change_role(text,uuid,text), public.mentor_team_remove_member(text,uuid), public.mentor_team_my_invites() to authenticated;
+revoke all on function public.mentor_team_invite(text,uuid,text) from public, anon;
+revoke all on function public.mentor_team_respond_invite(text,boolean) from public, anon;
+revoke all on function public.mentor_team_change_role(text,uuid,text) from public, anon;
+revoke all on function public.mentor_team_remove_member(text,uuid) from public, anon;
+revoke all on function public.mentor_team_my_invites() from public, anon;
+grant execute on function public.mentor_team_invite(text,uuid,text) to authenticated;
+grant execute on function public.mentor_team_respond_invite(text,boolean) to authenticated;
+grant execute on function public.mentor_team_change_role(text,uuid,text) to authenticated;
+grant execute on function public.mentor_team_remove_member(text,uuid) to authenticated;
+grant execute on function public.mentor_team_my_invites() to authenticated;
