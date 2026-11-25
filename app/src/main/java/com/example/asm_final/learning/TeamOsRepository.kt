@@ -68,6 +68,8 @@ open class TeamOsRepository {
         val displayName: String? = null
     )
 
+    data class TeamInvitation(val projectId: String, val title: String, val role: TeamRole)
+
     data class TeamProject(
         val id: String = UUID.randomUUID().toString(),
         val title: String,
@@ -257,6 +259,18 @@ open class TeamOsRepository {
         return projects.values.filter { it.members[userId]?.status == MemberStatus.ACTIVE }
     }
 
+    open fun getInvitations(userId: String): List<TeamInvitation> = projects.values.mapNotNull { project ->
+        project.members[userId]?.takeIf { it.status == MemberStatus.INVITED }
+            ?.let { TeamInvitation(project.id, project.title, it.role) }
+    }
+
+    open fun respondToInvitation(userId: String, projectId: String, accept: Boolean) {
+        val project = projects[projectId] ?: throw NoSuchElementException("PROJECT_NOT_FOUND")
+        val member = project.members[userId]?.takeIf { it.status == MemberStatus.INVITED }
+            ?: throw NoSuchElementException("INVITE_NOT_FOUND")
+        member.status = if (accept) MemberStatus.ACTIVE else MemberStatus.REMOVED
+    }
+
     open fun getMembers(userId: String, projectId: String): List<TeamMember> {
         checkMembership(projectId, userId)
         return projects[projectId]?.members?.values?.filter { it.status == MemberStatus.ACTIVE } ?: emptyList()
@@ -283,13 +297,24 @@ open class TeamOsRepository {
         checkManager(projectId, requesterId)
         val project = projects[projectId]!!
         val existing = project.members[newUserId]
+        require(role != TeamRole.OWNER && newUserId != requesterId)
+        if (existing?.status == MemberStatus.ACTIVE) throw IllegalStateException("ALREADY_MEMBER")
         if (existing != null) {
-            existing.status = MemberStatus.ACTIVE
+            existing.status = MemberStatus.INVITED
             existing.role = role
             existing.removedAt = null
         } else {
-            project.members[newUserId] = TeamMember(newUserId, role, MemberStatus.ACTIVE)
+            project.members[newUserId] = TeamMember(newUserId, role, MemberStatus.INVITED)
         }
+    }
+
+    open fun changeMemberRole(requesterId: String, projectId: String, targetUserId: String, role: TeamRole) {
+        checkManager(projectId, requesterId)
+        require(role != TeamRole.OWNER && requesterId != targetUserId)
+        val member = projects[projectId]?.members?.get(targetUserId)
+            ?.takeIf { it.status == MemberStatus.ACTIVE && it.role != TeamRole.OWNER }
+            ?: throw NoSuchElementException("MEMBER_NOT_FOUND")
+        member.role = role
     }
 
     fun addMember(requesterId: Int, projectId: String, newUserId: Int) =

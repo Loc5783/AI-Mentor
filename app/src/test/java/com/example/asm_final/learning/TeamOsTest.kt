@@ -13,11 +13,45 @@ class TeamOsTest {
         repository = TeamOsRepository()
     }
 
+    private fun inviteAndJoin(requester: String, projectId: String, user: String, role: TeamOsRepository.TeamRole) {
+        repository.addMember(requester, projectId, user, role)
+        repository.respondToInvitation(user, projectId, true)
+    }
+
+    @Test
+    fun invitationDoesNotGrantAccessUntilAcceptedAndCanBeDeclined() {
+        val project = repository.createProject("owner", "Private", null)
+        repository.addMember("owner", project.id, "guest", TeamOsRepository.TeamRole.MEMBER)
+        assertEquals(1, repository.getInvitations("guest").size)
+        assertTrue(repository.getProjectsForUser("guest").isEmpty())
+        assertThrows(SecurityException::class.java) { repository.getProject("guest", project.id) }
+        repository.respondToInvitation("guest", project.id, false)
+        assertTrue(repository.getInvitations("guest").isEmpty())
+        assertThrows(SecurityException::class.java) { repository.getProject("guest", project.id) }
+        repository.addMember("owner", project.id, "guest", TeamOsRepository.TeamRole.VIEWER)
+        repository.respondToInvitation("guest", project.id, true)
+        assertEquals(TeamOsRepository.TeamRole.VIEWER, repository.getMembers("guest", project.id).first { it.userId == "guest" }.role)
+    }
+
+    @Test
+    fun onlyManagerCanChangeRoleAndOwnerCannotBeChanged() {
+        val project = repository.createProject("owner", "Private", null)
+        inviteAndJoin("owner", project.id, "member", TeamOsRepository.TeamRole.MEMBER)
+        assertThrows(SecurityException::class.java) {
+            repository.changeMemberRole("member", project.id, "owner", TeamOsRepository.TeamRole.VIEWER)
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            repository.changeMemberRole("owner", project.id, "member", TeamOsRepository.TeamRole.OWNER)
+        }
+        repository.changeMemberRole("owner", project.id, "member", TeamOsRepository.TeamRole.VIEWER)
+        assertEquals(TeamOsRepository.TeamRole.VIEWER, repository.getMembers("owner", project.id).first { it.userId == "member" }.role)
+    }
+
     @Test
     fun allActiveMembersCanUploadFileButOnlyOwnerCanDeleteProject() {
         val project = repository.createProject("owner", "Nhóm ôn tập", null)
-        repository.addMember("owner", project.id, "member", TeamOsRepository.TeamRole.MEMBER)
-        repository.addMember("owner", project.id, "viewer", TeamOsRepository.TeamRole.VIEWER)
+        inviteAndJoin("owner", project.id, "member", TeamOsRepository.TeamRole.MEMBER)
+        inviteAndJoin("owner", project.id, "viewer", TeamOsRepository.TeamRole.VIEWER)
         val input = TeamOsRepository.TeamFileInput("note.pdf", "application/pdf", byteArrayOf(1, 2))
         repository.uploadFileDocument("member", project.id, "Tài liệu", "", input)
         repository.uploadFileDocument("viewer", project.id, "Tài liệu khác", "", input)
@@ -53,7 +87,7 @@ class TeamOsTest {
             description = "Nghiên cứu về pin mặt trời"
         )
 
-        repository.addMember(ownerId, project.id, memberId, TeamOsRepository.TeamRole.MEMBER)
+        inviteAndJoin(ownerId, project.id, memberId, TeamOsRepository.TeamRole.MEMBER)
 
         // Member uploads document
         val doc = repository.uploadDocument(
@@ -99,18 +133,18 @@ class TeamOsTest {
         val newUserId2 = "usr-new-2"
 
         val project = repository.createProject(ownerId, "Dự án phân quyền", "Kiểm thử vai trò")
-        repository.addMember(ownerId, project.id, adminId, TeamOsRepository.TeamRole.ADMIN)
-        repository.addMember(ownerId, project.id, memberId, TeamOsRepository.TeamRole.MEMBER)
-        repository.addMember(ownerId, project.id, viewerId, TeamOsRepository.TeamRole.VIEWER)
+        inviteAndJoin(ownerId, project.id, adminId, TeamOsRepository.TeamRole.ADMIN)
+        inviteAndJoin(ownerId, project.id, memberId, TeamOsRepository.TeamRole.MEMBER)
+        inviteAndJoin(ownerId, project.id, viewerId, TeamOsRepository.TeamRole.VIEWER)
 
         // Admin can add a member
-        repository.addMember(adminId, project.id, newUserId1, TeamOsRepository.TeamRole.MEMBER)
+        inviteAndJoin(adminId, project.id, newUserId1, TeamOsRepository.TeamRole.MEMBER)
         val membersAfterAdmin = repository.getMembers(ownerId, project.id)
         assertTrue(membersAfterAdmin.any { it.userId == newUserId1 })
 
         // Regular Member CANNOT add a member
         try {
-            repository.addMember(memberId, project.id, newUserId2, TeamOsRepository.TeamRole.MEMBER)
+            inviteAndJoin(memberId, project.id, newUserId2, TeamOsRepository.TeamRole.MEMBER)
             fail("Expected SecurityException when normal member tries to add member")
         } catch (e: SecurityException) {
             assertTrue(e.message!!.contains("PERMISSION_DENIED"))
@@ -118,7 +152,7 @@ class TeamOsTest {
 
         // Viewer CANNOT add a member
         try {
-            repository.addMember(viewerId, project.id, newUserId2, TeamOsRepository.TeamRole.MEMBER)
+            inviteAndJoin(viewerId, project.id, newUserId2, TeamOsRepository.TeamRole.MEMBER)
             fail("Expected SecurityException when viewer tries to add member")
         } catch (e: SecurityException) {
             assertTrue(e.message!!.contains("PERMISSION_DENIED"))
@@ -132,8 +166,8 @@ class TeamOsTest {
         val memberId = "usr-member"
 
         val project = repository.createProject(ownerId, "Dự án xóa thành viên", null)
-        repository.addMember(ownerId, project.id, adminId, TeamOsRepository.TeamRole.ADMIN)
-        repository.addMember(ownerId, project.id, memberId, TeamOsRepository.TeamRole.MEMBER)
+        inviteAndJoin(ownerId, project.id, adminId, TeamOsRepository.TeamRole.ADMIN)
+        inviteAndJoin(ownerId, project.id, memberId, TeamOsRepository.TeamRole.MEMBER)
 
         // Regular member cannot remove another member
         try {
@@ -163,7 +197,7 @@ class TeamOsTest {
         val viewerId = "usr-viewer"
 
         val project = repository.createProject(ownerId, "Dự án xem", null)
-        repository.addMember(ownerId, project.id, viewerId, TeamOsRepository.TeamRole.VIEWER)
+        inviteAndJoin(ownerId, project.id, viewerId, TeamOsRepository.TeamRole.VIEWER)
 
         // Viewer can read project
         val readProj = repository.getProject(viewerId, project.id)
@@ -355,7 +389,7 @@ class TeamOsTest {
         val memberId = "usr-member"
 
         val project = repository.createProject(ownerId, "Dự án trục xuất", null)
-        repository.addMember(ownerId, project.id, memberId, TeamOsRepository.TeamRole.MEMBER)
+        inviteAndJoin(ownerId, project.id, memberId, TeamOsRepository.TeamRole.MEMBER)
 
         // Member has access initially
         val docsInitial = repository.getDocuments(memberId, project.id)
