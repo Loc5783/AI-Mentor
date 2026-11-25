@@ -1280,7 +1280,8 @@ fun AddMemberDialog(
                 OutlinedTextField(
                     value = query,
                     onValueChange = { query = it; selected = null; viewModel.searchMembers(it) },
-                    label = { Text("Tìm theo tên người dùng") },
+                    label = { Text("Tìm tên người dùng (ít nhất 2 ký tự)") },
+                    supportingText = { Text("Có thể gõ có dấu hoặc không dấu") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
