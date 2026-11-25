@@ -10,7 +10,9 @@
     <string name="profile_streak_label">Chuỗi học</string>
     <string name="profile_xp_label">Tổng kinh nghiệm</string>
     <string name="profile_lessons_label">Bài hoàn thành</string>
-    <string name="profile_lessons_unit">bài</string>
+    <string name="profile_lessons_unit">%1$d bài</string>
+    <string name="profile_lessons_ratio">%1$d/%2$d bài</string>
+    <string name="profile_view_roadmap">Xem lộ trình</string>
     <string name="profile_friends_title">Bạn bè học cùng</string>
     <string name="profile_friends_empty">Chưa có dữ liệu bạn bè để hiển thị chuỗi học cùng nhau.</string>
     <string name="profile_editor_details">Thông tin tài khoản</string>
@@ -19,6 +21,7 @@
     <string name="profile_note_hint">Viết vài dòng về mục tiêu hoặc điều bạn yêu thích…</string>
     <string name="profile_note_empty">Chưa có ghi chú. Bạn có thể chia sẻ mục tiêu học tập hoặc điều mình yêu thích.</string>
     <string name="profile_add_note">Thêm ghi chú</string>
+    <string name="profile_edit_note">Sửa ghi chú</string>
     <string name="profile_bio_too_long">Ghi chú tối đa 500 ký tự.</string>
     <string name="profile_overview_title">TỔNG QUAN</string>
     <string name="profile_streak_stat">%1$d ngày</string>

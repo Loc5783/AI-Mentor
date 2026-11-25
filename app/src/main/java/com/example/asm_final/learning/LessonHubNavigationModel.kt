@@ -10,6 +10,7 @@ import com.example.mentor.learning.SubjectId
 
 enum class HubSection {
     MAIN_HUB,
+    SUBJECT_WORKSPACE,
     LIBRARY,
     EXAM_PREP,
     ROADMAP,
@@ -19,7 +20,7 @@ enum class HubSection {
 
 /**
  * Pure Kotlin presentation and state model for the Lesson Hub navigation flow.
- * Manages 4 functional areas, 9 THPT subjects, consistent grade scoping, and back stack hierarchy.
+ * Manages the study hub, subject workspaces, and their child tools with grade-scoped state.
  * Uses Compose mutableStateOf properties so UI automatically recomposes on state changes.
  */
 class LessonHubNavigationModel(
@@ -40,18 +41,36 @@ class LessonHubNavigationModel(
     var notebookSourceSection: HubSection by mutableStateOf(initialNotebookSource)
         private set
 
+    var toolSourceSection: HubSection by mutableStateOf(HubSection.MAIN_HUB)
+        private set
+
     val selectedSubject: SubjectId?
         get() = selectedSubjectWireId?.let { wire ->
             SubjectId.values().firstOrNull { it.wireId == wire }
         }
 
     fun setGrade(newGrade: Int) {
-        if (newGrade in 10..12) {
+        if (newGrade in 10..12 && newGrade != _grade.intValue) {
             _grade.intValue = newGrade
+            selectedSubjectWireId = null
+            currentSection = HubSection.MAIN_HUB
         }
     }
 
     fun navigateTo(section: HubSection) {
+        toolSourceSection = HubSection.MAIN_HUB
+        currentSection = section
+    }
+
+    fun openWorkspace(subjectId: SubjectId) {
+        selectedSubjectWireId = subjectId.wireId
+        currentSection = HubSection.SUBJECT_WORKSPACE
+    }
+
+    fun openWorkspaceTool(section: HubSection) {
+        require(currentSection == HubSection.SUBJECT_WORKSPACE)
+        require(section == HubSection.LIBRARY || section == HubSection.EXAM_PREP || section == HubSection.AI_PRACTICE)
+        toolSourceSection = HubSection.SUBJECT_WORKSPACE
         currentSection = section
     }
 
@@ -85,7 +104,9 @@ class LessonHubNavigationModel(
                 true
             }
             HubSection.LIBRARY -> {
-                if (selectedSubjectWireId != null) {
+                if (toolSourceSection == HubSection.SUBJECT_WORKSPACE) {
+                    currentSection = HubSection.SUBJECT_WORKSPACE
+                } else if (selectedSubjectWireId != null) {
                     selectedSubjectWireId = null
                 } else {
                     currentSection = HubSection.MAIN_HUB
@@ -93,7 +114,7 @@ class LessonHubNavigationModel(
                 true
             }
             HubSection.EXAM_PREP -> {
-                currentSection = HubSection.MAIN_HUB
+                currentSection = toolSourceSection
                 true
             }
             HubSection.ROADMAP -> {
@@ -101,6 +122,11 @@ class LessonHubNavigationModel(
                 true
             }
             HubSection.AI_PRACTICE -> {
+                currentSection = toolSourceSection
+                true
+            }
+            HubSection.SUBJECT_WORKSPACE -> {
+                selectedSubjectWireId = null
                 currentSection = HubSection.MAIN_HUB
                 true
             }
@@ -117,6 +143,7 @@ class LessonHubNavigationModel(
                     "currentSection" to model.currentSection.name,
                     "selectedSubjectWireId" to model.selectedSubjectWireId,
                     "grade" to model.grade,
+                    "toolSourceSection" to model.toolSourceSection.name,
                     "notebookSourceSection" to model.notebookSourceSection.name
                 )
             },
@@ -136,7 +163,11 @@ class LessonHubNavigationModel(
                     initialSubjectWireId = subjectWireId,
                     initialGrade = grade,
                     initialNotebookSource = notebookSource
-                )
+                ).also { model ->
+                    model.toolSourceSection = (map["toolSourceSection"] as? String)?.let {
+                        runCatching { HubSection.valueOf(it) }.getOrNull()
+                    } ?: HubSection.MAIN_HUB
+                }
             }
         )
     }

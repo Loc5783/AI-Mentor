@@ -106,6 +106,8 @@ interface LibraryRepository {
     val ownerId: Int
     suspend fun loadQuizzes(subjectWireId: String, grade: Int): List<QuizSummary>
     suspend fun listActiveSessions(subjectWireId: String, grade: Int): List<SessionSummary>
+    suspend fun listHistorySessions(subjectWireId: String, grade: Int): List<SessionSummary> =
+        listActiveSessions(subjectWireId, grade)
     suspend fun getSession(sessionId: String): PracticeSession
     suspend fun startSession(quizId: String): PracticeSession
     suspend fun submitAnswer(sessionId: String, questionId: String, selectedOption: String): PracticeSession
@@ -176,6 +178,18 @@ class BackendLibraryRepository(
             )
         }
         list
+    }
+
+    override suspend fun listHistorySessions(subjectWireId: String, grade: Int): List<SessionSummary> = withContext(Dispatchers.IO) {
+        val resp = client().request("GET", "/library/sessions?subject_id=$subjectWireId&grade=$grade&state=ALL&limit=50", null, null, null)
+        val items = resp.optJSONArray("items") ?: JSONArray()
+        (0 until items.length()).map { i ->
+            val obj = items.getJSONObject(i)
+            SessionSummary(obj.getString("id"), obj.getString("quizId"), obj.getString("subjectId"),
+                obj.getInt("grade"), obj.getString("state"), obj.optInt("score"),
+                obj.optInt("correctCount"), obj.optInt("totalCount"), obj.optInt("answeredCount"),
+                obj.optInt("firstUnansweredIndex"), obj.optString("updatedAt"))
+        }
     }
 
     override suspend fun getSession(sessionId: String): PracticeSession = withContext(Dispatchers.IO) {
@@ -305,20 +319,20 @@ class BackendLibraryRepository(
             val options = mutableListOf<WrongQuestionOption>()
             for (i in 0 until optArr.length()) {
                 val o = optArr.getJSONObject(i)
-                options.add(
-                    WrongQuestionOption(
-                        id = o.optString("id", ""),
-                        text = o.optString("text", "")
-                    )
-                )
+                val text = o.optString("text", "")
+                if (text.isNotBlank()) {
+                    options.add(WrongQuestionOption(id = o.optString("id", ""), text = text))
+                }
             }
             return WrongQuestionEntry(
                 id = obj.getString("id"),
                 questionId = obj.getString("questionId"),
                 subjectId = obj.getString("subjectId"),
                 grade = obj.getInt("grade"),
-                chapter = obj.optString("chapter", "Chưa phân loại"),
-                topic = obj.optString("topic", "Chủ đề chung"),
+                chapter = obj.optString("chapter").takeIf { it.isNotBlank() }
+                    ?: obj.optString("topic").takeIf { it.isNotBlank() }
+                    ?: "Ôn tập tổng hợp",
+                topic = obj.optString("topic").takeIf { it.isNotBlank() } ?: "Ôn tập tổng hợp",
                 prompt = obj.optString("prompt", ""),
                 options = options,
                 selectedOption = obj.optString("selectedOption", ""),
@@ -327,7 +341,7 @@ class BackendLibraryRepository(
                 difficulty = obj.optString("difficulty", "MEDIUM"),
                 state = obj.optString("state", "NEEDS_REVIEW"),
                 hasSnapshot = obj.optBoolean("hasSnapshot", true),
-                canRetry = obj.optBoolean("canRetry", true),
+                canRetry = options.isNotEmpty() && obj.optBoolean("canRetry", true),
                 createdAt = obj.optString("createdAt", ""),
                 updatedAt = if (obj.has("updatedAt") && !obj.isNull("updatedAt")) obj.getString("updatedAt") else null
             )

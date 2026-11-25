@@ -1,6 +1,8 @@
 package com.example.asm_final.activities.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.*;
 import android.widget.*;
 import androidx.fragment.app.Fragment;
@@ -16,6 +18,14 @@ import com.google.android.material.chip.*;
 public final class CompetitionFragment extends Fragment {
   private CompetitionViewModel model;
   private OverviewUpdates.Subscription liveUpdates;
+  private final Handler main = new Handler(Looper.getMainLooper());
+  private final Runnable refreshWhileVisible = new Runnable() {
+    @Override public void run() {
+      if (!isResumed() || model == null) return;
+      model.refresh();
+      main.postDelayed(this, 60_000L);
+    }
+  };
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle saved) {
@@ -42,7 +52,8 @@ public final class CompetitionFragment extends Fragment {
   public void onResume() {
     super.onResume();
     model.refresh();
-    model.refreshFriends();
+    main.removeCallbacks(refreshWhileVisible);
+    main.postDelayed(refreshWhileVisible, 60_000L);
     liveUpdates =
         ((AiMentorApplication) requireActivity().getApplication())
             .services()
@@ -51,12 +62,12 @@ public final class CompetitionFragment extends Fragment {
                 ActiveUser.get(requireContext()),
                 () -> {
                   model.refresh();
-                  model.refreshFriends();
                 });
   }
 
   @Override
   public void onPause() {
+    main.removeCallbacks(refreshWhileVisible);
     if (liveUpdates != null) {
       liveUpdates.close();
       liveUpdates = null;

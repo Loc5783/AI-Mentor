@@ -1,6 +1,12 @@
 <resources>
     <string name="schedule_import_preview">Xem trước thời khóa biểu</string>
-    <string name="schedule_import_note">Kiểm tra các tiết đã nhận diện, bỏ chọn mục sai. Chỉ thêm vào ô trống; lịch đã có sẽ được giữ. Tiết chiều dùng số 6–10.</string>
+    <string name="schedule_import_note">Kiểm tra và sửa môn, thứ, tiết AI đọc nhầm trước khi lưu. Bỏ chọn ô không chắc chắn; lịch đã có sẽ được giữ.</string>
+    <string name="schedule_import_day_names">Thứ 2,Thứ 3,Thứ 4,Thứ 5,Thứ 6,Thứ 7,Chủ nhật</string>
+    <string name="schedule_import_subject_label">Môn học</string>
+    <string name="schedule_import_period_header">Tiết</string>
+    <string name="schedule_import_empty_slot">Thêm môn nếu AI bỏ sót</string>
+    <string name="schedule_import_period_label">Tiết %1$d</string>
+    <string name="schedule_import_check_entries">Hãy điền tên môn và tránh chọn hai môn cùng thứ, cùng tiết.</string>
     <string name="schedule_import_result">Đã thêm %1$d tiết; bỏ qua %2$d ô đã có lịch.</string>
     <string name="schedule_import_slot">%1$s · Tiết %2$d — %3$s</string>
     <string name="schedule_import_sunday">Chủ nhật</string>
@@ -9,5 +15,25 @@
     <string name="schedule_import_saving">Đang lưu…</string>
     <string name="schedule_import_save">Thêm vào lịch</string>
     <string name="chat_suggest_schedule">Đọc ảnh và điền thời khóa biểu giúp tôi</string>
+    <string name="chat_suggest_schedule_plan">Gợi ý to-do học tập cho tuần này</string>
+    <string name="schedule_chat_title">AI hỗ trợ lịch học</string>
+    <string name="schedule_chat_empty_title">Lên lịch học cùng AI</string>
+    <string name="schedule_chat_empty_body">Gửi ảnh thời khóa biểu hoặc mô tả việc cần làm.</string>
+    <string name="schedule_ai_photo_prompt">Hãy đọc ảnh thời khóa biểu tôi đính kèm và tạo bản nháp để tôi kiểm tra trước khi thêm vào lịch. Chỉ ghi những tiết nhìn rõ; nếu không rõ thứ hoặc tiết, hãy hỏi lại.</string>
+    <string name="schedule_ai_plan_prompt">Hãy dựa trên lớp học của tôi và các việc tôi mô tả để gợi ý một to-do list học tập ngắn gọn cho tuần này. Hỏi thêm nếu thiếu thông tin; đừng nói rằng bạn đã lưu việc vào app.</string>
+    <string name="todo_import_preview">Duyệt kế hoạch</string>
+    <string name="todo_import_note">AI có thể sai. Chỉnh sửa hoặc bỏ chọn việc trước khi lưu.</string>
+    <string name="todo_import_invalid">Chưa đọc được bản nháp to-do. Hãy yêu cầu AI tạo lại.</string>
+    <string name="todo_import_task_index">Việc %1$d</string>
+    <string name="todo_import_task">Việc cần làm</string>
+    <string name="todo_import_subject">Môn học (tùy chọn)</string>
+    <string name="todo_import_days">T2,T3,T4,T5,T6,T7,CN</string>
+    <string name="todo_import_low">Ưu tiên thấp</string>
+    <string name="todo_import_normal">Bình thường</string>
+    <string name="todo_import_high">Ưu tiên cao</string>
+    <string name="todo_import_save">Thêm việc đã chọn</string>
+    <string name="todo_import_saving">Đang lưu…</string>
+    <string name="todo_import_result">Đã thêm %1$d việc · Bỏ qua %2$d việc trùng</string>
+    <string name="todo_import_error">Chưa lưu được. Danh sách cũ vẫn được giữ; hãy thử lại.</string>
     <string name="schedule_import_invalid">Chưa đọc được lịch hợp lệ. Hãy gửi ảnh rõ hơn hoặc xác nhận lại thứ và tiết học.</string>
 </resources>

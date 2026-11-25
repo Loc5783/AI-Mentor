@@ -8,8 +8,6 @@
   <string name="settings_preferences">Tùy chọn học tập</string>
   <string name="settings_reminders">Nhắc nhở học tập</string>
   <string name="settings_dark_mode">Chế độ ban đêm</string>
-  <string name="settings_change_background">Thay đổi hình nền</string>
-  <string name="settings_background_default">Mặc định</string>
   <string name="settings_others">Khác</string>
   <string name="settings_language">Ngôn ngữ</string>
   <string name="settings_share">Chia sẻ ứng dụng</string>
@@ -41,4 +39,7 @@ BTEC FPT Student</string>
   <string name="reminders_channel_desc">Thông báo nhắc nhở ôn tập kiến thức hàng ngày</string>
   <string name="reminders_notif_title">Đến giờ học rồi! 📚</string>
   <string name="reminders_notif_content">Hãy mở AI Mentor để cùng ôn tập kiến thức nhé.</string>
+  <string name="exam_pack_hub_title">Kho đề của bạn</string>
+  <string name="exam_pack_hub_desc">Tạo đề từ PDF hoặc ảnh, rà câu hỏi và luyện tập</string>
+  <string name="exam_pack_hub_open">Mở kho đề</string>
 </resources>

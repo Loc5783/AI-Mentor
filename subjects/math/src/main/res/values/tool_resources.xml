@@ -1,18 +1,25 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <color name="math_text_primary">#0B1220</color>
-    <color name="math_text_secondary">#475569</color>
     <color name="mentor_math_button">#1D4ED8</color>
     <string name="math_calculator_backspace">Xóa ký tự cuối</string>
     <string name="math_calculator_collapse">Thu gọn</string>
     <string name="math_calculator_error">Kiểm tra biểu thức hoặc phép chia cho 0.</string>
-    <string name="math_calculator_hide">Ẩn bong bóng</string>
-    <string name="math_calculator_hide_hint">Mở lại từ nút Máy tính bỏ túi trong môn Toán.</string>
-    <string name="math_calculator_hint">Phím phần trăm chia số đứng trước cho 100. Chỉ có trong môn Toán.</string>
-    <string name="math_calculator_open">Mở máy tính; kéo để di chuyển, giữ để ẩn</string>
+    <string name="math_calculator_hint">DEG/RAD đổi đơn vị góc. Ans là kết quả gần nhất; M là bộ nhớ.</string>
+    <string name="math_calculator_open">Mở máy tính; kéo để di chuyển</string>
     <string name="math_calculator_title">Máy tính bỏ túi</string>
-    <style name="Theme.MathTools" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/math_background</item>
-    </style>
-    <color name="math_background">#F8FAFC</color>
+    <string name="math_mode_calculate">Tính toán</string>
+    <string name="math_mode_matrix">Ma trận</string>
+    <string name="math_mode_statistics">Thống kê</string>
+    <string name="math_matrix_size">Kích thước ma trận</string>
+    <string name="math_matrix_hint">Nhập A và B, sau đó chọn phép toán.</string>
+    <string name="math_matrix_error">Kiểm tra các ô số. Ma trận nghịch đảo cần định thức khác 0.</string>
+    <string name="math_stats_single">Một biến</string>
+    <string name="math_stats_pairs">Hai biến (x, y)</string>
+    <string name="math_stats_data">Dữ liệu</string>
+    <string name="math_stats_single_hint">Ví dụ: 2; 4; 6; 8 (dùng dấu chấm cho số thập phân)</string>
+    <string name="math_stats_pairs_hint">Mỗi dòng một cặp x,y. Ví dụ:\n1,2\n2,4\n3,6</string>
+    <string name="math_stats_calculate">Tính thống kê</string>
+    <string name="math_stats_median">Trung vị</string>
+    <string name="math_stats_min_max">Nhỏ nhất / Lớn nhất</string>
+    <string name="math_stats_error">Kiểm tra dữ liệu: tối đa 100 giá trị; hồi quy cần ít nhất 2 cặp và các giá trị x khác nhau.</string>
 </resources>

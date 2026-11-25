@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -89,18 +90,21 @@ internal fun TodoCard(
     task: TodoTask,
     onToggle: (TodoTask) -> Unit,
     onDelete: (TodoTask) -> Unit,
-    onClick: ((TodoTask) -> Unit)? = null
+    onClick: ((TodoTask) -> Unit)? = null,
+    focused: Boolean = false
 ) {
-    val alphaFactor = if (task.isCompleted) 0.6f else 1f
+    val alphaFactor = if (task.isCompleted) 0.8f else 1f
     
     Surface(
         shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surface,
+        color = if (focused) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, if (focused) MaterialTheme.colorScheme.primary.copy(alpha = .55f)
+            else MaterialTheme.colorScheme.outlineVariant.copy(alpha = .55f)),
         modifier = Modifier
             .fillMaxWidth()
             .alpha(alphaFactor)
             .then(if (onClick != null) Modifier.clickable { onClick(task) } else Modifier),
-        shadowElevation = if (task.isCompleted) 0.dp else 1.dp
+        shadowElevation = if (focused) 3.dp else 0.dp
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
@@ -114,10 +118,17 @@ internal fun TodoCard(
             )
             
             Column(modifier = Modifier.weight(1f)) {
+                if (focused) Text(
+                    androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.todo_focus_label),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold
+                )
                 Text(
                     text = task.title,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = if (task.isCompleted) FontWeight.Normal else FontWeight.SemiBold,
+                    color = if (focused) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
                     textDecoration = if (task.isCompleted) TextDecoration.LineThrough else null,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
@@ -125,6 +136,11 @@ internal fun TodoCard(
                 if (task.priority == 2 && !task.isCompleted) {
                     Text(androidx.compose.ui.res.stringResource(com.example.mentor.schedule.R.string.todo_priority_high), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
                 }
+                if (!task.linkedSubject.isNullOrBlank()) Text(
+                    task.linkedSubject,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.labelSmall
+                )
             }
             
             IconButton(onClick = { onDelete(task) }) {

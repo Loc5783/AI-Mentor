@@ -3,9 +3,22 @@
     <string name="math_calculator_backspace">Delete last character</string>
     <string name="math_calculator_collapse">Minimize</string>
     <string name="math_calculator_error">Check the expression or division by zero.</string>
-    <string name="math_calculator_hide">Hide bubble</string>
-    <string name="math_calculator_hide_hint">Reopen it using Pocket calculator in Mathematics.</string>
-    <string name="math_calculator_hint">Percent divides the preceding number by 100. Mathematics only.</string>
-    <string name="math_calculator_open">Open calculator; drag to move, hold to hide</string>
+    <string name="math_calculator_hint">DEG/RAD changes angle units. Ans is the last result; M is memory.</string>
+    <string name="math_calculator_open">Open calculator; drag to move</string>
     <string name="math_calculator_title">Pocket calculator</string>
+    <string name="math_mode_calculate">Calculate</string>
+    <string name="math_mode_matrix">Matrix</string>
+    <string name="math_mode_statistics">Statistics</string>
+    <string name="math_matrix_size">Matrix size</string>
+    <string name="math_matrix_hint">Enter A and B, then choose an operation.</string>
+    <string name="math_matrix_error">Check the numbers. An inverse needs a nonzero determinant.</string>
+    <string name="math_stats_single">One variable</string>
+    <string name="math_stats_pairs">Two variables (x, y)</string>
+    <string name="math_stats_data">Data</string>
+    <string name="math_stats_single_hint">Example: 2; 4; 6; 8 (use a dot for decimals)</string>
+    <string name="math_stats_pairs_hint">One x,y pair per line. Example:\n1,2\n2,4\n3,6</string>
+    <string name="math_stats_calculate">Calculate statistics</string>
+    <string name="math_stats_median">Median</string>
+    <string name="math_stats_min_max">Min / Max</string>
+    <string name="math_stats_error">Check the data: at most 100 values; regression needs at least 2 pairs with varying x values.</string>
 </resources>

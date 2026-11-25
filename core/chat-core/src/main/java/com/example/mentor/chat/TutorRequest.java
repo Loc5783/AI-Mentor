@@ -5,11 +5,17 @@ import java.util.*;
 
 /** Includes ordered successful history and the latest user turn, never another account's data. */
 public final class TutorRequest {
+  public enum Mode { GENERAL, SCHEDULE }
   public final LearningContext context;
   public final List<TutorTurn> turns;
   public final LessonHandoff handoff;
+  public final Mode mode;
 
   public TutorRequest(LearningContext context, List<TutorTurn> turns, LessonHandoff handoff) {
+    this(context, turns, handoff, Mode.GENERAL);
+  }
+
+  public TutorRequest(LearningContext context, List<TutorTurn> turns, LessonHandoff handoff, Mode mode) {
     if (context == null || turns == null || turns.isEmpty() || turns.size() > 41)
       throw new IllegalArgumentException("Invalid conversation");
     List<TutorTurn> copy = new ArrayList<>(turns);
@@ -30,5 +36,6 @@ public final class TutorRequest {
     this.context = context;
     this.turns = Collections.unmodifiableList(copy);
     this.handoff = handoff;
+    this.mode = Objects.requireNonNull(mode);
   }
 }

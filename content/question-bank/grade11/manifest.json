@@ -1,0 +1,17 @@
+{
+  "grade": 11,
+  "status": "DRAFT_AND_PUBLISHED",
+  "source": "SGK Kết nối tri thức với cuộc sống & Đề thi thử THPT Quốc gia",
+  "questionCount": 180,
+  "subjects": {
+    "math": 20,
+    "physics": 20,
+    "chemistry": 20,
+    "biology": 20,
+    "literature": 20,
+    "english": 20,
+    "history": 20,
+    "geography": 20,
+    "economics_law": 20
+  }
+}

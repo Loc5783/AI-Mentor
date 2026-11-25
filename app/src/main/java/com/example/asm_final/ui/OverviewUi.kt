@@ -15,8 +15,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
@@ -33,15 +34,43 @@ import com.example.asm_final.dashboard.LearningOverviewData
 import com.example.asm_final.dashboard.LearningOverviewRepository
 import com.example.asm_final.utils.LocaleHelper
 import com.example.mentor.learning.SubjectId
+import com.example.mentor.schedule.domain.TodoTask
 import com.example.mentor.ui.design.*
-import java.util.function.Consumer
+
+private data class StudyTimeSummary(val totalSeconds: Long, val week: List<Day>) {
+    data class Day(val date: String, val seconds: Long)
+
+    companion object {
+        fun from(value: org.json.JSONObject?): StudyTimeSummary? {
+            if (value == null) return null
+            return runCatching {
+                val total = value.getLong("totalSeconds")
+                require(total >= 0)
+                val rows = value.getJSONArray("week")
+                require(rows.length() == 7)
+                val days = (0 until rows.length()).map { index ->
+                    val row = rows.getJSONObject(index)
+                    val date = row.getString("day")
+                    val seconds = row.getLong("seconds")
+                    require(date.matches(Regex("[0-9]{4}-[0-9]{2}-[0-9]{2}")) && seconds >= 0)
+                    Day(date, seconds)
+                }
+                StudyTimeSummary(total, days)
+            }.getOrNull()
+        }
+    }
+}
 
 /** A view-only bridge: lifecycle, identity checks and repository work remain in the Fragment. */
 class OverviewUi(private val context: Context, private val profile: Boolean,
-    private val open: Consumer<SubjectId>, private val action: Runnable,
-    private val edit: Runnable, private val settings: Runnable, private val learn: Runnable, private val schedule: Runnable = Runnable{}) {
+    private val action: Runnable,
+    private val edit: Runnable, private val settings: Runnable, private val learn: Runnable,
+    private val schedule: Runnable = Runnable{}) {
     private var snapshot by mutableStateOf<LearningOverviewRepository.Snapshot?>(null)
-    private var selected by mutableStateOf<Set<SubjectId>>(emptySet())
+    private var studyTime by mutableStateOf<StudyTimeSummary?>(null)
+    private var studyTimeLoaded by mutableStateOf(false)
+    private var todayTasks by mutableStateOf<List<TodoTask>?>(null)
+    private var todayTasksLoaded by mutableStateOf(false)
     private var name by mutableStateOf("")
     private var avatar by mutableStateOf<String?>(null)
     private var grade by mutableIntStateOf(0)
@@ -49,21 +78,34 @@ class OverviewUi(private val context: Context, private val profile: Boolean,
     private var failed by mutableStateOf(false)
 
     fun view(): View = composeHost(context, scenicBackground = true) {
-        OverviewScreen(profile, name, avatar, grade, snapshot, selected, loading, failed,
-            { open.accept(it) }, { action.run() }, { edit.run() }, { settings.run() }, { learn.run() }, { schedule.run() })
+        OverviewScreen(profile, name, avatar, grade, snapshot, studyTime, studyTimeLoaded,
+            todayTasks, todayTasksLoaded, loading, failed,
+            { action.run() }, { edit.run() }, { settings.run() }, { learn.run() },
+            { schedule.run() })
     }
-    fun loading() { loading = true; failed = false }
+    fun loading() { loading = true; failed = false; studyTimeLoaded = false; todayTasksLoaded = false }
     fun failure() { loading = false; failed = true }
     fun identity(value: String, uri: String?) { name = value; avatar = uri }
-    fun render(value: LearningOverviewRepository.Snapshot, subjects: Set<SubjectId>, year: Int) {
-        snapshot = value; selected = subjects.toSet(); grade = year; loading = false; failed = false
+    fun render(value: LearningOverviewRepository.Snapshot, year: Int) {
+        snapshot = value; grade = year; loading = false; failed = false
+    }
+    fun activity(summary: org.json.JSONObject?) {
+        studyTime = StudyTimeSummary.from(summary)
+        studyTimeLoaded = true
+    }
+    fun tasks(items: List<TodoTask>?) {
+        todayTasks = items?.toList()
+        todayTasksLoaded = true
     }
 }
 
 @Composable
 private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grade: Int,
-    snapshot: LearningOverviewRepository.Snapshot?, selected: Set<SubjectId>, loading: Boolean, failed: Boolean,
-    open: (SubjectId) -> Unit, action: () -> Unit, edit: () -> Unit, settings: () -> Unit, learn: () -> Unit, schedule: () -> Unit = {}) {
+    snapshot: LearningOverviewRepository.Snapshot?, studyTime: StudyTimeSummary?, studyTimeLoaded: Boolean,
+    todayTasks: List<TodoTask>?, todayTasksLoaded: Boolean,
+    loading: Boolean, failed: Boolean,
+    action: () -> Unit, edit: () -> Unit, settings: () -> Unit, learn: () -> Unit,
+    schedule: () -> Unit = {}) {
     val context = LocalContext.current
     val data = snapshot?.data
     val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(context)
@@ -71,7 +113,7 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
 
     Column(Modifier.fillMaxSize()
         .verticalScroll(rememberScrollState())) {
-        PremiumDashboardHeader {
+        if (profile) PremiumDashboardHeader {
                 Box(
                     Modifier
                         .size(60.dp)
@@ -105,18 +147,19 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                         color = palette.secondary
                     )
                 }
-                if (profile) {
-                    IconButton(settings) {
-                        Icon(painter = painterResource(R.drawable.ic_settings), contentDescription = stringResource(R.string.settings_title), tint = palette.secondary)
-                    }
+                IconButton(settings) {
+                    Icon(painter = painterResource(R.drawable.ic_settings), contentDescription = stringResource(R.string.settings_title), tint = palette.secondary)
                 }
         }
 
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 18.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-
-
+            if (!profile) {
+                HomeGreeting(name, avatar, grade, palette, schedule)
+                HomeProgressHero(data, loading, palette, learn)
+                HomeTodayTasks(todayTasks, todayTasksLoaded, palette, schedule)
+            }
             if (loading) {
-                repeat(3) { MentorSkeleton(stringResource(R.string.course_loading)) }
+                repeat(2) { MentorSkeleton(stringResource(R.string.course_loading)) }
             } else {
                 if (failed || data == null || snapshot?.mode != LearningOverviewRepository.Mode.LIVE) {
                     PremiumDashboardCard(palette, highlighted = true) {
@@ -140,7 +183,7 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                     if (snapshot?.mode == LearningOverviewRepository.Mode.LIVE)
                         Text(stringResource(R.string.overview_current), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     
-                    PremiumDashboardCard(palette, highlighted = true) {
+                    if (profile) PremiumDashboardCard(palette, highlighted = true) {
                         Text(stringResource(R.string.home_progress_title), style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold, color = palette.title)
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
@@ -162,8 +205,16 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                         }
                         MentorProgress(if (data.totalLessons == 0) 0f else data.completedLessons.toFloat() / data.totalLessons)
                     }
-                    HomeWeekChart(data, palette)
-                    SubjectPieChart(data.subjects, palette)
+                    if (!profile) Text(stringResource(R.string.home_analysis_title),
+                        style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+                        color = palette.title)
+                    if (profile) {
+                        HomeWeekChart(data, palette)
+                        SubjectPieChart(data.subjects, palette)
+                    } else {
+                        HomeStudyTimeChart(studyTime, studyTimeLoaded, palette)
+                        SubjectPieChart(data.subjects, palette)
+                    }
                 } else if (!failed) PremiumDashboardCard(palette) {
                     Text(stringResource(R.string.design_week), style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold, color = palette.title)
@@ -171,32 +222,7 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                     Text(stringResource(R.string.design_week_empty), style = MaterialTheme.typography.bodyMedium,
                         color = palette.secondary)
                 }
-                if (!profile) {
-                    PremiumDashboardCard(palette) {
-                        Text(stringResource(R.string.design_goal), style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold, color = palette.title)
-                        Text(stringResource(R.string.home_suggestion_subtitle), style = MaterialTheme.typography.bodyMedium,
-                            color = palette.secondary)
-                        PremiumDashboardAction(stringResource(R.string.course_continue), palette, learn)
-                    }
-                    Text(stringResource(R.string.design_subjects), style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold, color = palette.title)
-                    selected.forEach { subject ->
-                        val progress = data?.subjects?.firstOrNull { it.id == subject.wireId }
-                        PremiumDashboardCard(palette, Modifier.testTag("dashboard-subject:${subject.wireId}")) {
-                                Text(subject.label(LocaleHelper.getLanguage(context)),
-                                    style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold,
-                                    color = palette.title)
-                                if (progress != null) {
-                                    Text(stringResource(R.string.overview_subject_progress, progress.completed, progress.total, progress.experience), style = MaterialTheme.typography.bodySmall, color = palette.secondary)
-                                    MentorProgress(if (progress.total == 0) 0f else progress.completed.toFloat() / progress.total)
-                                } else Text(stringResource(R.string.dashboard_progress_pending),
-                                    style = MaterialTheme.typography.bodySmall, color = palette.secondary)
-                                PremiumDashboardAction(stringResource(R.string.course_open), palette, { open(subject) })
-                        }
-                    }
-                    if (selected.isEmpty()) PremiumDashboardAction(stringResource(R.string.lesson_choose_prompt), palette, learn)
-                } else if (data != null) Surface(
+                if (profile && data != null) Surface(
                     shape = RoundedCornerShape(20.dp),
                     color = MaterialTheme.colorScheme.surface,
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
@@ -210,6 +236,108 @@ private fun OverviewScreen(profile: Boolean, name: String, avatar: String?, grad
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun HomeGreeting(name: String, avatar: String?, grade: Int,
+    palette: PremiumDashboardPalette, openSchedule: () -> Unit) {
+    Surface(Modifier.fillMaxWidth().testTag("home-greeting"),
+        shape = RoundedCornerShape(22.dp), color = palette.card,
+        border = BorderStroke(1.dp, palette.border), shadowElevation = 6.dp) {
+        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Box(Modifier.size(52.dp).clip(RoundedCornerShape(16.dp))
+                .background(Brush.linearGradient(listOf(Color(0xFF5360DF), Color(0xFF9363DA)))),
+                contentAlignment = Alignment.Center) {
+                if (avatar.isNullOrBlank()) Text(name.trim().firstOrNull()?.uppercase() ?: "A",
+                    style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
+                    color = Color.White)
+                else AsyncImage(avatar, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+            }
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(stringResource(R.string.home_greeting, name.ifBlank { stringResource(R.string.home_default_user) }),
+                    style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
+                    color = palette.title, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(if (grade in 10..12) stringResource(R.string.chat_grade, grade)
+                    else stringResource(R.string.design_initial),
+                    style = MaterialTheme.typography.bodySmall, color = palette.secondary)
+            }
+            IconButton(openSchedule) {
+                Icon(painterResource(R.drawable.ic_schedule),
+                    contentDescription = stringResource(R.string.home_schedule_title),
+                    tint = palette.accent)
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeProgressHero(data: LearningOverviewData?, loading: Boolean,
+    palette: PremiumDashboardPalette, learn: () -> Unit) {
+    val progress = if (data == null || data.totalLessons == 0) 0f
+        else (data.completedLessons.toFloat() / data.totalLessons).coerceIn(0f, 1f)
+    PremiumDashboardCard(palette, Modifier.testTag("home-progress-hero"), highlighted = true) {
+        Text(stringResource(R.string.home_next_step_title),
+            style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+            color = palette.title)
+        Text(stringResource(R.string.home_next_step_desc),
+            style = MaterialTheme.typography.bodyMedium, color = palette.secondary)
+        if (data != null && data.totalLessons > 0) {
+            Text(stringResource(R.string.overview_lessons, data.completedLessons, data.totalLessons),
+                style = MaterialTheme.typography.bodySmall, color = palette.title)
+            MentorProgress(progress)
+        } else if (loading) {
+            MentorSkeleton(stringResource(R.string.course_loading))
+        }
+        PremiumDashboardAction(stringResource(R.string.home_next_step_action), palette,
+            learn, Modifier.fillMaxWidth())
+    }
+}
+
+@Composable
+private fun HomeTodayTasks(tasks: List<TodoTask>?, loaded: Boolean,
+    palette: PremiumDashboardPalette, openSchedule: () -> Unit) {
+    PremiumDashboardCard(palette, Modifier.testTag("home-today-tasks")) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(stringResource(R.string.home_today_tasks), style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold, color = palette.title)
+            if (tasks != null) Text(stringResource(R.string.home_tasks_count,
+                tasks.count { it.isCompleted }, tasks.size),
+                style = MaterialTheme.typography.labelMedium, color = palette.accent,
+                fontWeight = FontWeight.Bold)
+        }
+        when {
+            !loaded -> MentorSkeleton(stringResource(R.string.course_loading))
+            tasks == null -> Text(stringResource(R.string.home_tasks_unavailable),
+                style = MaterialTheme.typography.bodySmall, color = palette.secondary)
+            tasks.isEmpty() -> Text(stringResource(R.string.home_tasks_empty),
+                style = MaterialTheme.typography.bodySmall, color = palette.secondary)
+            else -> tasks.sortedWith(compareBy<TodoTask> { it.isCompleted }
+                .thenByDescending { it.priority }).take(3).forEach { task ->
+                Surface(Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = openSchedule),
+                    shape = RoundedCornerShape(14.dp), color = palette.iconSurface,
+                    border = BorderStroke(1.dp, palette.border)) {
+                    Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text(if (task.isCompleted) "✓" else "○",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = if (task.isCompleted) Color(0xFF0B9C86) else palette.accent)
+                        Column(Modifier.weight(1f)) {
+                            Text(task.title, style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold, color = palette.title,
+                                maxLines = 2, overflow = TextOverflow.Ellipsis)
+                            task.linkedSubject?.takeIf { it.isNotBlank() }?.let { subject ->
+                                Text(subject, style = MaterialTheme.typography.labelSmall,
+                                    color = palette.secondary)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        TextButton(openSchedule) { Text(stringResource(R.string.home_tasks_open)) }
     }
 }
 
@@ -242,7 +370,7 @@ private fun HomeWeekChart(data: LearningOverviewData, palette: PremiumDashboardP
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(stringResource(R.string.design_week), style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold, color = palette.title)
-            Text("Chiều cao thể hiện EXP · 🔥 Ngày thắp streak", style = MaterialTheme.typography.labelSmall,
+            Text(stringResource(R.string.home_week_chart_legend), style = MaterialTheme.typography.labelSmall,
                 color = palette.secondary)
         }
         Spacer(Modifier.height(8.dp))
@@ -260,7 +388,8 @@ private fun HomeWeekChart(data: LearningOverviewData, palette: PremiumDashboardP
             Row(Modifier.fillMaxWidth().heightIn(min = 126.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
                 data.week.forEach { day ->
-                    val label = stringResource(R.string.design_day_xp, day.day, day.xp)
+                    val label = stringResource(R.string.design_day_xp, day.day, day.xp) +
+                        if (day.streakLit) stringResource(R.string.design_streak_day) else ""
                     Column(Modifier.weight(1f).semantics(mergeDescendants = true) { contentDescription = label },
                         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
                         if (day.streakLit) {
@@ -283,10 +412,58 @@ private fun HomeWeekChart(data: LearningOverviewData, palette: PremiumDashboardP
                         Spacer(Modifier.height(2.dp))
                         Box(Modifier.fillMaxWidth().height((day.xp.toFloat() / max * 72).coerceAtLeast(4f).dp)
                             .clip(RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp))
-                            .background(if (day.streakLit) Color(0xFFFFAD42) else palette.accent))
+                            .background(palette.accent))
                         Spacer(Modifier.height(6.dp))
                         Text(day.day.takeLast(2), style = MaterialTheme.typography.labelSmall,
                             color = palette.title, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Clip)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeStudyTimeChart(summary: StudyTimeSummary?, loaded: Boolean, palette: PremiumDashboardPalette) {
+    PremiumDashboardCard(palette, Modifier.testTag("home-study-time")) {
+        Text(stringResource(R.string.home_study_time_title), style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold, color = palette.title)
+        if (!loaded) {
+            MentorSkeleton(stringResource(R.string.course_loading))
+            return@PremiumDashboardCard
+        }
+        if (summary == null) {
+            Text(stringResource(R.string.home_study_time_unavailable),
+                style = MaterialTheme.typography.bodyMedium, color = palette.secondary)
+            return@PremiumDashboardCard
+        }
+        val minutes = summary.totalSeconds / 60
+        val total = when {
+            minutes >= 60 -> stringResource(R.string.home_study_time_hours, minutes / 60, minutes % 60)
+            summary.totalSeconds < 60 -> stringResource(R.string.home_study_time_seconds, summary.totalSeconds)
+            else -> stringResource(R.string.home_study_time_minutes, minutes)
+        }
+        Text(total, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+            color = palette.title)
+        Text(stringResource(R.string.home_study_time_week), style = MaterialTheme.typography.bodySmall,
+            color = palette.secondary)
+        if (summary.week.all { it.seconds == 0L }) {
+            Text(stringResource(R.string.home_study_time_empty), style = MaterialTheme.typography.bodyMedium,
+                color = palette.secondary)
+        } else {
+            val maximum = summary.week.maxOf { it.seconds }.coerceAtLeast(1L)
+            Row(Modifier.fillMaxWidth().heightIn(min = 112.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
+                summary.week.forEach { day ->
+                    val label = stringResource(R.string.home_study_time_day, day.date, day.seconds / 60)
+                    Column(Modifier.weight(1f).semantics(mergeDescendants = true) { contentDescription = label },
+                        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
+                        Box(Modifier.fillMaxWidth().height((day.seconds.toFloat() / maximum * 72)
+                            .coerceAtLeast(4f).dp).clip(RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp))
+                            .background(palette.accent))
+                        Spacer(Modifier.height(6.dp))
+                        Text(day.date.takeLast(2), style = MaterialTheme.typography.labelSmall,
+                            color = palette.title, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -310,12 +487,15 @@ internal fun WeekChart(data: LearningOverviewData) {
                 val max = data.week.maxOf { it.xp }.coerceAtLeast(1)
                 Row(Modifier.fillMaxWidth().heightIn(min = MentorTokens.ChartHeight), horizontalArrangement = Arrangement.spacedBy(MentorTokens.SpaceSmall), verticalAlignment = Alignment.Bottom) {
                     data.week.forEach { day ->
-                        val label = stringResource(R.string.design_day_xp, day.day, day.xp)
+                        val label = stringResource(R.string.design_day_xp, day.day, day.xp) +
+                            if (day.streakLit) stringResource(R.string.design_streak_day) else ""
                         Column(Modifier.weight(1f).semantics(mergeDescendants = true) { contentDescription = label },
                             horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
+                            if (day.streakLit) Icon(painter = painterResource(R.drawable.ic_flame),
+                                contentDescription = null, tint = Color(0xFFEA580C), modifier = Modifier.size(14.dp))
                             Text(day.xp.toString(), style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Box(Modifier.fillMaxWidth().height((day.xp.toFloat() / max * 100).coerceAtLeast(3f).dp)
-                                .clip(MaterialTheme.shapes.small).background(if (day.streakLit) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary))
+                                .clip(MaterialTheme.shapes.small).background(MaterialTheme.colorScheme.primary))
                             Text(day.day.takeLast(2), style = MaterialTheme.typography.labelSmall)
                         }
                     }
@@ -333,7 +513,7 @@ private fun SubjectPieChart(subjects: List<LearningOverviewData.Subject>, palett
 
     PremiumDashboardCard(palette) {
         Text(
-            text = "Phân tích EXP theo môn học",
+            text = stringResource(R.string.home_subject_chart_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
             color = palette.title
@@ -341,7 +521,7 @@ private fun SubjectPieChart(subjects: List<LearningOverviewData.Subject>, palett
 
         if (totalXp <= 0 || activeSubjects.isEmpty()) {
             Text(
-                text = "Chưa có dữ liệu kinh nghiệm (EXP) để phân tích. Hãy hoàn thành các bài học để xem biểu đồ!",
+                text = stringResource(R.string.home_subject_chart_empty),
                 style = MaterialTheme.typography.bodyMedium,
                 color = palette.secondary
             )
@@ -381,7 +561,7 @@ private fun SubjectPieChart(subjects: List<LearningOverviewData.Subject>, palett
                             color = palette.title
                         )
                         Text(
-                            text = "Tổng EXP",
+                            text = stringResource(R.string.home_subject_chart_total),
                             style = MaterialTheme.typography.labelSmall,
                             color = palette.secondary
                         )

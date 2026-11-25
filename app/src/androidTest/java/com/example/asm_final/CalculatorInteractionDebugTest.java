@@ -3,6 +3,7 @@ package com.example.asm_final;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.*;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static org.junit.Assert.*;
@@ -18,6 +19,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.lifecycle.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
+import org.hamcrest.Matchers;
 
 @RunWith(AndroidJUnit4.class)
 public class CalculatorInteractionDebugTest {
@@ -38,7 +40,7 @@ public class CalculatorInteractionDebugTest {
     prefs.edit().clear().apply();
     activity =
         ins.startActivitySync(
-            new Intent(ins.getTargetContext(), com.example.mathmodule.MathToolsActivity.class)
+            new Intent(ins.getTargetContext(), CalculatorHostActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     ins.waitForIdleSync();
   }
@@ -59,8 +61,11 @@ public class CalculatorInteractionDebugTest {
   @Test
   public void repeatedSquareAndRootOperateOnCurrentValue() {
     main(() -> com.example.mathmodule.calculator.MathCalculator.show(activity));
-    for (String key : new String[] {"2", "x²", "x²", "x²", "="})
+    for (String key : new String[] {"2", "x²", "x²", "x²", "="}) {
       onView(withText(key)).perform(scrollTo(), click());
+      onView(withText(com.example.mathmodule.R.string.math_calculator_title))
+          .check(matches(isDisplayed()));
+    }
     onView(withText("256")).check(matches(isDisplayed()));
     for (String key : new String[] {"C", "9", "√", "="})
       onView(withText(key)).perform(scrollTo(), click());
@@ -68,6 +73,27 @@ public class CalculatorInteractionDebugTest {
     onView(withText("√")).perform(scrollTo(), click());
     onView(withText("=")).perform(scrollTo(), click());
     onView(withText("1.73205080757")).check(matches(isDisplayed()));
+  }
+
+  @Test
+  public void matrixAndStatisticsStayInsideCalculatorDialog() {
+    main(() -> com.example.mathmodule.calculator.MathCalculator.show(activity));
+    SystemClock.sleep(250);
+    ins.waitForIdleSync();
+    onView(withText(com.example.mathmodule.R.string.math_mode_matrix))
+        .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog()).perform(click());
+    onView(withContentDescription("A11")).perform(scrollTo(), replaceText("1"));
+    onView(withContentDescription("A22")).perform(scrollTo(), replaceText("1"));
+    onView(withText("det A")).perform(scrollTo(), click());
+    onView(withText("det A =\n1")).perform(scrollTo()).check(matches(isDisplayed()));
+    onView(withText(com.example.mathmodule.R.string.math_mode_statistics)).perform(click());
+    onView(withHint(com.example.mathmodule.R.string.math_stats_single_hint))
+        .perform(scrollTo(), replaceText("2;4;6;8"));
+    onView(withText(com.example.mathmodule.R.string.math_stats_calculate)).perform(scrollTo(), click());
+    onView(withText(Matchers.containsString("x̄ = 5"))).check(matches(isDisplayed()));
+    onView(withText(com.example.mathmodule.R.string.math_mode_calculate)).perform(click());
+    onView(withTagValue(Matchers.is("mentor_calculator_display")))
+        .check(matches(withText("0")));
   }
 
   private void touch(View view, int action, float x, float y, long down) {
@@ -98,7 +124,7 @@ public class CalculatorInteractionDebugTest {
     touch(bubble[0], MotionEvent.ACTION_UP, -4000, 4000, down);
     SystemClock.sleep(180);
     ins.waitForIdleSync();
-    onView(withText(com.example.mathmodule.R.string.math_calculator_hide_hint))
+    onView(withText(com.example.mathmodule.R.string.math_calculator_title))
         .check(doesNotExist());
     main(
         () -> {

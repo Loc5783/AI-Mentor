@@ -1,6 +1,8 @@
 <resources>
     <string name="reminder_permission_needed">Allow notifications in device settings to sync your schedule.</string>
-    <string name="reminder_enabled_time">Smart notifications enabled (8:00 PM and 6:45 AM daily).</string>
+    <string name="reminder_enabled_time">Study reminders enabled, with a streak warning at 10 PM if needed.</string>
+    <string name="reminder_streak_title">2 hours left to keep your streak 🔥</string>
+    <string name="reminder_streak_body">Complete a learning activity before midnight to continue your streak.</string>
     <string name="reminder_disabled">Schedule notifications disabled.</string>
 
     <string name="notification_prompt_title">Sync Notifications with Schedule</string>

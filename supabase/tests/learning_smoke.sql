@@ -8,7 +8,7 @@ grant select on expected_units to authenticated;
 set local role authenticated;
 select set_config('request.jwt.claim.sub',current_setting('test.uid1'),true);
 do $$
-declare e jsonb; a jsonb; done jsonb; answers jsonb; first_lesson text; oldid uuid; eid uuid; r jsonb;
+declare e jsonb; a jsonb; done jsonb; answers jsonb; first_lesson text; oldid uuid; eid uuid; r jsonb; award_count int;
 begin
  e:=public.mentor_learning_api('POST','/enrollments','{"subjectId":"physics","grade":10}','enroll-test'); eid:=(e->>'id')::uuid;
  a:=public.mentor_learning_api('POST','/placements',jsonb_build_object('enrollmentId',eid),'placement-test');
@@ -37,12 +37,18 @@ begin
  raise exception 'ISOLATION_FAILED';
  exception when sqlstate 'PT404' then null;
  end;
+ select count(*) into award_count from public.mentor_awards;
+ if award_count<>0 then raise exception 'OTHER_USER_AWARDS_EXPOSED'; end if;
+ perform set_config('request.jwt.claim.sub',current_setting('test.uid1'),true);
+ select count(*) into award_count from public.mentor_awards where xp=200;
+ if award_count<>1 then raise exception 'OWN_AWARD_NOT_VISIBLE'; end if;
  begin
- perform xp from public.mentor_awards;
- raise exception 'POINT_TABLE_EXPOSED';
+ insert into public.mentor_awards(user_id,subject_id,grade,unit_id,xp)
+ values(current_setting('test.uid1')::uuid,'physics',10,'forged-award',200);
+ raise exception 'CLIENT_CAN_WRITE_AWARD';
  exception when insufficient_privilege then null;
  end;
 end $$;
 reset role;
-select 'PASS: placement, answer privacy, first reward, replay, retake, identity isolation, protected ledger' as result;
+select 'PASS: placement, answer privacy, first reward, replay, retake, identity isolation, owner-only award read and no client write' as result;
 rollback;

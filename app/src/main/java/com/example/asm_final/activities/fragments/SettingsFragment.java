@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import com.example.asm_final.R;
+import com.example.asm_final.utils.HapticHelper;
 import com.example.asm_final.utils.LocaleHelper;
 import com.example.asm_final.utils.ReminderHelper;
 import com.example.asm_final.utils.ThemeHelper;
@@ -52,6 +53,7 @@ public class SettingsFragment extends Fragment {
     setupEditProfile(view);
     setupReminders(view);
     setupThemeSwitch(view);
+    setupHaptic(view);
     setupLanguagePicker(view);
     setupShare(view);
     setupAbout(view);
@@ -195,6 +197,23 @@ public class SettingsFragment extends Fragment {
             ThemeHelper.setDarkMode(requireContext(), isChecked);
             requireActivity().recreate();
         });
+  }
+
+  private boolean updatingHapticSwitch = false;
+
+  private void setupHaptic(View view) {
+    SwitchMaterial switchHaptic = view.findViewById(R.id.switch_haptic);
+    if (switchHaptic != null) {
+      updatingHapticSwitch = true;
+      switchHaptic.setChecked(HapticHelper.isHapticEnabled(requireContext()));
+      updatingHapticSwitch = false;
+
+      switchHaptic.setOnCheckedChangeListener((button, enabled) -> {
+        if (updatingHapticSwitch) return;
+        HapticHelper.setHapticEnabled(requireContext(), enabled);
+        if (enabled) HapticHelper.performHaptic(requireContext());
+      });
+    }
   }
 
   private void setupLanguagePicker(View view) {

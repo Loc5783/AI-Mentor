@@ -17,6 +17,8 @@
   <string name="chat_thinking">AI Mentor is replying…</string>
   <string name="chat_thinking_other">AI is replying in another chat. You can still read and draft a question.</string>
   <string name="chat_importing">Adding files…</string>
+  <string name="chat_cancel_upload">Cancel upload</string>
+  <string name="chat_upload_cancelled">File upload cancelled.</string>
   <string name="chat_service_unavailable">AI is not available yet. Your question and attachments have been kept.</string>
   <string name="chat_offline">Unable to connect. Try again when you are online.</string>
   <string name="chat_rate_limit">AI is busy. Please wait a little and try again.</string>

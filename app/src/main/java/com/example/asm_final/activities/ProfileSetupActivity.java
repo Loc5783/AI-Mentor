@@ -90,6 +90,7 @@ public final class ProfileSetupActivity extends AppCompatActivity {
         version -> {
           if (model.completed) {
             model.completed = false;
+            HapticHelper.performHaptic(this);
             AuthRoutes.open(this, username, model.draft, true);
             return;
           }

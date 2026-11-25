@@ -598,6 +598,50 @@ on conflict (id) do update set
   status = excluded.status;
 
 -- Seed exam papers from staging
+create or replace function staging.normalize_legacy_question_ids(p_value jsonb)
+returns jsonb
+language plpgsql
+immutable
+set search_path = ''
+as $$
+declare
+  v_text text;
+  v_parsed jsonb;
+  v_ids text[];
+begin
+  if p_value is null or p_value = 'null'::jsonb then
+    return '[]'::jsonb;
+  end if;
+  if jsonb_typeof(p_value) = 'array' then
+    return p_value;
+  end if;
+  if jsonb_typeof(p_value) <> 'string' then
+    return '[]'::jsonb;
+  end if;
+
+  v_text := p_value #>> '{}';
+  if nullif(btrim(v_text), '') is null or lower(btrim(v_text)) = 'null' then
+    return '[]'::jsonb;
+  end if;
+
+  begin
+    v_parsed := v_text::jsonb;
+    if jsonb_typeof(v_parsed) = 'array' then
+      return v_parsed;
+    end if;
+  exception when others then
+    null;
+  end;
+
+  select array_agg(btrim(id.value) order by id.ordinality)
+  into v_ids
+  from unnest(string_to_array(v_text, ',')) with ordinality as id(value, ordinality)
+  where nullif(btrim(id.value), '') is not null;
+
+  return coalesce(to_jsonb(v_ids), '[]'::jsonb);
+end;
+$$;
+
 insert into public.mentor_exams(
   id, title, subject_id, grade, exam_type, semester, duration_minutes,
   question_ids, total_points, question_count, status, version, created_at, updated_at
@@ -618,7 +662,7 @@ select
   case
     when (payload->>'duration_minutes')::int between 5 and 300 then (payload->>'duration_minutes')::int
     else 45 end,
-  coalesce(payload->>'question_ids', '[]'),
+  staging.normalize_legacy_question_ids(payload->'question_ids'),
   coalesce((payload->>'total_points')::int, 0),
   coalesce((payload->>'question_count')::int, 0),
   case
@@ -1306,6 +1350,7 @@ end;
 $$;
 
 -- Strict access control: staging schema and reconciliation function are completely private to DB admin
+revoke all on function staging.normalize_legacy_question_ids(jsonb) from public, anon, authenticated;
 revoke all on function staging.reconcile_staging_cutover(int) from public, anon, authenticated;
 
 commit;

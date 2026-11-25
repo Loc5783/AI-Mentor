@@ -27,6 +27,8 @@ public final class GeneralChatFragment extends Fragment {
   private com.example.asm_final.dashboard.OverviewUpdates.Subscription chatUpdates;
   private View root;
   private boolean initialChatApplied;
+  private boolean autoSendLessonDraft;
+  private boolean lessonDraftSendHandled;
   private String cameraName, cameraThread;
   private ArrayList<Uri> pendingUris = new ArrayList<>();
   private boolean pendingCamera;
@@ -64,6 +66,7 @@ public final class GeneralChatFragment extends Fragment {
     super.onCreate(state);
     if (state != null) {
       initialChatApplied = state.getBoolean("initial_chat_applied");
+      lessonDraftSendHandled = state.getBoolean("lesson_draft_send_handled");
       cameraName = state.getString("camera_name");
       cameraThread = state.getString("camera_thread");
       pendingCamera = state.getBoolean("pending_camera");
@@ -81,8 +84,10 @@ public final class GeneralChatFragment extends Fragment {
             model,
             new com.example.asm_final.ui.ChatUi.Actions() {
               public void history() {
-                if (getChildFragmentManager().findFragmentByTag("chat_history") == null)
+                if (getChildFragmentManager().findFragmentByTag("chat_history") == null) {
+                  model.refresh();
                   new ChatHistoryDialog().show(getChildFragmentManager(), "chat_history");
+                }
               }
 
               public void options() {
@@ -137,9 +142,23 @@ public final class GeneralChatFragment extends Fragment {
                   return;
                 }
               }
+              sendLessonDraftIfReady();
               drainImports();
             });
+    autoSendLessonDraft = requireActivity().getIntent().getBooleanExtra(
+        com.example.asm_final.learning.LessonChatHandoff.EXTRA_AUTO_SEND_DRAFT, false);
     model.bind(ActiveUser.get(requireContext()));
+  }
+
+  private void sendLessonDraftIfReady() {
+    if (!autoSendLessonDraft || lessonDraftSendHandled || model == null || model.loading
+        || model.requesting || model.snapshot == null || model.draft == null
+        || model.draft.trim().isEmpty()) return;
+    String target = com.example.asm_final.learning.LessonChatHandoff.extractThreadId(
+        requireActivity().getIntent());
+    if (target == null || !target.equals(model.threadId())) return;
+    lessonDraftSendHandled = true;
+    model.send();
   }
 
   private void showFormula(String text) {
@@ -278,20 +297,35 @@ public final class GeneralChatFragment extends Fragment {
   }
 
   private void openFile(ChatRecords.FileItem file) {
-    try {
-      File source = new LocalChatFiles(requireContext()).resolve(model.owner(), file);
-      if (!source.isFile()) throw new IOException("Missing local attachment");
-      Uri uri =
-          FileProvider.getUriForFile(
-              requireContext(), requireContext().getPackageName() + ".fileprovider", source);
-      startActivity(
-          new Intent(Intent.ACTION_VIEW)
-              .setDataAndType(uri, file.mime)
-              .putExtra(Intent.EXTRA_TITLE, file.name)
-              .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION));
-    } catch (IOException | RuntimeException invalid) {
-      toast(R.string.chat_file_open_failed);
-    }
+    Context context = requireContext().getApplicationContext();
+    android.app.Activity activity = requireActivity();
+    int owner = model.owner();
+    ((com.example.asm_final.AiMentorApplication) activity.getApplication())
+        .services().io().execute(() -> {
+          try {
+            File source = new LocalChatFiles(context).resolve(owner, file);
+            if (!source.isFile() || source.length() != file.size) {
+              try (com.example.asm_final.accounts.RemoteAccountLinks links =
+                  new com.example.asm_final.accounts.RemoteAccountLinks(context)) {
+                if (links.bound(owner, com.example.asm_final.BuildConfig.SUPABASE_URL))
+                  new com.example.asm_final.supabase.SupabaseStorage(context).ensureCached(owner, file);
+              }
+            }
+            if (!source.isFile() || source.length() != file.size) throw new IOException("Missing local attachment");
+            activity.runOnUiThread(() -> {
+              if (!isAdded()) return;
+              try {
+                Uri uri = FileProvider.getUriForFile(requireContext(),
+                    requireContext().getPackageName() + ".fileprovider", source);
+                startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, file.mime)
+                    .putExtra(Intent.EXTRA_TITLE, file.name)
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION));
+              } catch (RuntimeException invalid) { toast(R.string.chat_file_open_failed); }
+            });
+          } catch (Exception invalid) {
+            activity.runOnUiThread(() -> toast(R.string.chat_file_open_failed));
+          }
+        });
   }
 
   private void toast(int message) {
@@ -302,6 +336,7 @@ public final class GeneralChatFragment extends Fragment {
   public void onSaveInstanceState(Bundle out) {
     super.onSaveInstanceState(out);
     out.putBoolean("initial_chat_applied", initialChatApplied);
+    out.putBoolean("lesson_draft_send_handled", lessonDraftSendHandled);
     out.putString("camera_name", cameraName);
     out.putString("camera_thread", cameraThread);
     out.putBoolean("pending_camera", pendingCamera);

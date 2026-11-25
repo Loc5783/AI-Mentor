@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 
 enum class AiPracticeScreenState {
     SETUP,
+    HISTORY,
     GENERATING,
     PRACTICING,
     FEEDBACK,
@@ -40,6 +41,8 @@ class AiPracticeViewModel(
         isSubmitting = false
         isReporting = false
         isExplainingMore = false
+        confidenceBusy = false
+        confidenceLoading = false
     }
 
     private var activeJob: Job? = null
@@ -49,12 +52,28 @@ class AiPracticeViewModel(
     private var answerPayload: List<String>? = null
     private var answerKey: String? = null
 
+    private fun friendlyError(error: Exception): String = when ((error as? BackendClient.Failure)?.code) {
+        "NOT_CONFIGURED" -> "Gia sư AI đang được cấu hình. Vui lòng thử lại sau."
+        "RATE_LIMITED" -> "AI đang bận hoặc đã đạt giới hạn lượt dùng. Vui lòng thử lại sau."
+        "AI_VALIDATION_FAILED", "EMPTY_RESPONSE" -> "AI chưa tạo được bộ câu hỏi hợp lệ. Vui lòng thử lại."
+        "SESSION_CHANGED" -> "Bài luyện đã thay đổi trên thiết bị khác. Vui lòng mở lại bài."
+        "CLOUD_REQUEST_FAILED" -> if ((error as BackendClient.Failure).status == 404)
+            "Tính năng luyện tập chưa được cập nhật trên máy chủ. Vui lòng thử lại sau."
+            else "Không kết nối được Gia sư AI. Vui lòng kiểm tra mạng và thử lại."
+        "AUTHENTICATION_REQUIRED", "UNAUTHORIZED" -> "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+        else -> "Không kết nối được Gia sư AI. Vui lòng kiểm tra mạng và thử lại."
+    }
+
     var screenState by mutableStateOf(AiPracticeScreenState.SETUP)
         private set
 
     var config by mutableStateOf<AiPracticeConfig?>(null)
         private set
     var resumableSession by mutableStateOf<AiPracticeSession?>(null)
+        private set
+    var history by mutableStateOf<List<AiPracticeHistoryItem>>(emptyList())
+        private set
+    var isHistoryLoading by mutableStateOf(false)
         private set
 
     var session by mutableStateOf<AiPracticeSession?>(null)
@@ -74,13 +93,31 @@ class AiPracticeViewModel(
     var lastResult by mutableStateOf<AiAnswerResult?>(null)
         private set
 
+    var answerConfidence by mutableStateOf<AnswerConfidence?>(null)
+        private set
+    var confidenceBusy by mutableStateOf(false)
+        private set
+    var confidenceLoading by mutableStateOf(false)
+        private set
+    var confidenceError by mutableStateOf<String?>(null)
+        private set
+    var confidenceAvailable by mutableStateOf(repository.supportsAnswerConfidence)
+        private set
+    val confidenceSupported: Boolean get() = repository.supportsAnswerConfidence
+
     var explainMoreText by mutableStateOf<String?>(null)
+        private set
+
+    var explainMoreError by mutableStateOf<String?>(null)
         private set
 
     var isExplainingMore by mutableStateOf(false)
         private set
 
     var reportStatus by mutableStateOf<String?>(null)
+        private set
+
+    var reportError by mutableStateOf<String?>(null)
         private set
 
     var isReporting by mutableStateOf(false)
@@ -113,7 +150,7 @@ class AiPracticeViewModel(
                 throw ce
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
-                errorMessage = "Không thể tải cấu hình AI: ${e.message}"
+                errorMessage = friendlyError(e)
             }
         }
     }
@@ -175,7 +212,7 @@ class AiPracticeViewModel(
                         // user retry may start fresh; uncertain transport failures keep the key.
                         generationKey = null
                     }
-                    errorMessage = e.message ?: "Tạo bài luyện tập thất bại. Vui lòng thử lại."
+                    errorMessage = friendlyError(e)
                     screenState = AiPracticeScreenState.SETUP
                 }
             }
@@ -196,16 +233,69 @@ class AiPracticeViewModel(
         }
     }
 
+    fun openHistory() {
+        if (closed) return
+        screenState = AiPracticeScreenState.HISTORY
+        refreshHistory()
+    }
+
+    fun refreshHistory() {
+        if (closed || isHistoryLoading) return
+        val generation = requestGenerationToken
+        isHistoryLoading = true
+        history = emptyList()
+        errorMessage = null
+        vmScope.launch {
+            try {
+                val loaded = repository.listHistory()
+                if (isCurrent(generation) && screenState == AiPracticeScreenState.HISTORY) {
+                    history = loaded
+                    isHistoryLoading = false
+                }
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (e: Exception) {
+                if (isCurrent(generation)) {
+                    isHistoryLoading = false
+                    errorMessage = "Chưa tải được lịch sử làm bài. Kiểm tra mạng rồi thử lại."
+                }
+            }
+        }
+    }
+
+    fun closeHistory() {
+        invalidateWork()
+        isHistoryLoading = false
+        errorMessage = null
+        screenState = AiPracticeScreenState.SETUP
+        if (config == null) loadConfig()
+    }
+
     fun resumePractice() {
         val saved = resumableSession ?: return
+        restoreSession(saved.id)
+    }
+
+    fun openHistorySession(item: AiPracticeHistoryItem) {
+        if (item.state != "IN_PROGRESS" && item.state != "COMPLETED") return
+        if (history.none { it.id == item.id }) return
+        restoreSession(item.id)
+    }
+
+    private fun restoreSession(sessionId: String) {
         if (closed || isSubmitting) return
         invalidateWork()
         val generation = requestGenerationToken
         isSubmitting = true
         vmScope.launch {
             try {
-                val restored = repository.getSession(saved.id)
+                val restored = repository.getSession(sessionId)
                 if (!isCurrent(generation)) return@launch
+                if (restored.state == "ABANDONED") {
+                    isSubmitting = false
+                    errorMessage = "Bài làm này không còn tiếp tục được."
+                    return@launch
+                }
                 session = restored
                 val unanswered = restored.questions.indexOfFirst { !restored.answers.containsKey(it.id) }
                 currentQuestionIndex = if (unanswered >= 0) unanswered else (restored.questions.size - 1).coerceAtLeast(0)
@@ -223,6 +313,7 @@ class AiPracticeViewModel(
                             q.correctOption ?: "", q.explanation ?: "", q.hint,
                             answer.firstTryCorrect, answer.attemptsCount, answer.skipped)
                         screenState = AiPracticeScreenState.FEEDBACK
+                        loadAnswerConfidence()
                     } else screenState = AiPracticeScreenState.PRACTICING
                 }
             } catch (ce: CancellationException) {
@@ -230,7 +321,7 @@ class AiPracticeViewModel(
             } catch (failure: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isSubmitting = false
-                errorMessage = "Chưa thể mở bài đang làm. Vui lòng thử lại khi có mạng."
+                errorMessage = "Chưa thể mở bài đã lưu. Vui lòng thử lại khi có mạng."
             }
         }
     }
@@ -263,12 +354,13 @@ class AiPracticeViewModel(
                 lastResult = result
                 isSubmitting = false
                 screenState = AiPracticeScreenState.FEEDBACK
+                if (!result.isSkipped) loadAnswerConfidence()
             } catch (ce: CancellationException) {
                 throw ce
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isSubmitting = false
-                errorMessage = "Gửi đáp án thất bại: ${e.message}"
+                errorMessage = friendlyError(e)
             }
         }
     }
@@ -294,7 +386,7 @@ class AiPracticeViewModel(
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isSubmitting = false
-                errorMessage = "Bỏ qua câu hỏi thất bại: ${e.message}"
+                errorMessage = friendlyError(e)
             }
         }
     }
@@ -305,6 +397,8 @@ class AiPracticeViewModel(
             answerKey = null
             selectedOption = null
             lastResult = null
+            answerConfidence = null
+            confidenceError = null
             explainMoreText = null
             errorMessage = null
             screenState = AiPracticeScreenState.PRACTICING
@@ -320,6 +414,8 @@ class AiPracticeViewModel(
             currentQuestionIndex++
             selectedOption = null
             lastResult = null
+            answerConfidence = null
+            confidenceError = null
             explainMoreText = null
             errorMessage = null
             screenState = AiPracticeScreenState.PRACTICING
@@ -347,7 +443,63 @@ class AiPracticeViewModel(
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isSubmitting = false
-                errorMessage = "Không thể hoàn thành phiên: ${e.message}"
+                errorMessage = friendlyError(e)
+            }
+        }
+    }
+
+    private fun loadAnswerConfidence() {
+        if (!confidenceAvailable) return
+        val sess = session ?: return
+        val q = currentQuestion ?: return
+        if (lastResult?.isSkipped == true) return
+        val generation = requestGenerationToken
+        answerConfidence = null
+        confidenceError = null
+        confidenceLoading = true
+        vmScope.launch {
+            try {
+                val saved = repository.getAnswerConfidence(sess.id, q.id)
+                if (isCurrent(generation) && currentQuestion?.id == q.id) {
+                    answerConfidence = saved
+                    confidenceLoading = false
+                }
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (e: Exception) {
+                if (!isCurrent(generation) || currentQuestion?.id != q.id) return@launch
+                confidenceLoading = false
+                val cloudError = e as? BackendClient.Failure
+                if (cloudError?.code?.contains("mentor_ai_answer_confidence_api") == true &&
+                    cloudError.status == 404) confidenceAvailable = false
+                else confidenceError = "Chưa tải được mức độ tự tin. Bạn có thể thử chọn lại."
+            }
+        }
+    }
+
+    fun chooseAnswerConfidence(value: AnswerConfidence) {
+        if (!confidenceAvailable || confidenceLoading || confidenceBusy || closed) return
+        val sess = session ?: return
+        val q = currentQuestion ?: return
+        val result = lastResult ?: return
+        if (result.isSkipped || result.attemptsCount < 1) return
+        val generation = requestGenerationToken
+        confidenceBusy = true
+        confidenceError = null
+        vmScope.launch {
+            try {
+                val saved = repository.setAnswerConfidence(sess.id, q.id, result.attemptsCount, value)
+                if (!isCurrent(generation) || currentQuestion?.id != q.id) return@launch
+                answerConfidence = saved
+                confidenceBusy = false
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (e: Exception) {
+                if (!isCurrent(generation) || currentQuestion?.id != q.id) return@launch
+                confidenceBusy = false
+                confidenceError = if ((e as? BackendClient.Failure)?.status == 409)
+                    "Câu trả lời đã thay đổi. Hãy mở lại bài rồi chọn mức độ tự tin."
+                else "Chưa lưu được mức độ tự tin. Kiểm tra mạng và thử lại."
             }
         }
     }
@@ -359,6 +511,7 @@ class AiPracticeViewModel(
 
         isReporting = true
         reportStatus = null
+        reportError = null
 
         val generation = requestGenerationToken
         vmScope.launch {
@@ -372,7 +525,7 @@ class AiPracticeViewModel(
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isReporting = false
-                reportStatus = "Gửi báo cáo thất bại: ${e.message}"
+                reportError = friendlyError(e)
             }
         }
     }
@@ -385,6 +538,7 @@ class AiPracticeViewModel(
 
         isExplainingMore = true
         explainMoreText = null
+        explainMoreError = null
 
         val generation = requestGenerationToken
         vmScope.launch {
@@ -398,7 +552,7 @@ class AiPracticeViewModel(
             } catch (e: Exception) {
                 if (!isCurrent(generation)) return@launch
                 isExplainingMore = false
-                explainMoreText = "Không thể kết nối Gia sư AI: ${e.message}"
+                explainMoreError = friendlyError(e)
             }
         }
     }

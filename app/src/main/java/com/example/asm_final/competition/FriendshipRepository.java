@@ -12,6 +12,8 @@ public interface FriendshipRepository {
     public final String nickname;
     public final long dailyXp;
     public final int streakDays;
+    public final int sharedStreakDays;
+    public final String lastSharedDay;
     public final int revision;
 
     public Item(
@@ -23,6 +25,20 @@ public interface FriendshipRepository {
         long dailyXp,
         int streakDays,
         int revision) {
+      this(id, profileId, state, direction, nickname, dailyXp, streakDays, 0, null, revision);
+    }
+
+    public Item(
+        String id,
+        String profileId,
+        String state,
+        String direction,
+        String nickname,
+        long dailyXp,
+        int streakDays,
+        int sharedStreakDays,
+        String lastSharedDay,
+        int revision) {
       this.id = id;
       this.profileId = profileId;
       this.state = state;
@@ -30,6 +46,8 @@ public interface FriendshipRepository {
       this.nickname = nickname;
       this.dailyXp = dailyXp;
       this.streakDays = streakDays;
+      this.sharedStreakDays = sharedStreakDays;
+      this.lastSharedDay = lastSharedDay;
       this.revision = revision;
     }
   }

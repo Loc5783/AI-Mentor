@@ -35,4 +35,9 @@ dependencies {
     implementation(libs.navigation.compose)
     
     testImplementation(libs.junit)
+    testImplementation("org.robolectric:robolectric:4.14.1")
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.compose.test)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }

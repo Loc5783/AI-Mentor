@@ -9,6 +9,34 @@ import org.junit.Test
 
 class LessonHubNavigationTest {
 
+    @Test
+    fun subjectWorkspaceReturnsToLearningHub() {
+        val nav = LessonHubNavigationModel(initialGrade = 11)
+        nav.openWorkspace(SubjectId.MATH)
+        assertEquals(HubSection.SUBJECT_WORKSPACE, nav.currentSection)
+        assertTrue(nav.handleBack())
+        assertEquals(HubSection.MAIN_HUB, nav.currentSection)
+        assertNull(nav.selectedSubject)
+        assertEquals(11, nav.grade)
+    }
+
+    @Test
+    fun workspaceToolsReturnToSameSubjectAndGradeChangeClearsContext() {
+        val nav = LessonHubNavigationModel(initialGrade = 10)
+        nav.openWorkspace(SubjectId.MATH)
+        nav.openWorkspaceTool(HubSection.LIBRARY)
+        assertTrue(nav.handleBack())
+        assertEquals(HubSection.SUBJECT_WORKSPACE, nav.currentSection)
+        assertEquals(SubjectId.MATH, nav.selectedSubject)
+        nav.openWorkspaceTool(HubSection.EXAM_PREP)
+        assertTrue(nav.handleBack())
+        assertEquals(HubSection.SUBJECT_WORKSPACE, nav.currentSection)
+        nav.setGrade(11)
+        assertEquals(HubSection.MAIN_HUB, nav.currentSection)
+        assertNull(nav.selectedSubject)
+        assertEquals(11, nav.grade)
+    }
+
     // 1. Bốn khu vực trong Tab Bài học: Thư viện, Ôn thi, Lộ trình, Luyện cùng AI
     @Test
     fun test1_FourSections_ExistAndHaveDistinctRoutes() {
@@ -194,11 +222,7 @@ class LessonHubNavigationTest {
     // 7. Công cụ đúng môn: Kiểm tra trực tiếp SubjectToolResolver sản phẩm được LessonActivity sử dụng
     @Test
     fun test7_SubjectTools_ProductResolverMapping() {
-        assertEquals(
-            "Toán phải mở MathToolsActivity",
-            com.example.mathmodule.MathToolsActivity::class.java,
-            SubjectToolResolver.resolveToolActivity(SubjectId.MATH)
-        )
+        assertNull("Toán dùng bong bóng trong màn học", SubjectToolResolver.resolveToolActivity(SubjectId.MATH))
         assertEquals(
             "Vật lý phải mở CircuitDiagramActivity",
             com.example.mentor.physics.presentation.CircuitDiagramActivity::class.java,

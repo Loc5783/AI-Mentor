@@ -31,6 +31,11 @@ import com.example.mentor.learning.SubjectId
 import com.example.mentor.ui.design.*
 import kotlinx.coroutines.CoroutineScope
 import java.util.Locale
+import org.json.JSONObject
+
+private fun examPointsLabel(points: Int, scale: Int): String =
+    if (scale > 1) String.format(Locale.ROOT, "%.4f", points.toDouble() / scale).trimEnd('0').trimEnd('.')
+    else points.toString()
 
 @Composable
 fun ExamPrepScreen(
@@ -60,17 +65,27 @@ fun ExamPrepScreen(
     }
 
     val state by viewModel.uiState.collectAsState()
+    var showHistory by remember(viewModel) { mutableStateOf(false) }
+    LaunchedEffect(showHistory, state.selectedSubjectId, state.selectedGrade) {
+        if (showHistory) viewModel.loadHistory()
+    }
+
+    ActiveStudyTime(state.screenState == ExamScreenState.IN_PROGRESS,
+        state.currentSession?.subjectId, state.currentSession?.grade ?: initialGrade)
 
     when (state.screenState) {
         ExamScreenState.LIST -> ExamListContent(
             state = state,
+            showHistory = showHistory,
+            onToggleHistory = { showHistory = !showHistory },
             onSelectSubject = { viewModel.setSubjectFilter(it) },
             onSelectGrade = { viewModel.setGradeFilter(it) },
             onSelectExamType = { viewModel.setExamTypeFilter(it) },
             onSelectSemester = { viewModel.setSemesterFilter(it) },
             onSelectExam = { viewModel.selectExam(it) },
             onResumeSession = { viewModel.resumeSession(it) },
-            onReload = { viewModel.loadExams() },
+            onReviewSession = { viewModel.reviewSession(it) },
+            onReload = { if (showHistory) viewModel.loadHistory() else viewModel.loadExams() },
             onBack = onBack,
             onOpenNotebook = { onOpenNotebook?.invoke(null) }
         )
@@ -83,6 +98,7 @@ fun ExamPrepScreen(
             state = state,
             onSelectQuestion = { viewModel.selectQuestionIndex(it) },
             onSelectAnswer = { qId, opt -> viewModel.selectAnswer(qId, opt) },
+            onTextAnswer = { qId, value -> viewModel.setTextAnswer(qId, value) },
             onRetryAnswer = { qId -> viewModel.retrySaveAnswer(qId) },
             onNext = { viewModel.nextQuestion() },
             onPrev = { viewModel.previousQuestion() },
@@ -93,6 +109,8 @@ fun ExamPrepScreen(
         ExamScreenState.RESULT -> ExamResultContent(
             state = state,
             onSelectReviewQuestion = { viewModel.setReviewQuestionIndex(it) },
+            onExplainQuestion = { viewModel.explainReviewQuestion() },
+            onRetryGrading = { viewModel.retryEssayGrading() },
             onFinishReview = { viewModel.finishReview() },
             onOpenNotebook = {
                 val subWire = state.completedSession?.subjectId
@@ -110,12 +128,15 @@ fun ExamPrepScreen(
 @Composable
 private fun ExamListContent(
     state: ExamUiState,
+    showHistory: Boolean,
+    onToggleHistory: () -> Unit,
     onSelectSubject: (String?) -> Unit,
     onSelectGrade: (Int) -> Unit,
     onSelectExamType: (String?) -> Unit,
     onSelectSemester: (Int?) -> Unit,
     onSelectExam: (ExamSummary) -> Unit,
     onResumeSession: (ExamSession) -> Unit,
+    onReviewSession: (ExamSession) -> Unit,
     onReload: () -> Unit,
     onBack: () -> Unit,
     onOpenNotebook: () -> Unit
@@ -131,30 +152,20 @@ private fun ExamListContent(
             color = MaterialTheme.colorScheme.surface,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Row(
+            Column(
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                TextButton(onClick = onBack) {
-                    Text("← Về Hub", fontWeight = FontWeight.Bold)
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    TextButton(onClick = onBack) { Text("← Quay lại", fontWeight = FontWeight.Bold) }
+                    TextButton(onClick = onOpenNotebook) { Text("📖 Sổ lỗi sai", style = MaterialTheme.typography.bodySmall) }
                 }
-                Spacer(Modifier.width(8.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        "Ôn thi Giữa kỳ & Cuối kỳ",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        "Đề thi chuẩn hóa THPT 9 môn",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                TextButton(onClick = onOpenNotebook) {
-                    Text("📖 Sổ lỗi sai", style = MaterialTheme.typography.bodySmall)
+                Text("Ôn thi Giữa kỳ & Cuối kỳ", style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 12.dp))
+                TextButton(onClick = onToggleHistory) {
+                    Text(if (showHistory) "← Danh sách đề" else "Lịch sử làm bài →")
                 }
             }
         }
@@ -254,7 +265,9 @@ private fun ExamListContent(
         HorizontalDivider()
 
         // List Content
-        if (state.isLoadingExams) {
+        if (showHistory) {
+            ExamHistoryContent(state, onResumeSession, onReviewSession, onReload)
+        } else if (state.isLoadingExams) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     CircularProgressIndicator(strokeWidth = 3.dp)
@@ -264,12 +277,7 @@ private fun ExamListContent(
         } else if (state.examListError != null) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(
-                        state.examListError,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center
-                    )
+                    MentorErrorNotice(state.examListError)
                     Button(onClick = onReload) {
                         Text("Thử lại")
                     }
@@ -289,20 +297,96 @@ private fun ExamListContent(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
+                state.sessionListError?.let { message ->
+                    item { MentorErrorNotice(message) }
+                }
                 items(state.exams) { exam ->
                     val activeSession = state.activeSessionsByExamId[exam.id]
                     ExamCard(
                         exam = exam,
                         activeSession = activeSession,
                         onSelect = {
-                            if (activeSession != null) {
-                                onResumeSession(activeSession)
-                            } else {
-                                onSelectExam(exam)
-                            }
+                            if (activeSession != null) onToggleHistory() else onSelectExam(exam)
                         }
                     )
                 }
+                val visibleExamIds = state.exams.map { it.id }.toSet()
+                val recent = state.completedSessions.filter { it.examId in visibleExamIds }.take(10)
+                if (recent.isNotEmpty()) {
+                    item {
+                        Text("Bài đã nộp", style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 12.dp))
+                    }
+                    items(recent) { session ->
+                        Card(modifier = Modifier.fillMaxWidth().clickable { onReviewSession(session) }) {
+                            Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                Text(session.examTitle, fontWeight = FontWeight.SemiBold)
+                                Text(if (session.gradingStatus == "PENDING") "Đang chấm tự luận · Chạm để xem"
+                                    else String.format(Locale.ROOT, "%.2f/10 điểm · Chạm để xem", session.score10),
+                                    style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExamHistoryContent(
+    state: ExamUiState,
+    onResume: (ExamSession) -> Unit,
+    onReview: (ExamSession) -> Unit,
+    onReload: () -> Unit
+) {
+    val active = state.historySessions.filter { it.state == "IN_PROGRESS" }
+    val completed = state.historySessions.filter { it.state == "SUBMITTED" || it.state == "TIMED_OUT" }
+    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        if (state.isHistoryLoading) item { CircularProgressIndicator() }
+        state.historyError?.let { message ->
+            item {
+                MentorErrorNotice(message)
+                TextButton(onClick = onReload) { Text("Thử lại") }
+            }
+        }
+        if (!state.isHistoryLoading && state.historyError == null && state.historySessions.isEmpty()) {
+            item { Text("Bạn chưa có bài thi đã lưu ở lớp này.",
+                color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        }
+        if (active.isNotEmpty()) {
+            item { Text("Đang làm dở", style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold) }
+            items(active, key = { it.id }) { session ->
+                ExamHistoryCard(session, false, onResume, onReview)
+            }
+        }
+        if (completed.isNotEmpty()) {
+            item { Text("Đã hoàn thành", style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold) }
+            items(completed, key = { it.id }) { session ->
+                ExamHistoryCard(session, true, onResume, onReview)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExamHistoryCard(
+    session: ExamSession,
+    completed: Boolean,
+    onResume: (ExamSession) -> Unit,
+    onReview: (ExamSession) -> Unit
+) {
+    Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(session.examTitle, style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold)
+            Text(if (completed) String.format(Locale.ROOT, "%.2f/10 điểm", session.score10)
+                else "Bài đang làm · ${session.totalCount} câu",
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Button(onClick = { if (completed) onReview(session) else onResume(session) }) {
+                Text(if (completed) "Xem lại bài" else "Làm tiếp")
             }
         }
     }
@@ -431,7 +515,7 @@ private fun ExamCard(
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
-                            "Tiếp tục làm →",
+                            "Xem trong lịch sử →",
                             style = MaterialTheme.typography.bodySmall,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
@@ -491,7 +575,8 @@ private fun ExamDetailContent(
 
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("Môn học:", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(exam.subjectId.uppercase(Locale.ROOT), fontWeight = FontWeight.Bold)
+                    Text(SubjectId.values().firstOrNull { it.wireId == exam.subjectId }
+                        ?.label("vi") ?: exam.subjectId, fontWeight = FontWeight.Bold)
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("Khối lớp:", color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -552,11 +637,7 @@ private fun ExamDetailContent(
         }
 
         if (state.startSessionError != null) {
-            Text(
-                state.startSessionError,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium
-            )
+            MentorErrorNotice(state.startSessionError)
         }
 
         Spacer(Modifier.height(8.dp))
@@ -589,6 +670,7 @@ private fun ExamInProgressContent(
     state: ExamUiState,
     onSelectQuestion: (Int) -> Unit,
     onSelectAnswer: (String, String) -> Unit,
+    onTextAnswer: (String, String) -> Unit,
     onRetryAnswer: (String) -> Unit,
     onNext: () -> Unit,
     onPrev: () -> Unit,
@@ -665,20 +747,8 @@ private fun ExamInProgressContent(
         }
 
         if (state.submitError != null) {
-            Surface(
-                color = MaterialTheme.colorScheme.errorContainer,
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 6.dp)
-            ) {
-                Text(
-                    text = state.submitError,
-                    color = MaterialTheme.colorScheme.onErrorContainer,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(10.dp)
-                )
-            }
+            MentorErrorNotice(state.submitError,
+                Modifier.padding(horizontal = 16.dp, vertical = 6.dp))
         }
 
         // Question Palette (Horizontal Strip)
@@ -744,7 +814,7 @@ private fun ExamInProgressContent(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        "${currentQuestion.points} điểm",
+                        "${examPointsLabel(currentQuestion.points, currentQuestion.pointScale)} điểm",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -756,11 +826,15 @@ private fun ExamInProgressContent(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        currentQuestion.prompt,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Box(Modifier.padding(16.dp)) {
+                        ChatAnswerView(
+                            if (currentQuestion.kind == ExamQuestionKind.ESSAY) currentQuestion.prompt.replace(
+                                "Học sinh làm bài ra giấy, phần tự luận chưa chấm tự động",
+                                "Viết câu trả lời bên dưới; AI sẽ chấm sau khi nộp"
+                            ) else currentQuestion.prompt,
+                            MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
 
                 // Options A, B, C, D
@@ -774,7 +848,43 @@ private fun ExamInProgressContent(
                     "D" to currentQuestion.optionD
                 )
 
-                options.forEach { (key, text) ->
+                if (currentQuestion.kind == ExamQuestionKind.SHORT_ANSWER || currentQuestion.kind == ExamQuestionKind.ESSAY) {
+                    OutlinedTextField(
+                        value = selectedOpt.orEmpty(),
+                        onValueChange = { onTextAnswer(currentQuestion.id, it) },
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text(if (currentQuestion.kind == ExamQuestionKind.ESSAY) "Bài làm của bạn" else "Đáp án ngắn") },
+                        minLines = if (currentQuestion.kind == ExamQuestionKind.ESSAY) 5 else 1,
+                        maxLines = if (currentQuestion.kind == ExamQuestionKind.ESSAY) 12 else 3,
+                        supportingText = { Text("${selectedOpt.orEmpty().length}/${if (currentQuestion.kind == ExamQuestionKind.ESSAY) 4000 else 200}") }
+                    )
+                } else if (currentQuestion.kind == ExamQuestionKind.TRUE_FALSE_4 && !currentQuestion.hasValidTrueFalseItems) {
+                    Text("Câu Đúng/Sai này thiếu dữ liệu. Vui lòng thử lại sau.")
+                } else if (currentQuestion.kind == ExamQuestionKind.TRUE_FALSE_4) {
+                    val statements = currentQuestion.contentData.optJSONArray("subItems")
+                    val current = runCatching { JSONObject(selectedOpt.orEmpty()) }.getOrDefault(JSONObject())
+                    for (i in 0 until (statements?.length() ?: 0)) {
+                        val item = statements!!.optJSONObject(i) ?: continue
+                        val key = item.optString("key")
+                        if (key.isBlank()) continue
+                        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            ChatAnswerView("${key.uppercase()}. ${item.optString("statement")}")
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                listOf(true to "Đúng", false to "Sai").forEach { (value, label) ->
+                                    val chosen = current.has(key) && current.optBoolean(key) == value
+                                    OutlinedButton(onClick = {
+                                        val updated = JSONObject(current.toString()).put(key, value)
+                                        onSelectAnswer(currentQuestion.id, updated.toString())
+                                    }, colors = if (chosen) ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.primaryContainer) else ButtonDefaults.outlinedButtonColors()) {
+                                        Text(label)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else if (currentQuestion.kind == ExamQuestionKind.UNKNOWN) {
+                    Text("Dạng câu hỏi này chưa được hỗ trợ. Vui lòng quay lại sau.")
+                } else options.forEach { (key, text) ->
                     val isChosen = selectedOpt == key
                     Card(
                         modifier = Modifier
@@ -809,11 +919,12 @@ private fun ExamInProgressContent(
                                     color = if (isChosen) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                            Text(
-                                text,
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.weight(1f)
-                            )
+                            Box(Modifier.weight(1f)) {
+                                ChatAnswerView(text, MaterialTheme.colorScheme.onSurface)
+                                Spacer(Modifier.matchParentSize().clickable {
+                                    onSelectAnswer(currentQuestion.id, key)
+                                })
+                            }
                         }
                     }
                 }
@@ -850,12 +961,7 @@ private fun ExamInProgressContent(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Text(
-                                "⚠️ Chưa lưu được đáp án",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.error,
-                                fontWeight = FontWeight.Bold
-                            )
+                            MentorErrorNotice("⚠️ Chưa lưu được đáp án", Modifier.weight(1f))
                             TextButton(
                                 onClick = { onRetryAnswer(currentQuestion.id) },
                                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
@@ -915,10 +1021,8 @@ private fun ExamInProgressContent(
                 val unsaved = state.unsavedAnswersCount
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (unsaved > 0) {
-                        Text(
-                            "⚠️ Có $unsaved câu trả lời chưa được lưu thành công trên máy chủ. Bạn nên kiểm tra lại các câu này trước khi nộp.",
-                            color = MaterialTheme.colorScheme.error,
-                            fontWeight = FontWeight.Bold
+                        MentorErrorNotice(
+                            "⚠️ Có $unsaved câu trả lời chưa được lưu thành công trên máy chủ. Bạn nên kiểm tra lại các câu này trước khi nộp."
                         )
                     }
                     if (unanswered > 0) {
@@ -960,6 +1064,8 @@ private fun ExamInProgressContent(
 private fun ExamResultContent(
     state: ExamUiState,
     onSelectReviewQuestion: (Int) -> Unit,
+    onExplainQuestion: () -> Unit,
+    onRetryGrading: () -> Unit,
     onFinishReview: () -> Unit,
     onOpenNotebook: () -> Unit
 ) {
@@ -990,15 +1096,24 @@ private fun ExamResultContent(
                 )
 
                 Text(
-                    String.format(Locale.ROOT, "%.2f / 10.0", completed.score10),
+                    if (completed.gradingStatus == "PENDING") "Đang chấm tự luận" else String.format(Locale.ROOT, "%.2f / 10.0", completed.score10),
                     style = MaterialTheme.typography.displayMedium,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Text("Điểm thô: ${completed.rawScore} / ${completed.totalPoints} đ", style = MaterialTheme.typography.bodyMedium)
-                    Text("Số câu đúng: ${completed.correctCount} / ${completed.totalCount}", style = MaterialTheme.typography.bodyMedium)
+                if (completed.gradingStatus == "PENDING") {
+                    Text("Bài làm đã lưu. Điểm cuối sẽ hiện khi AI chấm xong.")
+                    completed.gradingError?.let { MentorErrorNotice(it) }
+                    OutlinedButton(onClick = onRetryGrading, enabled = !state.isGradingEssay) {
+                        Text(if (state.isGradingEssay) "Đang chấm..." else "Thử chấm lại")
+                    }
+                }
+                if (completed.gradingStatus != "PENDING") {
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Text("Điểm thô: ${examPointsLabel(completed.rawScore, completed.questions.firstOrNull()?.pointScale ?: 1)} / ${examPointsLabel(completed.totalPoints, completed.questions.firstOrNull()?.pointScale ?: 1)} đ", style = MaterialTheme.typography.bodyMedium)
+                        Text("Số câu đúng: ${completed.correctCount} / ${completed.totalCount}", style = MaterialTheme.typography.bodyMedium)
+                    }
                 }
 
                 Row(
@@ -1034,6 +1149,7 @@ private fun ExamResultContent(
                     val isCurrent = index == currentRevIndex
                     val isCorrect = q.isCorrect == true
                     val isAnswered = !q.selectedOption.isNullOrBlank()
+                    val isEssayPending = q.kind == ExamQuestionKind.ESSAY && isAnswered && q.essayPoints == null
 
                     Box(
                         modifier = Modifier
@@ -1043,8 +1159,9 @@ private fun ExamResultContent(
                                 when {
                                     isCurrent -> MaterialTheme.colorScheme.primary
                                     isCorrect -> Color(0xFF2E7D32) // Forest Green
+                                    isEssayPending -> Color(0xFF53627B)
                                     isAnswered -> MaterialTheme.colorScheme.error // Red
-                                    else -> Color.Gray
+                                    else -> Color(0xFF53627B)
                                 }
                             )
                             .clickable { onSelectReviewQuestion(index) },
@@ -1082,13 +1199,17 @@ private fun ExamResultContent(
                     )
                     Text(
                         when {
-                            currentRevQuestion.isCorrect == true -> "✓ Đúng (+${currentRevQuestion.points} đ)"
+                            currentRevQuestion.kind == ExamQuestionKind.ESSAY && currentRevQuestion.essayPoints == null -> "Đang chấm bằng AI"
+                            currentRevQuestion.kind == ExamQuestionKind.ESSAY -> "${examPointsLabel(currentRevQuestion.essayPoints ?: 0, currentRevQuestion.pointScale)}/${examPointsLabel(currentRevQuestion.points, currentRevQuestion.pointScale)} điểm"
+                            currentRevQuestion.isCorrect == true -> "✓ Đúng (+${examPointsLabel(currentRevQuestion.points, currentRevQuestion.pointScale)} đ)"
                             !currentRevQuestion.selectedOption.isNullOrBlank() -> "✗ Sai (0 đ)"
                             else -> "○ Chưa trả lời (0 đ)"
                         },
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         color = when {
+                            currentRevQuestion.kind == ExamQuestionKind.ESSAY && currentRevQuestion.essayPoints == null -> MaterialTheme.colorScheme.onSurfaceVariant
+                            currentRevQuestion.kind == ExamQuestionKind.ESSAY -> MaterialTheme.colorScheme.tertiary
                             currentRevQuestion.isCorrect == true -> Color(0xFF2E7D32)
                             !currentRevQuestion.selectedOption.isNullOrBlank() -> MaterialTheme.colorScheme.error
                             else -> Color.Gray
@@ -1102,11 +1223,9 @@ private fun ExamResultContent(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        currentRevQuestion.prompt,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Box(Modifier.padding(16.dp)) {
+                        ChatAnswerView(currentRevQuestion.prompt, MaterialTheme.colorScheme.onSurface)
+                    }
                 }
 
                 // Options review
@@ -1120,7 +1239,23 @@ private fun ExamResultContent(
                     "D" to currentRevQuestion.optionD
                 )
 
-                options.forEach { (key, text) ->
+                if (currentRevQuestion.kind == ExamQuestionKind.ESSAY || currentRevQuestion.kind == ExamQuestionKind.SHORT_ANSWER) {
+                    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+                        Column(Modifier.padding(16.dp)) {
+                            Text("Bài làm của bạn", fontWeight = FontWeight.Bold)
+                            Text(userOpt.orEmpty().ifBlank { "Chưa trả lời" })
+                            if (!currentRevQuestion.essayFeedback.isNullOrBlank()) {
+                                Spacer(Modifier.height(8.dp))
+                                Text("Nhận xét của AI: ${currentRevQuestion.essayFeedback}")
+                            }
+                        }
+                    }
+                } else if (currentRevQuestion.kind == ExamQuestionKind.TRUE_FALSE_4) {
+                    Text("Bạn chọn: ${userOpt.orEmpty().ifBlank { "Chưa trả lời" }}")
+                    Text("Đáp án: ${correctOpt.orEmpty()}")
+                } else if (currentRevQuestion.kind == ExamQuestionKind.UNKNOWN) {
+                    Text("Dạng câu hỏi này chưa được hỗ trợ để xem lại.")
+                } else options.forEach { (key, text) ->
                     val isCorrectChoice = key == correctOpt
                     val isUserChoice = key == userOpt
 
@@ -1165,11 +1300,9 @@ private fun ExamResultContent(
                                     color = if (isCorrectChoice || isUserChoice) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                            Text(
-                                text,
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.weight(1f)
-                            )
+                            Box(Modifier.weight(1f)) {
+                                ChatAnswerView(text, MaterialTheme.colorScheme.onSurface)
+                            }
                             if (isCorrectChoice) {
                                 Text("✓ Đáp án đúng", fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32), style = MaterialTheme.typography.labelSmall)
                             } else if (isUserChoice) {
@@ -1188,7 +1321,20 @@ private fun ExamResultContent(
                     ) {
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             Text("💡 Lời giải chi tiết:", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
-                            Text(currentRevQuestion.explanation, style = MaterialTheme.typography.bodyMedium)
+                            ChatAnswerView(currentRevQuestion.explanation,
+                                MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+                }
+                OutlinedButton(onClick = onExplainQuestion, enabled = !state.isExplainingReview) {
+                    Text(if (state.isExplainingReview) "AI đang giải thích..." else "Hỏi AI giải thích thêm")
+                }
+                state.reviewExplanationError?.let { MentorErrorNotice(it) }
+                state.reviewExplanation?.let { answer ->
+                    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+                        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("Gia sư AI giải thích", fontWeight = FontWeight.Bold)
+                            ChatAnswerView(answer, MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }

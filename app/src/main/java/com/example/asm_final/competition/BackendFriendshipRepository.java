@@ -33,13 +33,32 @@ public final class BackendFriendshipRepository implements FriendshipRepository {
     JSONArray items = client(owner).request("GET", "/friendships", null, null, null).optJSONArray("items");
     List<Item> result = new ArrayList<>();
     if (items == null) return result;
+    Map<String, JSONObject> sharedStreaks = new HashMap<>();
+    try {
+      JSONArray streaks = client(owner).request("GET", "/friends/streaks", null, null, null)
+          .optJSONArray("streaks");
+      if (streaks != null) for (int i = 0; i < streaks.length(); i++) {
+        JSONObject streak = streaks.optJSONObject(i);
+        if (streak != null) sharedStreaks.put(streak.optString("friendId", ""), streak);
+      }
+    } catch (Exception ignored) {
+      // Older backend builds can omit shared streaks without blocking the friends list.
+    }
     for (int i = 0; i < items.length(); i++) {
       JSONObject row = items.getJSONObject(i);
       String requester = row.optString("requesterProfileId", "");
       String recipient = row.optString("recipientProfileId", "");
       boolean outgoing = me.equals(requester);
-      result.add(new Item(row.getString("id"), outgoing ? recipient : requester,
-          row.optString("state", "PENDING"), outgoing ? "OUTGOING" : "INCOMING", "", 0, 0,
+      String friendId = outgoing ? recipient : requester;
+      JSONObject shared = sharedStreaks.get(friendId);
+      JSONObject profile = row.optJSONObject("profile");
+      result.add(new Item(row.getString("id"), friendId,
+          row.optString("state", "PENDING"), outgoing ? "OUTGOING" : "INCOMING",
+          profile == null ? "" : profile.optString("nickname", ""),
+          profile == null ? 0 : profile.optLong("dailyXp", 0),
+          profile == null ? 0 : profile.optInt("streakDays", 0),
+          shared == null ? 0 : shared.optInt("streakDays", 0),
+          shared == null || shared.isNull("lastSharedDay") ? null : shared.optString("lastSharedDay"),
           row.optInt("revision", 1)));
     }
     return Collections.unmodifiableList(result);

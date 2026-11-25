@@ -50,7 +50,10 @@ data class QuizSelectionState(
 
     val activeSessionsErrorMessage: String? = null,
 
-    val activeSessionsSynced: Boolean = false
+    val activeSessionsSynced: Boolean = false,
+    val historySessions: List<SessionSummary> = emptyList(),
+    val isHistoryLoading: Boolean = false,
+    val historyError: String? = null
 
 )
 
@@ -246,6 +249,64 @@ class LibraryPracticeController(
     private val _sessionState = MutableStateFlow<SessionPracticeState?>(null)
 
     val sessionState: StateFlow<SessionPracticeState?> = _sessionState.asStateFlow()
+
+    private var historyGeneration = 0
+
+    fun loadHistory(subjectWireId: String, grade: Int): Job {
+        val generation = ++historyGeneration
+        val owner = repository.ownerId
+        val endpoint = repository.endpoint
+        _selectionState.update { it.copy(historySessions = emptyList(), isHistoryLoading = true,
+            historyError = null, startErrorMessage = null) }
+        return scope.launch {
+            try {
+                val sessions = repository.listHistorySessions(subjectWireId, grade)
+                if (generation == historyGeneration && repository.ownerId == owner && repository.endpoint == endpoint) {
+                    _selectionState.update { it.copy(historySessions = sessions, isHistoryLoading = false) }
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (generation == historyGeneration && repository.ownerId == owner && repository.endpoint == endpoint) {
+                    _selectionState.update { it.copy(isHistoryLoading = false,
+                        historyError = "Chưa tải được lịch sử làm bài. Kiểm tra mạng rồi thử lại.") }
+                }
+            }
+        }
+    }
+
+    fun reviewHistorySession(summary: SessionSummary, title: String): Job? {
+        if (summary.state != "COMPLETED") return null
+        val owner = repository.ownerId
+        val endpoint = repository.endpoint
+        val generation = ++historyGeneration
+        _selectionState.update { it.copy(isHistoryLoading = true, historyError = null) }
+        return scope.launch {
+            try {
+                val session = repository.getSession(summary.id)
+                if (generation == historyGeneration && repository.ownerId == owner && repository.endpoint == endpoint) {
+                    if (session.state == "COMPLETED") {
+                        _sessionState.value = SessionPracticeState(session, title)
+                    }
+                    _selectionState.update { it.copy(isHistoryLoading = false) }
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (generation == historyGeneration && repository.ownerId == owner && repository.endpoint == endpoint) {
+                    _selectionState.update { it.copy(isHistoryLoading = false,
+                        historyError = "Chưa mở được bài đã làm. Kiểm tra mạng rồi thử lại.") }
+                }
+            }
+        }
+    }
+
+    /** Read only the currently loaded practice session; no offline score is invented. */
+    internal fun observedEvidence(activeOwnerId: Int): List<LearningEvidence> {
+        if (activeOwnerId <= 0 || activeOwnerId != repository.ownerId) return emptyList()
+        return _sessionState.value?.session?.let { LearningEvidenceReader.fromPractice(repository.ownerId, it) }
+            ?: emptyList()
+    }
 
 
 
@@ -861,7 +922,8 @@ class LibraryPracticeController(
 
                 val q = cur.session.questions.getOrNull(cur.currentStep)
 
-                if (q?.userAnswer == null && !cur.isSubmittingAnswer) {
+                if (q != null && q.userAnswer == null && !cur.isSubmittingAnswer &&
+                    visiblePracticeOptions(q).any { it.first == option }) {
 
                     cur.copy(selectedOption = option)
 
@@ -882,6 +944,8 @@ class LibraryPracticeController(
         val q = cur.session.questions.getOrNull(cur.currentStep) ?: return null
 
         val opt = cur.selectedOption ?: return null
+
+        if (visiblePracticeOptions(q).none { it.first == opt }) return null
 
         if (q.userAnswer != null || cur.isSubmittingAnswer) return null
 

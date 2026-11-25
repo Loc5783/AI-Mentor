@@ -56,6 +56,121 @@ class LessonViewModelRoadmapTest {
     private val app = android.app.Application()
 
     @Test
+    fun placementAnswersCanBeRevisitedAndSubmittedTogether() {
+        val client = FakeRoadmapApiClient()
+        val directExecutor = DirectExecutor()
+        var submitted: JSONObject? = null
+        client.customHandler = { method, path, body, _, _ ->
+            when ("$method $path") {
+                "POST /enrollments" -> JSONObject().put("id", "enr_1")
+                "GET /enrollments/enr_1/path" -> JSONObject()
+                    .put("enrollment", JSONObject().put("id", "enr_1"))
+                    .put("curriculumVersion", "v1")
+                "POST /placements" -> JSONObject().put("id", "placement-1")
+                    .put("kind", "PLACEMENT").put("step", 0).put("revision", 1)
+                    .put("questions", JSONArray().put(JSONObject().put("id", "q1"))
+                        .put(JSONObject().put("id", "q2")))
+                    .put("answers", JSONArray())
+                "PATCH /attempts/placement-1" -> {
+                    submitted = body
+                    JSONObject().put("id", "placement-1").put("kind", "PLACEMENT")
+                        .put("step", 2).put("revision", 2)
+                        .put("questions", JSONArray().put(JSONObject().put("id", "q1"))
+                            .put(JSONObject().put("id", "q2")))
+                        .put("answers", JSONArray())
+                }
+                else -> error("Unexpected request: $method $path")
+            }
+        }
+        val vm = LessonViewModel(app, SavedStateHandle(), client, directExecutor, directExecutor) { 1 }
+
+        vm.bind(1, "physics", 10)
+        vm.start("placement", true)
+        vm.setPlacementAnswer("q1", "a")
+        vm.setPlacementIndex(1)
+        vm.setPlacementAnswer("q2", "b")
+        vm.setPlacementIndex(0)
+        vm.setPlacementAnswer("q1", "c")
+
+        assertEquals(0, vm.placementIndex())
+        assertEquals("c", vm.placementAnswer("q1"))
+        assertTrue(vm.placementReady())
+        assertFalse(client.requests.contains("PATCH /attempts/placement-1"))
+
+        vm.submitPlacement()
+
+        assertEquals(2, submitted?.getInt("step"))
+        val answers = submitted!!.getJSONArray("answers")
+        assertEquals("c", answers.getJSONObject(0).getString("selectedOptionId"))
+        assertEquals("b", answers.getJSONObject(1).getString("selectedOptionId"))
+        assertFalse(vm.hasPending())
+    }
+
+    @Test
+    fun placementCanSubmitWithAnUnansweredQuestion() {
+        val client = FakeRoadmapApiClient()
+        val directExecutor = DirectExecutor()
+        var submitted: JSONObject? = null
+        client.customHandler = { method, path, body, _, _ ->
+            when ("$method $path") {
+                "POST /enrollments" -> JSONObject().put("id", "enr_1")
+                "GET /enrollments/enr_1/path" -> JSONObject()
+                    .put("enrollment", JSONObject().put("id", "enr_1"))
+                    .put("curriculumVersion", "v1")
+                "POST /placements" -> JSONObject().put("id", "placement-2")
+                    .put("kind", "PLACEMENT").put("step", 0).put("revision", 1)
+                    .put("questions", JSONArray().put(JSONObject().put("id", "q1"))
+                        .put(JSONObject().put("id", "q2")))
+                    .put("answers", JSONArray())
+                "PATCH /attempts/placement-2" -> {
+                    submitted = body
+                    JSONObject().put("id", "placement-2").put("kind", "PLACEMENT")
+                        .put("step", 2).put("revision", 2)
+                        .put("questions", JSONArray()).put("answers", JSONArray())
+                }
+                else -> error("Unexpected request: $method $path")
+            }
+        }
+        val vm = LessonViewModel(app, SavedStateHandle(), client, directExecutor, directExecutor) { 1 }
+
+        vm.bind(1, "physics", 10)
+        vm.start("placement", true)
+        vm.setPlacementAnswer("q1", "a")
+        assertFalse(vm.placementReady())
+
+        vm.submitPlacement()
+
+        assertEquals(2, submitted?.getInt("step"))
+        val answers = submitted!!.getJSONArray("answers")
+        assertEquals(1, answers.length())
+        assertEquals("q1", answers.getJSONObject(0).getString("questionId"))
+    }
+
+    @Test
+    fun completedPlacementCannotStartAgain() {
+        val client = FakeRoadmapApiClient()
+        val directExecutor = DirectExecutor()
+        client.customHandler = { method, path, _, _, _ ->
+            when ("$method $path") {
+                "POST /enrollments" -> JSONObject().put("id", "enr_1")
+                "GET /enrollments/enr_1/path" -> JSONObject()
+                    .put("enrollment", JSONObject().put("id", "enr_1")
+                        .put("placement", JSONObject().put("completedAt", "2026-11-15")))
+                    .put("curriculumVersion", "v1")
+                    .put("units", JSONArray())
+                else -> error("Unexpected request: $method $path")
+            }
+        }
+        val vm = LessonViewModel(app, SavedStateHandle(), client, directExecutor, directExecutor) { 1 }
+
+        vm.bind(1, "physics", 10)
+        vm.start("placement", true)
+
+        assertFalse(client.requests.contains("POST /placements"))
+        assertNull(vm.error)
+    }
+
+    @Test
     fun testResumeCompletedAttemptRestoresCompletionObject() {
         val client = FakeRoadmapApiClient()
         val savedState = SavedStateHandle()

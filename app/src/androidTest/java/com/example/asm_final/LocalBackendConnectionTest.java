@@ -79,8 +79,7 @@ public final class LocalBackendConnectionTest {
                       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
       final HomeActivity home = activity;
       ComposeProbe.text(compose, context.getString(R.string.overview_current));
-      for (String subject : new String[] {"biology", "chemistry", "physics"})
-        ComposeProbe.tag(compose, "dashboard-subject:" + subject);
+      ComposeProbe.tag(compose, "home-progress-hero");
       CountDownLatch drawn = new CountDownLatch(1);
       ins.runOnMainSync(
           () ->

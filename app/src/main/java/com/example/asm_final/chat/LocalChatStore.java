@@ -389,27 +389,19 @@ public final class LocalChatStore implements ChatStore {
       int owner, String threadId, String messageId, LearningContext context) {
     if (context.userId != owner) throw new IllegalArgumentException("Wrong request owner");
     ChatRecords.Snapshot snap = snapshot(owner, threadId);
-    List<TutorTurn> turns = new ArrayList<>();
-    for (int i = 0; i < snap.messages.size(); i++) {
-      ChatRecords.Message m = snap.messages.get(i);
-      if (!m.role.equals("USER")) continue;
-      if (m.id.equals(messageId)) {
-        turns.add(new TutorTurn(owner, TutorTurn.Role.USER, m.text, payloads(owner, m.files)));
-        return new TutorRequest(context, turns, null);
-      }
-      if (m.status.equals("SENT")
-          && i + 1 < snap.messages.size()
-          && snap.messages.get(i + 1).role.equals("ASSISTANT")) {
-        turns.add(new TutorTurn(owner, TutorTurn.Role.USER, m.text, payloads(owner, m.files)));
-        turns.add(
-            new TutorTurn(
-                owner,
-                TutorTurn.Role.ASSISTANT,
-                snap.messages.get(i + 1).text,
-                Collections.emptyList()));
-      }
+    List<ChatRecords.Message> selected = TutorRequestHistory.select(snap.messages, messageId);
+    List<TutorTurn> turns = new ArrayList<>(selected.size());
+    for (ChatRecords.Message turn : selected) {
+      turns.add(
+          new TutorTurn(
+              owner,
+              turn.role.equals("USER") ? TutorTurn.Role.USER : TutorTurn.Role.ASSISTANT,
+              turn.text,
+              turn.role.equals("USER")
+                  ? payloads(owner, turn.files)
+                  : Collections.emptyList()));
     }
-    throw new IllegalArgumentException("Missing owned question");
+    return new TutorRequest(context, turns, null);
   }
 
   @Override

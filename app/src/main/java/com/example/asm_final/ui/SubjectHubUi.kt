@@ -2,6 +2,7 @@ package com.example.asm_final.ui
 
 import com.example.mentor.ui.design.mentorHeader
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -34,31 +35,34 @@ import androidx.compose.ui.unit.dp
 import com.example.asm_final.AiMentorApplication
 import com.example.asm_final.R
 import com.example.asm_final.learning.BackendLibraryRepository
+import com.example.asm_final.supabase.SupabaseHttp
 import com.example.mentor.data.ActiveUser
 import com.example.asm_final.utils.LocaleHelper
 import com.example.mentor.learning.SubjectId
 import com.example.mentor.ui.design.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.function.Consumer
 
 class SubjectHubUi(
     private val context: Context,
     private val chooseGrade: Runnable,
     private val openSubject: Consumer<SubjectId>,
-    private val openAiChat: Runnable? = null
+    private val openPlan: Runnable,
+    private val openAiChat: Runnable? = null,
+    private val retryLoad: Runnable
 ) {
     private var grade by mutableIntStateOf(10)
-    private var error by mutableStateOf(false)
-    private var loading by mutableStateOf(false)
+    private var loadError by mutableStateOf(false)
 
     fun render(year: Int) {
         grade = if (year in 10..12) year else 10
-        loading = false
-        error = false
+        loadError = false
     }
 
     fun failure() {
-        loading = false
-        error = true
+        loadError = true
     }
 
     fun view(): View = composeHost(context, scenicBackground = true) {
@@ -78,14 +82,28 @@ class SubjectHubUi(
         when (navModel.currentSection) {
             HubSection.MAIN_HUB -> LessonHubMainView(
                 grade = navModel.grade,
+                loadError = loadError,
+                onRetryLoad = { retryLoad.run() },
                 onChooseGrade = { chooseGrade.run() },
-                onSelectSection = { section ->
-                    try {
-                        navModel.navigateTo(HubSection.valueOf(section))
-                    } catch (_: Exception) {}
-                },
-                onOpenAiChat = { openAiChat?.run() }
+                onSelectSection = navModel::navigateTo,
+                onSelectSubject = navModel::openWorkspace,
+                onOpenPlan = { openPlan.run() }
             )
+            HubSection.SUBJECT_WORKSPACE -> navModel.selectedSubject?.let { subject ->
+                SubjectWorkspace(
+                    subject = subject,
+                    grade = navModel.grade,
+                    onBack = { navModel.handleBack() },
+                    onOpenLesson = { openSubject.accept(subject) },
+                    onOpenLibrary = { navModel.openWorkspaceTool(HubSection.LIBRARY) },
+                    onOpenAiPractice = { navModel.openWorkspaceTool(HubSection.AI_PRACTICE) },
+                    onOpenExam = { navModel.openWorkspaceTool(HubSection.EXAM_PREP) },
+                    onOpenNotebook = { navModel.openNotebook(subject, HubSection.SUBJECT_WORKSPACE) },
+                    onOpenChat = { openAiChat?.run() },
+                    onOpenExamPack = { context.startActivity(Intent(context, com.example.asm_final.activities.ExamPackActivity::class.java)) },
+                    examPackAvailable = SupabaseHttp.enabled(context)
+                )
+            }
             HubSection.LIBRARY -> {
                 val subject = navModel.selectedSubject
                 if (subject != null) {
@@ -144,84 +162,147 @@ class SubjectHubUi(
 @Composable
 fun LessonHubMainView(
     grade: Int,
+    loadError: Boolean,
+    onRetryLoad: () -> Unit,
     onChooseGrade: () -> Unit,
-    onSelectSection: (String) -> Unit,
-    onOpenAiChat: () -> Unit
+    onSelectSection: (HubSection) -> Unit,
+    onSelectSubject: (SubjectId) -> Unit,
+    onOpenPlan: () -> Unit
 ) {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(horizontal = MentorTokens.PagePadding, vertical = 12.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-            shadowElevation = 0.5.dp
-        ) {
-            Row(
-                Modifier.fillMaxWidth().padding(14.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text(
-                        text = if (grade in 10..12) stringResource(R.string.chat_grade, grade) else stringResource(R.string.chat_choose_grade),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = "Khối lớp đang chọn",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                OutlinedButton(onClick = onChooseGrade) { Text("Đổi lớp") }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val palette = premiumDashboardPalette(com.example.asm_final.utils.ThemeHelper.isDarkMode(context))
+    val language = LocaleHelper.getLanguage(context)
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        PremiumDashboardHeader(artwork = MentorArtwork.LEARNING) {
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(stringResource(R.string.study_hub_title), style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold, color = palette.title)
+                Text(stringResource(R.string.study_hub_intro), style = MaterialTheme.typography.bodyMedium,
+                    color = palette.secondary)
             }
         }
+        Column(Modifier.padding(horizontal = MentorTokens.PagePadding, vertical = 4.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            if (loadError) {
+                PremiumDashboardCard(palette) {
+                    Text(stringResource(R.string.lesson_hub_load_error),
+                        color = palette.title, style = MaterialTheme.typography.bodyMedium)
+                    TextButton(onClick = onRetryLoad) { Text(stringResource(R.string.lesson_hub_retry)) }
+                }
+            }
+            PremiumDashboardCard(palette) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween) {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Text(stringResource(R.string.chat_grade, grade), style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold, color = palette.title)
+                        Text(stringResource(R.string.lesson_hub_grade), style = MaterialTheme.typography.bodySmall,
+                            color = palette.secondary)
+                    }
+                    TextButton(onClick = onChooseGrade) { Text(stringResource(R.string.lesson_hub_change_grade)) }
+                }
+            }
+            HubSectionCard("7", stringResource(R.string.study_plan_title),
+                stringResource(R.string.study_plan_desc), stringResource(R.string.study_plan_open), onOpenPlan)
+            Text(stringResource(R.string.study_subjects_title), style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold, color = palette.title)
+            PremiumDashboardCard(palette) {
+                SubjectId.values().forEachIndexed { index, subject ->
+                    val label = subject.label(language)
+                    Row(
+                        Modifier.fillMaxWidth().heightIn(min = 56.dp)
+                            .clickable(onClickLabel = label) { onSelectSubject(subject) },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Box(Modifier.size(36.dp).clip(RoundedCornerShape(11.dp))
+                            .background(palette.iconSurface), contentAlignment = Alignment.Center) {
+                            Text(label.take(1), color = palette.accent,
+                                style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+                        }
+                        Text(label, Modifier.weight(1f), color = palette.title,
+                            style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
+                        Text("›", color = palette.accent, style = MaterialTheme.typography.titleLarge)
+                    }
+                    if (index < SubjectId.values().lastIndex) HorizontalDivider(color = palette.border)
+                }
+            }
+            TextButton(onClick = { onSelectSection(HubSection.ROADMAP) }) {
+                Text(stringResource(R.string.study_manage_path))
+            }
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+}
 
-        HubSectionCard(
-            icon = "01",
-            title = "AI Chat",
-            description = "Hỏi AI Mentor, gửi bài tập và trao đổi về nội dung bạn chưa hiểu.",
-            actionText = "Vào AI Chat",
-            onClick = onOpenAiChat
-        )
-
-        HubSectionCard(
-            icon = "02",
-            title = "Thư viện câu hỏi",
-            description = "Kho bài tập trắc nghiệm có cấu trúc theo môn và lớp. Luyện tập theo chương, chủ đề và lưu sổ câu sai.",
-            actionText = "Vào Thư viện",
-            onClick = { onSelectSection("LIBRARY") }
-        )
-
-        HubSectionCard(
-            icon = "03",
-            title = "Ôn thi tập trung",
-            description = "Bộ đề tổng hợp và kế hoạch luyện thi theo chương trình học.",
-            actionText = "Xem Ôn thi",
-            onClick = { onSelectSection("EXAM_PREP") }
-        )
-
-        HubSectionCard(
-            icon = "04",
-            title = "Lộ trình học 9 môn",
-            description = "Khung bài học chuẩn 9 môn học phổ thông cùng công cụ môn học.",
-            actionText = "Xem Lộ trình",
-            onClick = { onSelectSection("ROADMAP") }
-        )
-
-        HubSectionCard(
-            icon = "05",
-            title = "Luyện cùng AI",
-            description = "Thảo luận, giải thích bài tập và luyện tập tương tác cùng Gia sư AI.",
-            actionText = "Luyện cùng AI",
-            onClick = { onSelectSection("AI_PRACTICE") }
-        )
+@Composable
+private fun SubjectWorkspace(
+    subject: SubjectId,
+    grade: Int,
+    onBack: () -> Unit,
+    onOpenLesson: () -> Unit,
+    onOpenLibrary: () -> Unit,
+    onOpenAiPractice: () -> Unit,
+    onOpenExam: () -> Unit,
+    onOpenNotebook: () -> Unit,
+    onOpenChat: () -> Unit,
+    onOpenExamPack: () -> Unit,
+    examPackAvailable: Boolean
+) {
+    BackHandler(onBack = onBack)
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val palette = premiumDashboardPalette(com.example.asm_final.utils.ThemeHelper.isDarkMode(context))
+    val title = subject.label(LocaleHelper.getLanguage(context))
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        PremiumDashboardHeader(artwork = MentorArtwork.LEARNING) {
+            Column(Modifier.weight(1f)) {
+                Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+                    color = palette.title)
+                Text(stringResource(R.string.chat_grade, grade), style = MaterialTheme.typography.bodyMedium,
+                    color = palette.secondary)
+            }
+        }
+        Column(Modifier.padding(horizontal = MentorTokens.PagePadding, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            TextButton(onClick = onBack) { Text(stringResource(R.string.course_back)) }
+            PremiumDashboardCard(palette, highlighted = true) {
+                Text(stringResource(R.string.study_path_title), style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold, color = palette.title)
+                Text(stringResource(R.string.study_path_desc), style = MaterialTheme.typography.bodyMedium,
+                    color = palette.secondary)
+                PremiumDashboardAction(stringResource(R.string.study_path_open), palette,
+                    onOpenLesson, Modifier.fillMaxWidth())
+            }
+            PremiumDashboardCard(palette) {
+                Text(stringResource(R.string.study_practice_group), style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold, color = palette.title)
+                Text(stringResource(R.string.lesson_hub_library_desc), color = palette.secondary,
+                    style = MaterialTheme.typography.bodySmall)
+                OutlinedButton(onClick = onOpenLibrary, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.lesson_hub_library))
+                }
+                OutlinedButton(onClick = onOpenAiPractice, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.lesson_hub_ai_practice))
+                }
+            }
+            PremiumDashboardCard(palette) {
+                Text(stringResource(R.string.study_exam_group), style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold, color = palette.title)
+                OutlinedButton(onClick = onOpenExam, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.lesson_hub_exam))
+                }
+                if (examPackAvailable) OutlinedButton(onClick = onOpenExamPack, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.exam_pack_hub_title))
+                }
+            }
+            PremiumDashboardCard(palette) {
+                Text(stringResource(R.string.study_review_group), style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold, color = palette.title)
+                TextButton(onClick = onOpenNotebook) { Text(stringResource(R.string.study_wrong_answers)) }
+                TextButton(onClick = onOpenChat) { Text(stringResource(R.string.lesson_hub_chat)) }
+            }
+            Spacer(Modifier.height(16.dp))
+        }
     }
 }
 
@@ -233,42 +314,30 @@ fun HubSectionCard(
     actionText: String,
     onClick: () -> Unit
 ) {
+    val palette = premiumDashboardPalette(com.example.asm_final.utils.ThemeHelper.isDarkMode(
+        androidx.compose.ui.platform.LocalContext.current))
     Surface(
         Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable(onClickLabel = actionText, onClick = onClick),
         shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, Brush.linearGradient(listOf(
-            MaterialTheme.colorScheme.secondary.copy(alpha = .5f),
-            MaterialTheme.colorScheme.outlineVariant))),
-        shadowElevation = MentorTokens.CardElevation
+        color = palette.card,
+        border = BorderStroke(1.dp, palette.border),
+        shadowElevation = 5.dp
     ) {
-        Column(
-            Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Row(
-                Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Box(Modifier.size(42.dp).clip(RoundedCornerShape(14.dp))
-                    .background(MaterialTheme.colorScheme.secondaryContainer), contentAlignment = Alignment.Center) {
-                    Text(icon, color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
-                }
-                Text(title, Modifier.weight(1f), style = MaterialTheme.typography.titleMedium,
+        Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Box(Modifier.size(42.dp).clip(RoundedCornerShape(14.dp))
+                .background(palette.iconSurface), contentAlignment = Alignment.Center) {
+                Text(icon, color = palette.accent, style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold)
             }
-            Text(
-                description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            TextButton(onClick = onClick, modifier = Modifier.align(Alignment.End)) {
-                Text(actionText)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Text(title, style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold, color = palette.title)
+                Text(description, style = MaterialTheme.typography.bodySmall, color = palette.secondary)
             }
+            Text("›", style = MaterialTheme.typography.headlineSmall, color = palette.accent)
         }
     }
 }
@@ -284,103 +353,129 @@ fun RoadmapSubjectList(
     val context = androidx.compose.ui.platform.LocalContext.current
     val ownerId = ActiveUser.get(context)
     val allSubjects = SubjectId.values()
+    val palette = premiumDashboardPalette(com.example.asm_final.utils.ThemeHelper.isDarkMode(context))
+    val scope = rememberCoroutineScope()
 
     var selectedSubjects by remember(ownerId, grade) {
         mutableStateOf(
             try {
-                val store = LearningSetupStore(context)
-                val sel = store.selected(ownerId, grade)
-                store.close()
-                sel
+                LearningSetupStore(context).use { it.selected(ownerId, grade) }
             } catch (e: Exception) {
                 emptySet()
             }
         )
     }
+    var subjectPendingRemoval by remember(ownerId, grade) { mutableStateOf<SubjectId?>(null) }
+    var selectionLoading by remember(ownerId, grade) { mutableStateOf(true) }
+    var selectionSaving by remember(ownerId, grade) { mutableStateOf(false) }
+    LaunchedEffect(ownerId, grade) {
+        runCatching {
+            withContext(Dispatchers.IO) {
+                LearningSetupStore(context).use { it.selected(ownerId, grade) }
+            }
+        }.getOrNull()?.let { selectedSubjects = it }
+        selectionLoading = false
+    }
+    fun saveSelection(updated: Set<SubjectId>, removing: Boolean) {
+        if (selectionLoading || selectionSaving) return
+        selectionSaving = true
+        scope.launch {
+            val saved = try {
+                withContext(Dispatchers.IO) {
+                    LearningSetupStore(context).use { it.save(ownerId, grade, updated) }
+                }
+                true
+            } catch (_: Exception) { false }
+            if (saved) selectedSubjects = updated
+            if (removing && saved) subjectPendingRemoval = null
+            selectionSaving = false
+            android.widget.Toast.makeText(context, context.getString(when {
+                removing && saved -> R.string.lesson_hub_remove_success
+                removing -> R.string.lesson_hub_remove_failed
+                saved -> R.string.lesson_hub_add_success
+                else -> R.string.lesson_hub_add_failed
+            }),
+                android.widget.Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Column(Modifier.fillMaxSize()) {
-        Box(
-            Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceVariant).padding(16.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                TextButton(onClick = onBack) { Text("← Quay lại") }
-                Text("Lộ trình học - Lớp $grade", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        PremiumDashboardHeader(artwork = MentorArtwork.LEARNING) {
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                TextButton(onClick = onBack, contentPadding = PaddingValues(0.dp)) {
+                    Text(stringResource(R.string.course_back))
+                }
+                Text(stringResource(R.string.lesson_hub_roadmap_grade, grade),
+                    style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+                    color = palette.title)
+                Text(stringResource(R.string.lesson_hub_roadmap_desc),
+                    style = MaterialTheme.typography.bodySmall, color = palette.secondary)
             }
         }
 
         LazyColumn(
-            Modifier.fillMaxSize().padding(16.dp).testTag("subject-list"),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            Modifier.fillMaxSize().padding(horizontal = MentorTokens.PagePadding).testTag("subject-list"),
+            contentPadding = PaddingValues(bottom = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(allSubjects, key = { it.wireId }) { subject ->
                 val isEnrolled = subject in selectedSubjects
 
                 Surface(
                     Modifier.fillMaxWidth().testTag("subject:${subject.wireId}"),
-                    shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    border = BorderStroke(1.dp, if (isEnrolled) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outlineVariant),
-                    shadowElevation = 0.5.dp
+                    shape = RoundedCornerShape(22.dp),
+                    color = palette.card,
+                    border = BorderStroke(1.dp, if (isEnrolled) palette.accent.copy(alpha = .55f) else palette.border),
+                    shadowElevation = 5.dp
                 ) {
-                    Row(
-                        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                    Column(
+                        Modifier.fillMaxWidth().padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Column(Modifier.weight(1f).padding(end = 8.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
                             Text(
                                 text = subject.label(LocaleHelper.getLanguage(context)),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = palette.title
                             )
                             Text(
-                                text = if (isEnrolled) "🟢 Đã có trong lộ trình học" else "👁️ Đang xem trước (Preview)",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = if (isEnrolled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                                text = stringResource(if (isEnrolled) R.string.lesson_hub_enrolled else R.string.lesson_hub_preview),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = if (isEnrolled) palette.accent else palette.secondary
                             )
                         }
 
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically) {
                             if (isEnrolled) {
                                 OutlinedButton(
-                                    onClick = {
-                                        val updated = selectedSubjects - subject
-                                        try {
-                                            val store = LearningSetupStore(context)
-                                            store.save(ownerId, grade, updated)
-                                            store.close()
-                                        } catch (_: Exception) {}
-                                        selectedSubjects = updated
-                                        android.widget.Toast.makeText(context, "Đã xóa môn học khỏi lộ trình", android.widget.Toast.LENGTH_SHORT).show()
-                                    },
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { subjectPendingRemoval = subject },
+                                    enabled = !selectionLoading && !selectionSaving,
                                     shape = RoundedCornerShape(12.dp),
                                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
                                 ) {
-                                    Text("Xóa")
+                                    Text(stringResource(R.string.lesson_hub_remove))
                                 }
                                 Button(
+                                    modifier = Modifier.weight(1f),
                                     onClick = { onSelectSubject(subject) },
                                     shape = RoundedCornerShape(12.dp)
                                 ) {
-                                    Text("Vào học")
+                                    Text(stringResource(R.string.lesson_hub_enter))
                                 }
                             } else {
                                 Button(
+                                    modifier = Modifier.fillMaxWidth(),
                                     onClick = {
-                                        val updated = selectedSubjects + subject
-                                        try {
-                                            val store = LearningSetupStore(context)
-                                            store.save(ownerId, grade, updated)
-                                            store.close()
-                                        } catch (_: Exception) {}
-                                        selectedSubjects = updated
-                                        android.widget.Toast.makeText(context, "Đã thêm môn học vào lộ trình hiện tại", android.widget.Toast.LENGTH_SHORT).show()
+                                        saveSelection(selectedSubjects + subject, false)
                                     },
+                                    enabled = !selectionLoading && !selectionSaving,
                                     shape = RoundedCornerShape(12.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                                 ) {
-                                    Text("Thêm vào lộ trình")
+                                    Text(stringResource(R.string.lesson_hub_add))
                                 }
                             }
                         }
@@ -388,5 +483,22 @@ fun RoadmapSubjectList(
                 }
             }
         }
+    }
+    subjectPendingRemoval?.let { subject ->
+        AlertDialog(
+            onDismissRequest = { subjectPendingRemoval = null },
+            title = { Text(stringResource(R.string.lesson_hub_remove_title)) },
+            text = { Text(stringResource(R.string.lesson_hub_remove_message,
+                subject.label(LocaleHelper.getLanguage(context)), grade)) },
+            confirmButton = {
+                TextButton(onClick = { saveSelection(selectedSubjects - subject, true) },
+                    enabled = !selectionLoading && !selectionSaving) { Text(stringResource(R.string.lesson_hub_remove)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { subjectPendingRemoval = null }) {
+                    Text(stringResource(R.string.lesson_hub_cancel))
+                }
+            }
+        )
     }
 }

@@ -21,8 +21,7 @@ object SupabaseAuthRedirect {
 class SupabaseHttp : SupabaseTransport {
     companion object {
         @JvmStatic fun enabled(context: Context): Boolean = BuildConfig.SUPABASE_ENABLED &&
-            !BuildConfig.DEBUG_GUEST_MODE &&
-            !context.getSharedPreferences("backend_test", 0).contains("endpoint")
+            !BuildConfig.DEBUG_GUEST_MODE
     }
     override fun request(method: String, path: String, body: JSONObject?, token: String?): String {
         check(Looper.myLooper() != Looper.getMainLooper()) { "Network on main thread" }
@@ -54,7 +53,8 @@ class SupabaseHttp : SupabaseTransport {
                 val detail = failure.optString("msg", failure.optString("message", ""))
                 val mapped = when {
                     status == 429 && (code.contains("email", ignoreCase = true) || detail.contains("email", ignoreCase = true)) -> "EMAIL_RATE_LIMITED"
-                    code in listOf("NOT_CONFIGURED","RATE_LIMITED","INVALID_REQUEST","EMPTY_RESPONSE","PROVIDER","UNAUTHORIZED") -> code
+                    code in listOf("NOT_CONFIGURED","RATE_LIMITED","INVALID_REQUEST","EMPTY_RESPONSE","PROVIDER","UNAUTHORIZED",
+                        "IMAGE_BLURRY","NOT_TIMETABLE","TIMETABLE_UNCLEAR","TODO_DETAILS_REQUIRED","INVALID_AI_OUTPUT") -> code
                     code.matches(Regex("PT[0-9]{3}")) && failure.optString("message").matches(Regex("[A-Z_]{1,80}")) -> failure.getString("message")
                     code == "email_address_not_authorized" -> "EMAIL_SENDING_NOT_CONFIGURED"
                     code == "email_address_invalid" -> "EMAIL_INVALID"

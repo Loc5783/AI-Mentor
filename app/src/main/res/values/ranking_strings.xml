@@ -3,6 +3,8 @@
   <string name="ranking_loading">Đang tải bảng thi đua…</string>
   <string name="ranking_error">Không tải được bảng thi đua. Kiểm tra kết nối rồi thử lại.</string>
   <string name="ranking_login">Phiên đăng nhập đã hết hạn. Đăng nhập lại để xem bảng thi đua.</string>
+  <string name="ranking_offline">Bạn đang ngoại tuyến. Bảng thi đua sẽ cập nhật khi có mạng.</string>
+  <string name="ranking_server_error">Máy chủ thi đua đang tạm gián đoạn. Hãy thử lại sau.</string>
   <string name="ranking_empty">Chưa có người học trong danh sách này.</string>
   <string name="ranking_friends_empty">Chưa có bạn bè cùng thi đua. Danh sách này sẽ thêm những người đã chấp nhận kết bạn.</string>
   <string name="ranking_rules">Người bằng điểm cùng hạng · Hiển thị tối đa 100 người</string>

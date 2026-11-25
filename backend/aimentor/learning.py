@@ -107,10 +107,12 @@ class LearningService:
 
     @staticmethod
     def enrollment_dto(row):
+        placement = json.loads(row["placement"]) if row["placement"] else None
+        is_from_beginning = bool(placement and placement.get("mode") == "FROM_BEGINNING")
         return {"id": row["id"], "subjectId": row["subject_id"], "grade": row["grade"],
                 "curriculumVersion": row["curriculum_version"],
-                "placementStatus": "COMPLETED" if row["placement"] else "NOT_STARTED",
-                "placement": json.loads(row["placement"]) if row["placement"] else None,
+                "placementStatus": "START_FROM_BEGINNING" if is_from_beginning else "COMPLETED" if placement else "NOT_STARTED",
+                "placement": placement,
                 "revision": row["revision"], "updatedAt": iso(row["updated_at"])}
 
     def list_enrollments(self, owner):
@@ -176,6 +178,20 @@ class LearningService:
         return {"enrollment": self.enrollment_dto(enrollment), "title": course["title"],
                 "curriculumVersion": course["version"], "sourceNote": course["sourceNote"],
                 "units": units, "pendingAttempts": [dict(x) for x in pending]}
+
+    def start_from_beginning(self, owner, item):
+        """Persist the per-enrollment choice so the server unlocks lessons without a placement test."""
+        with self.db.transaction() as db:
+            enrollment = self.enrollment(db, owner, item)
+            placement = json.loads(enrollment["placement"]) if enrollment["placement"] else None
+            if placement and placement.get("mode") != "FROM_BEGINNING":
+                error("PLACEMENT_ALREADY_COMPLETED", 409)
+            if placement is None:
+                now = self.clock()
+                db.execute("UPDATE enrollments SET placement=?,revision=revision+1,updated_at=? WHERE id=? AND user_id=?",
+                           (dump({"mode": "FROM_BEGINNING", "skippedUnitIds": []}), now, item, owner))
+                Database.event(db, owner, "ENROLLMENT", item, enrollment["revision"] + 1)
+        return self.path(owner, item)
 
     def attempt_dto(self, db, owner, row):
         enrollment = self.enrollment(db, owner, row["enrollment_id"])

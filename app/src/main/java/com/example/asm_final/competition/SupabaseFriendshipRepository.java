@@ -30,17 +30,33 @@ public final class SupabaseFriendshipRepository implements FriendshipRepository 
     JSONArray items = call(owner, "GET", "/friendships", null, null).optJSONArray("items");
     List<Item> result = new ArrayList<>();
     if (items == null) return result;
+    Map<String, JSONObject> sharedStreaks = new HashMap<>();
+    try {
+      JSONObject shared = new JSONObject(new SupabaseAccounts(context).requestFor(
+          owner, "POST", "/rest/v1/rpc/mentor_friend_shared_streaks", new JSONObject()));
+      JSONArray rows = shared.optJSONArray("streaks");
+      if (rows != null) for (int i = 0; i < rows.length(); i++) {
+        JSONObject row = rows.optJSONObject(i);
+        if (row != null) sharedStreaks.put(row.optString("friendId", ""), row);
+      }
+    } catch (Exception ignored) {
+      // Keep individual friend streaks visible if the additive shared-streak migration is not deployed yet.
+    }
     for (int i = 0; i < items.length(); i++) {
       JSONObject row = items.getJSONObject(i);
       JSONObject profile = row.optJSONObject("profile");
+      String profileId = profile == null ? "" : profile.optString("id", "");
+      JSONObject shared = sharedStreaks.get(profileId);
       result.add(new Item(
           row.getString("id"),
-          profile == null ? "" : profile.optString("id", ""),
+          profileId,
           row.optString("status", row.optString("state", "PENDING")),
           row.optString("direction", ""),
           profile == null ? "" : profile.optString("nickname", ""),
           profile == null ? 0 : profile.optLong("dailyXp", 0),
           profile == null ? 0 : profile.optInt("streakDays", 0),
+          shared == null ? 0 : shared.optInt("streakDays", 0),
+          shared == null || shared.isNull("lastSharedDay") ? null : shared.optString("lastSharedDay"),
           row.optInt("revision", 1)));
     }
     return Collections.unmodifiableList(result);

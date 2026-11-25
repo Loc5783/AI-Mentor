@@ -8,7 +8,9 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.animation.core.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,14 +30,15 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,9 +46,12 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import org.json.JSONObject
 import com.example.asm_final.R
+import com.example.asm_final.competition.PublicLearner
 import com.example.asm_final.dashboard.LearningOverviewData
 import com.example.asm_final.dashboard.LearningOverviewRepository
-import com.example.asm_final.competition.FriendshipRepository
+import com.example.asm_final.competition.FriendsViewModel
+import androidx.compose.runtime.livedata.observeAsState
+import java.util.function.Consumer
 import com.example.asm_final.utils.LocaleHelper
 import com.example.mentor.learning.SubjectId
 import com.example.mentor.ui.design.MentorButton
@@ -54,6 +61,7 @@ import com.example.mentor.ui.design.MentorTokens
 import com.example.mentor.ui.design.motionEnabled
 
 private data class ProfileBadge(val title: String, val description: String, val unlocked: Boolean)
+private enum class FriendsPage { PROFILE, LIST, SEARCH }
 
 /**
  * Level 4 — Premium EdTech Profile Presentation.
@@ -68,7 +76,8 @@ class ProfileUi(
     private val edit: Runnable,
     private val settings: Runnable,
     private val learn: Runnable,
-    private val friendsAction: Runnable,
+    private val friendsModel: FriendsViewModel,
+    private val openFriendProfile: Consumer<String>,
 ) {
     private var displayName by mutableStateOf("")
     private var avatar by mutableStateOf<String?>(null)
@@ -80,15 +89,15 @@ class ProfileUi(
     private var studySeconds by mutableStateOf<Long?>(null)
     private var badges by mutableStateOf<List<ProfileBadge>>(emptyList())
     private var badgesLoaded by mutableStateOf(false)
-    private var friends by mutableStateOf<List<FriendshipRepository.Item>>(emptyList())
     private var loading by mutableStateOf(true)
     private var failed by mutableStateOf(false)
 
     fun view(): View = composeHost(context, scenicBackground = true) {
         ProfileScreen(
             displayName, avatar, bio, grade, goal, subjects, snapshot, loading, failed,
-            studySeconds, badges, badgesLoaded, friends,
-            { refresh.run() }, { edit.run() }, { settings.run() }, { learn.run() }, { friendsAction.run() }
+            studySeconds, badges, badgesLoaded, friendsModel,
+            { refresh.run() }, { edit.run() }, { settings.run() }, { learn.run() },
+            { openFriendProfile.accept(it) }
         )
     }
 
@@ -128,10 +137,6 @@ class ProfileUi(
         badgesLoaded = badgeResponse != null
     }
 
-    fun social(acceptedFriends: List<FriendshipRepository.Item>) {
-        friends = acceptedFriends.toList()
-    }
-
     fun failure() {
         loading = false
         failed = true
@@ -152,17 +157,51 @@ private fun ProfileScreen(
     studySeconds: Long?,
     badges: List<ProfileBadge>,
     badgesLoaded: Boolean,
-    friends: List<FriendshipRepository.Item>,
+    friendsModel: FriendsViewModel,
     refresh: () -> Unit,
     edit: () -> Unit,
     settings: () -> Unit,
     learn: () -> Unit,
-    friendsAction: () -> Unit,
+    openFriendProfile: (String) -> Unit,
 ) {
     val data = snapshot?.data
     val motion = motionEnabled()
     var entered by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { entered = true }
+    val friendsState by friendsModel.friendsState().observeAsState()
+    val searchState by friendsModel.searchState().observeAsState()
+    val friendsPalette = premiumDashboardPalette(
+        com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current))
+    var friendsPage by rememberSaveable { mutableStateOf(FriendsPage.PROFILE) }
+    BackHandler(enabled = friendsPage != FriendsPage.PROFILE) {
+        friendsPage = if (friendsPage == FriendsPage.SEARCH) FriendsPage.LIST else FriendsPage.PROFILE
+    }
+
+    if (friendsPage != FriendsPage.PROFILE) {
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+            .padding(horizontal = MentorTokens.PagePadding, vertical = MentorTokens.SpaceLarge),
+            verticalArrangement = Arrangement.spacedBy(MentorTokens.SpaceLarge)) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = {
+                    friendsPage = if (friendsPage == FriendsPage.SEARCH) FriendsPage.LIST else FriendsPage.PROFILE
+                }) { Text(stringResource(R.string.friends_back)) }
+                Spacer(Modifier.weight(1f))
+                if (friendsPage == FriendsPage.LIST) {
+                    Button(onClick = { friendsPage = FriendsPage.SEARCH }) {
+                        Text(stringResource(R.string.friends_open_search))
+                    }
+                }
+            }
+            Text(stringResource(if (friendsPage == FriendsPage.SEARCH) R.string.friends_search_title
+                else R.string.friends_manage_title),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = friendsPalette.title)
+            FriendsPanel(friendsState, searchState, friendsPalette, friendsModel,
+                openFriendProfile, searchMode = friendsPage == FriendsPage.SEARCH)
+        }
+        return
+    }
 
     Box(Modifier.fillMaxSize()) {
         Column(
@@ -176,7 +215,7 @@ private fun ProfileScreen(
             visible = entered || !motion,
             enter = fadeIn() + slideInVertically { -it / 12 }
         ) {
-            ProfileHero(name, avatar, settings, loading)
+            ProfileHero(name, avatar, bio, edit, settings, loading)
         }
 
         // Main Profile Body
@@ -196,9 +235,8 @@ private fun ProfileScreen(
                     subjectsCount = subjects.size,
                     edit = edit
                 )
-                ProfileNote(bio, edit)
-                // Section TỔNG QUAN (2x2 Grid)
-                ProfileOverviewGrid(data)
+                // Section TỔNG QUAN
+                ProfileOverviewGrid(data, learn)
 
                 ProfileStudySummary(studySeconds)
 
@@ -207,8 +245,22 @@ private fun ProfileScreen(
                     ProfileNotice(snapshot, failed, refresh, learn)
                 }
 
-                // Section STREAK BẠN BÈ (Dashed circular slots)
-                ProfileFriendsStreak(friends, friendsAction)
+                PremiumDashboardCard(friendsPalette) {
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f)) {
+                            Text(stringResource(R.string.friends_manage_title),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold, color = friendsPalette.title)
+                            Text(stringResource(R.string.friends_manage_subtitle),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = friendsPalette.secondary)
+                        }
+                        TextButton(onClick = {
+                            friendsModel.refreshFriends()
+                            friendsPage = FriendsPage.LIST
+                        }) { Text(stringResource(R.string.friends_open_list)) }
+                    }
+                }
 
                 // Section HUY HIỆU THỬ THÁCH THÁNG
                 ProfileBadgeCollection(badges, badgesLoaded)
@@ -231,6 +283,8 @@ private fun ProfileScreen(
 private fun ProfileHero(
     name: String,
     avatar: String?,
+    bio: String,
+    edit: () -> Unit,
     settings: () -> Unit,
     loading: Boolean,
 ) {
@@ -244,7 +298,7 @@ private fun ProfileHero(
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = MentorTokens.PagePadding)
-                .padding(top = 12.dp, bottom = 16.dp),
+                .padding(top = 18.dp, bottom = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Top Bar: Display Name / Eyebrow on left, Settings on right
@@ -287,10 +341,34 @@ private fun ProfileHero(
                 }
             }
 
-            Spacer(Modifier.height(14.dp))
+            if (!loading) {
+                Column(
+                    Modifier.fillMaxWidth().padding(top = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        stringResource(R.string.profile_note_title),
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        bio.ifBlank { stringResource(R.string.profile_note_empty) },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    TextButton(onClick = edit, modifier = Modifier.testTag("profile-add-note")) {
+                        Text(stringResource(if (bio.isBlank()) R.string.profile_add_note else R.string.profile_edit_note))
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(18.dp))
 
             // Prominent Centered Avatar (96dp)
-            ProfileAvatar(name, avatar, 72.dp, loading)
+            ProfileAvatar(name, avatar, 88.dp, loading)
         }
     }
 }
@@ -420,44 +498,9 @@ private fun ProfileIdentitySection(
 }
 
 @Composable
-private fun ProfileNote(note: String, edit: () -> Unit) {
-    MentorCard(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            Modifier.fillMaxWidth().padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            Text(
-                stringResource(R.string.profile_note_title),
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = note.ifBlank { stringResource(R.string.profile_note_empty) },
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (note.isBlank()) MaterialTheme.colorScheme.onSurfaceVariant
-                    else MaterialTheme.colorScheme.onSurface
-            )
-            if (note.isBlank()) {
-                TextButton(onClick = edit, modifier = Modifier.testTag("profile-add-note")) {
-                    Text(stringResource(R.string.profile_add_note))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ProfileOverviewGrid(data: LearningOverviewData?) {
+private fun ProfileOverviewGrid(data: LearningOverviewData?, onCompletedLessonsClick: () -> Unit) {
     val streakDays = data?.streakDays
     val totalXp = data?.totalXp
-    val rankRes = when (data?.rankTier?.uppercase()) {
-        "DIAMOND" -> R.string.profile_rank_diamond
-        "PLATINUM" -> R.string.profile_rank_platinum
-        "GOLD" -> R.string.profile_rank_gold
-        "SILVER" -> R.string.profile_rank_silver
-        "BRONZE" -> R.string.profile_rank_bronze
-        else -> R.string.profile_rank_pending
-    }
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         ProfileSectionTitle(stringResource(R.string.profile_overview_title))
@@ -552,147 +595,66 @@ private fun ProfileOverviewGrid(data: LearningOverviewData?) {
 
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
-                // Row 2: Rank + Lead / Pending stat
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                // Row 2: Completed lessons (Clickable Roadmap Navigation Card)
+                val lessonsText = if (data == null) "—"
+                    else if (data.totalLessons > 0) stringResource(R.string.profile_lessons_ratio, data.completedLessons, data.totalLessons)
+                    else stringResource(R.string.profile_lessons_unit, data.completedLessons)
+
+                Surface(
+                    onClick = onCompletedLessonsClick,
+                    modifier = Modifier.fillMaxWidth().testTag("profile-lessons"),
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (dark) Color(0xFF334155).copy(alpha = 0.5f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                 ) {
-                    // Cell 3: Rank
                     Row(
-                        Modifier
-                            .weight(1f)
-                            .testTag("profile-rank"),
+                        Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_diamond),
-                            contentDescription = null,
-                            tint = MentorTokens.Blue600,
-                            modifier = Modifier.size(28.dp)
-                        )
-                        Column {
-                            Text(
-                                text = stringResource(rankRes),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Text(
-                                text = stringResource(R.string.competition_title),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-
-                    // Cell 4: Completed lessons, sourced from the learner's progress.
-                    Row(
-                        Modifier
-                            .weight(1f)
-                            .testTag("profile-lessons"),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_book_course),
-                            contentDescription = null,
-                            tint = MentorTokens.Orange500,
-                            modifier = Modifier.size(28.dp)
-                        )
-                        Column {
-                            Text(
-                                text = if (data == null) "—" else stringResource(R.string.profile_lessons_unit, data.completedLessons),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Text(
-                                text = stringResource(R.string.profile_lessons_label),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-/**
- * Section STREAK BẠN BÈ:
- * Features 5 circular dashed slots with (+) symbol matching Image A.
- */
-@Composable
-private fun ProfileFriendsStreak(friends: List<FriendshipRepository.Item>, onAddFriend: () -> Unit) {
-    val outlineColor = MaterialTheme.colorScheme.outlineVariant
-
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        ProfileSectionTitle(stringResource(R.string.profile_friends_streak_title))
-
-        Surface(
-            Modifier
-                .fillMaxWidth()
-                .testTag("profile-friends-empty"),
-            shape = RoundedCornerShape(20.dp),
-            color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, outlineColor)
-        ) {
-            Column(
-                Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    repeat(5) { index ->
-                        val friend = friends.getOrNull(index)
-                        Box(
-                            Modifier
-                                .size(52.dp)
-                                .drawBehind {
-                                    drawCircle(
-                                        color = outlineColor,
-                                        style = Stroke(
-                                            width = 2.dp.toPx(),
-                                            pathEffect = PathEffect.dashPathEffect(
-                                                floatArrayOf(12f, 10f),
-                                                0f
-                                            )
-                                        )
-                                    )
-                                }
-                                .clickable(enabled = friend == null, onClick = onAddFriend),
-                            contentAlignment = Alignment.Center
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.weight(1f)
                         ) {
-                            if (friend == null) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_add),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            } else {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_book_course),
+                                contentDescription = null,
+                                tint = MentorTokens.Orange500,
+                                modifier = Modifier.size(28.dp)
+                            )
+                            Column {
                                 Text(
-                                    text = friend.nickname.trim().firstOrNull()?.uppercase() ?: "•",
-                                    color = MaterialTheme.colorScheme.primary,
-                                    fontWeight = FontWeight.Bold
+                                    text = lessonsText,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = stringResource(R.string.profile_lessons_label),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.profile_view_roadmap),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Icon(
+                                painter = painterResource(R.drawable.ic_chevron_right),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
                     }
                 }
-
-                Text(
-                    text = if (friends.isEmpty()) stringResource(R.string.profile_friends_empty)
-                        else friends.take(5).joinToString("   •   ") { "${it.nickname.ifBlank { "Bạn học" }} · ${it.streakDays} ngày" },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
             }
         }
     }
@@ -889,4 +851,239 @@ private fun ProfileSectionTitle(title: String) {
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onBackground
     )
+}
+
+@Composable
+fun PublicProfileContent(
+    learner: PublicLearner?,
+    avatar: android.graphics.Bitmap?,
+    loading: Boolean,
+    failed: Boolean,
+    onRetry: () -> Unit
+) {
+    val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
+    val heroBg = if (dark) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.35f)
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .background(heroBg)
+                .padding(vertical = 24.dp, horizontal = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Box(
+                    Modifier
+                        .size(80.dp)
+                        .shadow(4.dp, CircleShape)
+                        .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (avatar != null) {
+                        Image(
+                            bitmap = avatar.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Text(
+                            text = learner?.nickname?.trim()?.firstOrNull()?.uppercase() ?: "U",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                }
+
+                Text(
+                    text = learner?.nickname ?: stringResource(R.string.ranking_loading),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                if (learner != null) {
+                    Text(
+                        text = "@LEARNER_${learner.id}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(MentorTokens.PagePadding),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            if (loading && learner == null) {
+                Box(
+                    Modifier.fillMaxWidth().height(140.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else if (failed && learner == null) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.surface
+                ) {
+                    Column(
+                        Modifier.padding(16.dp).fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        MentorErrorNotice(stringResource(R.string.ranking_profile_error))
+                        OutlinedButton(
+                            onClick = onRetry,
+                            modifier = Modifier.heightIn(min = 48.dp)
+                        ) {
+                            Text(stringResource(R.string.ranking_retry))
+                        }
+                    }
+                }
+            } else {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                ) {
+                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(
+                            text = stringResource(R.string.public_profile_about),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = learner?.bio?.takeIf { it.isNotBlank() } ?: stringResource(R.string.public_profile_bio_empty),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+
+                val streakVal = stringResource(R.string.public_profile_streak_value, learner?.streakDays ?: 0)
+                val streakLbl = stringResource(R.string.public_profile_streak_label)
+                val xpVal = stringResource(R.string.public_profile_xp_value, learner?.dailyXp ?: 0)
+                val xpLbl = stringResource(R.string.public_profile_xp_label)
+
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Surface(
+                        Modifier
+                            .weight(1f)
+                            .semantics(mergeDescendants = true) {
+                                contentDescription = "$streakLbl: $streakVal"
+                            },
+                        shape = RoundedCornerShape(16.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                    ) {
+                        Row(
+                            Modifier.padding(14.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_flame),
+                                contentDescription = null,
+                                tint = Color(0xFFEA580C),
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Column {
+                                Text(
+                                    text = streakVal,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = streakLbl,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+
+                    Surface(
+                        Modifier
+                            .weight(1f)
+                            .semantics(mergeDescendants = true) {
+                                contentDescription = "$xpLbl: $xpVal"
+                            },
+                        shape = RoundedCornerShape(16.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                    ) {
+                        Row(
+                            Modifier.padding(14.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_lightning),
+                                contentDescription = null,
+                                tint = Color(0xFFEAB308),
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Column {
+                                Text(
+                                    text = xpVal,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = xpLbl,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            ) {
+                Row(
+                    Modifier.padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_home),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.public_profile_privacy_notice),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+    }
 }

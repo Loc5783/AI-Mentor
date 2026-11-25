@@ -43,12 +43,20 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
             return
         }
         if (navigation?.currentDestination?.route == route) return
+        // A study-plan subpage must not be restored as the top of the Study tab after
+        // switching to another tab. Return to its parent before saving tab state.
+        if (!remember && route in tabs.map { it.route } &&
+            navigation?.currentDestination?.route == "schedule") {
+            navigation?.popBackStack()
+            if (navigation?.currentDestination?.route == route) return
+        }
         // Settings and editing sit above Profile; return to that screen instead of restoring
         // a saved tab stack that may bring the subpage back to the top.
         if (route == "profile" && navigation?.currentDestination?.route in listOf("settings", "edit-profile")
             && navigation?.popBackStack("profile", false) == true) return
         if (route == "lessons" && navigation?.currentDestination?.route == "chat"
             && navigation?.popBackStack("lessons", false) == true) return
+        com.example.asm_final.utils.HapticHelper.performHaptic(activity)
         navigation?.navigate(route) {
             launchSingleTop = true
             if (!remember) {
@@ -72,7 +80,7 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
         val top = destinations.firstOrNull { it.route == route }
         val selectedRoute = when (route) {
             "settings", "edit-profile" -> "profile"
-            "chat" -> "lessons"
+            "chat", "schedule" -> "lessons"
             else -> route
         }
         val motion = motionEnabled()
@@ -111,7 +119,8 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
                 }
             ) { padding ->
                 Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
-                    if (top != null && top !in tabs && route != "schedule") Row(Modifier.fillMaxWidth()
+                    OfflineBanner()
+                    if (top != null && top !in tabs) Row(Modifier.fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background)) {
                         TextButton({
                             if (!nav.popBackStack()) {
@@ -144,6 +153,7 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
             Destination(R.id.nav_home, "home", R.string.design_tab_home, R.drawable.ic_home, HomeFragment::class.java),
             Destination(R.id.nav_category, "lessons", R.string.design_tab_lessons, R.drawable.ic_category, LessonHubFragment::class.java),
             Destination(R.id.nav_schedule, "schedule", R.string.design_tab_schedule, R.drawable.ic_schedule, com.example.mentor.schedule.ui.ScheduleFragment::class.java),
+            Destination(R.id.nav_team, "team", R.string.team_tab_title, R.drawable.ic_team, TeamOsFragment::class.java),
             Destination(R.id.nav_competition, "competition", R.string.design_tab_competition, R.drawable.ic_competition, CompetitionFragment::class.java),
             Destination(R.id.nav_profile, "profile", R.string.nav_profile_label, R.drawable.ic_nav_profile, ProfileHubFragment::class.java),
             Destination(R.id.nav_chat, "chat", R.string.design_tab_chat, R.drawable.ic_chat, GeneralChatFragment::class.java),
@@ -151,9 +161,9 @@ class ShellUi(private val activity: HomeActivity, private val username: String, 
             Destination(R.id.nav_edit_profile, "edit-profile", R.string.profile_edit, R.drawable.ic_nav_profile, ProfileFragment::class.java)
         )
         val tabs = listOf(
-            destinations.first { it.id == R.id.nav_home },
             destinations.first { it.id == R.id.nav_category },
-            destinations.first { it.id == R.id.nav_schedule },
+            destinations.first { it.id == R.id.nav_team },
+            destinations.first { it.id == R.id.nav_home },
             destinations.first { it.id == R.id.nav_competition },
             destinations.first { it.id == R.id.nav_profile }
         )

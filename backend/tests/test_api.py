@@ -1,6 +1,9 @@
 import io
+import time
 import uuid
 import pytest
+from datetime import timedelta
+from aimentor.learning_stats import learning_day, shared_streak_summary
 from fastapi.testclient import TestClient
 from aimentor.config import Settings
 from aimentor.main import create_app
@@ -48,6 +51,15 @@ def test_public_profile_hides_private_fields_and_revision_prevents_overwrite(api
     assert changed.status_code==200
     assert changed.json()["bio"]=="Mình thích Sinh học"
     assert client.patch("/me/public-profile",headers=headers(first,**{"If-Match":revision}),json={"bio":"Ghi đè"}).status_code==412
+
+def test_profile_search_excludes_self_and_private_fields(api):
+    client,_=api
+    first,second=signup(client,"SearchOne"),signup(client,"SearchTwo")
+    response=client.get("/profiles/search",params={"q":"Search"},headers=headers(first))
+    assert response.status_code==200,response.text
+    assert response.json()=={"items":[{"id":second["userId"],"nickname":"SearchTwo"}]}
+    assert client.get("/profiles/search",params={"q":"%_"},headers=headers(first)).json()=={"items":[]}
+    assert client.get("/profiles/search",params={"q":"Search"}).status_code==401
 
 def test_project_ownership_idempotency_and_folder_deletion_keeps_chat(api):
     client,_=api
@@ -107,6 +119,40 @@ def test_friendship_requires_recipient_acceptance_and_filters_friend_ranking(api
     assert len(after["entries"])==2
     assert after["timezone"]=="Asia/Ho_Chi_Minh"
     assert all(row["value"]==0 for row in after["entries"])
+
+def test_friend_shared_streak_uses_consecutive_intersection_and_accepted_friends_only(api):
+    client,app=api
+    first,second,pending=signup(client,"SharedFirst"),signup(client,"SharedSecond"),signup(client,"SharedPending")
+    requested=client.post("/friendships",headers=headers(first,**{"Idempotency-Key":key()}),json={"recipientProfileId":second["userId"]})
+    assert requested.status_code==201,requested.text
+    accepted=client.patch("/friendships/"+requested.json()["id"],headers=headers(second,**{"If-Match":"1"}),json={"decision":"ACCEPT"})
+    assert accepted.status_code==200,accepted.text
+    pending_request=client.post("/friendships",headers=headers(first,**{"Idempotency-Key":key()}),json={"recipientProfileId":pending["userId"]})
+    assert pending_request.status_code==201,pending_request.text
+
+    today=learning_day(time.time())
+    shared_days=[(today-timedelta(days=offset)).isoformat() for offset in (0,1,2)]
+    with app.state.db.transaction() as db:
+        for day in shared_days:
+            db.execute("INSERT INTO learning_days(user_id,day) VALUES(?,?)",(int(first["userId"]),day))
+            db.execute("INSERT INTO learning_days(user_id,day) VALUES(?,?)",(int(second["userId"]),day))
+        # Extra solo days must not extend the pair streak.
+        db.execute("INSERT INTO learning_days(user_id,day) VALUES(?,?)",(int(first["userId"]),(today+timedelta(days=1)).isoformat()))
+
+    response=client.get("/friends/streaks",headers=headers(first))
+    assert response.status_code==200,response.text
+    streaks=response.json()["streaks"]
+    assert len(streaks)==1
+    assert streaks[0]["friendId"]==second["userId"]
+    assert streaks[0]["streakDays"]==3
+    assert streaks[0]["lastSharedDay"]==today.isoformat()
+
+def test_shared_streak_resets_after_one_full_inactive_day():
+    from datetime import datetime, timezone
+    now=datetime(2026,11,16,12,0,tzinfo=timezone.utc).timestamp()
+    today=learning_day(now)
+    summary=shared_streak_summary([(today-timedelta(days=2)).isoformat()],now)
+    assert summary=={"streakDays":0,"lastSharedDay":(today-timedelta(days=2)).isoformat()}
 
 def test_event_ownership_never_broadcasts_private_chat_content(api):
     client,app=api

@@ -614,9 +614,7 @@ public final class ConnectedLearningTest {
     ComposeProbe.text(
         compose,
         context.getString(
-            R.string.course_path_progress,
-            assessedPath.completedLessons + assessedPath.skippedLessons,
-            assessedPath.totalLessons,
+            R.string.course_path_all_mastered,
             assessedPath.skippedLessons));
     String unit = model.path.getJSONArray("units").getJSONObject(0).getString("id");
     main(() -> model.start(unit, false));
@@ -694,8 +692,8 @@ public final class ConnectedLearningTest {
         compose,
         context.getString(
             R.string.course_path_progress,
-            currentPath.completedLessons + currentPath.skippedLessons,
-            currentPath.totalLessons,
+            currentPath.completedLessons,
+            currentPath.totalLessons - currentPath.skippedLessons,
             currentPath.skippedLessons));
     drawn();
     try (FileOutputStream out =

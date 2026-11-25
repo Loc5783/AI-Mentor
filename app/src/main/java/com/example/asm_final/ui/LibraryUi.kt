@@ -32,6 +32,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 
 import androidx.compose.ui.Alignment
 
@@ -52,6 +53,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 
 import androidx.compose.ui.unit.dp
 
@@ -66,8 +68,10 @@ import com.example.asm_final.learning.BackendLibraryRepository
 import com.example.asm_final.learning.LibraryRepository
 
 import com.example.asm_final.learning.PracticeQuestion
+import com.example.asm_final.learning.visiblePracticeOptions
 
 import com.example.asm_final.learning.PracticeSession
+import com.example.asm_final.learning.SessionSummary
 
 import com.example.asm_final.learning.QuizSummary
 
@@ -291,7 +295,7 @@ fun LibrarySubjectList(
 
                 verticalAlignment = Alignment.CenterVertically,
 
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
 
             ) {
 
@@ -424,13 +428,24 @@ fun LibraryPracticeScreen(
     val pointerStore = remember(context) { SharedPreferencesSessionPointerStore(context) }
 
     val controller = remember(repository, pointerStore) { LibraryPracticeController(repository, scope, pointerStore) }
+    var showHistory by remember(repository, subjectId, grade) { mutableStateOf(false) }
 
     val selectionState by controller.selectionState.collectAsState()
 
     val sessionState by controller.sessionState.collectAsState()
 
+    val activeSession = sessionState?.session
+    ActiveStudyTime(activeSession?.state == "IN_PROGRESS",
+        activeSession?.subjectId, activeSession?.grade ?: grade)
+
     BackHandler(enabled = sessionState != null) {
         controller.backToList()
+    }
+
+    BackHandler(enabled = sessionState == null && showHistory) { showHistory = false }
+
+    LaunchedEffect(showHistory, sessionState == null, subjectId, grade) {
+        if (showHistory && sessionState == null) controller.loadHistory(subjectId.wireId, grade)
     }
 
 
@@ -463,7 +478,13 @@ fun LibraryPracticeScreen(
 
 
 
-    if (sessionState == null) {
+    if (sessionState == null && showHistory) {
+        LibraryHistoryView(subjectId, grade, selectionState,
+            onBack = { showHistory = false },
+            onReload = { controller.loadHistory(subjectId.wireId, grade) },
+            onResume = { controller.resumeSessionDirect(it) },
+            onReview = { session, title -> controller.reviewHistorySession(session, title) })
+    } else if (sessionState == null) {
 
         // LUỒNG 1: DANH SÁCH BỘ ĐỀ
 
@@ -476,6 +497,7 @@ fun LibraryPracticeScreen(
             controller = controller,
 
             selectionState = selectionState,
+            onShowHistory = { showHistory = true },
 
             onBack = onBack,
 
@@ -514,6 +536,7 @@ private fun LibraryQuizSelectionView(
     grade: Int,
     controller: LibraryPracticeController,
     selectionState: QuizSelectionState,
+    onShowHistory: () -> Unit,
     onBack: () -> Unit,
     onOpenNotebook: () -> Unit
 ) {
@@ -543,6 +566,7 @@ private fun LibraryQuizSelectionView(
                 )
                 OutlinedButton(onClick = onOpenNotebook) { Text("📖 Sổ lỗi sai") }
             }
+            TextButton(onClick = onShowHistory) { Text("Lịch sử làm bài →") }
         }
 
         if (selectionState.confirmingRestartQuiz != null) {
@@ -577,8 +601,8 @@ private fun LibraryQuizSelectionView(
                 item {
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = MaterialTheme.colorScheme.errorContainer,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
+                        color = Color(0xFFFFE6E6),
+                        border = BorderStroke(1.dp, Color(0xFFB91C1C)),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Row(
@@ -591,16 +615,16 @@ private fun LibraryQuizSelectionView(
                                     "⚠️ Không thể bắt đầu/mở lại bài luyện",
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onErrorContainer
+                                    color = Color(0xFF842121)
                                 )
                                 Text(
                                     presentation.startError,
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onErrorContainer
+                                    color = Color(0xFF842121)
                                 )
                             }
                             TextButton(onClick = { controller.clearStartError() }) {
-                                Text("Đóng", color = MaterialTheme.colorScheme.onErrorContainer)
+                                Text("Đóng", color = Color(0xFF842121))
                             }
                         }
                     }
@@ -612,8 +636,8 @@ private fun LibraryQuizSelectionView(
                 item {
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = MaterialTheme.colorScheme.tertiaryContainer,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
+                        color = Color(0xFFFFF1CC),
+                        border = BorderStroke(1.dp, Color(0xFFB36B00)),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Row(
@@ -626,12 +650,12 @@ private fun LibraryQuizSelectionView(
                                     "⚠️ Tiến độ bài làm dở chưa đồng bộ",
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                                    color = Color(0xFF6B3E00)
                                 )
                                 Text(
                                     presentation.activeSessionsSyncWarning.message,
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                                    color = Color(0xFF6B3E00)
                                 )
                             }
                             if (presentation.activeSessionsSyncWarning.canRetry) {
@@ -700,10 +724,10 @@ private fun LibraryQuizSelectionView(
                             }
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                                 Button(
-                                    onClick = { controller.resumeSessionDirect(activeCard.session) },
+                                    onClick = onShowHistory,
                                     enabled = selectionState.startingQuizId == null && selectionState.resumingQuizId == null
                                 ) {
-                                    Text(if (activeCard.isResuming) "Đang mở lại..." else "Tiếp tục làm bài")
+                                    Text("Xem trong lịch sử")
                                 }
                             }
                         }
@@ -736,8 +760,7 @@ private fun LibraryQuizSelectionView(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                Text("⚠️ Lỗi tải dữ liệu", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
-                                Text(catalog.message, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
+                                MentorErrorNotice("⚠️ Lỗi tải dữ liệu\n${catalog.message}")
                                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                                     Button(onClick = { controller.loadQuizzes(subjectId.wireId, grade) }) {
                                         Text("Thử lại")
@@ -875,10 +898,10 @@ private fun LibraryQuizSelectionView(
                                             Text("Bắt đầu lại")
                                         }
                                         Button(
-                                            onClick = { controller.resumeSession(quiz, activeSession.id) },
+                                            onClick = onShowHistory,
                                             enabled = selectionState.startingQuizId == null && selectionState.resumingQuizId == null
                                         ) {
-                                            Text(if (itemPresentation.isResuming) "Đang mở lại..." else "Tiếp tục làm bài")
+                                            Text("Xem trong lịch sử")
                                         }
                                     }
                                 } else {
@@ -904,6 +927,82 @@ private fun LibraryQuizSelectionView(
 
 @Composable
 
+private fun LibraryHistoryView(
+    subjectId: SubjectId,
+    grade: Int,
+    state: QuizSelectionState,
+    onBack: () -> Unit,
+    onReload: () -> Unit,
+    onResume: (SessionSummary) -> Unit,
+    onReview: (SessionSummary, String) -> Unit
+) {
+    val active = state.historySessions.filter { it.state == "IN_PROGRESS" }
+    val completed = state.historySessions.filter { it.state == "COMPLETED" }
+    val subjectName = subjectId.label("vi")
+    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            TextButton(onClick = onBack) { Text("← Kho câu hỏi") }
+            Text("Lịch sử làm bài", style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold)
+        }
+        LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            if (state.isHistoryLoading) item { CircularProgressIndicator() }
+            state.startErrorMessage?.let { message -> item { MentorErrorNotice(message) } }
+            state.historyError?.let { message ->
+                item {
+                    MentorErrorNotice(message)
+                    TextButton(onClick = onReload) { Text("Thử lại") }
+                }
+            }
+            if (!state.isHistoryLoading && state.historyError == null && state.historySessions.isEmpty()) {
+                item { Text("Bạn chưa có bài làm trong $subjectName lớp $grade.",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            }
+            if (active.isNotEmpty()) {
+                item { Text("Đang làm dở", style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold) }
+                items(active, key = { it.id }) { session ->
+                    LibraryHistoryCard(session, state, subjectName, onResume, onReview)
+                }
+            }
+            if (completed.isNotEmpty()) {
+                item { Text("Đã hoàn thành", style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold) }
+                items(completed, key = { it.id }) { session ->
+                    LibraryHistoryCard(session, state, subjectName, onResume, onReview)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LibraryHistoryCard(
+    session: SessionSummary,
+    state: QuizSelectionState,
+    subjectName: String,
+    onResume: (SessionSummary) -> Unit,
+    onReview: (SessionSummary, String) -> Unit
+) {
+    val title = state.quizzes?.firstOrNull { it.id == session.quizId }?.title
+        ?: "Bài luyện $subjectName · Lớp ${session.grade}"
+    Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            Text(if (session.state == "IN_PROGRESS")
+                "Đã làm ${session.answeredCount}/${session.totalCount} câu"
+            else "${session.correctCount}/${session.totalCount} câu đúng",
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Button(onClick = {
+                if (session.state == "IN_PROGRESS") onResume(session) else onReview(session, title)
+            }, enabled = !state.isHistoryLoading && state.resumingQuizId == null) {
+                Text(if (session.state == "IN_PROGRESS") "Làm tiếp" else "Xem lại bài")
+            }
+        }
+    }
+}
+
+@Composable
 private fun LibrarySessionPracticeView(
 
     sessionState: SessionPracticeState,
@@ -1120,7 +1219,7 @@ private fun LibrarySessionPracticeView(
 
 
 
-                        val options = listOf("A" to q.optionA, "B" to q.optionB, "C" to q.optionC, "D" to q.optionD)
+                        val options = visiblePracticeOptions(q)
 
                         options.forEach { (optKey, optText) ->
 
@@ -1128,11 +1227,11 @@ private fun LibrarySessionPracticeView(
 
                             val btnBg = when {
 
-                                isAnswered && optKey == q.correctOption -> Color(0xFFD1FAE5)
+                                isAnswered && optKey == q.correctOption -> Color(0xFF15803D)
 
                                 isAnswered && isChosen && q.isCorrect == false -> Color(0xFFFEE2E2)
 
-                                isChosen -> MaterialTheme.colorScheme.primaryContainer
+                                isChosen -> MaterialTheme.colorScheme.primary
 
                                 else -> MaterialTheme.colorScheme.surface
 
@@ -1153,18 +1252,25 @@ private fun LibrarySessionPracticeView(
                                     .fillMaxWidth()
 
                                     .clickable(enabled = !isAnswered && !isSubmittingAnswer) {
-
-                                        controller.selectOption(optKey)
-
+                                        if (selectedOption != optKey) {
+                                            com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                                            controller.selectOption(optKey)
+                                        }
                                     }
 
                             ) {
 
                                 Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
 
-                                    Text("$optKey. ", fontWeight = FontWeight.Bold)
+                                    val optionForeground = when {
+                                        isAnswered && optKey == q.correctOption -> Color.White
+                                        isAnswered && isChosen && q.isCorrect == false -> Color(0xFF7F1D1D)
+                                        isChosen -> MaterialTheme.colorScheme.onPrimary
+                                        else -> MaterialTheme.colorScheme.onSurface
+                                    }
+                                    Text("$optKey. ", fontWeight = FontWeight.Bold, color = optionForeground)
 
-                                    Text(optText)
+                                    Text(optText, color = optionForeground)
 
                                 }
 
@@ -1179,46 +1285,40 @@ private fun LibrarySessionPracticeView(
 
 
                 if (isAnswered) {
-
                     val correct = q.isCorrect == true
+                    val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(LocalContext.current)
+                    val cardBg = if (dark) (if (correct) Color(0xFF064E3B) else Color(0xFF7F1D1D)) else (if (correct) Color(0xFFECFDF5) else Color(0xFFFEF2F2))
+                    val textColor = if (dark) (if (correct) Color(0xFFA7F3D0) else Color(0xFFFCA5A5)) else (if (correct) Color(0xFF065F46) else Color(0xFF991B1B))
 
                     Surface(
-
                         shape = RoundedCornerShape(12.dp),
-
-                        color = if (correct) Color(0xFFECFDF5) else Color(0xFFFEF2F2),
-
+                        color = cardBg,
                         border = BorderStroke(1.dp, if (correct) Color(0xFF10B981) else Color(0xFFEF4444)),
-
                         modifier = Modifier.fillMaxWidth()
-
                     ) {
-
                         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-
                             Text(
-
                                 if (correct) "✅ Chính xác!" else "❌ Chưa đúng (Đáp án đúng: ${q.correctOption ?: ""})",
-
                                 fontWeight = FontWeight.Bold,
-
-                                color = if (correct) Color(0xFF065F46) else Color(0xFF991B1B)
-
+                                color = textColor
                             )
-
                             if (!q.explanation.isNullOrBlank()) {
-
-                                Text("💡 Lời giải: ${q.explanation}", style = MaterialTheme.typography.bodyMedium)
-
+                                Text("💡 Lời giải: ${q.explanation}", style = MaterialTheme.typography.bodyMedium, color = textColor)
                             }
-
                         }
-
                     }
-
                 }
 
 
+
+                val wasAnsweredInitially = remember(q.id) { q.userAnswer != null }
+                var hasTriggeredSubmissionHaptic by rememberSaveable(q.id) { mutableStateOf(q.userAnswer != null) }
+                LaunchedEffect(q.userAnswer, q.id) {
+                    if (q.userAnswer != null && !wasAnsweredInitially && !hasTriggeredSubmissionHaptic) {
+                        hasTriggeredSubmissionHaptic = true
+                        com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                    }
+                }
 
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
 
@@ -1226,7 +1326,10 @@ private fun LibrarySessionPracticeView(
 
                         Button(
 
-                            onClick = { controller.submitAnswer() },
+                            onClick = {
+                                com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                                controller.submitAnswer()
+                            },
 
                             enabled = selectedOption != null && !isSubmittingAnswer
 
@@ -1365,7 +1468,7 @@ fun WrongQuestionsNotebookScreen(
 
                 }
 
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(Modifier.weight(1f), horizontalAlignment = Alignment.Start) {
 
                     Text(
 
@@ -1388,8 +1491,6 @@ fun WrongQuestionsNotebookScreen(
                     )
 
                 }
-
-                Spacer(Modifier.width(64.dp))
 
             }
 
@@ -1417,7 +1518,7 @@ fun WrongQuestionsNotebookScreen(
 
                 "NEEDS_REVIEW" to "⚠️ Cần ôn tập",
 
-                "RESOLVED" to "✓ Đã làm đúng"
+                "RESOLVED" to "✓ Đã ôn lại"
 
             )
 
@@ -1461,7 +1562,7 @@ fun WrongQuestionsNotebookScreen(
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
 
-                    Text(state.errorMessage ?: "Lỗi tải dữ liệu", color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
+                    MentorErrorNotice(state.errorMessage ?: "Lỗi tải dữ liệu")
 
                     Button(onClick = { controller.loadNotebook(subjectId?.wireId, grade, state.filterState) }) {
 
@@ -1481,7 +1582,11 @@ fun WrongQuestionsNotebookScreen(
 
                     Text(
 
-                        "🎉 Tuyệt vời! Bạn không có câu sai nào trong mục này.",
+                        when (state.filterState) {
+                            "RESOLVED" -> "Chưa có câu nào được ôn lại."
+                            "NEEDS_REVIEW" -> "Hiện không có câu nào cần ôn tập."
+                            else -> "Sổ lỗi sai của bạn đang trống."
+                        },
 
                         style = MaterialTheme.typography.titleMedium,
 
@@ -1597,37 +1702,33 @@ fun WrongQuestionsNotebookScreen(
 
                             ) {
 
-                                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
 
-                                    Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
+                                    val subjectLabel = runCatching {
+                                        SubjectId.fromWireId(item.subjectId).label(LocaleHelper.getLanguage(context))
+                                    }.getOrDefault(item.subjectId)
+                                    Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.primaryContainer) {
+                                        Text(subjectLabel, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer)
+                                    }
+
+                                    Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.surfaceVariant,
+                                        modifier = Modifier.weight(1f)) {
 
                                         Text(
 
-                                            item.chapter.ifBlank { "Chương chung" },
+                                            item.chapter.takeUnless { it.isBlank() || it == "Chưa phân loại" }
+                                                ?: item.topic.takeUnless { it.isBlank() || it == "Chủ đề chung" }
+                                                ?: "Ôn tập tổng hợp",
 
                                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
 
-                                            style = MaterialTheme.typography.labelSmall
+                                            style = MaterialTheme.typography.labelSmall,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
 
                                         )
-
-                                    }
-
-                                    if (item.difficulty.isNotBlank()) {
-
-                                        Surface(shape = RoundedCornerShape(6.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
-
-                                            Text(
-
-                                                item.difficulty,
-
-                                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-
-                                                style = MaterialTheme.typography.labelSmall
-
-                                            )
-
-                                        }
 
                                     }
 
@@ -1645,7 +1746,7 @@ fun WrongQuestionsNotebookScreen(
 
                                     Text(
 
-                                        if (isResolved) "✓ Đã làm đúng lại" else "⚠️ Cần ôn tập",
+                                        if (isResolved) "✓ Đã ôn lại" else "⚠️ Cần ôn tập",
 
                                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
 
@@ -1795,7 +1896,12 @@ fun WrongQuestionsNotebookScreen(
 
                                     Text(
 
-                                        "Lịch sử làm bài: Bạn đã chọn đáp án ${item.selectedOption} (Đáp án chuẩn: ${item.correctOption})",
+                                        if (item.options.isEmpty()) {
+                                            "Bài làm của bạn: ${item.selectedOption.ifBlank { "Chưa trả lời" }}" +
+                                                item.correctOption.takeIf { it.isNotBlank() }?.let { "\nĐáp án tham khảo: $it" }.orEmpty()
+                                        } else {
+                                            "Lịch sử làm bài: Bạn đã chọn đáp án ${item.selectedOption} (Đáp án chuẩn: ${item.correctOption})"
+                                        },
 
                                         style = MaterialTheme.typography.bodySmall,
 

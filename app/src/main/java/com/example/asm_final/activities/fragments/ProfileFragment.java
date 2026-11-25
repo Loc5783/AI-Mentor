@@ -15,10 +15,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import com.example.asm_final.R;
+import com.example.asm_final.utils.HapticHelper;
 
 public class ProfileFragment extends Fragment {
 
-  private EditText edtFullName, edtEmail, edtPassword, edtBio;
+  private EditText edtFullName, edtEmail, edtPassword, edtBio, edtAddress, edtPhone;
   private com.example.asm_final.accounts.UserProfile loadedProfile;
   private Button btnUpdate, btnChooseAvatar;
   private ImageView imgAvatar;
@@ -54,6 +55,7 @@ public class ProfileFragment extends Fragment {
                   }
                   avatarUri = uri.toString();
                   imgAvatar.setImageURI(uri);
+                  HapticHelper.performHaptic(getContext());
                 }
               }
             });
@@ -81,6 +83,8 @@ public class ProfileFragment extends Fragment {
     edtEmail = view.findViewById(R.id.edtProfileEmail);
     edtPassword = view.findViewById(R.id.edtProfilePassword);
     edtBio = view.findViewById(R.id.edtProfileBio);
+    edtPhone = view.findViewById(R.id.edtProfilePhone);
+    edtAddress = view.findViewById(R.id.edtProfileAddress);
     btnUpdate = view.findViewById(R.id.btnUpdateProfile);
     btnChooseAvatar = view.findViewById(R.id.btnChooseAvatar);
     imgAvatar = view.findViewById(R.id.imgProfileAvatar);
@@ -105,6 +109,8 @@ public class ProfileFragment extends Fragment {
           String email = edtEmail.getText().toString().trim();
           String password = edtPassword.getText().toString();
           String bio = edtBio.getText().toString().trim();
+          String phone = edtPhone != null ? edtPhone.getText().toString().trim() : "";
+          String address = edtAddress != null ? edtAddress.getText().toString().trim() : "";
 
           if (bio.length() > 500) {
             edtBio.setError(getString(R.string.profile_bio_too_long));
@@ -119,8 +125,8 @@ public class ProfileFragment extends Fragment {
           com.example.asm_final.accounts.UserProfile profile =
               new com.example.asm_final.accounts.UserProfile(
                   fullName,
-                  loadedProfile == null ? "" : loadedProfile.address,
-                  loadedProfile == null ? "" : loadedProfile.phone,
+                  address,
+                  phone,
                   email,
                   avatarUri,
                   bio);
@@ -131,6 +137,7 @@ public class ProfileFragment extends Fragment {
                 btnUpdate.setEnabled(true);
                 if (updated) {
                   edtPassword.setText("");
+                  HapticHelper.performHaptic(getContext());
                   Toast.makeText(getContext(), R.string.prof_update_success, Toast.LENGTH_SHORT)
                       .show();
                   if (getActivity() instanceof OnProfileUpdatedListener) {
@@ -166,6 +173,8 @@ public class ProfileFragment extends Fragment {
             edtFullName.setText(profile.fullName);
             edtEmail.setText(profile.email);
             edtBio.setText(profile.bio);
+            if (edtPhone != null) edtPhone.setText(profile.phone);
+            if (edtAddress != null) edtAddress.setText(profile.address);
           }
           restoringDraft = false;
           avatarUri = profile.avatar;

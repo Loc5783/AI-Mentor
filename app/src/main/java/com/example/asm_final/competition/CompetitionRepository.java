@@ -13,6 +13,7 @@ public interface CompetitionRepository {
     public final Long dailyXp;
     public final Integer streak;
     public final boolean cached, needsLogin;
+    public final String failureReason;
 
     public Snapshot(
         Source source,
@@ -21,12 +22,18 @@ public interface CompetitionRepository {
         Integer streak,
         boolean cached,
         boolean needsLogin) {
+      this(source, board, xp, streak, cached, needsLogin, "");
+    }
+
+    public Snapshot(Source source, RankingBoard board, Long xp, Integer streak,
+        boolean cached, boolean needsLogin, String failureReason) {
       this.source = source;
       this.board = board;
       dailyXp = xp;
       this.streak = streak;
       this.cached = cached;
       this.needsLogin = needsLogin;
+      this.failureReason = failureReason;
     }
   }
 

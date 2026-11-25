@@ -49,7 +49,7 @@ class LearnAiChatNavigationDeviceTest {
         LearningSetupStore(context).use { it.save(owner, 10, setOf(SubjectId.PHYSICS, SubjectId.MATH)) }
         ActiveUser.set(context, owner)
         scenario = ActivityScenario.launch(Intent(context, HomeActivity::class.java).putExtra("USERNAME", qaUsername))
-        waitForTag("dashboard-subject:physics")
+        waitForTag("home-progress-hero")
     }
 
     @After
@@ -100,57 +100,40 @@ class LearnAiChatNavigationDeviceTest {
 
     @Test(timeout = 60000)
     fun testCompleteLearnAndAiChatFlow() {
-        // --- 1. Verify bottom navigation bar has exactly 5 tabs (Home, Learn, Schedule, Ranks, Profile) ---
+        // Verify the five destinations; the study plan is inside Study.
         val homeLabel = label(R.string.design_tab_home)
         val lessonsLabel = label(R.string.design_tab_lessons)
-        val scheduleLabel = label(R.string.design_tab_schedule)
+        val teamLabel = label(R.string.team_tab_title)
         val competitionLabel = label(R.string.design_tab_competition)
         val profileLabel = label(R.string.nav_profile_label)
-        val chatTabLabel = label(R.string.design_tab_chat)
 
         compose.onAllNodesWithText(homeLabel).onFirst().assertExists()
         compose.onAllNodesWithText(lessonsLabel).onFirst().assertExists()
-        compose.onAllNodesWithText(scheduleLabel).onFirst().assertExists()
+        compose.onAllNodesWithText(teamLabel).onFirst().assertExists()
         compose.onAllNodesWithText(competitionLabel).onFirst().assertExists()
         compose.onAllNodesWithText(profileLabel).onFirst().assertExists()
 
-        // "AI Chat" tab must NOT be in the bottom navigation bar on Home
-        // In the bottom bar, only the 4 tabs exist
         capture("bottom_navigation_bar")
 
         // --- 2. Navigate to Learn Tab (nav_category) ---
         navigate(R.id.nav_category)
-        waitForText("Khối lớp đang chọn")
+        waitForText(label(R.string.lesson_hub_grade))
 
-        // 2a. Verify Banner "Your learning path" / "Học theo lộ trình" is completely gone
-        compose.onNodeWithText("Your learning path").assertDoesNotExist()
-        compose.onNodeWithText("Học theo lộ trình").assertDoesNotExist()
-        compose.onNodeWithText("Chọn mục học tập phù hợp với nhu cầu của bạn").assertDoesNotExist()
-
-        // 2b. Verify Grade selector is at the top of the content
-        compose.onNodeWithText("Khối lớp đang chọn").assertExists()
-        compose.onNodeWithText("Đổi lớp").assertExists()
+        // Grade and plan are present at the study root.
+        compose.onNodeWithText(label(R.string.lesson_hub_grade)).assertExists()
+        compose.onNodeWithText(label(R.string.lesson_hub_change_grade)).assertExists()
+        compose.onNodeWithText(label(R.string.study_plan_title)).assertExists()
         capture("learn_top_header")
 
-        // 2c. Verify Card 01: AI Chat in Learn
-        compose.onNodeWithText("AI Chat").assertExists()
-        compose.onNodeWithText("01").assertExists()
-        compose.onNodeWithText("Hỏi AI Mentor, gửi bài tập và trao đổi về nội dung bạn chưa hiểu.").assertExists()
-        compose.onNodeWithText("Vào AI Chat").assertExists()
-        capture("learn_ai_chat_card")
+        // Tools are grouped under the selected subject.
+        compose.onNodeWithText("Toán").performScrollTo().performClick()
+        compose.onNodeWithText(label(R.string.study_path_title)).assertExists()
+        compose.onNodeWithText(label(R.string.study_practice_group)).assertExists()
+        compose.onNodeWithText(label(R.string.study_exam_group)).assertExists()
+        compose.onNodeWithText(label(R.string.study_review_group)).assertExists()
+        capture("learn_subject_workspace")
 
-        // 2d. Verify other cards exist with sequential numbers
-        compose.onNodeWithText("Thư viện câu hỏi").assertExists()
-        compose.onNodeWithText("02").assertExists()
-        compose.onNodeWithText("Ôn thi tập trung").assertExists()
-        compose.onNodeWithText("03").assertExists()
-        compose.onNodeWithText("Lộ trình học 9 môn").assertExists()
-        compose.onNodeWithText("04").assertExists()
-        compose.onNodeWithText("Luyện cùng AI").assertExists()
-        compose.onNodeWithText("05").assertExists()
-
-        // --- 3. Click "Vào AI Chat" to open AI Chat from Learn ---
-        compose.onNodeWithText("Vào AI Chat").performClick()
+        compose.onNodeWithText(label(R.string.lesson_hub_chat)).performScrollTo().performClick()
         compose.waitForIdle()
 
         // Verify AI Chat screen is opened
@@ -168,22 +151,23 @@ class LearnAiChatNavigationDeviceTest {
         compose.onNodeWithText(backLabel).performClick()
         compose.waitForIdle()
 
-        // Verified returned to Learn
-        waitForText("Khối lớp đang chọn")
-        compose.onNodeWithText("AI Chat").assertExists()
+        // Back returns to the subject workspace, preserving its context.
+        waitForText(label(R.string.study_path_title))
+        compose.onNodeWithText(label(R.string.study_review_group)).assertExists()
 
         // --- 6. Tab cycle: Home -> Learn -> Ranks -> Profile -> Learn ---
         navigate(R.id.nav_home)
-        waitForTag("dashboard-subject:physics")
+        waitForTag("home-progress-hero")
         navigate(R.id.nav_competition)
         waitForText(label(R.string.competition_title))
         navigate(R.id.nav_profile)
         waitForTag("profile-hero")
         navigate(R.id.nav_category)
-        waitForText("Khối lớp đang chọn")
+        waitForText(label(R.string.study_path_title))
+        compose.onNodeWithText(label(R.string.course_back)).performClick()
+        waitForText(label(R.string.lesson_hub_grade))
 
-        // --- 7. Verify "Lộ trình học 9 môn" still opens properly ---
-        compose.onNodeWithText("Xem Lộ trình").performScrollTo().performClick()
+        compose.onNodeWithText(label(R.string.study_manage_path)).performScrollTo().performClick()
         compose.waitForIdle()
         // Subject list in Roadmap
         waitForTag("subject-list")

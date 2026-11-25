@@ -1,6 +1,12 @@
 <resources>
     <string name="schedule_import_preview">Review timetable</string>
-    <string name="schedule_import_note">Review detected lessons and uncheck incorrect entries. Only empty slots are filled; existing entries stay unchanged. Afternoon periods are numbered 6–10.</string>
+    <string name="schedule_import_note">Review and correct any subject, day or period before saving. Uncheck uncertain cells; existing lessons stay unchanged.</string>
+    <string name="schedule_import_day_names">Mon,Tue,Wed,Thu,Fri,Sat,Sun</string>
+    <string name="schedule_import_subject_label">Subject</string>
+    <string name="schedule_import_period_header">Period</string>
+    <string name="schedule_import_empty_slot">Add a missed lesson</string>
+    <string name="schedule_import_period_label">Period %1$d</string>
+    <string name="schedule_import_check_entries">Enter a subject and avoid two lessons in the same day and period.</string>
     <string name="schedule_import_result">Added %1$d lessons; skipped %2$d occupied slots.</string>
     <string name="schedule_import_slot">%1$s · Period %2$d — %3$s</string>
     <string name="schedule_import_sunday">Sunday</string>
@@ -9,5 +15,25 @@
     <string name="schedule_import_saving">Saving…</string>
     <string name="schedule_import_save">Add to timetable</string>
     <string name="chat_suggest_schedule">Read my timetable photo and add it to my schedule</string>
+    <string name="chat_suggest_schedule_plan">Suggest study to-dos for this week</string>
+    <string name="schedule_chat_title">Schedule AI assistant</string>
+    <string name="schedule_chat_empty_title">Plan your week with AI</string>
+    <string name="schedule_chat_empty_body">Send a timetable photo or describe your tasks.</string>
+    <string name="schedule_ai_photo_prompt">Read my attached timetable photo and draft the clearly visible classes for me to review before adding them. Ask if a day or period is unclear.</string>
+    <string name="schedule_ai_plan_prompt">Help me make a short study to-do list for this week based on my grade and the tasks I describe. Ask if details are missing; do not claim you saved tasks in the app.</string>
+    <string name="todo_import_preview">Review plan</string>
+    <string name="todo_import_note">AI can be wrong. Edit or uncheck tasks before saving.</string>
+    <string name="todo_import_invalid">Could not read the to-do draft. Ask AI to create it again.</string>
+    <string name="todo_import_task_index">Task %1$d</string>
+    <string name="todo_import_task">To-do</string>
+    <string name="todo_import_subject">Subject (optional)</string>
+    <string name="todo_import_days">Mo,Tu,We,Th,Fr,Sa,Su</string>
+    <string name="todo_import_low">Low priority</string>
+    <string name="todo_import_normal">Normal</string>
+    <string name="todo_import_high">High priority</string>
+    <string name="todo_import_save">Add selected tasks</string>
+    <string name="todo_import_saving">Saving…</string>
+    <string name="todo_import_result">Added %1$d tasks · Skipped %2$d duplicates</string>
+    <string name="todo_import_error">Could not save. Your existing tasks are unchanged; retry.</string>
     <string name="schedule_import_invalid">No valid timetable could be extracted. Send a clearer image or clarify the days and periods.</string>
 </resources>

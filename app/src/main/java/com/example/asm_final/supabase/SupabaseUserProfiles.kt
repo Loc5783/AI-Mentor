@@ -43,8 +43,11 @@ class SupabaseUserProfiles(context: Context): UserProfileRepository {
                 changes.put("avatar_path",SupabaseStorage(context).uploadAvatar(owner,android.net.Uri.parse(profile.avatar)))
             }
             if(newPassword.isNotEmpty()) api.requestFor(owner,"PUT","/auth/v1/user",JSONObject().put("password",newPassword))
-            api.requestFor(owner,"POST","/rest/v1/rpc/mentor_update_profile",changes
+            // PostgREST maps RPC arguments by their declared name. The SQL function
+            // takes one jsonb argument named `data`, so all profile fields must be nested.
+            val payload = JSONObject().put("data", changes
                 .put("address",profile.address).put("phone",profile.phone))
+            api.requestFor(owner,"POST","/rest/v1/rpc/mentor_update_profile",payload)
             val cachedAvatar=if(profile.avatar?.startsWith("content://")==true)
                 SupabaseStorage(context).cacheAvatar(owner,"${id}/profile/avatar") ?: old.avatar else profile.avatar
             local.update(username,UserProfile(profile.fullName,profile.address,profile.phone,profile.email,cachedAvatar,profile.bio),"")

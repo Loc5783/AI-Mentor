@@ -30,11 +30,30 @@ data class ExamQuestionSnapshot(
     val optionC: String,
     val optionD: String,
     val points: Int = 10,
+    val pointScale: Int = 1,
     val selectedOption: String? = null,
     val isCorrect: Boolean? = null,
     val correctOption: String? = null,
-    val explanation: String? = null
-)
+    val explanation: String? = null,
+    val questionType: String = "SINGLE_CHOICE",
+    val contentData: JSONObject = JSONObject(),
+    val essayPoints: Int? = null,
+    val essayFeedback: String? = null
+) {
+    val kind: ExamQuestionKind get() = ExamQuestionKind.fromWire(questionType)
+
+    val hasValidTrueFalseItems: Boolean get() {
+        if (kind != ExamQuestionKind.TRUE_FALSE_4) return false
+        val items = contentData.optJSONArray("subItems") ?: return false
+        if (items.length() != 4) return false
+        val keys = (0 until 4).map { index ->
+            val item = items.optJSONObject(index) ?: return false
+            if (item.optString("statement").isBlank()) return false
+            item.optString("key")
+        }
+        return keys.toSet() == setOf("a", "b", "c", "d")
+    }
+}
 
 data class ExamSession(
     val id: String,
@@ -59,7 +78,9 @@ data class ExamSession(
     val revision: Int = 0,
     val questions: List<ExamQuestionSnapshot> = emptyList(),
     val answers: Map<String, String> = emptyMap(),
-    val questionRevisions: Map<String, Int> = emptyMap()
+    val questionRevisions: Map<String, Int> = emptyMap(),
+    val gradingStatus: String = "COMPLETE",
+    val gradingError: String? = null
 )
 
 interface ExamRepository {
@@ -72,6 +93,8 @@ interface ExamRepository {
     suspend fun getSession(sessionId: String): ExamSession
     suspend fun saveAnswer(sessionId: String, questionId: String, selectedOption: String?, revision: Int): ExamSession
     suspend fun submitSession(sessionId: String): ExamSession
+    suspend fun explainReviewQuestion(session: ExamSession, question: ExamQuestionSnapshot): String =
+        throw UnsupportedOperationException("AI_EXPLANATION_UNAVAILABLE")
 }
 
 class BackendExamRepository(
@@ -120,7 +143,7 @@ class BackendExamRepository(
     }
 
     override suspend fun listUserSessions(subjectId: String?, grade: Int?): List<ExamSession> = withContext(Dispatchers.IO) {
-        val queryParts = mutableListOf<String>()
+        val queryParts = mutableListOf("limit=100")
         if (!subjectId.isNullOrBlank()) queryParts.add("subject_id=" + java.net.URLEncoder.encode(subjectId, "UTF-8"))
         if (grade != null && grade > 0) queryParts.add("grade=$grade")
         val path = if (queryParts.isEmpty()) "/exams/sessions" else "/exams/sessions?" + queryParts.joinToString("&")
@@ -176,7 +199,7 @@ class BackendExamRepository(
         parseExamSession(resp)
     }
 
-    private fun parseExamSummary(obj: JSONObject): ExamSummary {
+    internal fun parseExamSummary(obj: JSONObject): ExamSummary {
         return ExamSummary(
             id = obj.getString("id"),
             title = obj.getString("title"),
@@ -192,7 +215,7 @@ class BackendExamRepository(
         )
     }
 
-    private fun parseExamSession(obj: JSONObject): ExamSession {
+    internal fun parseExamSession(obj: JSONObject): ExamSession {
         val rawQuestions = obj.optJSONArray("questions") ?: JSONArray()
         val questions = mutableListOf<ExamQuestionSnapshot>()
         for (i in 0 until rawQuestions.length()) {
@@ -207,10 +230,15 @@ class BackendExamRepository(
                     optionC = q.optString("optionC", ""),
                     optionD = q.optString("optionD", ""),
                     points = q.optInt("points", 10),
+                    pointScale = q.optInt("pointScale", 1),
                     selectedOption = if (q.isNull("selectedOption")) null else q.optString("selectedOption"),
                     isCorrect = if (q.isNull("isCorrect")) null else q.optBoolean("isCorrect"),
                     correctOption = if (q.isNull("correctOption")) null else q.optString("correctOption"),
-                    explanation = if (q.isNull("explanation")) null else q.optString("explanation")
+                    explanation = if (q.isNull("explanation")) null else q.optString("explanation"),
+                    questionType = q.optString("questionType", "SINGLE_CHOICE"),
+                    contentData = q.optJSONObject("contentData") ?: JSONObject(),
+                    essayPoints = if (q.isNull("essayPoints")) null else q.optInt("essayPoints"),
+                    essayFeedback = if (q.isNull("essayFeedback")) null else q.optString("essayFeedback")
                 )
             )
         }
@@ -259,7 +287,8 @@ class BackendExamRepository(
             revision = obj.optInt("revision", 0),
             questions = questions,
             answers = answersMap,
-            questionRevisions = qRevsMap
+            questionRevisions = qRevsMap,
+            gradingStatus = obj.optString("gradingStatus", "COMPLETE")
         )
     }
 }

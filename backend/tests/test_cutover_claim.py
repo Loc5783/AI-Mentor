@@ -1668,10 +1668,11 @@ def test_migration_sql_function_signature_pairs_exact_identity():
     funcs_004 = extract_sql_function_declarations(mig_004)
     perms_004 = extract_sql_function_permissions(mig_004)
 
-    # Assert exactly 4 functions declared in 004
+    # Assert functions declared in 004
     assert set(funcs_004.keys()) == {
         "public.mentor_friendships_enforce_immutable_endpoints",
         "staging.translate_legacy_quiz_questions",
+        "staging.normalize_legacy_question_ids",
         "public.mentor_claim_staged_progress",
         "staging.reconcile_staging_cutover",
     }

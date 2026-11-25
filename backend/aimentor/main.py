@@ -29,7 +29,7 @@ from .learning_routes import learning_router
 
 from .overview import LearningOverview
 
-from .learning_stats import reward_summary, learning_day
+from .learning_stats import reward_summary, learning_day, shared_streak_summary
 
 from .library import LibraryService
 from .exam import ExamService
@@ -355,6 +355,26 @@ def create_app(settings=None):
     def own_public(user=Depends(current)):
 
         return public(user["id"])
+
+
+
+    @app.get("/profiles/search")
+
+    def search_profiles(q:str,user=Depends(current)):
+
+        query=" ".join(q.split())
+
+        if len(query)<2 or len(query)>40:return {"items":[]}
+
+        escaped=query.replace("\\","\\\\").replace("%","\\%").replace("_","\\_")
+
+        with database.read() as db:
+
+            rows=db.execute("SELECT id,nickname FROM users WHERE id<>? AND nickname LIKE ? ESCAPE '\\' ORDER BY nickname LIMIT 30",
+
+                            (user["id"],f"%{escaped}%")).fetchall()
+
+        return {"items":[{"id":str(row["id"]),"nickname":row["nickname"]} for row in rows]}
 
 
 
@@ -821,30 +841,37 @@ def create_app(settings=None):
     def friend_streaks(user=Depends(current)):
 
         with database.read() as db:
-
-            rows=db.execute("""SELECT fs.*,
-
-                u1.id as u1_id, u1.nickname as u1_name,
-
-                u2.id as u2_id, u2.nickname as u2_name
-
-                FROM friend_streaks fs
-
-                JOIN users u1 ON fs.user1_id=u1.id
-
-                JOIN users u2 ON fs.user2_id=u2.id
-
-                WHERE fs.user1_id=? OR fs.user2_id=?""",(user["id"],user["id"])).fetchall()
-
-        streaks=[]
-
-        for r in rows:
-
-            friend_id = r["u2_id"] if r["user1_id"]==user["id"] else r["u1_id"]
-
-            friend_name = r["u2_name"] if r["user1_id"]==user["id"] else r["u1_name"]
-
-            streaks.append({"id":r["id"],"friendId":str(friend_id),"friendName":friend_name,"streakDays":r["streak_days"],"lastSharedDay":r["last_shared_day"]})
+            rows=db.execute("""SELECT f.id,
+                CASE WHEN f.requester=? THEN f.recipient ELSE f.requester END AS friend_id,
+                u.nickname AS friend_name
+                FROM friendships f
+                JOIN users u ON u.id=CASE WHEN f.requester=? THEN f.recipient ELSE f.requester END
+                WHERE f.state='ACCEPTED' AND (f.requester=? OR f.recipient=?)
+                ORDER BY f.updated_at DESC""", (user["id"],user["id"],user["id"],user["id"])).fetchall()
+            now=learning.clock()
+            today=learning_day(now).isoformat()
+            days_by_friend={row["friend_id"]:set() for row in rows}
+            if rows:
+                shared_rows=db.execute("""SELECT
+                    CASE WHEN f.requester=? THEN f.recipient ELSE f.requester END AS friend_id,
+                    mine.day
+                    FROM friendships f
+                    JOIN learning_days mine ON mine.user_id=?
+                    JOIN learning_days theirs ON theirs.user_id=
+                      CASE WHEN f.requester=? THEN f.recipient ELSE f.requester END
+                      AND theirs.day=mine.day
+                    WHERE f.state='ACCEPTED' AND (f.requester=? OR f.recipient=?)
+                      AND mine.day<=?
+                    ORDER BY friend_id,mine.day""",
+                    (user["id"],user["id"],user["id"],user["id"],user["id"],today)).fetchall()
+                for shared_row in shared_rows:
+                    days_by_friend[shared_row["friend_id"]].add(shared_row["day"])
+            streaks=[]
+            for row in rows:
+                friend_id=row["friend_id"]
+                summary=shared_streak_summary(days_by_friend[friend_id],now)
+                streaks.append({"id":row["id"],"friendId":str(friend_id),
+                    "friendName":row["friend_name"],**summary})
 
         return {"streaks":streaks}
 
@@ -863,8 +890,15 @@ def create_app(settings=None):
         with database.read() as db:
 
             rows=db.execute("SELECT * FROM friendships WHERE requester=? OR recipient=? ORDER BY updated_at DESC",(user["id"],user["id"])).fetchall()
+            now=learning.clock()
+            items=[]
+            for row in rows:
+                item=friendship(row)
+                friend_id=row["recipient"] if row["requester"]==user["id"] else row["requester"]
+                item["profile"]=public(friend_id,now,db)
+                items.append(item)
 
-        return {"items":[friendship(row) for row in rows],"nextCursor":None,"asOf":iso(time.time())}
+        return {"items":items,"nextCursor":None,"asOf":iso(now)}
 
 
 
@@ -1492,6 +1526,10 @@ def create_app(settings=None):
             question_count=body.questionCount,
             idempotency_key=key,
         )
+
+    @app.get("/ai-practice/sessions", tags=["AI Practice"])
+    def ai_practice_session_history(limit: int = Query(50, ge=1, le=100), user=Depends(current)):
+        return ai_practice.list_history(user["id"], limit)
 
     @app.get("/ai-practice/sessions/{session_id}", tags=["AI Practice"])
     def ai_practice_session_get(session_id: str, user=Depends(current)):

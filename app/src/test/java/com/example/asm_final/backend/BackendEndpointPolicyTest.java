@@ -12,8 +12,10 @@ public final class BackendEndpointPolicyTest {
       assertFalse(BackendEndpointPolicy.allowed("http://" + host + ":8000", false));
       assertFalse(BackendEndpointPolicy.allowed("http://" + host, true));
     }
-    for (String host : new String[] {"example.com", "192.168.1.2", "10.0.2.2.example.com"})
+    for (String host : new String[] {"example.com", "10.0.2.2.example.com"})
       assertFalse(BackendEndpointPolicy.allowed("http://" + host + ":8000", true));
+    for (String host : new String[] {"192.168.1.2"})
+      assertTrue(BackendEndpointPolicy.allowed("http://" + host + ":8000", true));
   }
 
   @Test

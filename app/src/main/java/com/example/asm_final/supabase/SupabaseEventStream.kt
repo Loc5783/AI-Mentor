@@ -39,7 +39,6 @@ class SupabaseEventStream(context:Context,private val owner:Int):EventStream {
       .put(filter("mentor_study_sessions","user_id=eq.$uid"))
       .put(filter("mentor_study_events","user_id=eq.$uid"))
       .put(filter("mentor_badge_awards","user_id=eq.$uid"))
-      .put(filter("mentor_practice_sessions","user_id=eq.$uid"))
       .put(filter("mentor_wrong_questions","user_id=eq.$uid"))
       .put(filter("mentor_profiles","id=eq.$uid"))
       .put(filter("mentor_preferences","user_id=eq.$uid"))
@@ -68,7 +67,7 @@ class SupabaseEventStream(context:Context,private val owner:Int):EventStream {
          "mentor_awards","mentor_learning_days","mentor_attempts"->"COMPLETION"
          "mentor_study_sessions","mentor_study_events"->"LEARNING_PROFILE"
          "mentor_badge_awards"->"PROFILE"
-         "mentor_practice_sessions","mentor_wrong_questions"->"COMPLETION"
+         "mentor_wrong_questions"->"COMPLETION"
          "mentor_enrollments"->"ENROLLMENT"
          "mentor_profiles"->"PROFILE"
          "mentor_preferences"->"LEARNING_PROFILE"

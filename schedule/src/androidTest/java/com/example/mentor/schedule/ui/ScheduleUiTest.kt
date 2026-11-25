@@ -1,14 +1,19 @@
 package com.example.mentor.schedule.ui
 
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.mentor.schedule.data.ScheduleRepositoryImpl
 import org.junit.Before
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
+import java.util.UUID
 
 @RunWith(AndroidJUnit4::class)
 class ScheduleUiTest {
@@ -16,13 +21,28 @@ class ScheduleUiTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+    private lateinit var context: Context
+    private lateinit var testDatabase: File
     private lateinit var repository: ScheduleRepositoryImpl
 
     @Before
     fun setup() {
-        context.deleteDatabase("AIMentorSchool.db")
+        testDatabase = File(targetContext.cacheDir, "schedule-ui-test-${UUID.randomUUID()}/AIMentorSchool.db")
+        context = object : ContextWrapper(targetContext) {
+            override fun getApplicationContext(): Context = this
+            override fun getDatabasePath(name: String): File = testDatabase
+        }
         repository = ScheduleRepositoryImpl(context)
+    }
+
+    @After
+    fun teardown() {
+        repository.close()
+        File(testDatabase.path + "-wal").delete()
+        File(testDatabase.path + "-shm").delete()
+        testDatabase.delete()
+        testDatabase.parentFile?.delete()
     }
 
     @Test
@@ -58,6 +78,7 @@ class ScheduleUiTest {
         // Delete
         composeTestRule.onNodeWithText("Updated Subject").performClick()
         composeTestRule.onNodeWithText("Delete").performClick()
+        composeTestRule.onNodeWithText("Delete this class?").performClick()
         
         // Verify delete and undo appears
         composeTestRule.onNodeWithText("Updated Subject").assertDoesNotExist()

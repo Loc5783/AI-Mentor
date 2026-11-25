@@ -8,14 +8,13 @@ import android.widget.*;
 import androidx.fragment.app.Fragment;
 import com.example.asm_final.*;
 import com.example.asm_final.dashboard.*;
-import com.example.asm_final.learning.LearningSetupStore;
 import com.example.asm_final.onboarding.LearnerProfile;
 import com.example.asm_final.utils.*;
 import com.example.mentor.data.ActiveUser;
-import com.example.mentor.learning.SubjectId;
-import java.util.*;
+import java.util.Calendar;
+import java.util.List;
 
-/** Coordinates account-scoped loading. Subject cards and chart binding live in their own view. */
+/** Coordinates account-scoped dashboard and study-time loading. */
 public final class HomeFragment extends Fragment {
   private final Handler main = new Handler(Looper.getMainLooper());
   private View root;
@@ -23,7 +22,6 @@ public final class HomeFragment extends Fragment {
   private OverviewUpdates.Subscription updates;
   private com.example.asm_final.ui.OverviewUi subjectsView;
   private boolean needsLogin;
-  private int selectedGrade;
   private boolean retryOverview;
 
   private void overviewAction() {
@@ -45,7 +43,6 @@ public final class HomeFragment extends Fragment {
         new com.example.asm_final.ui.OverviewUi(
             requireContext(),
             false,
-            subject -> openLesson(subject, selectedGrade),
             this::overviewAction,
             () -> {},
             () -> {},
@@ -84,17 +81,6 @@ public final class HomeFragment extends Fragment {
         .navigateTo(R.id.nav_category, false);
   }
 
-  private void openLesson(SubjectId subject, int grade) {
-    startActivity(
-        new android.content.Intent(
-                requireContext(), com.example.asm_final.activities.LessonActivity.class)
-            .putExtra("SUBJECT", subject.wireId)
-            .putExtra("GRADE", grade)
-            .putExtra(
-                "USERNAME",
-                getArguments() == null ? "" : getArguments().getString("USERNAME", "")));
-  }
-
   private void load(boolean loading) {
     if (root == null) return;
     int request = ++generation;
@@ -109,10 +95,6 @@ public final class HomeFragment extends Fragment {
               try {
                 LearnerProfile profile = services.learners().load(owner);
                 int grade = profile == null ? 0 : profile.grade;
-                Set<SubjectId> selected;
-                try (LearningSetupStore store = new LearningSetupStore(context)) {
-                  selected = store.selected(owner, grade);
-                }
                 LearningOverviewRepository.Snapshot snapshot =
                     services.overview().load(owner, grade);
                 main.post(
@@ -121,7 +103,6 @@ public final class HomeFragment extends Fragment {
                           || request != generation
                           || ActiveUser.get(context) != owner) return;
                       needsLogin = snapshot.needsLogin;
-                      selectedGrade = grade;
                       retryOverview =
                           snapshot.mode != LearningOverviewRepository.Mode.LOCAL
                               && (snapshot.data == null
@@ -131,9 +112,43 @@ public final class HomeFragment extends Fragment {
                               ? getString(R.string.home_default_user)
                               : profile.displayName,
                           null);
-                      subjectsView.render(snapshot, selected, grade);
+                      subjectsView.render(snapshot, grade);
                     });
-              } catch (RuntimeException failure) {
+                List<com.example.mentor.schedule.domain.TodoTask> todayTasks = null;
+                try {
+                  int day = (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) + 5) % 7 + 1;
+                  var repository = ((AiMentorApplication) context).scheduleRepository();
+                  try {
+                    todayTasks = repository.getTodos(Integer.toString(owner), day);
+                  } finally {
+                    ((com.example.mentor.schedule.domain.ScheduleImportRepository) repository).close();
+                  }
+                } catch (Exception ignored) {
+                  // An unavailable schedule should not hide the rest of Home.
+                }
+                List<com.example.mentor.schedule.domain.TodoTask> finalTodayTasks = todayTasks;
+                main.post(
+                    () -> {
+                      if (root == viewOwner
+                          && request == generation
+                          && ActiveUser.get(context) == owner) subjectsView.tasks(finalTodayTasks);
+                    });
+                org.json.JSONObject studySummary = null;
+                if (com.example.asm_final.supabase.SupabaseHttp.enabled(context)) {
+                  try {
+                    studySummary = services.study().summary(owner);
+                  } catch (Exception ignored) {
+                    // Keep the rest of Home usable when this optional summary is unavailable.
+                  }
+                }
+                org.json.JSONObject finalStudySummary = studySummary;
+                main.post(
+                    () -> {
+                      if (root == viewOwner
+                          && request == generation
+                          && ActiveUser.get(context) == owner) subjectsView.activity(finalStudySummary);
+                    });
+              } catch (Exception failure) {
                 main.post(
                     () -> {
                       if (root == viewOwner

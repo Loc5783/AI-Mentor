@@ -1,5 +1,7 @@
 package com.example.mentor.schedule.data
 
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.mentor.schedule.domain.ScheduleEntry
@@ -8,23 +10,34 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
+import java.util.UUID
 
 @RunWith(AndroidJUnit4::class)
 class ScheduleRepositoryTest {
 
     private lateinit var repository: ScheduleRepositoryImpl
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+    private lateinit var testDatabase: File
+    private lateinit var context: Context
 
     @Before
     fun setup() {
+        testDatabase = File(targetContext.cacheDir, "schedule-test-${UUID.randomUUID()}/AIMentorSchool.db")
+        context = object : ContextWrapper(targetContext) {
+            override fun getApplicationContext(): Context = this
+            override fun getDatabasePath(name: String): File = testDatabase
+        }
         repository = ScheduleRepositoryImpl(context)
-        // clean up before
-        context.deleteDatabase("AIMentorSchool.db")
     }
 
     @After
     fun teardown() {
-        context.deleteDatabase("AIMentorSchool.db")
+        repository.close()
+        File(testDatabase.path + "-wal").delete()
+        File(testDatabase.path + "-shm").delete()
+        testDatabase.delete()
+        testDatabase.parentFile?.delete()
     }
 
     @Test
@@ -32,10 +45,10 @@ class ScheduleRepositoryTest {
         val account1 = "acc1"
         val account2 = "acc2"
         
-        val entry1 = ScheduleEntry(accountId = account1, title = "Math", dayOfWeek = 1, startTimeMin = 600, endTimeMin = 660)
+        val entry1 = ScheduleEntry(accountId = account1, title = "Math", dayOfWeek = 1, period = 5)
         val id1 = repository.insertEntry(entry1)
         
-        val entry2 = ScheduleEntry(accountId = account2, title = "Physics", dayOfWeek = 1, startTimeMin = 600, endTimeMin = 660)
+        val entry2 = ScheduleEntry(accountId = account2, title = "Physics", dayOfWeek = 1, period = 5)
         val id2 = repository.insertEntry(entry2)
         
         // Isolation
@@ -63,8 +76,8 @@ class ScheduleRepositoryTest {
     @Test
     fun testSorting() {
         val account1 = "acc1"
-        repository.insertEntry(ScheduleEntry(accountId = account1, title = "Late", dayOfWeek = 1, startTimeMin = 800, endTimeMin = 860))
-        repository.insertEntry(ScheduleEntry(accountId = account1, title = "Early", dayOfWeek = 1, startTimeMin = 600, endTimeMin = 660))
+        repository.insertEntry(ScheduleEntry(accountId = account1, title = "Late", dayOfWeek = 1, period = 10))
+        repository.insertEntry(ScheduleEntry(accountId = account1, title = "Early", dayOfWeek = 1, period = 2))
         
         val entries = repository.getEntries(account1, 1)
         assertEquals("Early", entries[0].title)

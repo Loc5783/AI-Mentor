@@ -13,11 +13,34 @@ import org.junit.Test
 class AiPracticeViewModelTest {
 
     private class FakeAiPracticeRepository : AiPracticeRepository {
+        override val supportsAnswerConfidence = true
+        val confidenceByQuestion = mutableMapOf<String, AnswerConfidence>()
+        var confidenceWrite: Triple<String, Int, AnswerConfidence>? = null
+        var failConfidenceGet: Exception? = null
+        var failConfidenceWrite: Exception? = null
+        override suspend fun getAnswerConfidence(sessionId: String, questionId: String): AnswerConfidence? {
+            failConfidenceGet?.let { throw it }
+            return confidenceByQuestion[questionId]
+        }
+        override suspend fun setAnswerConfidence(sessionId: String, questionId: String,
+                                                 attemptCount: Int, confidence: AnswerConfidence): AnswerConfidence {
+            failConfidenceWrite?.let { throw it }
+            confidenceWrite = Triple(questionId, attemptCount, confidence)
+            confidenceByQuestion[questionId] = confidence
+            return confidence
+        }
         var answerDeferred: CompletableDeferred<AiAnswerResult>? = null
         var explanationDeferred: CompletableDeferred<String>? = null
         var resumable: AiPracticeSession? = null
         override suspend fun getResumableSession(): AiPracticeSession? = resumable
+        var historyItems = emptyList<AiPracticeHistoryItem>()
+        var failHistoryWith: Exception? = null
+        override suspend fun listHistory(): List<AiPracticeHistoryItem> {
+            failHistoryWith?.let { throw it }
+            return historyItems
+        }
         var getConfigCalls = 0
+        var failConfigWith: Exception? = null
         val creationKeys = mutableListOf<String?>()
         val answerKeys = mutableListOf<String>()
         var failAnswerWith: Exception? = null
@@ -27,6 +50,8 @@ class AiPracticeViewModelTest {
         var completeSessionCalls = 0
         var reportQuestionCalls = 0
         var explainMoreCalls = 0
+        var failReportWith: Exception? = null
+        var failExplanationWith: Exception? = null
 
         var failCreateWith: Exception? = null
         var createDeferred: CompletableDeferred<AiPracticeSession>? = null
@@ -67,6 +92,7 @@ class AiPracticeViewModelTest {
 
         override suspend fun getConfig(): AiPracticeConfig {
             getConfigCalls++
+            failConfigWith?.let { throw it }
             return AiPracticeConfig(
                 configured = true,
                 subjects = listOf("math", "physics", "chemistry"),
@@ -231,6 +257,7 @@ class AiPracticeViewModelTest {
             details: String
         ): String {
             reportQuestionCalls++
+            failReportWith?.let { throw it }
             return "Đã ghi nhận báo cáo câu hỏi $questionId: $reason"
         }
 
@@ -240,6 +267,7 @@ class AiPracticeViewModelTest {
             query: String
         ): String {
             explainMoreCalls++
+            failExplanationWith?.let { throw it }
             explanationDeferred?.let { return kotlinx.coroutines.withContext(kotlinx.coroutines.NonCancellable) { it.await() } }
             return "Lời giải thích mở rộng cho câu hỏi $questionId theo yêu cầu: $query"
         }
@@ -271,6 +299,54 @@ class AiPracticeViewModelTest {
         assertNotNull(vm.config)
         assertTrue(vm.config?.configured == true)
         assertEquals(3, vm.config?.subjects?.size)
+    }
+
+    @Test
+    fun historyShowsOnlyListedSessionsAndRestoresUnfinishedWork() = runTest {
+        val vm = AiPracticeViewModel(fakeRepo, backgroundScope)
+        currentVm = vm
+        runCurrent()
+        val active = AiPracticeHistoryItem("active-1", "math", 10, "Đạo hàm", 2, 1,
+            "IN_PROGRESS", "2026-11-23")
+        fakeRepo.historyItems = listOf(active)
+        vm.openHistory()
+        runCurrent()
+        assertEquals(AiPracticeScreenState.HISTORY, vm.screenState)
+        assertEquals(listOf(active), vm.history)
+        vm.openHistorySession(active.copy(id = "someone-else"))
+        runCurrent()
+        assertEquals(AiPracticeScreenState.HISTORY, vm.screenState)
+        fakeRepo.resumable = AiPracticeSession(active.id, "math", "Toán", 10, "Đạo hàm",
+            "MEDIUM", 2, 0, "IN_PROGRESS", fakeRepo.sampleQuestions, emptyMap())
+        vm.openHistorySession(active)
+        runCurrent()
+        assertEquals(AiPracticeScreenState.PRACTICING, vm.screenState)
+        assertEquals(active.id, vm.session?.id)
+    }
+
+    @Test
+    fun historyFailureDoesNotInventAResumableSession() = runTest {
+        fakeRepo.failHistoryWith = java.io.IOException("offline")
+        val vm = AiPracticeViewModel(fakeRepo, backgroundScope)
+        currentVm = vm
+        runCurrent()
+        vm.openHistory()
+        runCurrent()
+        assertEquals(AiPracticeScreenState.HISTORY, vm.screenState)
+        assertTrue(vm.history.isEmpty())
+        assertNotNull(vm.errorMessage)
+    }
+
+    @Test
+    fun testConnectionFailureDoesNotExposeLocalAddress() = runTest {
+        fakeRepo.failConfigWith = java.io.IOException("Failed to connect to /127.0.0.1:18080")
+        val vm = AiPracticeViewModel(fakeRepo, backgroundScope)
+        currentVm = vm
+        runCurrent()
+
+        assertNotNull(vm.errorMessage)
+        assertFalse(vm.errorMessage!!.contains("127.0.0.1"))
+        assertTrue(vm.errorMessage!!.contains("kiểm tra mạng"))
     }
 
     @Test
@@ -527,6 +603,30 @@ class AiPracticeViewModelTest {
     }
 
     @Test
+    fun failedReportAndExplanationAreNotShownAsSuccessfulResults() = runTest {
+        val vm = AiPracticeViewModel(fakeRepo, backgroundScope)
+        currentVm = vm
+        runCurrent()
+        vm.startPractice("math", 10, "Đạo hàm lượng giác", "MEDIUM")
+        runCurrent()
+        vm.selectOption("A")
+        vm.submitAnswer()
+        runCurrent()
+
+        fakeRepo.failReportWith = IllegalStateException("Report unavailable")
+        vm.reportQuestion("Sai kiến thức")
+        runCurrent()
+        assertNull(vm.reportStatus)
+        assertNotNull(vm.reportError)
+
+        fakeRepo.failExplanationWith = IllegalStateException("AI unavailable")
+        vm.askAiMore("Giải thích thêm")
+        runCurrent()
+        assertNull(vm.explainMoreText)
+        assertNotNull(vm.explainMoreError)
+    }
+
+    @Test
     fun testResetToSetup() = runTest {
         val vm = AiPracticeViewModel(fakeRepo, backgroundScope)
         currentVm = vm
@@ -676,6 +776,66 @@ class AiPracticeViewModelTest {
         runCurrent()
         assertNotEquals(repo.creationKeys[0], repo.creationKeys[1])
         assertEquals(AiPracticeScreenState.PRACTICING, vm.screenState)
+        vm.onCleared()
+    }
+
+    @Test
+    fun missingConfidenceRpcKeepsCardVisibleButDisablesChoice() = runTest {
+        val repo = FakeAiPracticeRepository()
+        repo.failConfidenceGet = com.example.asm_final.backend.BackendClient.Failure(
+            "Could not find the function public.mentor_ai_answer_confidence_api", 404)
+        val vm = AiPracticeViewModel(repo, backgroundScope)
+        vm.startPractice("math", 10, "Topic", "EASY", 2)
+        runCurrent()
+        vm.selectOption("A")
+        vm.submitAnswer()
+        runCurrent()
+        assertTrue(vm.confidenceSupported)
+        assertFalse(vm.confidenceAvailable)
+        assertFalse(vm.confidenceLoading)
+        vm.chooseAnswerConfidence(AnswerConfidence.HIGH)
+        runCurrent()
+        assertNull(repo.confidenceWrite)
+        vm.onCleared()
+    }
+
+    @Test
+    fun confidenceIsStoredForCurrentGradedAnswerAndClearedOnNextQuestion() = runTest {
+        val repo = FakeAiPracticeRepository()
+        val vm = AiPracticeViewModel(repo, backgroundScope)
+        vm.startPractice("math", 10, "Topic", "EASY", 2)
+        runCurrent()
+        vm.selectOption("A")
+        vm.submitAnswer()
+        runCurrent()
+        vm.chooseAnswerConfidence(AnswerConfidence.LOW)
+        runCurrent()
+        assertEquals(Triple("ai_q_1", 1, AnswerConfidence.LOW), repo.confidenceWrite)
+        assertEquals(AnswerConfidence.LOW, vm.answerConfidence)
+        vm.nextQuestion()
+        assertNull(vm.answerConfidence)
+        vm.onCleared()
+    }
+
+    @Test
+    fun confidenceFailureDoesNotPretendToBeSavedAndCanBeRetried() = runTest {
+        val repo = FakeAiPracticeRepository()
+        val vm = AiPracticeViewModel(repo, backgroundScope)
+        vm.startPractice("math", 10, "Topic", "EASY", 2)
+        runCurrent()
+        vm.selectOption("B")
+        vm.submitAnswer()
+        runCurrent()
+        repo.failConfidenceWrite = IllegalStateException("offline")
+        vm.chooseAnswerConfidence(AnswerConfidence.HIGH)
+        runCurrent()
+        assertNull(vm.answerConfidence)
+        assertNotNull(vm.confidenceError)
+        repo.failConfidenceWrite = null
+        vm.chooseAnswerConfidence(AnswerConfidence.MEDIUM)
+        runCurrent()
+        assertEquals(AnswerConfidence.MEDIUM, vm.answerConfidence)
+        assertNull(vm.confidenceError)
         vm.onCleared()
     }
 

@@ -3,6 +3,8 @@
   <string name="ranking_loading">Loading competition…</string>
   <string name="ranking_error">Could not load the ranking. Check your connection and try again.</string>
   <string name="ranking_login">Your session has expired. Sign in again to view the ranking.</string>
+  <string name="ranking_offline">You are offline. Rankings will update when you reconnect.</string>
+  <string name="ranking_server_error">Rankings are temporarily unavailable. Please try again later.</string>
   <string name="ranking_empty">There are no learners in this list yet.</string>
   <string name="ranking_friends_empty">No friends to compete with yet. Accepted friends will appear here.</string>
   <string name="ranking_rules">Equal scores share a rank · Up to 100 learners shown</string>

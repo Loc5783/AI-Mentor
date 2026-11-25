@@ -39,8 +39,8 @@ internal object PremiumDashboardColors {
     val Action = Color(0xFF79B3FF)
     val ActionEnd = Color(0xFF5E9DF2)
     val Text = MentorTokens.NavyOnSurface
-    val Secondary = MentorTokens.NavyOnSurfaceVariant
-    val Muted = Color(0xFF8497B3)
+    val Secondary = Color(0xFFD0D9E8)
+    val Muted = Color(0xFFB4C2D7)
     val Streak = MentorTokens.Gold
     val Experience = MentorTokens.Gold
 }
@@ -92,8 +92,8 @@ internal fun premiumDashboardPalette(dark: Boolean): PremiumDashboardPalette {
         elevated = Color(0xFFE8EEFA),
         border = theme.primary.copy(alpha = .24f),
         title = theme.onSurface,
-        secondary = theme.onSurfaceVariant,
-        muted = theme.onSurfaceVariant.copy(alpha = .78f),
+        secondary = Color(0xFF40516B),
+        muted = Color(0xFF52627A),
         heroStart = theme.primaryContainer,
         heroEnd = theme.primaryContainer.copy(alpha = .72f),
         onHero = theme.onPrimaryContainer,

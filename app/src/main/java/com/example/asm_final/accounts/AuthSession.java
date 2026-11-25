@@ -26,6 +26,12 @@ public final class AuthSession {
         : "";
   }
 
+  public static String currentUsername(Context c) {
+    android.content.SharedPreferences p = c.getSharedPreferences("auth_session", 0);
+    return p.getInt("user_id", 0) > 0 && p.getInt("user_id", 0) == ActiveUser.get(c)
+        ? p.getString("username", "") : "";
+  }
+
   public static void clear(Context c) {
     ActiveUser.clear(c);
     c.getSharedPreferences("auth_session", 0).edit().clear().apply();

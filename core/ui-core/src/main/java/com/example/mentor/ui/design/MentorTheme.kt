@@ -74,7 +74,7 @@ object MentorTokens {
     val ErrorDarkText = Color(0xFFFF9AA0)
     val ErrorDarkBg = Color(0xFF54272D)
 
-    val Primary = Blue300
+    val Primary = Blue600
     val PrimaryDark = Blue700
     val PrimaryLight = Blue200
     val PrimaryContainer = Blue200
@@ -160,17 +160,17 @@ object SubjectPalette {
     }
 }
 
-private val LightColors = lightColorScheme(
-    primary = MentorTokens.Blue300, 
-    onPrimary = MentorTokens.OnBrand,
+internal val LightColors = lightColorScheme(
+    primary = MentorTokens.Blue600,
+    onPrimary = Color.White,
     primaryContainer = MentorTokens.Blue200, 
     onPrimaryContainer = MentorTokens.OnBrand,
     secondary = MentorTokens.Gold,
     onSecondary = MentorTokens.Orange900,
     secondaryContainer = MentorTokens.Orange100, 
     onSecondaryContainer = MentorTokens.Orange800,
-    tertiary = MentorTokens.Purple,
-    onTertiary = Color(0xFF170E2D),
+    tertiary = Color(0xFF7040D0),
+    onTertiary = Color.White,
     tertiaryContainer = Color(0xFFEDE7FF),
     onTertiaryContainer = Color(0xFF36205E),
     background = MentorTokens.LightCanvas,
@@ -181,11 +181,13 @@ private val LightColors = lightColorScheme(
     onSurfaceVariant = Color(0xFF4A5A74),
     outline = MentorTokens.LightOutline,
     outlineVariant = MentorTokens.LightOutline.copy(alpha = 0.7f),
-    error = MentorTokens.ErrorLightBg,
-    onError = MentorTokens.ErrorLightText
+    error = MentorTokens.ErrorLightText,
+    onError = Color.White,
+    errorContainer = MentorTokens.ErrorLightBg,
+    onErrorContainer = Color(0xFF7F1D1D)
 )
 
-private val DarkColors = darkColorScheme(
+internal val DarkColors = darkColorScheme(
     primary = MentorTokens.Blue300, 
     onPrimary = MentorTokens.OnBrand,
     primaryContainer = MentorTokens.Blue700, 
@@ -206,8 +208,10 @@ private val DarkColors = darkColorScheme(
     onSurfaceVariant = MentorTokens.NavyOnSurfaceVariant,
     outline = MentorTokens.NavyOutline, 
     outlineVariant = MentorTokens.NavyOutline.copy(alpha = 0.5f),
-    error = MentorTokens.ErrorDarkBg,
-    onError = MentorTokens.ErrorDarkText
+    error = MentorTokens.ErrorDarkText,
+    onError = MentorTokens.ErrorDarkBg,
+    errorContainer = MentorTokens.ErrorDarkBg,
+    onErrorContainer = Color(0xFFFFDAD6)
 )
 
 @Composable

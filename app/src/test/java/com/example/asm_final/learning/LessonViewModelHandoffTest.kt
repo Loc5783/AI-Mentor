@@ -111,6 +111,7 @@ class LessonViewModelHandoffTest {
 
         assertEquals(threadId, map[LessonChatHandoff.EXTRA_CHAT_THREAD_ID])
         assertEquals(true, map[LessonChatHandoff.EXTRA_LESSON_RETURN])
+        assertEquals(true, map[LessonChatHandoff.EXTRA_AUTO_SEND_DRAFT])
         assertEquals(username, map[LessonChatHandoff.EXTRA_USERNAME])
 
         val legacyMap = LessonChatHandoff.buildHandoffMap(username, threadId)

@@ -34,13 +34,13 @@ object CompetitionUi {
     @JvmStatic fun view(context: Context, model: CompetitionViewModel, refresh: Runnable,
         learn: Runnable, profile: Consumer<String>): View = composeHost(context, scenicBackground = true) {
         val state by model.state().observeAsState()
-        val friendsState by model.friendsState().observeAsState()
         val snapshot = state?.snapshot
         val query = state?.query ?: model.query()
         val xp = query.metric == CompetitionQuery.Metric.DAILY_XP
         val board = snapshot?.board
         val dark = com.example.asm_final.utils.ThemeHelper.isDarkMode(context)
         val palette = premiumDashboardPalette(dark)
+        var showRulesDialog by remember { mutableStateOf(false) }
 
         Column(Modifier.fillMaxSize()) {
             PremiumDashboardHeader(artwork = com.example.mentor.ui.design.MentorArtwork.GOALS) {
@@ -88,14 +88,24 @@ object CompetitionUi {
                                 label = stringResource(R.string.competition_streak),
                                 selected = !xp,
                                 palette = palette,
-                                onClick = { model.select(CompetitionQuery(CompetitionQuery.Metric.STREAK, query.scope)) },
+                                onClick = {
+                                    if (xp) {
+                                        com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                                        model.select(CompetitionQuery(CompetitionQuery.Metric.STREAK, query.scope))
+                                    }
+                                },
                                 modifier = Modifier.weight(1f)
                             )
                             PremiumDashboardSegment(
                                 label = stringResource(R.string.competition_daily),
                                 selected = xp,
                                 palette = palette,
-                                onClick = { model.select(CompetitionQuery(CompetitionQuery.Metric.DAILY_XP, query.scope)) },
+                                onClick = {
+                                    if (!xp) {
+                                        com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                                        model.select(CompetitionQuery(CompetitionQuery.Metric.DAILY_XP, query.scope))
+                                    }
+                                },
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -107,14 +117,24 @@ object CompetitionUi {
                                 label = stringResource(R.string.competition_friends),
                                 selected = query.scope == CompetitionQuery.Scope.FRIENDS,
                                 palette = palette,
-                                onClick = { model.select(CompetitionQuery(query.metric, CompetitionQuery.Scope.FRIENDS)) },
+                                onClick = {
+                                    if (query.scope != CompetitionQuery.Scope.FRIENDS) {
+                                        com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                                        model.select(CompetitionQuery(query.metric, CompetitionQuery.Scope.FRIENDS))
+                                    }
+                                },
                                 modifier = Modifier.weight(1f)
                             )
                             PremiumDashboardSegment(
                                 label = stringResource(R.string.competition_everyone),
                                 selected = query.scope == CompetitionQuery.Scope.GLOBAL,
                                 palette = palette,
-                                onClick = { model.select(CompetitionQuery(query.metric, CompetitionQuery.Scope.GLOBAL)) },
+                                onClick = {
+                                    if (query.scope != CompetitionQuery.Scope.GLOBAL) {
+                                        com.example.asm_final.utils.HapticHelper.performHaptic(context)
+                                        model.select(CompetitionQuery(query.metric, CompetitionQuery.Scope.GLOBAL))
+                                    }
+                                },
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -158,10 +178,6 @@ object CompetitionUi {
                     }
                 }
 
-                item {
-                    FriendsPanel(friendsState, palette, model)
-                }
-
                 if (state?.loading == true) {
                     items(3) { MentorSkeleton(stringResource(R.string.ranking_loading)) }
                 } else if (snapshot?.needsLogin == true || snapshot == null || snapshot.source == CompetitionRepository.Source.UNAVAILABLE || snapshot.source == CompetitionRepository.Source.LOCAL || board == null || board.entries.isEmpty()) {
@@ -183,6 +199,8 @@ object CompetitionUi {
                                 Text(
                                     text = when {
                                         snapshot?.needsLogin == true -> stringResource(R.string.ranking_login)
+                                        snapshot?.failureReason == "NETWORK" -> stringResource(R.string.ranking_offline)
+                                        snapshot?.failureReason == "SERVER" -> stringResource(R.string.ranking_server_error)
                                         unavailable -> stringResource(R.string.competition_error_subtitle)
                                         snapshot.source == CompetitionRepository.Source.LOCAL -> stringResource(R.string.competition_disconnected)
                                         query.scope == CompetitionQuery.Scope.FRIENDS && board?.entries?.size == 1 -> stringResource(R.string.ranking_friends_empty)
@@ -198,7 +216,7 @@ object CompetitionUi {
                         }
                     }
                 } else {
-                    items(board.entries, key = { it.learner.id }) { entry ->
+                    items(if (xp) board.entries else board.entries.take(15), key = { it.learner.id }) { entry ->
                         val rankTint = when (entry.rank) {
                             1 -> palette.experience
                             2 -> palette.secondary
@@ -229,11 +247,12 @@ object CompetitionUi {
                                         .background(palette.iconSurface),
                                     contentAlignment = Alignment.Center
                                 ) {
+                                    val rankText = if (entry.value > 0) "${entry.rank}" else "—"
                                     Text(
-                                        text = "${entry.rank}",
+                                        text = rankText,
                                         style = MaterialTheme.typography.titleSmall,
                                         fontWeight = FontWeight.Bold,
-                                        color = rankTint
+                                        color = if (entry.value > 0) rankTint else palette.muted
                                     )
                                 }
 
@@ -268,19 +287,6 @@ object CompetitionUi {
                                         style = MaterialTheme.typography.labelSmall,
                                         color = palette.secondary
                                     )
-                                    val knownFriend = friendsState?.items?.any { it.profileId == entry.learner.id } == true
-                                    if (query.scope == CompetitionQuery.Scope.GLOBAL
-                                        && !knownFriend
-                                        && !model.isCurrentLearner(entry.learner.id)) {
-                                        TextButton(
-                                            onClick = { model.sendFriendRequest(entry.learner.id) },
-                                            enabled = friendsState?.loading != true,
-                                            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
-                                            modifier = Modifier.heightIn(min = 36.dp)
-                                        ) {
-                                            Text(stringResource(R.string.friends_add), color = palette.accent)
-                                        }
-                                    }
                                 }
 
                                 // Value
@@ -315,91 +321,37 @@ object CompetitionUi {
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(
-                            text = stringResource(R.string.ranking_rules),
+                            text = stringResource(R.string.ranking_rules) + " ℹ️",
                             style = MaterialTheme.typography.bodySmall,
-                            color = palette.muted,
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            color = palette.accent,
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            modifier = Modifier.clickable { showRulesDialog = true }
                         )
                         PremiumDashboardAction(stringResource(R.string.competition_learn), palette, { learn.run() })
                     }
                 }
             }
-        }
-    }
-}
 
-@Composable
-private fun FriendsPanel(
-    state: CompetitionViewModel.FriendsState?,
-    palette: PremiumDashboardPalette,
-    model: CompetitionViewModel,
-) {
-    PremiumDashboardCard(palette) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                Text(stringResource(R.string.friends_manage_title), style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold, color = palette.title)
-                Text(stringResource(R.string.friends_manage_subtitle), style = MaterialTheme.typography.bodySmall,
-                    color = palette.secondary)
-            }
-            TextButton(onClick = { model.refreshFriends() }) {
-                Text(stringResource(R.string.ranking_retry), color = palette.accent)
-            }
-        }
-        when {
-            state == null || state.loading && state.items.isEmpty() -> MentorSkeleton(stringResource(R.string.ranking_loading))
-            state.failed && state.items.isEmpty() -> Text(stringResource(R.string.friends_load_error),
-                color = palette.secondary, style = MaterialTheme.typography.bodySmall)
-            else -> {
-                val visible = state.items.filter { it.state.equals("PENDING", true) || it.state.equals("ACCEPTED", true) }
-                if (visible.isEmpty()) Text(stringResource(R.string.friends_empty),
-                    color = palette.secondary, style = MaterialTheme.typography.bodySmall)
-                visible.forEach { friend ->
-                    HorizontalDivider(color = palette.border)
-                    Row(Modifier.fillMaxWidth().padding(vertical = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                            Text(friend.nickname.ifBlank { stringResource(R.string.friends_learner) },
-                                style = MaterialTheme.typography.titleSmall, color = palette.title,
-                                maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            Text(
-                                when {
-                                    friend.state.equals("ACCEPTED", true) -> stringResource(R.string.competition_streak_value, friend.streakDays.toLong())
-                                    friend.direction.equals("INCOMING", true) -> stringResource(R.string.friends_incoming)
-                                    else -> stringResource(R.string.friends_outgoing)
-                                },
-                                style = MaterialTheme.typography.bodySmall, color = palette.secondary)
+            if (showRulesDialog) {
+                AlertDialog(
+                    onDismissRequest = { showRulesDialog = false },
+                    title = { Text("🏆 Quy tắc thi đua & Tính điểm", fontWeight = FontWeight.Bold) },
+                    text = {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("• Hoàn thành 1 Bài học: +200 EXP (chỉ nhận thưởng 1 lần/bài).", style = MaterialTheme.typography.bodyMedium)
+                            Text("• Hoàn thành 1 Bài Quiz: +400 EXP.", style = MaterialTheme.typography.bodyMedium)
+                            Text("• Chuỗi học (Streak): Tăng 1 ngày mỗi khi hoàn thành ít nhất 1 bài học trong ngày (theo múi giờ UTC+7).", style = MaterialTheme.typography.bodyMedium)
+                            Text("• Bảng xếp hạng: Người có điểm mới được xếp hạng. Người chưa có điểm hiển thị dấu gạch ngang (—).", style = MaterialTheme.typography.bodyMedium)
                         }
-                        when {
-                            friend.state.equals("PENDING", true) && friend.direction.equals("INCOMING", true) -> {
-                                TextButton(onClick = { model.decideFriendship(friend, "ACCEPT") }, enabled = !state.loading) {
-                                    Text(stringResource(R.string.friends_accept), color = palette.accent)
-                                }
-                                TextButton(onClick = { model.decideFriendship(friend, "DECLINE") }, enabled = !state.loading) {
-                                    Text(stringResource(R.string.friends_decline), color = palette.secondary)
-                                }
-                            }
-                            friend.state.equals("ACCEPTED", true) -> TextButton(onClick = { model.removeFriend(friend) }, enabled = !state.loading) {
-                                Text(stringResource(R.string.friends_remove), color = palette.secondary)
-                            }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { showRulesDialog = false }) {
+                            Text("Đã hiểu")
                         }
                     }
-                }
+                )
             }
         }
-        if (!state?.message.isNullOrBlank()) {
-            val res = when (state?.message) {
-                "REQUEST_SENT" -> R.string.friends_request_sent
-                "FRIEND_ACCEPTED" -> R.string.friends_accepted
-                "REQUEST_DECLINED" -> R.string.friends_declined
-                "FRIEND_REMOVED" -> R.string.friends_removed
-                else -> null
-            }
-            if (res != null) Text(stringResource(res), color = palette.accent,
-                style = MaterialTheme.typography.bodySmall)
-        }
-        if (state?.failed == true) Text(stringResource(R.string.friends_action_error),
-            color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
     }
 }
