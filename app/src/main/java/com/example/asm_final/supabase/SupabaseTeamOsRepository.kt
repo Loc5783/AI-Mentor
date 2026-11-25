@@ -86,16 +86,54 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
                 )
                 val rows = JSONArray(resp)
                 val list = mutableListOf<TeamProject>()
+                val projectIds = mutableListOf<String>()
                 for (i in 0 until rows.length()) {
                     val r = rows.getJSONObject(i)
+                    val projId = r.getString("id")
+                    projectIds.add(projId)
                     val proj = TeamProject(
-                        id = r.getString("id"),
+                        id = projId,
                         title = r.getString("title"),
                         description = r.optString("description").takeIf { it.isNotBlank() },
                         ownerId = localUserId(r.getString("owner_id")),
                         version = r.optInt("version", 1)
                     )
                     list.add(proj)
+                }
+                if (projectIds.isNotEmpty()) {
+                    runCatching {
+                        val membersResp = accounts().requestFor(
+                            ownerInt,
+                            "GET",
+                            "/rest/v1/mentor_team_members?project_id=in.(${projectIds.joinToString(",")})&status=in.(ACTIVE,INVITED)&select=project_id,user_id,role,status"
+                        )
+                        val memberRows = JSONArray(membersResp)
+                        val memberUserIds = (0 until memberRows.length()).map { memberRows.getJSONObject(it).getString("user_id") }.distinct()
+                        val names = if (memberUserIds.isEmpty()) emptyMap() else runCatching {
+                            val profiles = JSONArray(accounts().requestFor(ownerInt, "GET",
+                                "/rest/v1/mentor_profiles?id=in.(${memberUserIds.joinToString(",")})&select=id,nickname"))
+                            (0 until profiles.length()).associate { index ->
+                                val profile = profiles.getJSONObject(index)
+                                profile.getString("id") to profile.getString("nickname")
+                            }
+                        }.getOrDefault(emptyMap())
+
+                        val projectMap = list.associateBy { it.id }
+                        for (i in 0 until memberRows.length()) {
+                            val r = memberRows.getJSONObject(i)
+                            val pId = r.getString("project_id")
+                            val proj = projectMap[pId] ?: continue
+                            val uId = localUserId(r.getString("user_id"))
+                            val rRole = runCatching { TeamRole.valueOf(r.getString("role")) }.getOrDefault(TeamRole.MEMBER)
+                            val rStatus = runCatching { MemberStatus.valueOf(r.getString("status")) }.getOrDefault(MemberStatus.ACTIVE)
+                            proj.members[uId] = TeamMember(
+                                userId = uId,
+                                role = rRole,
+                                status = rStatus,
+                                displayName = names[r.getString("user_id")]
+                            )
+                        }
+                    }
                 }
                 list
             } catch (e: Exception) {
