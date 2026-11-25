@@ -1059,6 +1059,7 @@ fun TeamOsTasksTab(viewModel: TeamOsViewModel) {
 
     if (showAddTaskDialog) {
         AddTaskDialog(
+            members = viewModel.members,
             existingTasks = viewModel.tasks,
             onDismiss = { showAddTaskDialog = false },
             onAdd = { title, desc, assignee, deadline, prio, depId ->
@@ -1543,13 +1544,14 @@ fun EditDocumentDialog(
 
 @Composable
 fun AddTaskDialog(
+    members: List<TeamOsRepository.TeamMember>,
     existingTasks: List<TeamOsRepository.TeamTask>,
     onDismiss: () -> Unit,
     onAdd: (title: String, desc: String?, assignee: String?, deadline: String?, priority: TeamOsRepository.TaskPriority, depId: String?) -> Unit
 ) {
     var title by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
-    var assignee by remember { mutableStateOf("") }
+    var selectedAssigneeId by remember { mutableStateOf<String?>(null) }
     var deadline by remember { mutableStateOf("") }
     var priority by remember { mutableStateOf(TeamOsRepository.TaskPriority.MEDIUM) }
     var selectedDepId by remember { mutableStateOf<String?>(null) }
@@ -1576,13 +1578,25 @@ fun AddTaskDialog(
                     modifier = Modifier.fillMaxWidth(),
                     maxLines = 3
                 )
-                OutlinedTextField(
-                    value = assignee,
-                    onValueChange = { assignee = it },
-                    label = { Text("ID người phụ trách (tùy chọn)") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                if (members.isNotEmpty()) {
+                    Text("Người phụ trách:", style = MaterialTheme.typography.labelMedium)
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        item {
+                            FilterChip(
+                                selected = selectedAssigneeId == null,
+                                onClick = { selectedAssigneeId = null },
+                                label = { Text("Không giao", style = MaterialTheme.typography.labelSmall) }
+                            )
+                        }
+                        items(members, key = { it.userId }) { member ->
+                            FilterChip(
+                                selected = selectedAssigneeId == member.userId,
+                                onClick = { selectedAssigneeId = if (selectedAssigneeId == member.userId) null else member.userId },
+                                label = { Text(member.displayName ?: "Thành viên", style = MaterialTheme.typography.labelSmall) }
+                            )
+                        }
+                    }
+                }
                 OutlinedTextField(
                     value = deadline,
                     onValueChange = { deadline = it },
@@ -1621,7 +1635,7 @@ fun AddTaskDialog(
                         onAdd(
                             title,
                             desc.takeIf { it.isNotBlank() },
-                            assignee.takeIf { it.isNotBlank() },
+                            selectedAssigneeId,
                             deadline.takeIf { it.isNotBlank() },
                             priority,
                             selectedDepId
