@@ -64,7 +64,8 @@ open class TeamOsRepository {
         var role: TeamRole = TeamRole.MEMBER,
         var status: MemberStatus = MemberStatus.ACTIVE,
         val joinedAt: Long = System.currentTimeMillis(),
-        var removedAt: Long? = null
+        var removedAt: Long? = null,
+        val displayName: String? = null
     )
 
     data class TeamProject(
@@ -97,8 +98,49 @@ open class TeamOsRepository {
         val content: String,
         val uploadedBy: String,
         var updatedBy: String? = null,
-        var version: Int = 1
+        var version: Int = 1,
+        val filePath: String? = null,
+        val fileName: String? = null,
+        val fileMime: String? = null,
+        val fileSize: Long? = null
     )
+
+    data class TeamFileInput(val name: String, val mime: String, val bytes: ByteArray) {
+        init {
+            require(name.isNotBlank() && name.length <= 180 && name.none { Character.isISOControl(it) || it == '/' || it == '\\' })
+            require(mime in setOf("application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "text/plain", "image/jpeg", "image/png", "image/webp"))
+            require(bytes.isNotEmpty() && bytes.size <= 8 * 1024 * 1024)
+        }
+    }
+
+    open fun uploadFileDocument(userId: String, projectId: String, title: String,
+        content: String, file: TeamFileInput): TeamDocument {
+        checkMembership(projectId, userId)
+        require(title.isNotBlank())
+        val doc = TeamDocument(projectId = projectId, title = title.trim(), content = content.trim(),
+            uploadedBy = userId, filePath = "$projectId/${UUID.randomUUID()}",
+            fileName = file.name, fileMime = file.mime, fileSize = file.bytes.size.toLong())
+        documents.getOrPut(projectId) { mutableListOf() }.add(doc)
+        return doc
+    }
+
+    open fun downloadFile(userId: String, document: TeamDocument): java.io.File =
+        throw UnsupportedOperationException("TEAM_FILE_STORAGE_UNAVAILABLE")
+
+    open fun deleteProject(userId: String, projectId: String, password: String) {
+        require(password.isNotBlank())
+        checkMembership(projectId, userId)
+        val project = projects[projectId] ?: throw NoSuchElementException("PROJECT_NOT_FOUND")
+        if (project.ownerId != userId) throw SecurityException("ONLY_PROJECT_OWNER_CAN_DELETE")
+        projects.remove(projectId)
+        requirements.remove(projectId)
+        documents.remove(projectId)
+        tasks.remove(projectId)?.forEach { taskDependencies.remove(it.id) }
+        warnings.remove(projectId)
+    }
 
     data class TeamTask(
         val id: String = UUID.randomUUID().toString(),
@@ -179,7 +221,7 @@ open class TeamOsRepository {
     fun checkManager(projectId: String, userId: Int) = checkManager(projectId, userId.toString())
 
     /**
-     * Read-only role check: VIEWER is strictly read-only.
+     * VIEWER cannot edit project content; all active members may upload files separately.
      */
     fun checkNotViewer(projectId: String, userId: String) {
         checkMembership(projectId, userId)
@@ -342,7 +384,11 @@ open class TeamOsRepository {
             content = content.trim(),
             uploadedBy = doc.uploadedBy,
             updatedBy = userId,
-            version = doc.version + 1
+            version = doc.version + 1,
+            filePath = doc.filePath,
+            fileName = doc.fileName,
+            fileMime = doc.fileMime,
+            fileSize = doc.fileSize
         )
         val index = docList.indexOf(doc)
         docList[index] = updated

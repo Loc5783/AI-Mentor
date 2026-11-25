@@ -14,6 +14,34 @@ class TeamOsTest {
     }
 
     @Test
+    fun allActiveMembersCanUploadFileButOnlyOwnerCanDeleteProject() {
+        val project = repository.createProject("owner", "Nhóm ôn tập", null)
+        repository.addMember("owner", project.id, "member", TeamOsRepository.TeamRole.MEMBER)
+        repository.addMember("owner", project.id, "viewer", TeamOsRepository.TeamRole.VIEWER)
+        val input = TeamOsRepository.TeamFileInput("note.pdf", "application/pdf", byteArrayOf(1, 2))
+        repository.uploadFileDocument("member", project.id, "Tài liệu", "", input)
+        repository.uploadFileDocument("viewer", project.id, "Tài liệu khác", "", input)
+        assertEquals(2, repository.getDocuments("owner", project.id).size)
+        assertThrows(SecurityException::class.java) {
+            repository.uploadFileDocument("outsider", project.id, "Lạ", "", input)
+        }
+        assertThrows(SecurityException::class.java) { repository.deleteProject("member", project.id, "test") }
+        repository.deleteProject("owner", project.id, "test")
+        assertTrue(repository.getProjectsForUser("member").isEmpty())
+        assertThrows(NoSuchElementException::class.java) { repository.getProject("owner", project.id) }
+    }
+
+    @Test
+    fun uploadRejectsUnsupportedOrOversizeFile() {
+        assertThrows(IllegalArgumentException::class.java) {
+            TeamOsRepository.TeamFileInput("bad.exe", "application/octet-stream", byteArrayOf(1))
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            TeamOsRepository.TeamFileInput("huge.pdf", "application/pdf", ByteArray(8 * 1024 * 1024 + 1))
+        }
+    }
+
+    @Test
     fun projectMembersCanAccessDocumentsAndNonMembersAreRejected() {
         val ownerId = "usr-101"
         val memberId = "usr-102"

@@ -18,17 +18,60 @@ class SupabaseStorage(private val context:Context) {
   require(uid.matches(Regex("[0-9a-fA-F-]{36}")) && file.id.matches(Regex("[0-9a-fA-F-]{36}")))
   return "/storage/v1/object/mentor-chat-files/$uid/${file.id}"
  }
- private fun transfer(method:String,path:String,token:String,bytes:ByteArray?=null,mime:String="application/octet-stream",limit:Int=8388608):ByteArray {
+ private fun transfer(method:String,path:String,token:String,bytes:ByteArray?=null,mime:String="application/octet-stream",limit:Int=8388608,upsert:Boolean=true):ByteArray {
   val c=URL(BuildConfig.SUPABASE_URL+path).openConnection() as HttpURLConnection
   try {
    c.requestMethod=method;c.connectTimeout=12000;c.readTimeout=30000;c.instanceFollowRedirects=false
    c.setRequestProperty("apikey",BuildConfig.SUPABASE_PUBLISHABLE_KEY);c.setRequestProperty("Authorization","Bearer $token")
-   if(bytes!=null) {require(bytes.size<=limit);c.doOutput=true;c.setRequestProperty("Content-Type",mime);c.setRequestProperty("x-upsert","true");c.setFixedLengthStreamingMode(bytes.size);c.outputStream.use {it.write(bytes)}}
+   if(bytes!=null) {require(bytes.size<=limit);c.doOutput=true;c.setRequestProperty("Content-Type",mime);c.setRequestProperty("x-upsert",upsert.toString());c.setFixedLengthStreamingMode(bytes.size);c.outputStream.use {it.write(bytes)}}
    val code=c.responseCode
    if(code !in 200..299) throw BackendClient.Failure("STORAGE_UNAVAILABLE",code)
    if(code==204) return ByteArray(0)
    return c.inputStream.use { source -> val out=java.io.ByteArrayOutputStream();val buf=ByteArray(8192);while(true) {val n=source.read(buf);if(n<0)break;require(out.size()+n<=limit);out.write(buf,0,n)};out.toByteArray() }
   } finally { c.disconnect() }
+ }
+ private val teamFileTypes = mapOf(
+  "application/pdf" to "pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document" to "docx",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation" to "pptx",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" to "xlsx",
+  "text/plain" to "txt", "image/jpeg" to "jpg", "image/png" to "png", "image/webp" to "webp")
+ private fun teamFilePath(projectId:String,docId:String,mime:String):String {
+  require(projectId.matches(Regex("proj-[0-9a-fA-F-]{36}")) && docId.matches(Regex("doc-[0-9a-fA-F-]{36}")))
+  val ext=teamFileTypes[mime] ?: throw IllegalArgumentException("UNSUPPORTED_TEAM_FILE")
+  return "$projectId/$docId/source.$ext"
+ }
+ fun uploadTeamFile(owner:Int,projectId:String,docId:String,bytes:ByteArray,mime:String):String {
+  require(bytes.isNotEmpty() && bytes.size<=8388608)
+  val name=teamFilePath(projectId,docId,mime)
+  SupabaseAccounts(context).authorized(owner) { token ->
+   transfer("POST","/storage/v1/object/mentor-team-files/$name",token,bytes,mime,upsert=false)
+  }
+  return name
+ }
+ fun deleteTeamFile(owner:Int,path:String) {
+  require(path.matches(Regex("proj-[0-9a-fA-F-]{36}/doc-[0-9a-fA-F-]{36}/source\\.(pdf|docx|pptx|xlsx|txt|jpg|png|webp)")))
+  SupabaseAccounts(context).authorized(owner) { token ->
+   transfer("DELETE","/storage/v1/object/mentor-team-files/$path",token,limit=1024)
+  }
+ }
+ fun clearCachedTeamFile(owner:Int,docId:String) {
+  require(docId.matches(Regex("doc-[0-9a-fA-F-]{36}")))
+  val directory=java.io.File(context.cacheDir,"team_files")
+  directory.listFiles()?.filter { it.name.startsWith("$owner-$docId.") }?.forEach { it.delete() }
+ }
+ fun cacheTeamFile(owner:Int,projectId:String,docId:String,path:String,mime:String,size:Long):java.io.File {
+  require(path==teamFilePath(projectId,docId,mime) && size in 1..8388608)
+  val directory=java.io.File(context.cacheDir,"team_files")
+  check(directory.isDirectory || directory.mkdirs())
+  val target=java.io.File(directory,"$owner-$docId.${path.substringAfterLast('.')}")
+  val bytes=SupabaseAccounts(context).authorized(owner) { token ->
+   transfer("GET","/storage/v1/object/mentor-team-files/$path",token,limit=8388608)
+  }
+  require(bytes.size.toLong()==size)
+  val temp=java.io.File(directory,"${target.name}.download")
+  try { temp.writeBytes(bytes); if(target.exists()) check(target.delete()); check(temp.renameTo(target)) }
+  finally { temp.delete() }
+  return target
  }
  fun upload(owner:Int,file:ChatRecords.FileItem) {
   val path=LocalChatFiles(context).resolve(owner,file)

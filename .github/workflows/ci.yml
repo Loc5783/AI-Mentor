@@ -60,7 +60,7 @@ jobs:
         with:
           node-version: '24'
       - name: Run Edge Function tests
-        run: node --test supabase/functions/mentor-ai/*.test.mjs backend/tests/test_gemini_key_pool.mjs backend/tests/test_mentor_ai_handler.mjs
+        run: node --test supabase/functions/mentor-ai/*.test.mjs supabase/functions/mentor-team-cleanup/*.test.mjs backend/tests/test_gemini_key_pool.mjs backend/tests/test_mentor_ai_handler.mjs
 
   sql:
     name: Isolated Supabase migrations and SQL smoke

@@ -11,7 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import com.example.asm_final.competition.LearnerDirectory
+import com.example.asm_final.competition.FriendsViewModel
 
 enum class TeamOsScreen {
     PROJECT_LIST,
@@ -29,14 +32,15 @@ enum class TeamOsTab {
 
 /**
  * Presentation ViewModel for TeamOS collaborative projects.
- * Enforces role capabilities (OWNER/ADMIN/MEMBER/VIEWER),
+ * Enforces role capabilities (OWNER/ADMIN/MEMBER/VIEWER, with file upload for every active member),
  * multi-tab navigation, state isolation across user switches,
  * task dependency validations, and human review of AI findings.
  */
 class TeamOsViewModel(
     private val repository: TeamOsRepository,
     private val scope: CoroutineScope? = null,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val learnerDirectory: LearnerDirectory? = null
 ) : ViewModel() {
 
     private val ownedJob = SupervisorJob((scope ?: viewModelScope).coroutineContext[Job])
@@ -84,6 +88,42 @@ class TeamOsViewModel(
     var actionSuccessMessage by mutableStateOf<String?>(null)
         private set
 
+    var memberCandidates by mutableStateOf<List<FriendsViewModel.SearchItem>>(emptyList())
+        private set
+    var memberSearchLoading by mutableStateOf(false)
+        private set
+    var memberSearchError by mutableStateOf<String?>(null)
+        private set
+    private var memberSearchGeneration = 0
+
+    fun searchMembers(query: String) {
+        val generation = ++memberSearchGeneration
+        val owner = currentUserId?.toIntOrNull()
+        memberCandidates = emptyList()
+        memberSearchError = null
+        if (query.trim().length < 2 || owner == null || learnerDirectory == null) {
+            memberSearchLoading = false
+            return
+        }
+        memberSearchLoading = true
+        vmScope.launch {
+            delay(250)
+            try {
+                val results = withContext(ioDispatcher) {
+                    val self = learnerDirectory.currentProfileId(owner)
+                    learnerDirectory.search(owner, query).filterNot { it.id == self }
+                }
+                if (generation == memberSearchGeneration && currentUserId == owner.toString()) {
+                    memberCandidates = results
+                }
+            } catch (e: Exception) {
+                if (generation == memberSearchGeneration) memberSearchError = "Không tìm được tài khoản. Thử lại khi có mạng."
+            } finally {
+                if (generation == memberSearchGeneration) memberSearchLoading = false
+            }
+        }
+    }
+
     // Role-based capability properties
     val currentUserRole: TeamOsRepository.TeamRole?
         get() {
@@ -103,6 +143,12 @@ class TeamOsViewModel(
     val canEdit: Boolean
         get() = selectedProject != null && !isViewer
 
+    val canUploadFile: Boolean
+        get() = selectedProject != null && currentUserRole != null
+
+    val canDeleteProject: Boolean
+        get() = selectedProject?.ownerId == currentUserId && currentUserRole == TeamOsRepository.TeamRole.OWNER
+
     /**
      * Loads projects for given user.
      * Enforces user isolation: resets all project/detail state if switching accounts.
@@ -121,6 +167,8 @@ class TeamOsViewModel(
             tasks = emptyList()
             warnings = emptyList()
             taskDependencies = emptyMap()
+            memberSearchGeneration++
+            memberCandidates = emptyList()
             errorMessage = null
             actionSuccessMessage = null
         }
@@ -333,6 +381,70 @@ class TeamOsViewModel(
             } finally {
                 isLoading = false
             }
+        }
+    }
+
+    fun uploadFile(title: String, content: String, file: TeamOsRepository.TeamFileInput,
+        onSuccess: (() -> Unit)? = null) {
+        val uid = currentUserId ?: return
+        val projectId = selectedProject?.id ?: return
+        if (!canUploadFile || isLoading) return
+        isLoading = true
+        vmScope.launch {
+            errorMessage = null
+            try {
+                withContext(ioDispatcher) { repository.uploadFileDocument(uid, projectId, title, content, file) }
+                if (currentUserId == uid && selectedProject?.id == projectId) {
+                    actionSuccessMessage = "Đã tải tệp lên nhóm"
+                    refreshProjectDetails()
+                    onSuccess?.invoke()
+                }
+            } catch (e: Exception) {
+                if (currentUserId == uid) errorMessage = e.message ?: "Không tải được tệp"
+            } finally { isLoading = false }
+        }
+    }
+
+    fun openFile(document: TeamOsRepository.TeamDocument, onReady: (java.io.File) -> Unit) {
+        val uid = currentUserId ?: return
+        val projectId = selectedProject?.id ?: return
+        if (document.projectId != projectId) return
+        vmScope.launch {
+            try {
+                val file = withContext(ioDispatcher) { repository.downloadFile(uid, document) }
+                if (currentUserId == uid && selectedProject?.id == projectId) onReady(file)
+            } catch (e: Exception) {
+                if (currentUserId == uid) errorMessage = e.message ?: "Không mở được tệp"
+            }
+        }
+    }
+
+    fun deleteProject(password: String, onSuccess: (() -> Unit)? = null) {
+        val uid = currentUserId ?: return
+        val projectId = selectedProject?.id ?: return
+        if (!canDeleteProject || isLoading) return
+        isLoading = true
+        vmScope.launch {
+            errorMessage = null
+            try {
+                withContext(ioDispatcher) { repository.deleteProject(uid, projectId, password) }
+                if (currentUserId == uid && selectedProject?.id == projectId) {
+                    backToProjectList()
+                    projects = projects.filterNot { it.id == projectId }
+                    actionSuccessMessage = "Đã xóa dự án"
+                    onSuccess?.invoke()
+                    try {
+                        projects = withContext(ioDispatcher) { repository.getProjectsForUser(uid) }
+                    } catch (_: Exception) {
+                        // The delete has already succeeded; keep the confirmed local state.
+                    }
+                }
+            } catch (e: Exception) {
+                if (currentUserId == uid) errorMessage = when (e.message) {
+                    "INVALID_CREDENTIALS" -> "Mật khẩu không đúng. Dự án vẫn được giữ nguyên."
+                    else -> e.message ?: "Không xóa được dự án"
+                }
+            } finally { isLoading = false }
         }
     }
 

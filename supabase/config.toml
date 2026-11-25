@@ -1,2 +1,5 @@
 [functions.mentor-ai]
 verify_jwt = true
+
+[functions.mentor-team-cleanup]
+verify_jwt = true

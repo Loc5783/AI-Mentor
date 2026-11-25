@@ -120,6 +120,20 @@ class SupabaseAccounts @JvmOverloads constructor(context: Context, private val h
         owner>0 && com.example.mentor.data.ActiveUser.get(context)==owner && sessions(owner).load()!=null
     }
 
+    /** Verify a destructive action without replacing the remembered session. */
+    fun reauthenticate(owner: Int, password: String): String {
+        require(password.isNotBlank())
+        check(owner > 0 && com.example.mentor.data.ActiveUser.get(context) == owner)
+        val expected = RemoteAccountLinks(context).use { it.remoteId(owner, BuildConfig.SUPABASE_URL) }
+        val email = sessions(owner).load()?.optJSONObject("user")?.optString("email")
+            ?.takeIf { it.isNotBlank() } ?: throw BackendClient.Failure("AUTHENTICATION_REQUIRED", 401)
+        val response = JSONObject(http.request("POST", "/auth/v1/token?grant_type=password",
+            JSONObject().put("email", email).put("password", password)))
+        check(response.getJSONObject("user").getString("id") == expected)
+        check(com.example.mentor.data.ActiveUser.get(context) == owner)
+        return response.getString("access_token")
+    }
+
     fun requestFor(owner: Int, method: String, path: String, body: JSONObject? = null): String =
         authorized(owner) { token -> http.request(method,path,body,token) }
 

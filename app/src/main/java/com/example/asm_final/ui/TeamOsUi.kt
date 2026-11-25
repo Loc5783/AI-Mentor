@@ -1,6 +1,12 @@
 package com.example.asm_final.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.content.Intent
+import android.provider.OpenableColumns
+import android.net.Uri
+import androidx.core.content.FileProvider
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
@@ -32,6 +38,9 @@ import com.example.asm_final.R
 import com.example.asm_final.learning.*
 import com.example.mentor.data.ActiveUser
 import com.example.mentor.ui.design.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,7 +54,7 @@ fun TeamOsScreen(
     val repository = remember(app) { app.services().teamOs() }
     val scope = rememberCoroutineScope()
     val viewModel = remember(repository, scope) {
-        TeamOsViewModel(repository, scope)
+        TeamOsViewModel(repository, scope, learnerDirectory = app.services().learnerDirectory())
     }
 
     LaunchedEffect(ownerId) {
@@ -357,6 +366,7 @@ fun TeamOsProjectDetailScreen(viewModel: TeamOsViewModel) {
 
 @Composable
 fun TeamOsOverviewTab(viewModel: TeamOsViewModel) {
+    var showDeleteDialog by remember { mutableStateOf(false) }
     val project = viewModel.selectedProject ?: return
     val totalTasks = viewModel.tasks.size
     val doneTasks = viewModel.tasks.count { it.status == TeamOsRepository.TaskStatus.DONE }
@@ -453,6 +463,39 @@ fun TeamOsOverviewTab(viewModel: TeamOsViewModel) {
                 }
             }
         }
+        if (viewModel.canDeleteProject) {
+            TextButton(onClick = { showDeleteDialog = true }) {
+                Text("Xóa dự án", color = MaterialTheme.colorScheme.error)
+            }
+        }
+    }
+    if (showDeleteDialog) {
+        var confirmation by remember { mutableStateOf("") }
+        var password by remember { mutableStateOf("") }
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Xóa vĩnh viễn dự án?") },
+            text = {
+                Column(Modifier.heightIn(max = 360.dp).verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Tất cả thành viên sẽ mất quyền truy cập. Tài liệu, tệp đã tải, nhiệm vụ, yêu cầu và cảnh báo của dự án sẽ bị xóa và không thể khôi phục.")
+                    Text("Nhập tên dự án để xác nhận: ${project.title}")
+                    OutlinedTextField(value = confirmation, onValueChange = { confirmation = it },
+                        label = { Text("Tên dự án") }, singleLine = true)
+                    OutlinedTextField(value = password, onValueChange = { password = it },
+                        label = { Text("Mật khẩu tài khoản của bạn") }, singleLine = true,
+                        visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation())
+                }
+            },
+            confirmButton = {
+                Button(onClick = { viewModel.deleteProject(password) { showDeleteDialog = false } },
+                    enabled = confirmation == project.title && password.isNotBlank() && !viewModel.isLoading,
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) {
+                    Text("Xóa vĩnh viễn")
+                }
+            },
+            dismissButton = { TextButton(onClick = { showDeleteDialog = false }) { Text("Hủy") } }
+        )
     }
 }
 
@@ -528,6 +571,11 @@ fun TeamOsMembersTab(viewModel: TeamOsViewModel) {
             }
         }
 
+        if (viewModel.members.any { it.displayName == null && it.userId != viewModel.currentUserId }) {
+            TextButton(onClick = { viewModel.refreshProjectDetails() },
+                modifier = Modifier.align(Alignment.End)) { Text("Tải lại tên thành viên") }
+        }
+
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
@@ -548,7 +596,7 @@ fun TeamOsMembersTab(viewModel: TeamOsViewModel) {
                     ) {
                         Column {
                             Text(
-                                text = "Người dùng: ${member.userId}",
+                                text = member.displayName ?: if (member.userId == viewModel.currentUserId) "Bạn" else "Chưa tải được tên",
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -574,6 +622,7 @@ fun TeamOsMembersTab(viewModel: TeamOsViewModel) {
     if (showAddMemberDialog) {
         AddMemberDialog(
             onDismiss = { showAddMemberDialog = false },
+            viewModel = viewModel,
             onAdd = { targetId, role ->
                 viewModel.addMember(targetId, role) {
                     showAddMemberDialog = false
@@ -675,6 +724,7 @@ fun TeamOsRequirementsTab(viewModel: TeamOsViewModel) {
 
 @Composable
 fun TeamOsDocumentsTab(viewModel: TeamOsViewModel) {
+    val context = LocalContext.current
     var showUploadDialog by remember { mutableStateOf(false) }
     var editingDoc by remember { mutableStateOf<TeamOsRepository.TeamDocument?>(null) }
 
@@ -691,7 +741,7 @@ fun TeamOsDocumentsTab(viewModel: TeamOsViewModel) {
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold
             )
-            if (viewModel.canEdit) {
+            if (viewModel.canUploadFile) {
                 Button(
                     onClick = { showUploadDialog = true },
                     shape = RoundedCornerShape(8.dp),
@@ -751,12 +801,25 @@ fun TeamOsDocumentsTab(viewModel: TeamOsViewModel) {
                                 }
                             }
                             Spacer(Modifier.height(6.dp))
-                            Text(
-                                text = doc.content,
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 4,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            if (doc.content.isNotBlank()) Text(doc.content,
+                                style = MaterialTheme.typography.bodySmall, maxLines = 4,
+                                overflow = TextOverflow.Ellipsis)
+                            if (doc.fileName != null) {
+                                Text("Tệp: ${doc.fileName}", style = MaterialTheme.typography.bodySmall)
+                                TextButton(onClick = {
+                                    viewModel.openFile(doc) { file ->
+                                        val uri = FileProvider.getUriForFile(context,
+                                            "${context.packageName}.fileprovider", file)
+                                        val intent = Intent(Intent.ACTION_VIEW).apply {
+                                            setDataAndType(uri, doc.fileMime)
+                                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                        }
+                                        runCatching { context.startActivity(intent) }
+                                            .onFailure { android.widget.Toast.makeText(context,
+                                                "Máy chưa có ứng dụng mở loại tệp này", android.widget.Toast.LENGTH_SHORT).show() }
+                                    }
+                                }) { Text("Mở tệp") }
+                            }
                             if (viewModel.canEdit) {
                                 Spacer(Modifier.height(8.dp))
                                 Row(
@@ -778,8 +841,9 @@ fun TeamOsDocumentsTab(viewModel: TeamOsViewModel) {
     if (showUploadDialog) {
         UploadDocumentDialog(
             onDismiss = { showUploadDialog = false },
-            onUpload = { title, content ->
-                viewModel.uploadDocument(title, content) {
+            isBusy = viewModel.isLoading,
+            onUpload = { title, content, file ->
+                viewModel.uploadFile(title, content, file) {
                     showUploadDialog = false
                 }
             }
@@ -1133,30 +1197,53 @@ fun CreateProjectDialog(
 @Composable
 fun AddMemberDialog(
     onDismiss: () -> Unit,
+    viewModel: TeamOsViewModel,
     onAdd: (userId: String, role: TeamOsRepository.TeamRole) -> Unit
 ) {
-    var userId by remember { mutableStateOf("") }
+    var query by remember { mutableStateOf("") }
+    var selected by remember { mutableStateOf<com.example.asm_final.competition.FriendsViewModel.SearchItem?>(null) }
     var selectedRole by remember { mutableStateOf(TeamOsRepository.TeamRole.MEMBER) }
+    LaunchedEffect(Unit) { viewModel.searchMembers("") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Thêm thành viên vào nhóm") },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(Modifier.heightIn(max = 350.dp).verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
-                    value = userId,
-                    onValueChange = { userId = it },
-                    label = { Text("ID người dùng *") },
+                    value = query,
+                    onValueChange = { query = it; selected = null; viewModel.searchMembers(it) },
+                    label = { Text("Tìm theo tên người dùng") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
+                if (viewModel.memberSearchLoading) CircularProgressIndicator(Modifier.size(20.dp))
+                if (viewModel.memberSearchError != null) Text(viewModel.memberSearchError!!,
+                    color = MaterialTheme.colorScheme.error)
+                viewModel.memberCandidates.forEach { person ->
+                    Surface(onClick = { selected = person }, shape = RoundedCornerShape(8.dp),
+                        color = if (selected?.id == person.id) MaterialTheme.colorScheme.primaryContainer
+                            else MaterialTheme.colorScheme.surfaceVariant) {
+                        Text(person.nickname, Modifier.fillMaxWidth().padding(12.dp))
+                    }
+                }
+                if (query.trim().length >= 2 && !viewModel.memberSearchLoading &&
+                    viewModel.memberCandidates.isEmpty() && viewModel.memberSearchError == null) {
+                    Text("Không tìm thấy tài khoản phù hợp", style = MaterialTheme.typography.bodySmall)
+                }
                 Text("Chọn vai trò:", style = MaterialTheme.typography.labelMedium)
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     TeamOsRepository.TeamRole.values().filter { it != TeamOsRepository.TeamRole.OWNER }.forEach { role ->
                         FilterChip(
                             selected = selectedRole == role,
                             onClick = { selectedRole = role },
-                            label = { Text(role.name, style = MaterialTheme.typography.labelSmall) }
+                            label = { Text(when (role) {
+                                TeamOsRepository.TeamRole.ADMIN -> "Quản trị"
+                                TeamOsRepository.TeamRole.MEMBER -> "Thành viên"
+                                TeamOsRepository.TeamRole.VIEWER -> "Xem và tải tệp"
+                                TeamOsRepository.TeamRole.OWNER -> "Trưởng nhóm"
+                            }, style = MaterialTheme.typography.labelSmall) }
                         )
                     }
                 }
@@ -1164,8 +1251,8 @@ fun AddMemberDialog(
         },
         confirmButton = {
             Button(
-                onClick = { if (userId.isNotBlank()) onAdd(userId, selectedRole) },
-                enabled = userId.isNotBlank()
+                onClick = { selected?.let { onAdd(it.id, selectedRole) } },
+                enabled = selected != null && !viewModel.isLoading
             ) {
                 Text("Thêm")
             }
@@ -1233,16 +1320,45 @@ fun AddRequirementDialog(
 @Composable
 fun UploadDocumentDialog(
     onDismiss: () -> Unit,
-    onUpload: (title: String, content: String) -> Unit
+    isBusy: Boolean = false,
+    onUpload: (title: String, content: String, file: TeamOsRepository.TeamFileInput) -> Unit
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
+    var selectedUri by remember { mutableStateOf<Uri?>(null) }
+    var selectedName by remember { mutableStateOf("") }
+    var reading by remember { mutableStateOf(false) }
+    var fileError by remember { mutableStateOf<String?>(null) }
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        selectedUri = uri
+        if (uri != null) {
+            val name = runCatching {
+                context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+                    ?.use { cursor -> if (cursor.moveToFirst()) cursor.getString(0) else null }
+            }.getOrNull() ?: "Tài liệu"
+            selectedName = name
+            if (title.isBlank()) title = name.substringBeforeLast('.')
+            fileError = null
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Tải lên tài liệu mới") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick = { picker.launch(arrayOf("application/pdf",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "text/plain", "image/jpeg", "image/png", "image/webp")) }) {
+                    Text(if (selectedUri == null) "Chọn tệp từ máy" else "Đổi tệp: $selectedName")
+                }
+                Text("PDF, Word, PowerPoint, Excel, TXT hoặc ảnh · tối đa 8 MB",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
@@ -1253,16 +1369,57 @@ fun UploadDocumentDialog(
                 OutlinedTextField(
                     value = content,
                     onValueChange = { content = it },
-                    label = { Text("Nội dung tài liệu *") },
+                    label = { Text("Mô tả (không bắt buộc)") },
                     modifier = Modifier.fillMaxWidth(),
                     maxLines = 6
                 )
+                Text("AI đối chiếu phần mô tả; các thành viên có thể mở tệp gốc.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (fileError != null) Text(fileError!!, color = MaterialTheme.colorScheme.error)
             }
         },
         confirmButton = {
             Button(
-                onClick = { if (title.isNotBlank() && content.isNotBlank()) onUpload(title, content) },
-                enabled = title.isNotBlank() && content.isNotBlank()
+                onClick = {
+                    val uri = selectedUri ?: return@Button
+                    reading = true
+                    scope.launch {
+                        try {
+                            val file = withContext(Dispatchers.IO) {
+                                val mime = context.contentResolver.getType(uri)
+                                    ?.takeUnless { it == "application/octet-stream" }
+                                    ?: when (selectedName.substringAfterLast('.', "").lowercase()) {
+                                        "pdf" -> "application/pdf"
+                                        "docx" -> "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                        "pptx" -> "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                                        "xlsx" -> "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                        "txt" -> "text/plain"
+                                        "jpg", "jpeg" -> "image/jpeg"
+                                        "png" -> "image/png"
+                                        "webp" -> "image/webp"
+                                        else -> throw IllegalArgumentException("Chỉ hỗ trợ PDF, DOCX, PPTX, XLSX, TXT và ảnh")
+                                    }
+                                val bytes = context.contentResolver.openInputStream(uri)?.use { stream ->
+                                    val out = java.io.ByteArrayOutputStream()
+                                    val buffer = ByteArray(8192)
+                                    while (true) {
+                                        val count = stream.read(buffer)
+                                        if (count < 0) break
+                                        require(out.size() + count <= 8 * 1024 * 1024) { "Tệp vượt quá 8 MB" }
+                                        out.write(buffer, 0, count)
+                                    }
+                                    out.toByteArray()
+                                } ?: throw IllegalArgumentException("Không đọc được tệp")
+                                TeamOsRepository.TeamFileInput(selectedName, mime, bytes)
+                            }
+                            onUpload(title.trim(), content.trim(), file)
+                        } catch (e: Exception) {
+                            fileError = e.message ?: "Không đọc được tệp"
+                        } finally { reading = false }
+                    }
+                },
+                enabled = title.isNotBlank() && selectedUri != null && !reading && !isBusy
             ) {
                 Text("Tải lên")
             }
@@ -1493,7 +1650,7 @@ fun RoleBadge(role: TeamOsRepository.TeamRole) {
         TeamOsRepository.TeamRole.OWNER -> Triple("Trưởng nhóm", MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.onPrimary)
         TeamOsRepository.TeamRole.ADMIN -> Triple("Quản trị", MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.onSecondary)
         TeamOsRepository.TeamRole.MEMBER -> Triple("Thành viên", MaterialTheme.colorScheme.tertiary, MaterialTheme.colorScheme.onTertiary)
-        TeamOsRepository.TeamRole.VIEWER -> Triple("Người xem", MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
+        TeamOsRepository.TeamRole.VIEWER -> Triple("Xem và tải tệp", MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
     }
     Surface(
         shape = RoundedCornerShape(4.dp),

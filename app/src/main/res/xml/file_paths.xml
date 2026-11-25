@@ -3,6 +3,7 @@
     <cache-path name="general_chat_camera" path="general_chat_camera/" />
     <cache-path name="schedule_ai_camera" path="schedule_ai_camera/" />
     <cache-path name="exam_pack_source" path="exam_pack_source/" />
+    <cache-path name="team_files" path="team_files/" />
     <files-path name="general_chat_attachment" path="general_chat/" />
     <cache-path
         name="science_camera"
