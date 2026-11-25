@@ -58,6 +58,9 @@ class TeamOsViewModel(
     var projects by mutableStateOf<List<TeamOsRepository.TeamProject>>(emptyList())
         private set
 
+    var invitations by mutableStateOf<List<TeamOsRepository.TeamInvitation>>(emptyList())
+        private set
+
     var selectedProject by mutableStateOf<TeamOsRepository.TeamProject?>(null)
         private set
 
@@ -161,6 +164,7 @@ class TeamOsViewModel(
             screen = TeamOsScreen.PROJECT_LIST
             currentTab = TeamOsTab.OVERVIEW
             projects = emptyList()
+            invitations = emptyList()
             members = emptyList()
             requirements = emptyList()
             documents = emptyList()
@@ -177,15 +181,35 @@ class TeamOsViewModel(
         vmScope.launch {
             isLoading = true
             try {
-                val list = withContext(ioDispatcher) {
-                    repository.getProjectsForUser(userId)
+                val (list, invites) = withContext(ioDispatcher) {
+                    repository.getProjectsForUser(userId) to repository.getInvitations(userId)
                 }
-                projects = list
+                if (currentUserId == userId) {
+                    projects = list
+                    invitations = invites
+                }
             } catch (e: Exception) {
                 errorMessage = e.message ?: "Không tải được danh sách dự án"
             } finally {
                 isLoading = false
             }
+        }
+    }
+
+    fun respondToInvitation(projectId: String, accept: Boolean) {
+        val uid = currentUserId ?: return
+        if (isLoading) return
+        vmScope.launch {
+            isLoading = true
+            try {
+                withContext(ioDispatcher) { repository.respondToInvitation(uid, projectId, accept) }
+                if (currentUserId == uid) {
+                    projects = withContext(ioDispatcher) { repository.getProjectsForUser(uid) }
+                    invitations = withContext(ioDispatcher) { repository.getInvitations(uid) }
+                    actionSuccessMessage = if (accept) "Đã tham gia dự án" else "Đã từ chối lời mời"
+                }
+            } catch (e: Exception) { if (currentUserId == uid) errorMessage = e.message ?: "Không xử lý được lời mời" }
+            finally { isLoading = false }
         }
     }
 
@@ -286,7 +310,7 @@ class TeamOsViewModel(
                 withContext(ioDispatcher) {
                     repository.addMember(uid, proj.id, targetUserId.trim(), role)
                 }
-                actionSuccessMessage = "Thêm thành viên thành công"
+                actionSuccessMessage = "Đã gửi lời mời tham gia"
                 refreshProjectDetails()
                 onSuccess?.invoke()
             } catch (e: Exception) {
@@ -320,6 +344,22 @@ class TeamOsViewModel(
             } finally {
                 isLoading = false
             }
+        }
+    }
+
+    fun changeMemberRole(targetUserId: String, role: TeamOsRepository.TeamRole, onSuccess: (() -> Unit)? = null) {
+        val uid = currentUserId ?: return
+        val proj = selectedProject ?: return
+        if (!canManageMembers || role == TeamOsRepository.TeamRole.OWNER || targetUserId == uid) return
+        vmScope.launch {
+            isLoading = true
+            try {
+                withContext(ioDispatcher) { repository.changeMemberRole(uid, proj.id, targetUserId, role) }
+                actionSuccessMessage = "Đã cập nhật quyền thành viên"
+                refreshProjectDetails()
+                onSuccess?.invoke()
+            } catch (e: Exception) { errorMessage = e.message ?: "Không đổi được quyền" }
+            finally { isLoading = false }
         }
     }
 

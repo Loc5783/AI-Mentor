@@ -4,7 +4,6 @@ import android.content.Context;
 import com.example.asm_final.BuildConfig;
 import com.example.asm_final.accounts.RemoteAccountLinks;
 import com.example.asm_final.supabase.SupabaseAccounts;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,10 +30,8 @@ public final class SupabaseLearnerSearch implements LearnerDirectory {
     String query = input.replaceAll("[^\\p{L}\\p{N} ]", " ").trim().replaceAll(" +", " ");
     if (query.length() < 2) return Collections.emptyList();
     if (query.length() > 40) query = query.substring(0, 40).trim();
-    String filter = URLEncoder.encode("*" + query + "*", "UTF-8");
-    String response = new SupabaseAccounts(context).requestFor(owner, "GET",
-        "/rest/v1/mentor_profiles?select=id,nickname&nickname=ilike." + filter
-            + "&order=nickname.asc&limit=30", null);
+    String response = new SupabaseAccounts(context).requestFor(owner, "POST",
+        "/rest/v1/rpc/mentor_search_learners", new JSONObject().put("p_query", query));
     JSONArray rows = new JSONArray(response);
     List<FriendsViewModel.SearchItem> result = new ArrayList<>();
     for (int i = 0; i < rows.length(); i++) {

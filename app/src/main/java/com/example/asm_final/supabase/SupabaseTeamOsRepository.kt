@@ -105,6 +105,20 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
         throw IllegalStateException("TEAMOS_REQUIRES_CONNECTION")
     }
 
+    override fun getInvitations(userId: String): List<TeamInvitation> {
+        val result = JSONArray(accounts().requestFor(onlineUser(userId), "POST",
+            "/rest/v1/rpc/mentor_team_my_invites", JSONObject()))
+        return (0 until result.length()).map { index ->
+            val row = result.getJSONObject(index)
+            TeamInvitation(row.getString("project_id"), row.getString("title"), TeamRole.valueOf(row.getString("role")))
+        }
+    }
+
+    override fun respondToInvitation(userId: String, projectId: String, accept: Boolean) {
+        accounts().requestFor(onlineUser(userId), "POST", "/rest/v1/rpc/mentor_team_respond_invite",
+            JSONObject().put("p_project_id", projectId).put("p_accept", accept))
+    }
+
     override fun getProject(userId: String, projectId: String): TeamProject {
         val result = rows(userId, "/rest/v1/mentor_team_projects?id=eq.$projectId&select=id,title,description,owner_id,version")
         if (result.length() == 0) throw NoSuchElementException("PROJECT_NOT_FOUND")
@@ -178,9 +192,15 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
     override fun removeMember(requesterId: String, projectId: String, targetUserId: String) {
         val owner = onlineUser(requesterId)
         val uid = targetUserId.toIntOrNull()?.let { remoteUserId(it) } ?: targetUserId
-        accounts().requestFor(owner, "PATCH",
-            "/rest/v1/mentor_team_members?project_id=eq.$projectId&user_id=eq.$uid",
-            JSONObject().put("status", MemberStatus.REMOVED.name))
+        accounts().requestFor(owner, "POST", "/rest/v1/rpc/mentor_team_remove_member",
+            JSONObject().put("p_project_id", projectId).put("p_user_id", uid))
+    }
+
+    override fun changeMemberRole(requesterId: String, projectId: String, targetUserId: String, role: TeamRole) {
+        val owner = onlineUser(requesterId)
+        val uid = targetUserId.toIntOrNull()?.let { remoteUserId(it) } ?: targetUserId
+        accounts().requestFor(owner, "POST", "/rest/v1/rpc/mentor_team_change_role",
+            JSONObject().put("p_project_id", projectId).put("p_user_id", uid).put("p_role", role.name))
     }
 
     override fun analyzeGaps(userId: String, projectId: String, aiResponseJson: String?): List<TeamWarning> {
@@ -216,12 +236,9 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
         if (requesterInt != null && SupabaseHttp.enabled(appContext)) {
             val newUid = newUserId.toIntOrNull()?.let { remoteUserId(it) } ?: newUserId
             try {
-                val body = JSONObject()
-                    .put("project_id", projectId)
-                    .put("user_id", newUid)
-                    .put("role", role.name)
-                    .put("status", MemberStatus.ACTIVE.name)
-                accounts().requestFor(requesterInt, "POST", "/rest/v1/mentor_team_members", body)
+                val body = JSONObject().put("p_project_id", projectId)
+                    .put("p_user_id", newUid).put("p_role", role.name)
+                accounts().requestFor(requesterInt, "POST", "/rest/v1/rpc/mentor_team_invite", body)
                 return
             } catch (e: Exception) {
                 throw e
@@ -448,7 +465,7 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
                 val resp = accounts().requestFor(
                     userInt,
                     "GET",
-                    "/rest/v1/mentor_team_members?project_id=eq.$projectId&status=eq.ACTIVE&select=user_id,role,status,joined_at"
+                    "/rest/v1/mentor_team_members?project_id=eq.$projectId&status=in.(ACTIVE,INVITED)&select=user_id,role,status,joined_at"
                 )
                 val rows = JSONArray(resp)
                 val ids = (0 until rows.length()).map { rows.getJSONObject(it).getString("user_id") }

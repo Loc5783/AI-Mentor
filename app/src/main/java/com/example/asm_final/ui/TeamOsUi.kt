@@ -191,8 +191,28 @@ fun TeamOsScreen(
 @Composable
 fun TeamOsProjectListScreen(viewModel: TeamOsViewModel) {
     var showCreateDialog by remember { mutableStateOf(false) }
+    var declineInvite by remember { mutableStateOf<TeamOsRepository.TeamInvitation?>(null) }
 
     Column(Modifier.fillMaxSize()) {
+        if (viewModel.invitations.isNotEmpty()) {
+            Text("Lời mời tham gia", Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            viewModel.invitations.forEach { invite ->
+                Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text(invite.title, style = MaterialTheme.typography.titleMedium)
+                        Text("Vai trò: ${invite.role.name}", style = MaterialTheme.typography.bodySmall)
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Button(onClick = { viewModel.respondToInvitation(invite.projectId, true) },
+                                enabled = !viewModel.isLoading) { Text("Tham gia") }
+                            TextButton(onClick = { declineInvite = invite }, enabled = !viewModel.isLoading) {
+                                Text("Từ chối")
+                            }
+                        }
+                    }
+                }
+            }
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -314,6 +334,15 @@ fun TeamOsProjectListScreen(viewModel: TeamOsViewModel) {
                 }
             }
         )
+    }
+    declineInvite?.let { invite ->
+        AlertDialog(onDismissRequest = { declineInvite = null }, title = { Text("Từ chối lời mời?") },
+            text = { Text("Bạn sẽ không tham gia dự án ${invite.title}.") },
+            confirmButton = { Button(onClick = {
+                viewModel.respondToInvitation(invite.projectId, false)
+                declineInvite = null
+            }) { Text("Từ chối") } },
+            dismissButton = { TextButton(onClick = { declineInvite = null }) { Text("Quay lại") } })
     }
 }
 
@@ -531,6 +560,9 @@ fun StatCard(title: String, value: String, modifier: Modifier = Modifier, isAler
 @Composable
 fun TeamOsMembersTab(viewModel: TeamOsViewModel) {
     var showAddMemberDialog by remember { mutableStateOf(false) }
+    var memberToRemove by remember { mutableStateOf<TeamOsRepository.TeamMember?>(null) }
+    var memberToChange by remember { mutableStateOf<TeamOsRepository.TeamMember?>(null) }
+    var newRole by remember { mutableStateOf(TeamOsRepository.TeamRole.MEMBER) }
 
     Column(Modifier.fillMaxSize()) {
         if (viewModel.canManageMembers) {
@@ -594,7 +626,7 @@ fun TeamOsMembersTab(viewModel: TeamOsViewModel) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
+                        Column(Modifier.weight(1f)) {
                             Text(
                                 text = member.displayName ?: if (member.userId == viewModel.currentUserId) "Bạn" else "Chưa tải được tên",
                                 style = MaterialTheme.typography.bodyMedium,
@@ -602,15 +634,24 @@ fun TeamOsMembersTab(viewModel: TeamOsViewModel) {
                             )
                             Spacer(Modifier.height(4.dp))
                             RoleBadge(role = member.role)
+                            if (member.status == TeamOsRepository.MemberStatus.INVITED) {
+                                Text("Đang chờ chấp nhận", style = MaterialTheme.typography.labelSmall)
+                            }
                         }
                         if (viewModel.canManageMembers && member.userId != viewModel.currentUserId && member.role != TeamOsRepository.TeamRole.OWNER) {
+                            if (member.status == TeamOsRepository.MemberStatus.ACTIVE) {
+                                TextButton(onClick = { memberToChange = member; newRole = member.role }) {
+                                    Text("Đổi quyền")
+                                }
+                            }
                             OutlinedButton(
-                                onClick = { viewModel.removeMember(member.userId) },
+                                onClick = { memberToRemove = member },
                                 shape = RoundedCornerShape(6.dp),
                                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
                                 colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
                             ) {
-                                Text("Xóa", style = MaterialTheme.typography.labelSmall)
+                                Text(if (member.status == TeamOsRepository.MemberStatus.INVITED) "Hủy mời" else "Xóa",
+                                    style = MaterialTheme.typography.labelSmall)
                             }
                         }
                     }
@@ -629,6 +670,31 @@ fun TeamOsMembersTab(viewModel: TeamOsViewModel) {
                 }
             }
         )
+    }
+    memberToRemove?.let { member ->
+        AlertDialog(onDismissRequest = { memberToRemove = null }, title = { Text("Xóa khỏi nhóm?") },
+            text = { Text(if (member.status == TeamOsRepository.MemberStatus.INVITED)
+                "Hủy lời mời của ${member.displayName ?: "người này"}?"
+                else "${member.displayName ?: "Thành viên này"} sẽ mất quyền truy cập dự án và tệp của nhóm.") },
+            confirmButton = { Button(onClick = {
+                viewModel.removeMember(member.userId) { memberToRemove = null }
+            }, enabled = !viewModel.isLoading) { Text("Xóa thành viên") } },
+            dismissButton = { TextButton(onClick = { memberToRemove = null }) { Text("Quay lại") } })
+    }
+    memberToChange?.let { member ->
+        AlertDialog(onDismissRequest = { memberToChange = null }, title = { Text("Đổi quyền thành viên") },
+            text = { Column {
+                Text(member.displayName ?: "Thành viên")
+                TeamOsRepository.TeamRole.values().filter { it != TeamOsRepository.TeamRole.OWNER }.forEach { role ->
+                    FilterChip(selected = newRole == role, onClick = { newRole = role },
+                        label = { Text(role.name) })
+                }
+                Text("Quyền mới có hiệu lực ngay sau khi xác nhận.")
+            } },
+            confirmButton = { Button(onClick = {
+                viewModel.changeMemberRole(member.userId, newRole) { memberToChange = null }
+            }, enabled = newRole != member.role && !viewModel.isLoading) { Text("Xác nhận đổi quyền") } },
+            dismissButton = { TextButton(onClick = { memberToChange = null }) { Text("Quay lại") } })
     }
 }
 
@@ -1214,7 +1280,8 @@ fun AddMemberDialog(
                 OutlinedTextField(
                     value = query,
                     onValueChange = { query = it; selected = null; viewModel.searchMembers(it) },
-                    label = { Text("Tìm theo tên người dùng") },
+                    label = { Text("Tìm tên người dùng (ít nhất 2 ký tự)") },
+                    supportingText = { Text("Có thể gõ có dấu hoặc không dấu") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
