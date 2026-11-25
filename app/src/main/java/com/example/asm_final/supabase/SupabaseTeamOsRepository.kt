@@ -319,11 +319,14 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
         val project = getProject(userId, projectId)
         if (project.ownerId != userId) throw SecurityException("ONLY_PROJECT_OWNER_CAN_DELETE")
         val verifiedToken = accounts().reauthenticate(owner, password)
-        // Remove private objects first; a failed removal leaves the project visible for retry.
+        // A missing object was deleted by an earlier attempt. Any other failure
+        // must stop before deleting the project, so its files remain recoverable.
         val files = getDocuments(userId, projectId).filter { it.filePath != null }
         files.forEach { doc ->
-            runCatching {
+            try {
                 SupabaseStorage(appContext).deleteTeamFile(owner, doc.filePath!!)
+            } catch (error: BackendClient.Failure) {
+                if (error.status != 404) throw error
             }
         }
         check(com.example.mentor.data.ActiveUser.get(appContext) == owner)
