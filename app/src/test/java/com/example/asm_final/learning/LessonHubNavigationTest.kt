@@ -189,6 +189,12 @@ class LessonHubNavigationTest {
         assertEquals(HubSection.EXAM_PREP, nav.currentSection)
         assertTrue(nav.handleBack())
         assertEquals(HubSection.MAIN_HUB, nav.currentSection)
+
+        // TeamOS (group project system)
+        nav.navigateTo(HubSection.TEAM_OS)
+        assertEquals(HubSection.TEAM_OS, nav.currentSection)
+        assertTrue(nav.handleBack())
+        assertEquals(HubSection.MAIN_HUB, nav.currentSection)
     }
 
     // 7. Công cụ đúng môn: Kiểm tra trực tiếp SubjectToolResolver sản phẩm được LessonActivity sử dụng

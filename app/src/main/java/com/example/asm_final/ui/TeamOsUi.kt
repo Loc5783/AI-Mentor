@@ -868,7 +868,15 @@ fun TeamOsTasksTab(viewModel: TeamOsViewModel) {
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.weight(1f)
                                 )
-                                PriorityBadge(priority = task.priority)
+                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    if (task.source == TeamOsRepository.TaskSource.AI_SUGGESTED) {
+                                        TaskSourceBadge(source = task.source)
+                                    }
+                                    if (task.confirmationStatus == TeamOsRepository.TaskConfirmation.PENDING_CONFIRMATION) {
+                                        TaskConfirmationBadge(confirmation = task.confirmationStatus)
+                                    }
+                                    PriorityBadge(priority = task.priority)
+                                }
                             }
                             if (!task.description.isNullOrBlank()) {
                                 Spacer(Modifier.height(4.dp))
@@ -895,6 +903,15 @@ fun TeamOsTasksTab(viewModel: TeamOsViewModel) {
                                 TaskStatusBadge(status = task.status)
                                 if (viewModel.canEdit) {
                                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                        if (task.confirmationStatus == TeamOsRepository.TaskConfirmation.PENDING_CONFIRMATION) {
+                                            Button(
+                                                onClick = { viewModel.confirmAiTask(task.id) },
+                                                shape = RoundedCornerShape(6.dp),
+                                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                                            ) {
+                                                Text("Xác nhận", style = MaterialTheme.typography.labelSmall)
+                                            }
+                                        }
                                         TextButton(
                                             onClick = { taskForDependency = task },
                                             contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
@@ -1588,6 +1605,47 @@ fun WarningStatusBadge(status: TeamOsRepository.WarningStatus) {
             text = label,
             style = MaterialTheme.typography.labelSmall,
             color = color,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+        )
+    }
+}
+
+@Composable
+fun TaskSourceBadge(source: TeamOsRepository.TaskSource) {
+    val (label, color) = when (source) {
+        TeamOsRepository.TaskSource.AI_SUGGESTED -> "Gợi ý AI" to MaterialTheme.colorScheme.tertiary
+        TeamOsRepository.TaskSource.HUMAN -> "Thủ công" to MaterialTheme.colorScheme.outline
+    }
+    Surface(
+        shape = RoundedCornerShape(4.dp),
+        color = color.copy(alpha = 0.15f)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = color,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+        )
+    }
+}
+
+@Composable
+fun TaskConfirmationBadge(confirmation: TeamOsRepository.TaskConfirmation) {
+    val (label, color) = when (confirmation) {
+        TeamOsRepository.TaskConfirmation.PENDING_CONFIRMATION -> "Chờ xác nhận" to MaterialTheme.colorScheme.error
+        TeamOsRepository.TaskConfirmation.CONFIRMED -> "Đã xác nhận" to MaterialTheme.colorScheme.primary
+        TeamOsRepository.TaskConfirmation.DISMISSED -> "Đã hủy" to MaterialTheme.colorScheme.outline
+    }
+    Surface(
+        shape = RoundedCornerShape(4.dp),
+        color = color.copy(alpha = 0.15f)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = color,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
         )
     }

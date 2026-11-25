@@ -191,4 +191,34 @@ class TeamOsViewModelTest {
         val refreshed = viewModel.warnings.first { it.id == warning.id }
         assertEquals(TeamOsRepository.WarningStatus.RESOLVED, refreshed.status)
     }
+
+    @Test
+    fun confirmAiTaskConvertsPendingAiTaskToConfirmed() {
+        val ownerId = "usr-owner"
+        val p = repository.createProject(ownerId, "Dự án AI Task", null)
+        val aiTask = repository.confirmTask(
+            userId = ownerId,
+            projectId = p.id,
+            title = "Nhiệm vụ AI đề xuất",
+            description = "Mô tả AI",
+            assigneeId = null,
+            source = TeamOsRepository.TaskSource.AI_SUGGESTED
+        )
+
+        viewModel.loadProjects(ownerId)
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.selectProject(p)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val taskBefore = viewModel.tasks.first { it.id == aiTask.id }
+        assertEquals(TeamOsRepository.TaskConfirmation.PENDING_CONFIRMATION, taskBefore.confirmationStatus)
+        assertEquals(TeamOsRepository.TaskSource.AI_SUGGESTED, taskBefore.source)
+
+        viewModel.confirmAiTask(aiTask.id)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals("Đã xác nhận nhiệm vụ AI thành nhiệm vụ chính thức", viewModel.actionSuccessMessage)
+        val taskAfter = viewModel.tasks.first { it.id == aiTask.id }
+        assertEquals(TeamOsRepository.TaskConfirmation.CONFIRMED, taskAfter.confirmationStatus)
+    }
 }

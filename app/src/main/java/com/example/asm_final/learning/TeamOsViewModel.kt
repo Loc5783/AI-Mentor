@@ -420,6 +420,35 @@ class TeamOsViewModel(
         }
     }
 
+    fun confirmAiTask(
+        taskId: String,
+        onSuccess: (() -> Unit)? = null
+    ) {
+        val uid = currentUserId ?: return
+        val proj = selectedProject ?: return
+
+        if (!canEdit) {
+            errorMessage = "Vai trò Người xem (VIEWER) không có quyền xác nhận nhiệm vụ"
+            return
+        }
+
+        vmScope.launch {
+            isLoading = true
+            try {
+                withContext(ioDispatcher) {
+                    repository.confirmPendingTask(uid, proj.id, taskId)
+                }
+                actionSuccessMessage = "Đã xác nhận nhiệm vụ AI thành nhiệm vụ chính thức"
+                refreshProjectDetails()
+                onSuccess?.invoke()
+            } catch (e: Exception) {
+                errorMessage = e.message ?: "Lỗi xác nhận nhiệm vụ"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
     fun addTaskDependency(
         taskId: String,
         dependsOnTaskId: String,

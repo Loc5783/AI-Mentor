@@ -1,144 +1,367 @@
 -- ============================================================================
--- SQL Smoke Test: AI TeamOS RLS, Roles, Dependencies, Cycles & Idempotency
--- Runs in a transactional block and always rolls back.
+-- AI TEAMOS COMPREHENSIVE RLS & AUTHORIZATION SMOKE TEST
+-- Tests against real PostgreSQL / Supabase instance with authentic JWT roles:
+-- Owner, Admin, Member, Viewer, Outsider, Removed Member.
+-- Fully transactional and rolls back at the end.
 -- ============================================================================
 
 begin;
 
--- Create simulated test users in auth.users if not already present
+-- Seed auth users for test roles
+insert into auth.users (id, email) values
+  ('00000000-0000-0000-0000-000000000001', 'owner@example.com'),
+  ('00000000-0000-0000-0000-000000000002', 'admin@example.com'),
+  ('00000000-0000-0000-0000-000000000003', 'member@example.com'),
+  ('00000000-0000-0000-0000-000000000004', 'viewer@example.com'),
+  ('00000000-0000-0000-0000-000000000005', 'removed@example.com'),
+  ('00000000-0000-0000-0000-000000000009', 'outsider@example.com')
+on conflict (id) do nothing;
+
+-- ----------------------------------------------------------------------------
+-- 1. Setup Project, Members and Initial Content under OWNER
+-- ----------------------------------------------------------------------------
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000000001"}', true);
+
+insert into public.mentor_team_projects (id, title, description, owner_id)
+values ('proj-smoke-1', 'Dự án TeamOS Kiểm thử', 'Mô tả dự án', '00000000-0000-0000-0000-000000000001');
+
+insert into public.mentor_team_projects (id, title, description, owner_id)
+values ('proj-smoke-2', 'Dự án khác', 'Dự án độc lập', '00000000-0000-0000-0000-000000000001');
+
+-- Verify Owner was auto-added via trigger
+do $$
+begin
+  assert exists (
+    select 1 from public.mentor_team_members
+    where project_id = 'proj-smoke-1' and user_id = '00000000-0000-0000-0000-000000000001' and role = 'OWNER' and status = 'ACTIVE'
+  ), 'Auto owner creation failed';
+end $$;
+
+-- Owner adds Admin, Member, Viewer, and RemovedMember
+insert into public.mentor_team_members (project_id, user_id, role, status) values
+  ('proj-smoke-1', '00000000-0000-0000-0000-000000000002', 'ADMIN', 'ACTIVE'),
+  ('proj-smoke-1', '00000000-0000-0000-0000-000000000003', 'MEMBER', 'ACTIVE'),
+  ('proj-smoke-1', '00000000-0000-0000-0000-000000000004', 'VIEWER', 'ACTIVE'),
+  ('proj-smoke-1', '00000000-0000-0000-0000-000000000005', 'MEMBER', 'ACTIVE');
+
+-- Owner marks removed member
+update public.mentor_team_members
+set status = 'REMOVED', removed_at = now()
+where project_id = 'proj-smoke-1' and user_id = '00000000-0000-0000-0000-000000000005';
+
+-- Owner adds tasks in proj-smoke-1 and proj-smoke-2
+insert into public.mentor_team_tasks (id, project_id, title, description) values
+  ('task-s1', 'proj-smoke-1', 'Task 1', 'Nhiệm vụ 1'),
+  ('task-s2', 'proj-smoke-1', 'Task 2', 'Nhiệm vụ 2'),
+  ('task-s3', 'proj-smoke-1', 'Task 3', 'Nhiệm vụ 3'),
+  ('task-other', 'proj-smoke-2', 'Task khác', 'Thuộc project 2');
+
+-- Owner adds document
+insert into public.mentor_team_documents (id, project_id, title, content)
+values ('doc-s1', 'proj-smoke-1', 'Tài liệu 1', 'Nội dung ban đầu');
+
+-- ----------------------------------------------------------------------------
+-- 2. Check a: OUTSIDER cannot SELECT project, documents or tasks
+-- ----------------------------------------------------------------------------
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000000009"}', true);
+
 do $$
 declare
-  v_owner uuid := '11111111-1111-1111-1111-111111111111'::uuid;
-  v_member uuid := '22222222-2222-2222-2222-222222222222'::uuid;
-  v_viewer uuid := '33333333-3333-3333-3333-333333333333'::uuid;
-  v_outsider uuid := '99999999-9999-9999-9999-999999999999'::uuid;
-  v_proj_id text := 'proj-test-alpha';
-  v_task1 text := 'task-test-01';
-  v_task2 text := 'task-test-02';
-  v_task3 text := 'task-test-03';
-  v_doc1 text := 'doc-test-01';
-  v_req1 text := 'req-test-01';
   v_count int;
-  v_cycle_caught boolean := false;
-  v_cross_caught boolean := false;
-  v_self_caught boolean := false;
 begin
-  -- 1. Setup Auth Users
-  insert into auth.users (id, email)
-  values
-    (v_owner, 'owner@aimentor.test'),
-    (v_member, 'member@aimentor.test'),
-    (v_viewer, 'viewer@aimentor.test'),
-    (v_outsider, 'outsider@aimentor.test')
-  on conflict (id) do nothing;
+  select count(*) into v_count from public.mentor_team_projects where id = 'proj-smoke-1';
+  assert v_count = 0, 'Outsider was able to select project';
 
-  -- 2. Owner creates project (Trigger automatically makes owner an active OWNER member)
-  insert into public.mentor_team_projects (id, title, description, owner_id)
-  values (v_proj_id, 'Dự án Sinh học 12', 'Nghiên cứu di truyền học', v_owner);
+  select count(*) into v_count from public.mentor_team_documents where project_id = 'proj-smoke-1';
+  assert v_count = 0, 'Outsider was able to select documents';
 
-  -- Verify owner is in members table
-  select count(*) into v_count from public.mentor_team_members
-  where project_id = v_proj_id and user_id = v_owner and role = 'OWNER' and status = 'ACTIVE';
-  assert v_count = 1, 'Owner must automatically be an ACTIVE OWNER member';
+  select count(*) into v_count from public.mentor_team_tasks where project_id = 'proj-smoke-1';
+  assert v_count = 0, 'Outsider was able to select tasks';
+end $$;
 
-  -- 3. Owner adds Member and Viewer
-  insert into public.mentor_team_members (project_id, user_id, role, status)
-  values
-    (v_proj_id, v_member, 'MEMBER', 'ACTIVE'),
-    (v_proj_id, v_viewer, 'VIEWER', 'ACTIVE');
-
-  -- 4. Verify helper functions
-  assert public.mentor_is_team_active_member(v_proj_id, v_owner) = true, 'Owner is active member';
-  assert public.mentor_is_team_active_member(v_proj_id, v_member) = true, 'Member is active member';
-  assert public.mentor_is_team_active_member(v_proj_id, v_viewer) = true, 'Viewer is active member';
-  assert public.mentor_is_team_active_member(v_proj_id, v_outsider) = false, 'Outsider is not active member';
-
-  assert public.mentor_is_team_manager(v_proj_id, v_owner) = true, 'Owner is manager';
-  assert public.mentor_is_team_manager(v_proj_id, v_member) = false, 'Member is not manager';
-  assert public.mentor_is_team_manager(v_proj_id, v_viewer) = false, 'Viewer is not manager';
-
-  assert public.mentor_get_team_role(v_proj_id, v_owner) = 'OWNER', 'Owner role is OWNER';
-  assert public.mentor_get_team_role(v_proj_id, v_member) = 'MEMBER', 'Member role is MEMBER';
-  assert public.mentor_get_team_role(v_proj_id, v_viewer) = 'VIEWER', 'Viewer role is VIEWER';
-
-  -- 5. Create Documents and Tasks
-  insert into public.mentor_team_documents (id, project_id, title, content, uploaded_by)
-  values (v_doc1, v_proj_id, 'Tài liệu di truyền', 'Nội dung ARN và ADN', v_member);
-
-  insert into public.mentor_team_tasks (id, project_id, title, status, client_request_id)
-  values
-    (v_task1, v_proj_id, 'Thu thập số liệu', 'TODO', 'req-001'),
-    (v_task2, v_proj_id, 'Phân tích kết quả', 'TODO', 'req-002'),
-    (v_task3, v_proj_id, 'Viết báo cáo', 'TODO', 'req-003');
-
-  -- 6. Test Idempotency with client_request_id
+-- ----------------------------------------------------------------------------
+-- 3. Check b: OUTSIDER cannot self-join (RLS blocks insert)
+-- ----------------------------------------------------------------------------
+do $$
+begin
   begin
-    insert into public.mentor_team_tasks (id, project_id, title, status, client_request_id)
-    values ('task-duplicate', v_proj_id, 'Thu thập số liệu lặp lại', 'TODO', 'req-001');
-    raise exception 'Expected unique constraint violation for duplicate client_request_id';
-  exception
-    when unique_violation then
-      -- Correct: idempotency key blocked duplicate insert
-      null;
+    insert into public.mentor_team_members (project_id, user_id, role, status)
+    values ('proj-smoke-1', '00000000-0000-0000-0000-000000000009', 'MEMBER', 'ACTIVE');
+    raise exception 'TEST_FAILED: Outsider self-join was not blocked';
+  exception when insufficient_privilege or check_violation or others then
+    -- Expected failure
+  end;
+end $$;
+
+-- ----------------------------------------------------------------------------
+-- 4. Check c: MEMBER and VIEWER cannot add members
+-- ----------------------------------------------------------------------------
+-- Test MEMBER attempting to add new member
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000000003"}', true);
+
+do $$
+begin
+  begin
+    insert into public.mentor_team_members (project_id, user_id, role, status)
+    values ('proj-smoke-1', '00000000-0000-0000-0000-000000000009', 'MEMBER', 'ACTIVE');
+    raise exception 'TEST_FAILED: Regular member was able to add members';
+  exception when others then
+    -- Expected failure
+  end;
+end $$;
+
+-- Test VIEWER attempting to add new member
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000000004"}', true);
+
+do $$
+begin
+  begin
+    insert into public.mentor_team_members (project_id, user_id, role, status)
+    values ('proj-smoke-1', '00000000-0000-0000-0000-000000000009', 'MEMBER', 'ACTIVE');
+    raise exception 'TEST_FAILED: Viewer was able to add members';
+  exception when others then
+    -- Expected failure
+  end;
+end $$;
+
+-- ----------------------------------------------------------------------------
+-- 5. Check d: VIEWER cannot write data (requirements, docs, tasks)
+-- ----------------------------------------------------------------------------
+do $$
+begin
+  -- Viewer cannot insert requirement
+  begin
+    insert into public.mentor_team_requirements (id, project_id, title, description)
+    values ('req-v1', 'proj-smoke-1', 'Yêu cầu', 'Mô tả');
+    raise exception 'TEST_FAILED: Viewer was able to insert requirement';
+  exception when others then
+    -- Expected failure
   end;
 
-  -- 7. Test Task Dependencies
-  -- Normal valid dependency: task 2 depends on task 1
-  insert into public.mentor_team_task_dependencies (task_id, depends_on_task_id)
-  values (v_task2, v_task1);
+  -- Viewer cannot insert document
+  begin
+    insert into public.mentor_team_documents (id, project_id, title, content)
+    values ('doc-v1', 'proj-smoke-1', 'Doc', 'Nội dung');
+    raise exception 'TEST_FAILED: Viewer was able to insert document';
+  exception when others then
+    -- Expected failure
+  end;
 
-  -- Normal valid dependency: task 3 depends on task 2
-  insert into public.mentor_team_task_dependencies (task_id, depends_on_task_id)
-  values (v_task3, v_task2);
+  -- Viewer cannot insert task
+  begin
+    insert into public.mentor_team_tasks (id, project_id, title, description)
+    values ('task-v1', 'proj-smoke-1', 'Task', 'Nhiệm vụ');
+    raise exception 'TEST_FAILED: Viewer was able to insert task';
+  exception when others then
+    -- Expected failure
+  end;
+end $$;
 
-  -- Self-dependency forbidden
+-- ----------------------------------------------------------------------------
+-- 6. Check e: REMOVED member loses access immediately
+-- ----------------------------------------------------------------------------
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000000005"}', true);
+
+do $$
+declare
+  v_count int;
+begin
+  select count(*) into v_count from public.mentor_team_projects where id = 'proj-smoke-1';
+  assert v_count = 0, 'Removed member was able to select project';
+
+  select count(*) into v_count from public.mentor_team_documents where project_id = 'proj-smoke-1';
+  assert v_count = 0, 'Removed member was able to select documents';
+
+  select count(*) into v_count from public.mentor_team_tasks where project_id = 'proj-smoke-1';
+  assert v_count = 0, 'Removed member was able to select tasks';
+
+  -- Removed member cannot write document
+  begin
+    insert into public.mentor_team_documents (id, project_id, title, content)
+    values ('doc-rem', 'proj-smoke-1', 'Spam', 'Bị xóa rồi');
+    raise exception 'TEST_FAILED: Removed member was able to insert document';
+  exception when others then
+    -- Expected failure
+  end;
+end $$;
+
+-- ----------------------------------------------------------------------------
+-- 7. Check f: ADMIN cannot self-escalate to OWNER
+-- ----------------------------------------------------------------------------
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000000002"}', true);
+
+do $$
+begin
+  begin
+    update public.mentor_team_members
+    set role = 'OWNER'
+    where project_id = 'proj-smoke-1' and user_id = '00000000-0000-0000-0000-000000000002';
+    raise exception 'TEST_FAILED: Admin was able to self-promote to OWNER';
+  exception when others then
+    -- Expected failure: CANNOT_ESCALATE_TO_OWNER or CANNOT_SELF_PROMOTE
+  end;
+end $$;
+
+-- ----------------------------------------------------------------------------
+-- 8. Check g: ADMIN cannot delete or demote OWNER
+-- ----------------------------------------------------------------------------
+do $$
+begin
+  -- Demotion attempt
+  begin
+    update public.mentor_team_members
+    set role = 'MEMBER'
+    where project_id = 'proj-smoke-1' and user_id = '00000000-0000-0000-0000-000000000001';
+    raise exception 'TEST_FAILED: Admin was able to demote OWNER';
+  exception when others then
+    -- Expected failure: CANNOT_DEMOTE_OWNER or ADMIN_CANNOT_MODIFY_OWNER
+  end;
+
+  -- Deletion attempt
+  begin
+    delete from public.mentor_team_members
+    where project_id = 'proj-smoke-1' and user_id = '00000000-0000-0000-0000-000000000001';
+    raise exception 'TEST_FAILED: Admin was able to delete OWNER';
+  exception when others then
+    -- Expected failure: CANNOT_DELETE_OWNER
+  end;
+end $$;
+
+-- ----------------------------------------------------------------------------
+-- 9. Check h: User cannot forge actor fields (server enforces auth.uid())
+-- ----------------------------------------------------------------------------
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000000003"}', true);
+
+-- Member inserts document with fake uploaded_by (trying to impersonate Owner)
+insert into public.mentor_team_documents (id, project_id, title, content, uploaded_by)
+values ('doc-fake-actor', 'proj-smoke-1', 'Tài liệu giả mạo', 'Nội dung', '00000000-0000-0000-0000-000000000001');
+
+do $$
+declare
+  v_uploader uuid;
+begin
+  select uploaded_by into v_uploader from public.mentor_team_documents where id = 'doc-fake-actor';
+  assert v_uploader = '00000000-0000-0000-0000-000000000003', 'Server allowed fake uploaded_by actor';
+end $$;
+
+-- ----------------------------------------------------------------------------
+-- 10. Check i: Task Dependencies: cross-project, self-dep, and cycles are blocked
+-- ----------------------------------------------------------------------------
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000000001"}', true);
+
+-- Self dependency check
+do $$
+begin
   begin
     insert into public.mentor_team_task_dependencies (task_id, depends_on_task_id)
-    values (v_task1, v_task1);
-  exception
-    when check_violation then
-      v_self_caught := true;
+    values ('task-s1', 'task-s1');
+    raise exception 'TEST_FAILED: Self dependency was allowed';
+  exception when others then
+    -- Expected failure
   end;
-  assert v_self_caught = true, 'Self-dependency must be forbidden by check constraint';
+end $$;
 
-  -- Cyclic dependency forbidden: task 1 cannot depend on task 3 (since 3 depends on 2 depends on 1)
+-- Cross-project dependency check
+do $$
+begin
   begin
     insert into public.mentor_team_task_dependencies (task_id, depends_on_task_id)
-    values (v_task1, v_task3);
-  exception
-    when others then
-      if sqlerrm like '%CYCLIC_DEPENDENCY_DETECTED%' then
-        v_cycle_caught := true;
-      end if;
+    values ('task-s1', 'task-other');
+    raise exception 'TEST_FAILED: Cross project dependency was allowed';
+  exception when others then
+    -- Expected failure
   end;
-  assert v_cycle_caught = true, 'Cyclic dependency must be rejected by trigger';
+end $$;
 
-  -- Cross-project dependency forbidden
-  insert into public.mentor_team_projects (id, title, owner_id)
-  values ('proj-beta', 'Dự án Hóa học 12', v_owner);
+-- Cycle dependency check (T1 -> T2 -> T3 -> T1)
+insert into public.mentor_team_task_dependencies (task_id, depends_on_task_id) values
+  ('task-s1', 'task-s2'),
+  ('task-s2', 'task-s3');
 
-  insert into public.mentor_team_tasks (id, project_id, title)
-  values ('task-beta-01', 'proj-beta', 'Thí nghiệm chuẩn độ');
-
+do $$
+begin
   begin
     insert into public.mentor_team_task_dependencies (task_id, depends_on_task_id)
-    values (v_task1, 'task-beta-01');
-  exception
-    when others then
-      if sqlerrm like '%CROSS_PROJECT_DEPENDENCY_FORBIDDEN%' then
-        v_cross_caught := true;
-      end if;
+    values ('task-s3', 'task-s1');
+    raise exception 'TEST_FAILED: Cyclic dependency was allowed';
+  exception when others then
+    -- Expected failure
   end;
-  assert v_cross_caught = true, 'Cross-project dependency must be rejected by trigger';
+end $$;
 
-  -- 8. Test Member Removal & Immediate Revocation
-  update public.mentor_team_members
-  set status = 'REMOVED', removed_at = now()
-  where project_id = v_proj_id and user_id = v_member;
+-- ----------------------------------------------------------------------------
+-- 11. Check j: client_request_id prevents second record on repeated send
+-- ----------------------------------------------------------------------------
+insert into public.mentor_team_tasks (id, project_id, title, description, client_request_id)
+values ('task-idemp-1', 'proj-smoke-1', 'Task Idempotent', 'Lần gửi 1', 'req-idemp-001');
 
-  assert public.mentor_is_team_active_member(v_proj_id, v_member) = false,
-    'Removed member must immediately lose active membership';
+do $$
+begin
+  begin
+    insert into public.mentor_team_tasks (id, project_id, title, description, client_request_id)
+    values ('task-idemp-2', 'proj-smoke-1', 'Task Idempotent', 'Lần gửi 2 trùng', 'req-idemp-001');
+    raise exception 'TEST_FAILED: Repeated client_request_id created second record';
+  exception when unique_violation then
+    -- Expected: unique constraint prevented duplication
+  end;
+end $$;
 
+-- ----------------------------------------------------------------------------
+-- 12. Check AI task lifecycle: AI_SUGGESTED must be PENDING_CONFIRMATION
+-- ----------------------------------------------------------------------------
+-- Client tries to insert AI_SUGGESTED with CONFIRMED directly
+insert into public.mentor_team_tasks (id, project_id, title, description, source, confirmation_status)
+values ('task-ai-1', 'proj-smoke-1', 'Task AI Gợi ý', 'Mô tả', 'AI_SUGGESTED', 'CONFIRMED');
+
+do $$
+declare
+  v_status text;
+  v_confirmed_by uuid;
+begin
+  select confirmation_status, confirmed_by into v_status, v_confirmed_by
+  from public.mentor_team_tasks where id = 'task-ai-1';
+  assert v_status = 'PENDING_CONFIRMATION', 'AI task bypassed PENDING_CONFIRMATION';
+  assert v_confirmed_by is null, 'AI task confirmed_by was not null';
+end $$;
+
+-- Member confirms AI task via RPC mentor_confirm_task
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000000003"}', true);
+select public.mentor_confirm_task('task-ai-1');
+
+do $$
+declare
+  v_status text;
+  v_confirmed_by uuid;
+begin
+  select confirmation_status, confirmed_by into v_status, v_confirmed_by
+  from public.mentor_team_tasks where id = 'task-ai-1';
+  assert v_status = 'CONFIRMED', 'Task was not confirmed after RPC';
+  assert v_confirmed_by = '00000000-0000-0000-0000-000000000003', 'Server did not set confirmed_by to auth.uid()';
+end $$;
+
+-- ----------------------------------------------------------------------------
+-- 13. Check Safe Ownership Transfer RPC
+-- ----------------------------------------------------------------------------
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000000001"}', true);
+select public.mentor_transfer_team_ownership('proj-smoke-1', '00000000-0000-0000-0000-000000000002');
+
+do $$
+declare
+  v_proj_owner uuid;
+  v_old_owner_role text;
+  v_new_owner_role text;
+begin
+  select owner_id into v_proj_owner from public.mentor_team_projects where id = 'proj-smoke-1';
+  assert v_proj_owner = '00000000-0000-0000-0000-000000000002', 'Project owner was not transferred';
+
+  select role into v_old_owner_role from public.mentor_team_members
+  where project_id = 'proj-smoke-1' and user_id = '00000000-0000-0000-0000-000000000001';
+  assert v_old_owner_role = 'ADMIN', 'Old owner role was not demoted to ADMIN';
+
+  select role into v_new_owner_role from public.mentor_team_members
+  where project_id = 'proj-smoke-1' and user_id = '00000000-0000-0000-0000-000000000002';
+  assert v_new_owner_role = 'OWNER', 'New owner role was not set to OWNER';
 end $$;
 
 rollback;

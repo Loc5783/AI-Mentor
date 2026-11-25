@@ -524,6 +524,7 @@ open class TeamOsRepository {
             }
         }
 
+        val isAi = (source == TaskSource.AI_SUGGESTED)
         val task = TeamTask(
             projectId = projectId,
             title = title.trim(),
@@ -532,15 +533,29 @@ open class TeamOsRepository {
             deadline = deadline,
             priority = priority,
             source = source,
-            confirmationStatus = TaskConfirmation.CONFIRMED,
-            confirmedBy = userId,
-            confirmedAt = System.currentTimeMillis(),
+            confirmationStatus = if (isAi) TaskConfirmation.PENDING_CONFIRMATION else TaskConfirmation.CONFIRMED,
+            confirmedBy = if (isAi) null else userId,
+            confirmedAt = if (isAi) null else System.currentTimeMillis(),
             clientRequestId = clientRequestId,
-            isConfirmed = true
+            isConfirmed = !isAi
         )
         projectTasks.add(task)
         return task
     }
+
+    open fun confirmPendingTask(userId: String, projectId: String, taskId: String): TeamTask {
+        checkNotViewer(projectId, userId)
+        val projectTasks = tasks[projectId] ?: throw NoSuchElementException("TASK_NOT_FOUND")
+        val task = projectTasks.firstOrNull { it.id == taskId } ?: throw NoSuchElementException("TASK_NOT_FOUND")
+        task.confirmationStatus = TaskConfirmation.CONFIRMED
+        task.confirmedBy = userId
+        task.confirmedAt = System.currentTimeMillis()
+        task.isConfirmed = true
+        return task
+    }
+
+    fun confirmPendingTask(userId: Int, projectId: String, taskId: String): TeamTask =
+        confirmPendingTask(userId.toString(), projectId, taskId)
 
     fun confirmTask(
         userId: Int,

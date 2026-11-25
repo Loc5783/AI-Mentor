@@ -140,6 +140,9 @@ class SubjectHubUi(
                 onOpenNotebook = { subj -> navModel.openNotebook(subj, fromSection = HubSection.AI_PRACTICE) },
                 onOpenAiChat = { openAiChat?.run() }
             )
+            HubSection.TEAM_OS -> TeamOsScreen(
+                onBack = { navModel.handleBack() }
+            )
         }
     }
 }
@@ -203,6 +206,10 @@ fun LessonHubMainView(
             HubSectionCard("04", stringResource(R.string.lesson_hub_ai_practice),
                 stringResource(R.string.lesson_hub_ai_practice_desc), stringResource(R.string.lesson_hub_ai_practice),
                 { onSelectSection("AI_PRACTICE") })
+            HubSectionCard("05", "Dự án nhóm AI (TeamOS)",
+                "Làm việc nhóm, quản lý yêu cầu, tài liệu, nhiệm vụ và thẩm định AI",
+                "Mở TeamOS",
+                { onSelectSection("TEAM_OS") })
             Spacer(Modifier.height(16.dp))
         }
     }
