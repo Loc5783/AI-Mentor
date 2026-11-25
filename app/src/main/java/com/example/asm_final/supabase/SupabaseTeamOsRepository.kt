@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.asm_final.BuildConfig
 import com.example.asm_final.accounts.RemoteAccountLinks
 import com.example.asm_final.learning.TeamOsRepository
+import com.example.asm_final.backend.BackendClient
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.UUID
@@ -120,12 +121,16 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
     }
 
     override fun getDocuments(userId: String, projectId: String): List<TeamDocument> {
-        val result = rows(userId, "/rest/v1/mentor_team_documents?project_id=eq.$projectId&select=id,project_id,title,content,uploaded_by,updated_by,version")
+        val result = rows(userId, "/rest/v1/mentor_team_documents?project_id=eq.$projectId&select=id,project_id,title,content,uploaded_by,updated_by,version,file_path,file_name,file_mime,file_size")
         return (0 until result.length()).map { i ->
             val r = result.getJSONObject(i)
             TeamDocument(r.getString("id"), projectId, r.getString("title"), r.getString("content"),
                 r.getString("uploaded_by"), r.optString("updated_by").takeIf { it.isNotBlank() && it != "null" },
-                r.optInt("version", 1))
+                r.optInt("version", 1),
+                r.optString("file_path").takeUnless { it.isBlank() || it == "null" },
+                r.optString("file_name").takeUnless { it.isBlank() || it == "null" },
+                r.optString("file_mime").takeUnless { it.isBlank() || it == "null" },
+                if (r.isNull("file_size")) null else r.getLong("file_size"))
         }
     }
 
@@ -276,6 +281,56 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
         throw IllegalStateException("TEAMOS_REQUIRES_CONNECTION")
     }
 
+    override fun uploadFileDocument(userId: String, projectId: String, title: String,
+        content: String, file: TeamFileInput): TeamDocument {
+        require(title.isNotBlank() && title.length <= 180)
+        val owner = onlineUser(userId)
+        val docId = "doc-${UUID.randomUUID()}"
+        val path = SupabaseStorage(appContext).uploadTeamFile(owner, projectId, docId, file.bytes, file.mime)
+        try {
+            val body = JSONObject().put("id", docId).put("project_id", projectId)
+                .put("title", title.trim()).put("content", content.trim())
+                .put("uploaded_by", remoteUserId(owner)).put("version", 1)
+                .put("file_path", path).put("file_name", file.name)
+                .put("file_mime", file.mime).put("file_size", file.bytes.size)
+            accounts().requestFor(owner, "POST", "/rest/v1/mentor_team_documents", body)
+        } catch (error: Exception) {
+            // A transport failure may happen after the server committed the row.
+            // Only remove the object when the server definitively rejected metadata.
+            if (error is BackendClient.Failure && error.status in 400..499) {
+                runCatching { SupabaseStorage(appContext).deleteTeamFile(owner, path) }
+            }
+            throw error
+        }
+        return TeamDocument(docId, projectId, title.trim(), content.trim(), remoteUserId(owner),
+            filePath = path, fileName = file.name, fileMime = file.mime, fileSize = file.bytes.size.toLong())
+    }
+
+    override fun downloadFile(userId: String, document: TeamDocument): java.io.File {
+        val path = document.filePath ?: throw IllegalArgumentException("DOCUMENT_HAS_NO_FILE")
+        val mime = document.fileMime ?: throw IllegalArgumentException("DOCUMENT_HAS_NO_FILE")
+        val size = document.fileSize ?: throw IllegalArgumentException("DOCUMENT_HAS_NO_FILE")
+        return SupabaseStorage(appContext).cacheTeamFile(onlineUser(userId), document.projectId,
+            document.id, path, mime, size)
+    }
+
+    override fun deleteProject(userId: String, projectId: String, password: String) {
+        val owner = onlineUser(userId)
+        val project = getProject(userId, projectId)
+        if (project.ownerId != userId) throw SecurityException("ONLY_PROJECT_OWNER_CAN_DELETE")
+        val verifiedToken = accounts().reauthenticate(owner, password)
+        // Remove private objects first; a failed removal leaves the project visible for retry.
+        val files = getDocuments(userId, projectId).filter { it.filePath != null }
+        files.forEach { doc ->
+            SupabaseStorage(appContext).deleteTeamFile(owner, doc.filePath!!)
+        }
+        check(com.example.mentor.data.ActiveUser.get(appContext) == owner)
+        SupabaseHttp().request("DELETE",
+            "/rest/v1/mentor_team_projects?id=eq.$projectId&owner_id=eq.${remoteUserId(owner)}",
+            token = verifiedToken)
+        files.forEach { doc -> SupabaseStorage(appContext).clearCachedTeamFile(owner, doc.id) }
+    }
+
     override fun confirmTask(
         userId: String,
         projectId: String,
@@ -356,6 +411,15 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
                     "/rest/v1/mentor_team_members?project_id=eq.$projectId&status=eq.ACTIVE&select=user_id,role,status,joined_at"
                 )
                 val rows = JSONArray(resp)
+                val ids = (0 until rows.length()).map { rows.getJSONObject(it).getString("user_id") }
+                val names = if (ids.isEmpty()) emptyMap() else runCatching {
+                    val profiles = JSONArray(accounts().requestFor(userInt, "GET",
+                        "/rest/v1/mentor_profiles?id=in.(${ids.joinToString(",")})&select=id,nickname"))
+                    (0 until profiles.length()).associate { index ->
+                        val profile = profiles.getJSONObject(index)
+                        profile.getString("id") to profile.getString("nickname")
+                    }
+                }.getOrDefault(emptyMap())
                 val list = mutableListOf<TeamMember>()
                 for (i in 0 until rows.length()) {
                     val r = rows.getJSONObject(i)
@@ -364,7 +428,8 @@ class SupabaseTeamOsRepository(private val context: Context) : TeamOsRepository(
                     list.add(TeamMember(
                         userId = localUserId(r.getString("user_id")),
                         role = rRole,
-                        status = rStatus
+                        status = rStatus,
+                        displayName = names[r.getString("user_id")]
                     ))
                 }
                 return list

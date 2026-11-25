@@ -7,6 +7,8 @@ import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import com.example.asm_final.competition.LearnerDirectory
+import com.example.asm_final.competition.FriendsViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TeamOsViewModelTest {
@@ -33,6 +35,25 @@ class TeamOsViewModelTest {
         assertEquals(TeamOsTab.OVERVIEW, viewModel.currentTab)
         assertTrue(viewModel.projects.isEmpty())
         assertNull(viewModel.selectedProject)
+    }
+
+    @Test
+    fun memberSearchUsesNameAndDiscardsOlderResults() {
+        val directory = object : LearnerDirectory {
+            override fun currentProfileId(owner: Int) = "self"
+            override fun search(owner: Int, query: String): List<FriendsViewModel.SearchItem> =
+                if (query == "an") listOf(FriendsViewModel.SearchItem("self", "An"))
+                else listOf(FriendsViewModel.SearchItem("friend", "Anh"))
+        }
+        val model = TeamOsViewModel(repository, TestScope(testDispatcher), testDispatcher, directory)
+        model.loadProjects("1")
+        model.searchMembers("an")
+        model.searchMembers("anh")
+        testDispatcher.scheduler.advanceUntilIdle()
+        assertEquals(listOf("Anh"), model.memberCandidates.map { it.nickname })
+        model.loadProjects("2")
+        testDispatcher.scheduler.advanceUntilIdle()
+        assertTrue(model.memberCandidates.isEmpty())
     }
 
     @Test
