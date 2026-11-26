@@ -23,8 +23,10 @@ class SupabaseAccountsDeviceTest {
         val context=InstrumentationRegistry.getInstrumentation().targetContext
         val id=UUID.randomUUID().toString()
         var returnedId=id
+        var offline=false
         val transport=object:SupabaseTransport {
             override fun request(method:String,path:String,body:JSONObject?,token:String?):String = when {
+                offline -> throw java.io.IOException("Network unavailable")
                 path.startsWith("/auth/v1/token") -> JSONObject().put("access_token","test-access-token").put("refresh_token","test-refresh-token").put("expires_in",3600).put("user",JSONObject().put("id",id).put("email","$id@example.invalid")).toString()
                 path.startsWith("/rest/v1/mentor_preferences") -> "[{\"grade\":null,\"subjects\":[],\"onboarding_step\":0}]"
                 path.startsWith("/rest/v1/mentor_profiles") -> "[{\"nickname\":\"Test learner\"}]"
@@ -38,6 +40,9 @@ class SupabaseAccountsDeviceTest {
             val stored=context.getSharedPreferences("supabase_sessions",0).getString("owner_${ticket.userId}","")!!
             assertFalse(stored.contains("test-access-token")); assertFalse(stored.contains("not-stored"))
             assertEquals(ticket.userId,SupabaseAccounts(context,transport).restore(ticket.username)!!.userId)
+            offline=true
+            assertEquals(ticket.userId,api.restore(ticket.username)!!.userId)
+            offline=false
             returnedId=UUID.randomUUID().toString()
             assertNull(api.restore(ticket.username))
             assertNull(BackendSession(context,ticket.userId,BuildConfig.SUPABASE_URL,"supabase_sessions").load())
